@@ -82,22 +82,36 @@ def _run_statent(force: bool) -> dict:
     print(f"[statent] Mehrdeutig: {s['ambiguousCells']:,} Hektaren "
           f"(Überschätzung bis {s['overstatementMax']:,})")
 
-    reference = statent.canton_reference(
-        statent_zip, resolved, bounds.municipalities["bfs_nr"]
-    )
-    deviation = (canton.value[0] - reference) / reference
-    print(f"[statent] BFS-Referenz: {reference:,.0f} Beschäftigte "
+    # Statt einer geschätzten Toleranz ein Plausibilitätsfenster aus den zwei
+    # bekannten, gegenläufigen Verzerrungen: die Aufrundung <4 -> 4 treibt die
+    # Hektarsumme höchstens um `overstatementMax` nach oben, die NOLOC-Datensätze
+    # (keine Hektarlage, deshalb nie in `hectare` enthalten) fehlen unten.
+    reference = statent.canton_reference(statent_zip, resolved, bounds.municipalities)
+    noloc = statent.noloc_employees(statent_zip, resolved, bounds.municipalities)
+    total = canton.value[0]
+    lower = reference - noloc
+    upper = reference + s["overstatementMax"]
+    deviation = (total - reference) / reference
+
+    print(f"[statent] BFS-Referenz : {reference:,.0f} Beschäftigte "
           f"(amtliche Gemeinde-Aggregation)")
-    print(f"[statent] Abweichung : {deviation:+.2%}")
-    if abs(deviation) > config.CANTON_REFERENCE_TOLERANCE:
+    print(f"[statent] Plausibel    : {lower:,.0f} .. {upper:,.0f} "
+          f"(Ist {total:,.0f}, {deviation:+.2%})")
+    print(f"[statent] davon Aufrundung bis +{s['overstatementMax']:,}, "
+          f"NOLOC fehlend -{noloc:,.0f}")
+
+    if not (lower <= total <= upper):
+        side = "unterhalb der unteren" if total < lower else "oberhalb der oberen"
         raise ValueError(
-            f"Kantonssumme weicht um {deviation:+.2%} von der BFS-Referenz ab, "
-            f"erlaubt sind ±{config.CANTON_REFERENCE_TOLERANCE:.0%}. Das deutet auf "
-            "einen Verschnitt- oder Spaltenfehler hin, nicht auf Rundung."
+            f"Kantonssumme {total:,.0f} liegt {side} Grenze des Plausibilitätsfensters "
+            f"[{lower:,.0f} .. {upper:,.0f}] (BFS-Referenz {reference:,.0f}, "
+            f"NOLOC-Anteil {noloc:,.0f}, Aufrundung bis {s['overstatementMax']:,}). "
+            "Das deutet auf einen Verschnitt- oder Spaltenfehler hin, nicht auf Rundung."
         )
 
     return {"hectare": hectare, "municipality": municipality, "canton": canton,
-            "bounds": bounds, "reference": reference}
+            "bounds": bounds, "reference": reference, "noloc": noloc,
+            "plausible": (lower, upper)}
 
 
 def build_parser() -> argparse.ArgumentParser:

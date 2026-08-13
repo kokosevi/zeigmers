@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import re
 import zipfile
-from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -107,8 +106,22 @@ def load_cells(
     )
 
 
+def _read_zip_member(zip_path: Path, member_pattern: str) -> tuple[str, pd.DataFrame]:
+    pattern = re.compile(member_pattern)
+    with zipfile.ZipFile(zip_path) as zf:
+        members = [n for n in zf.namelist() if pattern.search(n)]
+        if len(members) != 1:
+            raise LookupError(
+                f"Erwartet genau eine Datei auf {member_pattern!r} in "
+                f"{zip_path.name}, gefunden: {members}"
+            )
+        with zf.open(members[0]) as handle:
+            frame = pd.read_csv(handle, sep=";", encoding="latin-1", low_memory=False)
+    return members[0], frame
+
+
 def canton_reference(
-    zip_path: Path, resolved: ResolvedColumns, municipality_bfs_numbers: Iterable[int]
+    zip_path: Path, resolved: ResolvedColumns, municipalities: gpd.GeoDataFrame
 ) -> float:
     """Amtliche Beschäftigtenzahl des Kantons aus STATENT_GMDE_<jahr>.csv.
 
@@ -116,29 +129,59 @@ def canton_reference(
     das BFS aggregiert vor dem Runden, unsere Hektarsumme danach — beide Zahlen
     nebeneinander in der Karte würden beim Zoomwechsel springen.
 
-    `municipality_bfs_numbers` sind die tatsächlichen Gemeindenummern des
-    Kantons (aus `boundaries.build()`), nicht ein aus der Kantonsnummer
-    hergeleiteter Bereich: die eidgenössische Gemeindenummerierung ist
-    kantonsübergreifend fortlaufend vergeben und hat keinen rechnerischen
-    Bezug zur Kantonsnummer (Aargau ist Kanton 19, seine Gemeinden liegen im
-    Block 4001–4324).
+    Der Nummernbereich wird aus `municipalities["bfs_nr"]` (aus
+    `boundaries.build()`) hergeleitet — nicht aus der Kantonsnummer: die
+    eidgenössische Gemeindenummerierung ist kantonsübergreifend fortlaufend
+    vergeben und hat keinen rechnerischen Bezug zur Kantonsnummer (Aargau ist
+    Kanton 19, seine Gemeinden liegen im Block 4001–4324).
+
+    Absichtlich ein Nummernbereich (min..max), keine Mitgliedschaftsmenge:
+    die Gemeindedatei ist der Jahrgang 2023, die Grenzgeometrie kann neuer
+    sein. Fusionieren zwei Gemeinden zwischen den Jahrgängen (z.B. 4042 und
+    4122), verschwindet ihre alte Nummer aus der aktuellen Geometrie-Menge,
+    bleibt aber innerhalb des min/max-Bereichs und wird weiterhin erfasst.
     """
-    pattern = re.compile(config.STATENT_GMDE_MEMBER_PATTERN)
-    with zipfile.ZipFile(zip_path) as zf:
-        members = [n for n in zf.namelist() if pattern.search(n)]
-        if len(members) != 1:
-            raise LookupError(
-                f"Erwartet genau eine Gemeindedatei in {zip_path.name}, "
-                f"gefunden: {members}"
-            )
-        with zf.open(members[0]) as handle:
-            frame = pd.read_csv(handle, sep=";", encoding="latin-1", low_memory=False)
+    member, frame = _read_zip_member(zip_path, config.STATENT_GMDE_MEMBER_PATTERN)
 
     # GDENR, nicht GMDE: die Gemeindedatei benennt den Schlüssel anders.
-    wanted = set(municipality_bfs_numbers)
-    rows = frame[frame["GDENR"].isin(wanted)]
+    low, high = int(municipalities["bfs_nr"].min()), int(municipalities["bfs_nr"].max())
+    rows = frame[frame["GDENR"].between(low, high)]
     if rows.empty:
         raise LookupError(
-            f"Keine der {len(wanted)} Gemeindenummern gefunden in {members[0]}"
+            f"Keine Gemeinden im Nummernbereich {low}–{high} in {member}"
         )
     return float(rows[resolved.emp_total].sum())
+
+
+def noloc_employees(
+    zip_path: Path, resolved: ResolvedColumns, municipalities: gpd.GeoDataFrame
+) -> float:
+    """Beschäftigte des Kantons aus STATENT_NOLOC_<jahr>.csv.
+
+    Diese Datensätze tragen laut BFS keine belastbare Hektarlage (deshalb nie
+    in `load_cells` verwendet), aber dieselben E_KOORD/N_KOORD-Spalten wie
+    die Hektardatei — grob genug für einen Kantonsverschnitt. Anders als in
+    `load_cells` wird kein Zentrumsversatz angewendet: die Koordinate ist
+    hier keine gesicherte Hektar-Südwestecke, ein Versatz würde eine
+    Genauigkeit vortäuschen, die nicht besteht.
+    """
+    _, frame = _read_zip_member(zip_path, config.STATENT_NOLOC_MEMBER_PATTERN)
+
+    emp_total = pd.to_numeric(frame[resolved.emp_total], errors="coerce").fillna(0.0)
+    frame = frame.loc[emp_total > 0].copy()
+    emp_total = emp_total.loc[frame.index]
+
+    e = pd.to_numeric(frame[resolved.e_koord], errors="raise").to_numpy("float64")
+    n = pd.to_numeric(frame[resolved.n_koord], errors="raise").to_numpy("float64")
+
+    points = gpd.GeoDataFrame(
+        {"_i": np.arange(len(frame))},
+        geometry=gpd.points_from_xy(e, n),
+        crs=config.SRC_LV95,
+    )
+    joined = gpd.sjoin(
+        points, municipalities[["bfs_nr", "geometry"]], predicate="within", how="inner"
+    ).drop_duplicates("_i")
+
+    inside = joined["_i"].to_numpy()
+    return float(emp_total.to_numpy("float64")[inside].sum())

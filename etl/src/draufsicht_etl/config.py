@@ -59,4 +59,5 @@ COLUMNS_DIR = ETL_DIR / "columns"
 
 # Amtliche Gemeinde-Aggregation im selben ZIP, als unabhaengige Kontrollzahl.
 STATENT_GMDE_MEMBER_PATTERN = r"STATENT_GMDE_\d{4}\.csv$"
-CANTON_REFERENCE_TOLERANCE = 0.05  # +/- 5 % gegen die BFS-Referenz
+# Bundesweite Datensaetze ohne belastbare Hektarlage, im selben ZIP.
+STATENT_NOLOC_MEMBER_PATTERN = r"STATENT_NOLOC_\d{4}\.csv$"

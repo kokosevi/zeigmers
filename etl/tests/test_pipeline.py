@@ -40,20 +40,36 @@ def test_sums_match_across_levels(artifacts):
     assert sums["ag_gemeinde"] == pytest.approx(sums["ag_kanton"], rel=1e-6)
 
 
-def test_canton_total_matches_the_official_bfs_reference(artifacts):
-    """Amtliche Referenz aus STATENT_GMDE_2023.csv: 363'288 Beschäftigte (Task 5).
+def test_canton_total_is_within_the_plausible_window(artifacts):
+    """Kein geschätzter Toleranzwert, sondern ein Fenster aus den zwei bekannten,
+    gegenläufigen Verzerrungen zwischen Hektarsumme und amtlicher Referenz.
 
-    Zwei gegenläufige Abweichungen sind erwartbar: die Aufrundung <4 -> 4 treibt
-    nach oben, die nicht verorteten NOLOC-Datensätze (rund 1 %) nach unten.
-    Zusammen dürfen sie 5 % nicht überschreiten — mehr wäre ein Verschnitt- oder
-    Spaltenfehler, keine Rundung.
+    Referenz (363'288) und NOLOC-Anteil (3'389) sind Eigenschaften der
+    eingefrorenen STATENT-2023-Rohdaten für Aargau (Task 5/10) und werden
+    deshalb als Konstanten geführt statt aus dem Artefakt zurückgerechnet.
+    `overstatementMax` dagegen kommt live aus dem Artefakt: das ist die
+    einzige der drei Grössen, die von unserem eigenen Code abhängt (der
+    Ambiguous-Flagging-Logik in `aggregate.stats`), und eine Regression dort
+    soll diesen Test tatsächlich zum Kippen bringen können.
+
+    Untere Grenze: Referenz minus die Beschäftigten aus STATENT_NOLOC, die
+    keine belastbare Hektarlage haben und deshalb nie in unserer Summe
+    auftauchen. Obere Grenze: Referenz plus die maximal mögliche
+    Überschätzung durch die BFS-Rundung <4 -> 4 auf Hektarebene (höchstens 3
+    pro als mehrdeutig markierter Hektare, siehe Spec 6.4). Ausserhalb dieses
+    Fensters kann die Abweichung nicht mehr Rundung sein — dann ist es ein
+    Verschnitt- oder Spaltenfehler.
     """
-    _, meta = artifacts["ag_kanton"]
     reference = 363_288
-    deviation = (meta["stats"]["sum"] - reference) / reference
-    assert abs(deviation) < 0.05, (
-        f"Kantonssumme {meta['stats']['sum']:,.0f} weicht {deviation:+.2%} "
-        f"von der BFS-Referenz {reference:,} ab"
+    noloc = 3_389
+    _, meta = artifacts["ag_kanton"]
+    total = meta["stats"]["sum"]
+    overstatement_max = meta["stats"]["overstatementMax"]
+    lower, upper = reference - noloc, reference + overstatement_max
+    assert lower <= total <= upper, (
+        f"Kantonssumme {total:,.0f} liegt ausserhalb des Plausibilitätsfensters "
+        f"[{lower:,.0f} .. {upper:,.0f}] (Referenz {reference:,}, NOLOC {noloc:,}, "
+        f"Aufrundung bis {overstatement_max:,})"
     )
 
 

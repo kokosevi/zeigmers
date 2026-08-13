@@ -14,7 +14,9 @@ Eine statische, auf Netlify deploybare Website mit zwei 3D-Kartenansichten des K
 
 **Ansicht B — «Die Vielen».** Hektarraster des Kantons, je ein Balken pro Hektare mit Beschäftigten. Höhe = Anzahl Beschäftigte. Farbe = dominante Branchengruppe. Klick öffnet ein Panel mit Beschäftigtenzahl, Branchenverteilung und Gemeinde.
 
-Erwartete Grössenordnung: 8–12 Firmen in Ansicht A, geschätzt 20 000–25 000 besetzte Hektaren in Ansicht B. Die grosse Asymmetrie ist der Inhalt, nicht ein Fehler.
+Erwartete Grössenordnung: 8–12 Firmen in Ansicht A, **17 940** besetzte Hektaren in Ansicht B (gemessen, Stand 2026-08-13; die ursprüngliche Schätzung lautete 20 000–25 000). Die grosse Asymmetrie ist der Inhalt, nicht ein Fehler.
+
+**Die Zahl hinter dem Titel «Die Vielen».** 10 109 dieser 17 940 Hektaren — **56,3 %** — tragen den Wert 4, der beim Bundesamt für alles unter 4 steht. Zurückgerechnet liegt der wahre Mittelwert dort bei **1,69 Beschäftigten**. Mehr als die Hälfte der wirtschaftlich genutzten Fläche des Kantons besteht aus Ein- und Zweipersonenbetrieben, die in keiner Statistik einzeln auftauchen.
 
 ## 2. Nicht Teil dieses Piloten
 
@@ -236,7 +238,17 @@ Auf Gemeinde- und Kantonsstufe wird die Branchenmischung als Summe der **normier
 
 Als Test geprüfte Invarianten:
 - `Σ Hektar emp_total = Σ Gemeinde = Kanton` — exakt, da alle drei aus derselben Spalte aggregiert werden.
-- Die Kantonssumme liegt innerhalb ±5 % der amtlichen BFS-Referenz (363 288). Ein grösserer Abstand deutet auf einen Verschnitt- oder Spaltenfehler hin, nicht auf Rundung.
+- Die Kantonssumme liegt innerhalb eines **aus der Datensemantik abgeleiteten Fensters**, nicht innerhalb einer gegriffenen Prozentspanne:
+
+  ```
+  Referenz − NOLOC ≤ Hektarsumme ≤ Referenz + 3 · mehrdeutige Zellen
+  ```
+
+  Gemessen am 2026-08-13: `359 899 ≤ 383 203 ≤ 393 615`. Beide Ränder folgen aus bekannten, bezifferten Verzerrungen — unten die nicht verorteten Datensätze, oben die maximal mögliche Aufrundung. Die Rundung kann die Summe nicht aus dem Fenster tragen; ein Verschnittfehler, eine falsche Spalte oder eine Doppelzählung sofort. Das Fenster passt sich Kanton und Jahrgang selbst an.
+
+> **Warum keine feste Toleranz.** Ein früherer Entwurf verlangte ±5 %. Der tatsächliche Wert liegt bei **+5,48 %** und hätte den Build fehlschlagen lassen — obwohl nichts falsch ist. Der Grund: **56,3 % aller besetzten Hektaren im Aargau tragen den Wert 4**. Rechnet man die Überschätzung zurück, ergibt sich ein impliziter wahrer Mittelwert von **1,69 Beschäftigten** in diesen Zellen. Die Abweichung ist damit nicht ein Fehler der Pipeline, sondern die Aussage der Karte: Der Kanton besteht zum grössten Teil aus Ein- und Zweipersonenbetrieben. Eine feste Prozentschranke hätte je Kanton neu geraten werden müssen, weil dieser Anteil mit der Siedlungsstruktur stark schwankt.
+
+**Ableitung des Referenzbereichs.** Die Gemeindenummern des Kantons werden als `min(bfs_nr)..max(bfs_nr)` aus der Geometrie abgeleitet (Aargau: 4001–4324), nicht aus der Kantonsnummer berechnet und nicht über Mengenzugehörigkeit gefiltert. Eine Berechnung aus der Kantonsnummer ist schlicht falsch — der Bereich 4001–4999 enthält 278 Gemeinden und damit weite Teile des Thurgaus. Eine Filterung über die Menge der *heutigen* Gemeinden verliert die Beschäftigten fusionierter Gemeinden (im Aargau 4042 und 4122, zusammen 1088). Der Bereich trifft beide Fälle richtig.
 - `Σ Hektar ambiguousCells = Σ Gemeinde = Kanton`.
 - Je Stufe: `Σ_g dist_g ≈ emp_total` (Toleranz 0.5 pro Zeile, Rundung).
 - Kein `dist_g` ist negativ; keine Zeile hat `emp_total < 4` (die Aufrundungsregel schliesst das aus, ein Verstoss deutet auf einen Auflösungsfehler hin).
