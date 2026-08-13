@@ -1,0 +1,20 @@
+{
+  "canton": {
+    "code": "AG",
+    "bfs_nr": 19,
+    "name": "Aargau"
+  },
+  "year": 2023,
+  "levels": [
+    "kanton",
+    "gemeinde",
+    "hektar"
+  ],
+  "counts": {
+    "kanton": 1,
+    "gemeinde": 196,
+    "hektar": 17940
+  },
+  "source": "Bundesamt für Statistik (BFS), STATENT",
+  "hectareCsv": "STATENT_2023.csv"
+}

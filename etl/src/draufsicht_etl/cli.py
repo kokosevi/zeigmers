@@ -19,6 +19,87 @@ COMMANDS: dict[str, str] = {
 }
 
 
+def _run_statent(force: bool) -> dict:
+    import json as _json
+
+    from . import (aggregate, binpack, boundaries, columns, fetch,
+                   inspect_statent, noga, statent)
+
+    table = noga.load_table()
+    noga.generate_typescript(table, config.ROOT / "src" / "domain" / "noga.generated.ts")
+
+    zip_path = fetch.download(
+        fetch.swissboundaries_gpkg_url(),
+        config.DATA_RAW / "swissboundaries3d.gpkg.zip",
+        force=force,
+    )
+    bounds = boundaries.build(zip_path, config.CANTON["bfs_nr"])
+    boundaries.write_geojson(bounds, config.PUBLIC_DATA / "ag_boundaries.geojson")
+
+    statent_zip = fetch.download(
+        fetch.statent_geodata_url(config.STATENT_YEAR),
+        config.DATA_RAW / f"statent_{config.STATENT_YEAR}.zip",
+        force=force,
+    )
+    member = inspect_statent.find_hectare_csv(statent_zip)
+    frame = inspect_statent.read_hectare_csv(statent_zip, member)
+
+    resolved = columns.resolve(frame.columns)
+    columns.save(resolved, config.STATENT_YEAR)
+
+    cells = statent.load_cells(frame, resolved, bounds.municipalities)
+    hectare = aggregate.build_hectare(cells, table, bounds.municipalities)
+    municipality = aggregate.build_municipality(hectare, bounds.municipalities)
+    canton = aggregate.build_canton(hectare, bounds.canton_lv95)
+
+    for level in (canton, municipality, hectare):
+        binpack.write_level(
+            level, table, config.PUBLIC_DATA,
+            year=config.STATENT_YEAR, canton=config.CANTON["code"],
+            extra={"stats": aggregate.stats(level, source=hectare)},
+        )
+
+    meta = {
+        "canton": config.CANTON,
+        "year": config.STATENT_YEAR,
+        "levels": ["kanton", "gemeinde", "hektar"],
+        "counts": {
+            "kanton": canton.count,
+            "gemeinde": municipality.count,
+            "hektar": hectare.count,
+        },
+        "source": "Bundesamt für Statistik (BFS), STATENT",
+        "hectareCsv": member,
+    }
+    (config.PUBLIC_DATA / "meta.json").write_text(
+        _json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    print(f"[statent] Hektaren  : {hectare.count:,}")
+    print(f"[statent] Gemeinden : {municipality.count}")
+    print(f"[statent] Total     : {canton.value[0]:,.0f} Beschäftigte")
+    s = aggregate.stats(hectare)
+    print(f"[statent] Mehrdeutig: {s['ambiguousCells']:,} Hektaren "
+          f"(Überschätzung bis {s['overstatementMax']:,})")
+
+    reference = statent.canton_reference(
+        statent_zip, resolved, bounds.municipalities["bfs_nr"]
+    )
+    deviation = (canton.value[0] - reference) / reference
+    print(f"[statent] BFS-Referenz: {reference:,.0f} Beschäftigte "
+          f"(amtliche Gemeinde-Aggregation)")
+    print(f"[statent] Abweichung : {deviation:+.2%}")
+    if abs(deviation) > config.CANTON_REFERENCE_TOLERANCE:
+        raise ValueError(
+            f"Kantonssumme weicht um {deviation:+.2%} von der BFS-Referenz ab, "
+            f"erlaubt sind ±{config.CANTON_REFERENCE_TOLERANCE:.0%}. Das deutet auf "
+            "einen Verschnitt- oder Spaltenfehler hin, nicht auf Rundung."
+        )
+
+    return {"hectare": hectare, "municipality": municipality, "canton": canton,
+            "bounds": bounds, "reference": reference}
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="draufsicht-etl")
     parser.add_argument(
@@ -86,6 +167,32 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"[boundaries] {len(b.municipalities)} Gemeinden, "
               f"{b.canton_lv95.area / 1e6:.0f} km2 -> {out} "
               f"({out.stat().st_size / 1024:.0f} KB)")
+        return 0
+
+    if args.command in ("statent", "all"):
+        result = _run_statent(args.force)
+        if args.command == "statent":
+            return 0
+
+        # `all` läuft weiter: Firmen (Task 15), Kontrollkarte, Budgetprüfung.
+        # Kein vorzeitiges `return` — sonst wird companies.json nie geschrieben.
+        from . import sanity_map
+
+        out = sanity_map.render(
+            result["municipality"], result["bounds"].municipalities,
+            config.DATA_INTERIM / "sanity_gemeinde.png",
+        )
+        print(f"[sanity-map] {out}")
+
+    if args.command == "all":
+        total = sum(
+            p.stat().st_size for p in config.PUBLIC_DATA.glob("*") if p.is_file()
+        )
+        print(f"[all] public/data: {total / 1024:.0f} KB "
+              f"(Budget {config.MAX_PUBLIC_DATA_BYTES / 1024:.0f} KB)")
+        if total > config.MAX_PUBLIC_DATA_BYTES:
+            print("[all] FEHLER: Grössenbudget überschritten")
+            return 1
         return 0
 
     print(f"[draufsicht-etl] {args.command} — noch nicht implementiert")

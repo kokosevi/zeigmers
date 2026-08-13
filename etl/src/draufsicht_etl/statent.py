@@ -8,7 +8,11 @@ ausschliesslich zur Bestimmung der Mischung verwendet.
 
 from __future__ import annotations
 
+import re
+import zipfile
+from collections.abc import Iterable
 from dataclasses import dataclass
+from pathlib import Path
 
 import geopandas as gpd
 import numpy as np
@@ -101,3 +105,40 @@ def load_cells(
         div_emp=div_emp,
         divisions=divisions,
     )
+
+
+def canton_reference(
+    zip_path: Path, resolved: ResolvedColumns, municipality_bfs_numbers: Iterable[int]
+) -> float:
+    """Amtliche Beschäftigtenzahl des Kantons aus STATENT_GMDE_<jahr>.csv.
+
+    Dient ausschliesslich als unabhängige Kontrolle. Sie wird nie dargestellt:
+    das BFS aggregiert vor dem Runden, unsere Hektarsumme danach — beide Zahlen
+    nebeneinander in der Karte würden beim Zoomwechsel springen.
+
+    `municipality_bfs_numbers` sind die tatsächlichen Gemeindenummern des
+    Kantons (aus `boundaries.build()`), nicht ein aus der Kantonsnummer
+    hergeleiteter Bereich: die eidgenössische Gemeindenummerierung ist
+    kantonsübergreifend fortlaufend vergeben und hat keinen rechnerischen
+    Bezug zur Kantonsnummer (Aargau ist Kanton 19, seine Gemeinden liegen im
+    Block 4001–4324).
+    """
+    pattern = re.compile(config.STATENT_GMDE_MEMBER_PATTERN)
+    with zipfile.ZipFile(zip_path) as zf:
+        members = [n for n in zf.namelist() if pattern.search(n)]
+        if len(members) != 1:
+            raise LookupError(
+                f"Erwartet genau eine Gemeindedatei in {zip_path.name}, "
+                f"gefunden: {members}"
+            )
+        with zf.open(members[0]) as handle:
+            frame = pd.read_csv(handle, sep=";", encoding="latin-1", low_memory=False)
+
+    # GDENR, nicht GMDE: die Gemeindedatei benennt den Schlüssel anders.
+    wanted = set(municipality_bfs_numbers)
+    rows = frame[frame["GDENR"].isin(wanted)]
+    if rows.empty:
+        raise LookupError(
+            f"Keine der {len(wanted)} Gemeindenummern gefunden in {members[0]}"
+        )
+    return float(rows[resolved.emp_total].sum())
