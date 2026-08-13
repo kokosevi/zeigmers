@@ -10,3 +10,61 @@ html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
   padding: .75rem 1rem; border-radius: .375rem;
   background: #7f1d1d; color: #fff; font-size: .875rem; line-height: 1.4;
 }
+
+#steuerung {
+  position: absolute; top: 1rem; left: 1rem;
+  display: flex; flex-direction: column; gap: .5rem;
+}
+#steuerung .gruppe {
+  display: flex; gap: .25rem;
+  background: rgba(17, 24, 39, .85); border-radius: .5rem; padding: .25rem;
+}
+#steuerung button {
+  border: none; background: transparent; color: #e5e7eb;
+  padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
+  cursor: pointer; font-family: inherit;
+}
+#steuerung button.aktiv { background: #2563eb; color: #fff; }
+
+/* Pflichthinweis: muss ohne Interaktion sichtbar sein, deshalb kein
+   hidden/Toggle-Mechanismus wie bei #panel. */
+#hinweis {
+  position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+  max-width: min(36rem, calc(100vw - 2rem));
+  padding: .6rem 1rem; border-radius: .375rem;
+  background: rgba(120, 53, 15, .92); color: #fff7ed;
+  font-size: .8125rem; line-height: 1.4; text-align: center;
+}
+
+#legende {
+  position: absolute; left: 1rem; bottom: 1rem;
+  max-width: 19rem; max-height: calc(100vh - 2rem); overflow-y: auto;
+  background: rgba(17, 24, 39, .85); color: #f3f4f6;
+  border-radius: .5rem; padding: .75rem .875rem;
+  font-size: .75rem; line-height: 1.4;
+}
+.legende-titel { font-weight: 600; font-size: .875rem; margin-bottom: .4rem; }
+.legende-branchen { list-style: none; margin: 0 0 .5rem; padding: 0; display: grid; gap: .2rem; }
+.legende-branchen li { display: flex; align-items: center; gap: .4rem; }
+.legende-punkt { width: .6rem; height: .6rem; border-radius: 50%; flex: none; }
+.legende-skala { margin-bottom: .35rem; }
+.legende-hinweis { margin-bottom: .35rem; color: #fca5a5; }
+.legende-quelle { color: #9ca3af; font-size: .6875rem; }
+
+#panel {
+  position: absolute; right: 1rem; top: 4.5rem;
+  max-width: 21rem; max-height: calc(100vh - 6rem); overflow-y: auto;
+  background: rgba(17, 24, 39, .92); color: #f3f4f6;
+  border-radius: .5rem; padding: 1rem; font-size: .8125rem; line-height: 1.4;
+}
+#panel h3 { margin: 0 0 .5rem; font-size: 1rem; }
+#panel p { margin: .3rem 0; }
+.panel-hinweis { color: #fca5a5; }
+.panel-untertitel { font-weight: 600; margin-top: .5rem; }
+#panel ul { margin: .2rem 0 .5rem; padding-left: 1.1rem; }
+#panel a { color: #93c5fd; }
+.panel-schliessen {
+  margin-top: .5rem; border: none; background: #374151; color: #fff;
+  padding: .3rem .7rem; border-radius: .375rem; cursor: pointer; font-size: .75rem;
+  font-family: inherit;
+}
