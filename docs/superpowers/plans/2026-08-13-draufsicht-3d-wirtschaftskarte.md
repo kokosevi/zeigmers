@@ -554,12 +554,17 @@ def test_resolve_asset_url_appends_master():
 
 
 def test_resolve_asset_url_raises_on_no_match():
-    with pytest.raises(LookupError, match="Geodaten 1999"):
+    # `match` ist ein Regex gegen den Meldungstext, und der enthält repr() des
+    # Musters (`'Geodaten\\s+1999'`) — ein literales "Geodaten 1999" kommt darin
+    # nie vor. Zusätzlich wird geprüft, dass die Meldung auch die *vorhandenen*
+    # Titel auflistet; sonst bliebe die halbe Anforderung ungetestet.
+    with pytest.raises(LookupError, match="1999") as excinfo:
         fetch.resolve_asset_url(
             "https://model.test/x.model.json",
             r"Geodaten\s+1999",
             fetcher=lambda _: MODEL_JSON,
         )
+    assert "Geodaten 2023" in str(excinfo.value)
 
 
 def test_resolve_asset_url_raises_on_ambiguous_match():
