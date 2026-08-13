@@ -16,9 +16,14 @@ CSV_COLUMNS = (
     "uid", "name", "six_symbol", "isin",
     "street", "zip", "city", "lon", "lat", "geocode_query",
     "noga_group",
-    "revenue", "revenue_currency", "revenue_unit",
+    "revenue", "revenue_currency", "revenue_type", "revenue_unit",
     "employees", "fiscal_year", "report_url", "note",
 )
+
+# `revenue` mixes quantities that are not comparable as bar heights without this tag:
+# ordinary net sales vs. a bank's operating income (no true "Umsatz" equivalent exists
+# for banks). Closed set for now; Task 16 draws non-net_sales bars distinctly.
+REVENUE_TYPES = {"net_sales", "operating_income"}
 
 Fetcher = Callable[[str], bytes]
 
@@ -61,8 +66,15 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
                 f"{label}: noga_group {group!r} unbekannt, erlaubt: {sorted(valid_groups)}"
             )
 
+        revenue_type = row.get("revenue_type", "").strip()
+        if revenue_type and revenue_type not in REVENUE_TYPES:
+            problems.append(
+                f"{label}: revenue_type {revenue_type!r} unbekannt, "
+                f"erlaubt: {sorted(REVENUE_TYPES)}"
+            )
+
         if row.get("revenue", "").strip():
-            for field in ("report_url", "fiscal_year", "revenue_currency"):
+            for field in ("report_url", "fiscal_year", "revenue_currency", "revenue_type"):
                 if not row.get(field, "").strip():
                     problems.append(
                         f"{label}: revenue gesetzt, aber {field} fehlt — "
@@ -93,6 +105,7 @@ def build_artifact(rows: list[dict], table: NogaTable) -> dict:
                 "nogaGroupIndex": index[row["noga_group"]],
                 "revenue": float(revenue) * unit if revenue else None,
                 "currency": row.get("revenue_currency") or None,
+                "revenueType": row.get("revenue_type") or None,
                 "employees": int(row["employees"]) if row.get("employees") else None,
                 "fiscalYear": int(row["fiscal_year"]) if row.get("fiscal_year") else None,
                 "reportUrl": row.get("report_url") or None,

@@ -22,6 +22,7 @@ def _row(**overrides):
             "noga_group": "industrie",
             "revenue": "1250000000",
             "revenue_currency": "CHF",
+            "revenue_type": "net_sales",
             "revenue_unit": "1",
             "employees": "3400",
             "fiscal_year": "2024",
@@ -49,6 +50,16 @@ def test_validate_rejects_revenue_without_fiscal_year():
 def test_validate_rejects_revenue_without_currency():
     with pytest.raises(ValueError, match="revenue_currency"):
         companies.validate([_row(revenue_currency="")])
+
+
+def test_validate_rejects_revenue_without_revenue_type():
+    with pytest.raises(ValueError, match="revenue_type"):
+        companies.validate([_row(revenue_type="")])
+
+
+def test_validate_rejects_unknown_revenue_type():
+    with pytest.raises(ValueError, match="unbekannt"):
+        companies.validate([_row(revenue_type="ebitda")])
 
 
 def test_validate_allows_empty_revenue_with_a_note():
@@ -94,6 +105,7 @@ def test_build_artifact_carries_source_urls():
     assert entry["nogaGroupIndex"] == next(
         i for i, g in enumerate(table.groups) if g.key == "industrie"
     )
+    assert entry["revenueType"] == "net_sales"
 
 
 def test_build_artifact_marks_rows_without_revenue():
