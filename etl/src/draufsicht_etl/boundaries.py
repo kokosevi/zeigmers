@@ -72,9 +72,19 @@ def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
 
     # Der Layer enthält auch Enklaven ohne Schweizer Kanton (FL-Gemeinden,
     # Büsingen am Hochrhein, Campione d'Italia) mit leerer Kantonsnummer.
-    # fillna(-1) verhindert den Absturz von astype(int) auf NaN und stellt
-    # sicher, dass diese Zeilen nie auf einen echten Kanton (1-26) matchen.
-    gdf = gdf[gdf[canton_col].fillna(-1).astype(int) == canton_bfs_nr].copy()
+    # Diese Zeilen werden verworfen statt sie mit einem Sentinel-Wert still
+    # zu übergehen; der Verlust wird gezählt und gemeldet, damit ein künftiger
+    # Jahrgang, der versehentlich echte Aargauer Gemeinden ausdünnt, auffällt.
+    rows_before = len(gdf)
+    gdf = gdf.dropna(subset=[canton_col])
+    dropped = rows_before - len(gdf)
+    if dropped:
+        print(
+            f"[boundaries] {dropped} Zeilen ohne Kantonsnummer verworfen "
+            "(Ausland: FL, Büsingen, Campione)"
+        )
+
+    gdf = gdf[gdf[canton_col].astype(int) == canton_bfs_nr].copy()
     if gdf.empty:
         raise ValueError(
             f"Kanton {canton_bfs_nr} liefert keine Gemeinden aus Layer {layer}"

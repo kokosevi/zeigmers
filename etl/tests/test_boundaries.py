@@ -1,4 +1,5 @@
 import json
+import zipfile
 
 import geopandas as gpd
 import pytest
@@ -24,6 +25,35 @@ def test_find_layer_raises_with_available_layers(tmp_path):
 
     with pytest.raises(LookupError, match="etwas_anderes"):
         boundaries.find_layer(path, ["hoheitsgebiet"])
+
+
+def test_build_drops_rows_without_kantonsnummer(tmp_path, capsys):
+    # swissBOUNDARIES3D fuehrt auch Gebiete ohne Schweizer Kanton (FL-Gemeinden,
+    # Buesingen, Campione) mit leerer Kantonsnummer. build() muss diese Zeilen
+    # verwerfen statt an ihnen abzustuerzen, und den Verlust melden.
+    gpkg_path = tmp_path / "boundaries.gpkg"
+    gpd.GeoDataFrame(
+        {
+            "bfs_nummer": [4001, 7001],
+            "name": ["Aarau", "Vaduz"],
+            "kantonsnummer": [19.0, float("nan")],
+            "geometry": [
+                Polygon([(0, 0), (1, 0), (1, 1)]),
+                Polygon([(10, 10), (11, 10), (11, 11)]),
+            ],
+        },
+        crs="EPSG:2056",
+    ).to_file(gpkg_path, layer="tlm_hoheitsgebiet", driver="GPKG")
+
+    zip_path = tmp_path / "boundaries.gpkg.zip"
+    with zipfile.ZipFile(zip_path, "w") as zf:
+        zf.write(gpkg_path, arcname=gpkg_path.name)
+
+    b = boundaries.build(zip_path, 19)
+
+    assert list(b.municipalities["bfs_nr"]) == [4001]
+    assert list(b.municipalities["name"]) == ["Aarau"]
+    assert "1 Zeilen ohne Kantonsnummer verworfen" in capsys.readouterr().out
 
 
 @pytest.mark.integration
