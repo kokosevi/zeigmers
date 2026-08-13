@@ -308,6 +308,22 @@ Namen werden nicht geraten. SIX-kotierte Gesellschaften werden über die UID mit
 
 Für die SIX-Seite ist kein offener Datensatz bekannt. Vorgehen: maschinelles Abrufen der Emittentenliste von six-group.com; scheitert das, wird eine im Repo dokumentierte, mit Abrufdatum versehene Symbolliste gepflegt und gegen LINDAS abgeglichen. Das Zwischenergebnis liegt in `data/interim/ag_candidates.csv`.
 
+### 8.2a Was «Umsatz» bei acht Firmen bedeutet
+
+Die Recherche hat acht kotierte Gesellschaften mit Sitz im Aargau ergeben. Bei der Prüfung gegen die Originalberichte zeigte sich, dass die Spalte `revenue` **nicht durchgehend dieselbe Grösse misst**:
+
+- Sieben Firmen weisen **Nettoumsatz aus fortgeführten Aktivitäten** aus.
+- Die **Hypothekarbank Lenzburg** weist `Geschäftsertrag` aus. Banken kennen keinen Umsatz im Sinne der übrigen; der Geschäftsertrag liegt konzeptionell näher an einer Bruttomarge.
+- **DSM-Firmenich** meldet als Schlagzeile 12 521 Mio. EUR, darin enthalten ein zum Verkauf stehendes Geschäft. Die fortgeführten Aktivitäten allein betragen 9 034 Mio. EUR.
+
+Da Ansicht A gerade den **Grössenvergleich** leisten soll und Balkenhöhen ohne Fussnoten gelesen werden, gilt:
+
+1. Für DSM-Firmenich wird die Zahl der **fortgeführten Aktivitäten** verwendet (9 034 Mio. EUR), vergleichbar mit allen anderen Zeilen. Die Gesamtkonzernzahl bleibt in `note` dokumentiert.
+2. Das CSV führt eine Spalte **`revenue_type`** mit den Werten `net_sales` und `operating_income`. Der ETL erzwingt sie bei jeder Zeile mit Umsatz.
+3. Balken, deren Kennzahl von `net_sales` abweicht, erhalten in der Karte eine **sichtbare Randmarkierung**, und das Klick-Panel benennt die Kennzahl im Klartext.
+
+Ohne diese drei Massnahmen verglichen Betrachter Balken, die Verschiedenes messen — und der grösste Balken der Karte wäre um 39 % überhöht gegenüber seinen Nachbarn gewesen.
+
 ### 8.3 Finanzzahlen
 
 Umsatz und Mitarbeitende stammen aus dem jeweils letzten Geschäftsbericht, mit Geschäftsjahr, Währung und Quell-URL pro Zeile. Keine Sekundärquellen, keine Schätzungen.

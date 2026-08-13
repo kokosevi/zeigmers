@@ -4443,7 +4443,7 @@ CSV_COLUMNS = (
     "uid", "name", "six_symbol", "isin",
     "street", "zip", "city", "lon", "lat", "geocode_query",
     "noga_group",
-    "revenue", "revenue_currency", "revenue_unit",
+    "revenue", "revenue_currency", "revenue_type", "revenue_unit",
     "employees", "fiscal_year", "report_url", "note",
 )
 
@@ -4667,7 +4667,8 @@ git commit -m "feat: Ansicht A mit erzwungener Quellenpflicht und Geokodierung"
 **Interfaces:**
 - Produces:
   - `visible.Company` — `{ uid, name, sixSymbol, lon, lat, nogaGroupIndex, revenue,
-    currency, employees, fiscalYear, reportUrl, note, placeholder, city }`
+    currency, revenueType, employees, fiscalYear, reportUrl, note, placeholder, city }`
+    mit `revenueType: 'net_sales' | 'operating_income'`
   - `visible.CompanyData = { canton: string; companies: Company[]; stats: {count, withRevenue, max} }`
   - `visible.UNKNOWN_BAR_FRACTION = 0.4`
   - `visible.companyElevations(data: CompanyData, maxHeight: number, mode: ScaleMode): Float32Array`
@@ -4747,6 +4748,8 @@ export const UNKNOWN_BAR_FRACTION = 0.4
 
 const PLACEHOLDER_BASE_HEIGHT = 200
 
+export type RevenueType = 'net_sales' | 'operating_income'
+
 export interface Company {
   uid: string
   name: string
@@ -4756,6 +4759,7 @@ export interface Company {
   nogaGroupIndex: number
   revenue: number | null
   currency: string | null
+  revenueType: RevenueType | null
   employees: number | null
   fiscalYear: number | null
   reportUrl: string | null
@@ -4802,6 +4806,14 @@ export function buildCompanyLayer(
   return new ColumnLayer<Company>({
     id: 'firmen',
     data: data.companies,
+    // Firmen mit abweichender Kennzahl (Banken weisen Geschaeftsertrag statt
+    // Nettoumsatz aus) bekommen einen sichtbaren Rand. Ohne diese Markierung
+    // vergleicht der Betrachter Balkenhoehen, die Verschiedenes messen.
+    stroked: true,
+    getLineColor: (c) =>
+      c.revenueType === 'net_sales' ? [0, 0, 0, 0] : [30, 30, 30, 220],
+    getLineWidth: (c) => (c.revenueType === 'net_sales' ? 0 : 60),
+    lineWidthUnits: 'meters',
     diskResolution: 16,
     radius: 900,
     radiusUnits: 'meters',
