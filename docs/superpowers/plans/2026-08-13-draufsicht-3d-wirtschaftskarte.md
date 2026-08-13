@@ -1088,7 +1088,11 @@ git commit -m "feat: NOGA-Gruppentabelle mit TypeScript-Codegenerierung"
 **Files:**
 - Create: `etl/src/draufsicht_etl/boundaries.py`
 - Test: `etl/tests/test_boundaries.py`
-- Erzeugt: `public/data/ag_boundaries.geojson`, `data/interim/ag_canton_lv95.gpkg`
+- Erzeugt: `public/data/ag_boundaries.geojson`
+
+Die Kantonsgeometrie in LV95 wird **nicht** auf Platte geschrieben. Sie ist ein
+Rückgabewert (`Boundaries.canton_lv95`), den Task 7 im selben Prozess weiterreicht.
+Eine Zwischendatei hätte keinen Leser.
 
 **Interfaces:**
 - Consumes: `fetch.download`, `fetch.swissboundaries_gpkg_url`, `config.*`
