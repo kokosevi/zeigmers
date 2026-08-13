@@ -1,7 +1,8 @@
 # Draufsicht
 
-Eine statische 3D-Wirtschaftskarte des Kantons Aargau: zwei Ansichten derselben
-Fläche, nebeneinander gehalten, damit der Unterschied sichtbar wird.
+Eine statische 3D-Wirtschaftskarte des Kantons Aargau (196 Gemeinden,
+1'404 km²): zwei Ansichten derselben Fläche, nebeneinander gehalten, damit
+der Unterschied sichtbar wird.
 
 **Ansicht A** zeigt die acht börsenkotierten Unternehmen mit Sitz im Kanton als
 Säulen nach Umsatz — Zahlen, die öffentlich und geprüft sind, weil ein
@@ -70,24 +71,28 @@ dann tatsächlich ein Verschnitt- oder Spaltenfehler, keine Rundung.
 ## Was „revenue“ über die acht Unternehmen hinweg bedeutet
 
 Ansicht A zeigt eine Säule pro Unternehmen, alle nach derselben Zahl `revenue`
-skaliert. Diese Zahl ist **nicht überall dasselbe**, und die Spalte
-`revenue_type` in `data/manual/ag_listed_companies.csv` hält genau das fest:
+skaliert. Diese Zahl ist **nicht überall dasselbe**. Die Spalte `revenue_type`
+in `data/manual/ag_listed_companies.csv` hält den gröbsten Unterschied fest —
+Netto-Umsatz gegen die Näherung einer Bank; die feineren Fälle stehen im
+freien `note`-Feld derselben Zeile:
 
-- Sieben der acht Unternehmen weisen `net_sales` aus — den branchenüblichen
-  Netto-Umsatz aus dem Geschäftsbericht.
-- Die Hypothekarbank Lenzburg weist `operating_income` aus: Banken kennen
-  keinen „Umsatz“ im klassischen Sinn; als Näherung dient der konsolidierte
-  Geschäftsertrag.
-- Bei DSM-Firmenich ist der ausgewiesene Umsatz (EUR 9034 Mio., FY2025) der
-  „Net sales“ der **fortgeführten Geschäfte** — die zur Veräusserung
-  klassierte Tierernährungssparte Animal Nutrition & Health ist zur
-  Vergleichbarkeit herausgerechnet. Inklusive dieser Sparte hätte der
-  Konzernumsatz EUR 12'521 Mio. betragen.
+- Sieben der acht Unternehmen weisen `revenue_type = net_sales` aus — den
+  branchenüblichen Netto-Umsatz aus dem Geschäftsbericht.
+- Die Hypothekarbank Lenzburg weist `revenue_type = operating_income` aus:
+  Banken kennen keinen „Umsatz“ im klassischen Sinn; als Näherung dient der
+  konsolidierte Geschäftsertrag.
+- Bei DSM-Firmenich steht `revenue_type = net_sales`, aber der ausgewiesene
+  Umsatz (EUR 9034 Mio., FY2025) ist die „Net sales“ der **fortgeführten
+  Geschäfte** — die zur Veräusserung klassierte Tierernährungssparte Animal
+  Nutrition & Health ist zur Vergleichbarkeit herausgerechnet. Diese Nuance
+  steht nur im `note`-Feld der Zeile, nicht in `revenue_type`. Inklusive
+  dieser Sparte hätte der Konzernumsatz EUR 12'521 Mio. betragen.
 
 Wer die acht Säulen unkommentiert nebeneinander liest, vergleicht also nicht
 durchgehend Gleiches mit Gleichem. Die App markiert `operating_income`-Balken
-optisch anders (siehe `src/domain/colors.ts`) und zeigt bei Auswahl den
-jeweiligen `note`-Text aus dem CSV; jede einzelne Zahl trägt ausserdem eine
+optisch anders — ein sichtbarer Rand statt keinem, siehe `getLineColor`/
+`getLineWidth` in `src/layers/visible.ts` — und zeigt bei Auswahl den
+jeweiligen `note`-Text aus dem CSV (`src/ui/panel.ts`); jede einzelne Zahl trägt ausserdem eine
 `report_url` zur Primärquelle. `companies.validate()` (`etl/src/draufsicht_etl/
 companies.py`) erzwingt das: jede Zeile mit einem `revenue`-Wert braucht
 `report_url`, `fiscal_year`, `revenue_currency` **und** `revenue_type`, sonst
@@ -136,10 +141,12 @@ Die Build-Pipeline (`npm run build:data`, Python/`uv`) läuft **nicht** als
 Teil des Netlify-Deploys. Stattdessen sind die fertigen Artefakte in
 `public/data/` committet und werden von `npm run build` (reines
 `tsc --noEmit && vite build`) nur noch gebündelt. Grund: Ein ETL-Lauf lädt das
-swissBOUNDARIES3D-GeoPackage (rund 400 MB) neu herunter und braucht eine
+swissBOUNDARIES3D-GeoPackage (37.4 MB gepackt, laut `data/raw/manifest.json`)
+und den STATENT-Datensatz neu herunter und braucht dafür eine vollständige
 Python-Toolchain (`uv`) — beides durch das Netlify-Build-Image zu schleusen,
 bei **jedem** Deploy, wäre langsam, unnötig und ein Netzwerk-Abhängigkeitsrisiko
-für einen Deploy, der die Daten ohnehin nicht ändert. Das ETL läuft lokal, die
+für einen Deploy, der an den bereits committeten, byte-reproduzierbaren
+Artefakten nichts ändert. Das ETL läuft lokal, die
 Artefakte werden geprüft und dann committet.
 
 ## Aktualisierung auf ein neues Datenjahr
@@ -164,14 +171,18 @@ Ein Kantonswechsel ist als Dreischritt gedacht:
 
 1. `CANTON` in `etl/src/draufsicht_etl/config.py` auf den neuen Kanton setzen
    (`code`, `bfs_nr`, `name`).
-2. `data/manual/<code>_listed_companies.csv` neu anlegen — Spalten wie in
+2. Eine neue Firmen-CSV unter `data/manual/` anlegen — Spalten wie in
    `data/manual/ag_listed_companies.csv`, ein Unternehmen pro Zeile, jede
    `revenue`-Zeile mit `report_url`, `fiscal_year`, `revenue_currency` und
    `revenue_type` belegt (`companies.validate()` erzwingt das beim Build).
    `companies.candidates_from_lindas(canton_code)` kann beim Auffinden von
    Firmenkandidaten mit Sitz im neuen Kanton helfen; welche davon
    SIX-kotiert sind und welche Kennzahlen sie ausweisen, bleibt Recherche in
-   den jeweiligen Geschäftsberichten.
+   den jeweiligen Geschäftsberichten. **Stand heute liest `cli.py` dafür
+   immer den festen Namen `data/manual/ag_listed_companies.csv`** (nicht von
+   `CANTON["code"]` abgeleitet) — die neue Datei muss also entweder diesen
+   Namen tragen, oder die eine Zeile in `cli.py` (`companies`-Zweig) wird auf
+   `f"{config.CANTON['code'].lower()}_listed_companies.csv"` umgestellt.
 3. `npm run build:data` laufen lassen.
 
 Alles andere — Gemeindegrenzen, Hektarraster, BFS-Referenzsumme, das
@@ -190,7 +201,8 @@ sie ausweisen, lässt sich nicht automatisiert recherchieren.
 | `npm test` | Frontend-Tests (Vitest) |
 | `uv run --project etl pytest etl/tests` | ETL-Tests (Python) |
 
-`npm run build:data` lädt beim ersten Lauf rund 400 MB swissBOUNDARIES3D-Daten
-sowie den STATENT-Datensatz herunter und dauert entsprechend einige Minuten;
+`npm run build:data` lädt beim ersten Lauf swissBOUNDARIES3D (37.4 MB gepackt)
+sowie den STATENT-Datensatz (13.6 MB gepackt) herunter und dauert entsprechend
+einige Minuten;
 `data/manual/` (die Firmen-CSV) wird dabei nie gelöscht oder überschrieben,
 ausser durch Nachgeokodierung fehlender Koordinaten in genau dieser Datei.
