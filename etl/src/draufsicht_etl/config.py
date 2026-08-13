@@ -47,3 +47,16 @@ UNKNOWN_COLOR_HEX = "#BFBFBF"
 
 MAX_PUBLIC_DATA_BYTES = 2 * 1024 * 1024
 MAX_BOUNDARIES_BYTES = 300 * 1024
+
+COLUMN_PATTERNS = {
+    "reli": r"^RELI$",
+    "e_koord": r"^E_KOORD$",
+    "n_koord": r"^N_KOORD$",
+    "emp_total": r"^B(?P<nn>\d{2})EMPT$",
+    "emp_div": r"^B(?P<nn>\d{2})(?P<div>\d{2})EMP$",
+}
+COLUMNS_DIR = ETL_DIR / "columns"
+
+# Amtliche Gemeinde-Aggregation im selben ZIP, als unabhaengige Kontrollzahl.
+STATENT_GMDE_MEMBER_PATTERN = r"STATENT_GMDE_\d{4}\.csv$"
+CANTON_REFERENCE_TOLERANCE = 0.05  # +/- 5 % gegen die BFS-Referenz
