@@ -1,5 +1,21 @@
 import { describe, expect, it } from 'vitest'
-import { companyElevations, UNKNOWN_BAR_FRACTION, type CompanyData } from './visible'
+import {
+  buildCompanyLayer,
+  companyElevations,
+  UNKNOWN_BAR_FRACTION,
+  type Company,
+  type CompanyData,
+} from './visible'
+
+function company(overrides: Partial<Company> = {}): Company {
+  return {
+    uid: 'CHE-1', name: 'Test AG', sixSymbol: null, lon: 8, lat: 47.4,
+    nogaGroupIndex: 1, revenue: 1e9, currency: 'CHF', revenueType: 'net_sales',
+    employees: null, fiscalYear: 2024, reportUrl: null, note: null,
+    placeholder: false, city: 'Aarau',
+    ...overrides,
+  }
+}
 
 function data(revenues: (number | null)[]): CompanyData {
   return {
@@ -45,5 +61,47 @@ describe('companyElevations', () => {
     const h = companyElevations(data([null, null]), 5000, 'log')
     expect(h[0]!).toBeGreaterThan(0)
     expect(Number.isFinite(h[0]!)).toBe(true)
+  })
+})
+
+// A ColumnLayer instance is a plain object right after construction — no
+// WebGL, no DOM — so its accessor props can be invoked directly with a
+// Company object, exactly as deck.gl would call them per row when drawing.
+describe('buildCompanyLayer outline predicate', () => {
+  function accessors(revenueType: Company['revenueType']) {
+    const layer = buildCompanyLayer(
+      { canton: 'AG', companies: [company({ revenueType })], stats: { count: 1, withRevenue: 1, max: 1e9 } },
+      'log',
+      () => {},
+    )
+    const getLineColor = layer.props.getLineColor as unknown as (c: Company) => number[]
+    const getLineWidth = layer.props.getLineWidth as unknown as (c: Company) => number
+    return { getLineColor, getLineWidth, lineWidthUnits: layer.props.lineWidthUnits }
+  }
+
+  it('gives a net_sales company an invisible outline (zero alpha AND zero width)', () => {
+    const { getLineColor, getLineWidth } = accessors('net_sales')
+    const c = company({ revenueType: 'net_sales' })
+    expect(getLineColor(c)[3]).toBe(0)
+    expect(getLineWidth(c)).toBe(0)
+  })
+
+  it('gives an operating_income company the visible dark outline at width 60', () => {
+    const { getLineColor, getLineWidth } = accessors('operating_income')
+    const c = company({ revenueType: 'operating_income' })
+    expect(getLineColor(c)).toEqual([30, 30, 30, 220])
+    expect(getLineWidth(c)).toBe(60)
+  })
+
+  it('treats a null revenueType as not net_sales and shows the outline', () => {
+    const { getLineColor, getLineWidth } = accessors(null)
+    const c = company({ revenueType: null })
+    expect(getLineColor(c)).toEqual([30, 30, 30, 220])
+    expect(getLineWidth(c)).toBe(60)
+  })
+
+  it('measures the outline width in metres, not pixels', () => {
+    const { lineWidthUnits } = accessors('operating_income')
+    expect(lineWidthUnits).toBe('meters')
   })
 })

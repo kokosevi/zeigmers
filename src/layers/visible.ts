@@ -6,6 +6,10 @@ import { computeElevations, type ScaleMode } from '../domain/scale'
  *  Höhe des kleinsten echten Balkens — sichtbar, aber unverwechselbar klein. */
 export const UNKNOWN_BAR_FRACTION = 0.4
 
+// Absoluter Fallback für den Fall, dass keine Firma im Datensatz einen Umsatz
+// hat — dann gibt es keinen "kleinsten echten Balken", von dem sich ein Anteil
+// ableiten liesse. Anders als UNKNOWN_BAR_FRACTION ist dies bewusst kein
+// Bruchteil, sondern eine feste Höhe in Metern.
 const PLACEHOLDER_BASE_HEIGHT = 200
 
 export type RevenueType = 'net_sales' | 'operating_income'
