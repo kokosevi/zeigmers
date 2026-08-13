@@ -43,6 +43,20 @@ def main(argv: Sequence[str] | None = None) -> int:
               f"{len(table.division_to_group)} Abteilungen -> {out}")
         return 0
 
+    if args.command == "boundaries":
+        from . import boundaries, fetch
+
+        url = fetch.swissboundaries_gpkg_url()
+        zip_path = fetch.download(
+            url, config.DATA_RAW / "swissboundaries3d.gpkg.zip", force=args.force
+        )
+        b = boundaries.build(zip_path, config.CANTON["bfs_nr"])
+        out = boundaries.write_geojson(b, config.PUBLIC_DATA / "ag_boundaries.geojson")
+        print(f"[boundaries] {len(b.municipalities)} Gemeinden, "
+              f"{b.canton_lv95.area / 1e6:.0f} km2 -> {out} "
+              f"({out.stat().st_size / 1024:.0f} KB)")
+        return 0
+
     print(f"[draufsicht-etl] {args.command} — noch nicht implementiert")
     return 0
 
