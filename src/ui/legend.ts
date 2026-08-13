@@ -1,5 +1,3 @@
-import { AMBIGUOUS_ALPHA } from '../domain/colors'
-import type { LevelName } from '../domain/lod'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import { referenceTicks, type ScaleMode } from '../domain/scale'
 import { OUTLINE_COLOR } from '../layers/visible'
@@ -19,9 +17,6 @@ const FOOTER =
 const FOOTER_COMPANIES =
   'Ansicht A: Umsatz, Mitarbeitende und Geschäftsjahr aus den Geschäftsberichten der ' +
   'acht Unternehmen selbst (Quelle je Firma im Panel, «Geschäftsbericht öffnen»).'
-
-// Literal aus Spec 6.4.3 — nicht umformulieren.
-const AMBIGUOUS_LEGEND_TEXT = 'Wert 4 = 1 bis 4, exakter Wert nicht ausgewiesen'
 
 const OUTLINE_LEGEND_TEXT =
   'Balken mit Rand: andere Kennzahl als Nettoumsatz (z. B. Geschäftsertrag einer Bank) — ' +
@@ -43,13 +38,6 @@ const MODE_LABEL: Record<ScaleMode, string> = {
   linear: 'linear',
 }
 
-// Grammatisch passende Form für die "höchste(r) X"-Zeile der Legende.
-const ACTIVE_LEVEL_LABEL: Record<LevelName, string> = {
-  kanton: 'höchster Kanton',
-  gemeinde: 'höchste Gemeinde',
-  hektar: 'höchste Hektare',
-}
-
 export interface LegendOptions {
   view: ViewName
   mode: ScaleMode
@@ -57,9 +45,6 @@ export interface LegendOptions {
   vmax: number
   ambiguousCells: number
   overstatementMax: number
-  /** Aktuell dominante LOD-Stufe und ihr eigenes Maximum (nicht das geteilte
-   *  Kantons-`vmax`). Nur für Ansicht B relevant — siehe I5. */
-  activeLevel?: { level: LevelName; max: number }
 }
 
 function box(): HTMLElement {
@@ -82,18 +67,6 @@ function swatch(color: readonly [number, number, number], label: string): HTMLLI
   return li
 }
 
-/** Swatch, der die tatsächliche Darstellung mehrdeutiger Hektaren zeigt (Alpha
- *  aus `colors.ts`, nicht nur beschrieben) — siehe Finding I2(a). */
-function ambiguitySwatch(): HTMLLIElement {
-  const li = document.createElement('li')
-  const dot = document.createElement('span')
-  dot.className = 'legende-punkt'
-  dot.style.background = 'rgb(148, 163, 184)'
-  dot.style.opacity = String(AMBIGUOUS_ALPHA / 255)
-  li.append(dot, document.createTextNode(AMBIGUOUS_LEGEND_TEXT))
-  return li
-}
-
 /** Swatch, der die tatsächliche Randmarkierung nicht-`net_sales`-Balken zeigt
  *  (Farbe/Breite aus `visible.ts`, nicht nur beschrieben) — siehe Finding I2(b). */
 function outlineSwatch(): HTMLLIElement {
@@ -109,10 +82,10 @@ function outlineSwatch(): HTMLLIElement {
 
 /** Zeigt fix: Branchenfarben, graue Restkategorie, aktive Skala mit drei
  *  Stützwerten, Datenjahr, Quellenzeile und die Einheit der aktuellen Ansicht.
- *  Wird bei jedem Wechsel von Ansicht, Skala oder Zoom neu aufgerufen — die
+ *  Wird bei jedem Wechsel von Ansicht oder Skala neu aufgerufen — die
  *  Legende ist ohne Interaktion sichtbar und aktualisiert sich mit. */
 export function renderLegend(options: LegendOptions): void {
-  const { view, mode, year, vmax, ambiguousCells, overstatementMax, activeLevel } = options
+  const { view, mode, year, vmax, ambiguousCells, overstatementMax } = options
   const el = box()
 
   const title = document.createElement('div')
@@ -124,7 +97,6 @@ export function renderLegend(options: LegendOptions): void {
   branchen.className = 'legende-branchen'
   for (const group of NOGA_GROUPS) branchen.appendChild(swatch(group.color, group.label))
   branchen.appendChild(swatch(UNKNOWN_COLOR, 'nicht eindeutig bestimmbar'))
-  if (view === 'viele') branchen.appendChild(ambiguitySwatch())
   if (view === 'sichtbare') branchen.appendChild(outlineSwatch())
   el.appendChild(branchen)
 
@@ -135,19 +107,10 @@ export function renderLegend(options: LegendOptions): void {
   scale.textContent = `Höhe (${MODE_LABEL[mode]}): ${ticks.map(formatTick).join(' · ')}`
   el.appendChild(scale)
 
-  // Bei linearem Massstab liegt die geteilte Kantons-vmax weit über allem,
-  // was auf der aktuell sichtbaren Stufe zu sehen ist (Gemeinde-/Hektarwerte
-  // sind winzig gegen das Kantonstotal) — ohne diese Zeile sind die drei
-  // Stützwerte oben unlesbar. Der geteilte vmax bleibt trotzdem die Skala
-  // (Stetigkeit beim Zoomen), nur die Legende bekommt zusätzlich Kontext.
-  if (view === 'viele' && activeLevel) {
-    const activeMax = document.createElement('div')
-    activeMax.className = 'legende-aktiv-max'
-    activeMax.textContent =
-      `${ACTIVE_LEVEL_LABEL[activeLevel.level]}: ${formatNumber(activeLevel.max)}`
-    el.appendChild(activeMax)
-  }
-
+  // Obergrenzen-Hinweis: `ambiguousCells`/`overstatementMax` kommen aus der
+  // Gemeindestufe, zählen aber — weil aus der vollen Hektarquelle berechnet
+  // (siehe `aggregate.stats(..., source=hectare)` im ETL) — kantonsweit, auch
+  // wenn keine Hektar- oder Kantonsstufe mehr gezeichnet wird.
   if (view === 'viele' && ambiguousCells > 0) {
     const hint = document.createElement('div')
     hint.className = 'legende-hinweis'

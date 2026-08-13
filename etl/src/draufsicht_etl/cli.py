@@ -53,21 +53,26 @@ def _run_statent(force: bool) -> dict:
     municipality = aggregate.build_municipality(hectare, bounds.municipalities)
     canton = aggregate.build_canton(hectare, bounds.canton_lv95)
 
-    for level in (canton, municipality, hectare):
-        binpack.write_level(
-            level, table, config.PUBLIC_DATA,
-            year=config.STATENT_YEAR, canton=config.CANTON["code"],
-            extra={"stats": aggregate.stats(level, source=hectare)},
-        )
+    # Nur noch die Gemeindestufe wird ausgeliefert (Entscheid vom 2026-08-13,
+    # siehe README/Spec): View B zeigt seither ausschliesslich die 196
+    # Gemeindebalken, bei jedem Zoom. Kanton- und Hektarstufe werden hier
+    # weiterhin berechnet — die Gemeindeaggregation UND die Mehrdeutigkeits-
+    # Zaehlung je Gemeinde (`entries[i]["ambiguousCells"]`, siehe
+    # `aggregate.build_hectare`) haengen direkt an `hectare`, und die
+    # Plausibilitaetspruefung weiter unten braucht `canton.value[0]` — nur der
+    # `binpack.write_level`-Aufruf fuer die beiden Stufen entfaellt.
+    binpack.write_level(
+        municipality, table, config.PUBLIC_DATA,
+        year=config.STATENT_YEAR, canton=config.CANTON["code"],
+        extra={"stats": aggregate.stats(municipality, source=hectare)},
+    )
 
     meta = {
         "canton": config.CANTON,
         "year": config.STATENT_YEAR,
-        "levels": ["kanton", "gemeinde", "hektar"],
+        "levels": ["gemeinde"],
         "counts": {
-            "kanton": canton.count,
             "gemeinde": municipality.count,
-            "hektar": hectare.count,
         },
         "source": "Bundesamt für Statistik (BFS), STATENT",
         "hectareCsv": member,

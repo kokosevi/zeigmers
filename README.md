@@ -8,11 +8,15 @@ der Unterschied sichtbar wird.
 Säulen nach Umsatz — Zahlen, die öffentlich und geprüft sind, weil ein
 kotiertes Unternehmen sie veröffentlichen muss.
 
-**Ansicht B** zeigt dieselbe Fläche als 17'940 besetzte Hektarzellen (1 km² =
-100 Zellen) nach Beschäftigten am Arbeitsort, kanton­weit 383'203 Beschäftigte.
-Das ist die Arbeit, die in Aargau tatsächlich stattfindet — in Gewerbehallen,
-Werkstätten, Verwaltungen, Landwirtschaftsbetrieben und Läden, deren
-Umsatzzahlen nirgends veröffentlicht werden.
+**Ansicht B** zeigt dieselbe Fläche als 196 Gemeindebalken nach Beschäftigten
+am Arbeitsort, kanton­weit 383'203 Beschäftigte. Das ist die Arbeit, die in
+Aargau tatsächlich stattfindet — in Gewerbehallen, Werkstätten, Verwaltungen,
+Landwirtschaftsbetrieben und Läden, deren Umsatzzahlen nirgends veröffentlicht
+werden. Ein früherer Zwischenstand löste das bis auf 17'940 einzelne
+Hektarzellen auf; diese Stufe wurde am 13. August 2026 wieder verworfen (siehe
+unten, «Warum die Gemeindesumme über der offiziellen Zahl liegt») — jede
+Gemeindesumme ist aber weiterhin exakt die Summe dieser Zellen, samt der
+Verzerrung, die das BFS ihnen aus Datenschutzgründen aufzwingt.
 
 Der Kontrast ist die Aussage: acht sichtbare Firmen gegen zehntausende
 unsichtbare Arbeitsplätze.
@@ -27,13 +31,17 @@ rendern — reproduzierbar und ohne Server-Backend bauen lässt. Die Zahlen sind
 korrekt im Rahmen dessen, was die Quellen hergeben; sie sind nicht amtlich
 geprüft im Sinne einer BFS-Publikation.
 
-## Warum die Hektarsumme über der offiziellen Zahl liegt
+## Warum die Gemeindesumme über der offiziellen Zahl liegt
 
-Der Kanton Aargau meldet in Ansicht B eine Summe von **383'203** Beschäftigten
-über 17'940 Hektarzellen. Die amtliche BFS-Referenz für Aargau (unabhängig aus
-derselben STATENT-Lieferung berechnet, als Gemeinde-Aggregation statt aus den
-Hektarzellen) liegt bei **363'288**. Die Hektarsumme liegt damit **+5.48 %**
-darüber — und das ist erwartet, kein Fehler in der Pipeline.
+Ansicht B zeigt 196 Gemeindebalken; ihre Summe ergibt **383'203** Beschäftigte.
+Das ETL aggregiert diese Summe intern weiterhin aus 17'940 Hektarzellen — diese
+Stufe existierte bis zum 13. August 2026 als eigene, gezeichnete Detailstufe
+der Karte und wurde dann auf Entscheid verworfen (Begründung im nächsten
+Abschnitt); an der Rechnung dahinter ändert das nichts. Die amtliche
+BFS-Referenz für Aargau (unabhängig aus derselben STATENT-Lieferung berechnet,
+als Gemeinde-Aggregation statt aus den Hektarzellen) liegt bei **363'288**. Die
+aus Hektaren gerechnete Summe liegt damit **+5.48 %** darüber — und das ist
+erwartet, kein Fehler in der Pipeline.
 
 Der Grund ist Datenschutz, nicht Ungenauigkeit: Das BFS veröffentlicht aus
 Geheimhaltungsgründen jeden Zellenwert unter 4 als **4**. In den Aargauer
@@ -67,6 +75,37 @@ Wirklichkeit nur 1 sein, also höchstens 3 zu viel zählen; für Aargau macht da
 3 × 10'109 = 30'327). Der ETL-Lauf (`draufsicht-etl statent`/`all`) bricht mit
 einem harten Fehler ab, falls die Summe dieses Fenster verlässt — das wäre
 dann tatsächlich ein Verschnitt- oder Spaltenfehler, keine Rundung.
+
+## Warum die Hektar- und die Kantonsstufe entfernt wurden
+
+Bis zum 13. August 2026 zeigte Ansicht B drei überblendete Detailstufen: einen
+einzelnen Kantonsbalken unterhalb Zoom 9, 196 Gemeindebalken zwischen Zoom 9
+und 12, und 17'940 Hektarbalken oberhalb Zoom 12. Auf Entscheid zeigt Ansicht B
+seither nur noch die Gemeindestufe, bei jedem Zoom. Zwei Gründe:
+
+- Mit der Gemeindestufe permanent sichtbar bringt ein einzelner
+  12'000-m-Kantonsturm unterhalb Zoom 9 keine zusätzliche Information mehr —
+  er verschwindet.
+- Die Hektarstufe zeichnete pro Zelle den vom BFS publizierten, aufgerundeten
+  Wert (Abschnitt oben), **gesondert als solchen markiert**. Diese Markierung
+  verschwand zusammen mit den Zellen; was blieb, war die Aufrundung selbst —
+  und die wirkt jetzt ausschliesslich auf die einzig noch sichtbare Zahl, die
+  Gemeindesumme.
+
+Gemessen an den 196 committeten Gemeindesummen (`public/data/ag_gemeinde.json`,
+je `3 × ambiguousCells / value`): die Überschätzung liegt im **Median bei
+15.7 %**, im Maximum bei **54.1 %** (Obermumpf), und **76 der 196 Gemeinden**
+liegen über 20 %. Das ist keine Rand­erscheinung, sondern die Regel bei
+kleinen Gemeinden — deshalb benennt der Pflichthinweis in Ansicht B seit
+diesem Entscheid die Grössenordnung direkt in der Karte statt nur ein
+theoretisches Maximum, und das Klick-Panel zeigt zu jeder Gemeinde ihren
+eigenen, ungerundeten Betrag (`src/ui/panel.ts`, `aggregateCellContent`).
+
+`etl/src/draufsicht_etl/aggregate.py` und `binpack.py` berechnen die
+Hektarstufe weiterhin vollständig — die Gemeindeaggregation und die
+Mehrdeutigkeits-Zählung je Gemeinde hängen direkt daran (Abschnitt 6.5 der
+Spezifikation). Nur der Schreibaufruf für `ag_hektar.*` und `ag_kanton.*` in
+`cli.py` entfällt; die beiden Artefakte werden dadurch nicht mehr erzeugt.
 
 ## Was „revenue“ über die acht Unternehmen hinweg bedeutet
 
@@ -111,17 +150,16 @@ Währungsmix ausdrücklich (`src/ui/notices.ts`, `src/ui/legend.ts`).
 
 ## Datenschutzhinweis
 
-Die Hektarsummen in Ansicht B sind **Obergrenzen, keine exakten Zahlen** — die
-Aufrundung „unter 4 → 4“ zieht sie systematisch nach oben (siehe oben). Auf
-Gemeinde- und Kantonsebene ist die Abweichung entsprechend kleiner, aber nie
-exakt null; jede Summe in dieser App ist mit dieser Unschärfe zu lesen, nicht
-als amtlich verbindliche Zahl.
+Die Gemeindesummen in Ansicht B sind **Obergrenzen, keine exakten Zahlen** —
+die Aufrundung „unter 4 → 4“ zieht sie systematisch nach oben (siehe oben):
+im Median um 15.7 %, bei kleinen Gemeinden bis 54.1 %. Jede Summe in dieser
+App ist mit dieser Unschärfe zu lesen, nicht als amtlich verbindliche Zahl.
 
 ## Datenherkunft
 
 | Datensatz | Quelle | Rolle |
 |---|---|---|
-| STATENT (Hektarraster Beschäftigte) 2023 | Bundesamt für Statistik (BFS) | Ansicht B, Gemeinde-/Kantonsaggregation |
+| STATENT (Hektarraster Beschäftigte) 2023 | Bundesamt für Statistik (BFS) | Ansicht B (Gemeindestufe, intern über das Hektarraster aggregiert) |
 | swissBOUNDARIES3D, Vintage 2026-01 | swisstopo | Kantons- und Gemeindegrenzen |
 | Basiskarte (Vektor-Tiles) | swisstopo (`vectortiles.geo.admin.ch`) | Hintergrundkarte in MapLibre |
 | Firmen-Stammdaten (LINDAS/Zefix, Geokodierung) | LINDAS SPARQL-Endpunkt, swisstopo SearchServer | Kandidatensuche und Adress→Koordinate für Ansicht A |
@@ -199,29 +237,29 @@ Ein Kantonswechsel ist als Dreischritt gedacht:
    `FileNotFoundError`.
 3. `npm run build:data` laufen lassen. Das Frontend liest den Kantons-Code
    und -Namen selbst aus `public/data/meta.json` (`src/main.ts`, per
-   `loadMeta()`) — die Artefakt-Dateinamen (`<code>_kanton.*` usw.), der
+   `loadMeta()`) — die Artefakt-Dateinamen (`<code>_gemeinde.*`), der
    Fenstertitel und der Titel des Kantonspanels folgen also ohne weitere
    Codeänderung.
 
 Gemeindegrenzen, Hektarraster, BFS-Referenzsumme, das Plausibilitätsfenster,
 der Pfad der Firmen-CSV und alle Artefaktnamen leiten sich automatisch aus
-`CANTON` und der Geometrie her. Zwei Stellen bleiben trotzdem **Handarbeit im
+`CANTON` und der Geometrie her. Eine Stelle bleibt trotzdem **Handarbeit im
 Code**, weil sie auf die räumliche Ausdehnung des jeweiligen Kantons
-zugeschnitten sind und sich nicht aus `CANTON` allein ableiten lassen:
+zugeschnitten ist und sich nicht aus `CANTON` allein ableiten lässt:
 
 - **`INITIAL_VIEW` in `src/map.ts`** — Kartenzentrum, Startzoom, Neigung und
   Blickrichtung sind von Hand auf den Kanton Aargau justiert. Ein deutlich
   grösserer, kleinerer oder anders geformter Kanton braucht andere Werte,
   sonst zeigt die Karte beim Start ins Leere oder nur einen Ausschnitt.
-- **`BAND_CENTERS` in `src/domain/lod.ts`** — die Zoomstufen, bei denen
-  zwischen Kanton-, Gemeinde- und Hektaransicht überblendet wird, sind auf die
-  Fläche des Kantons Aargau (1'404 km²) abgestimmt. Ein Kanton anderer Grösse
-  sollte diese Zentren neu justieren, sonst wechselt die Detailstufe zu früh
-  oder zu spät zur tatsächlichen Kartengrösse.
+
+(Bis zum 13. August 2026 gab es hier eine zweite Stelle, `BAND_CENTERS` in
+`src/domain/lod.ts`, für die Zoomstufen der Kanton-/Gemeinde-/Hektar-
+Überblendung. Die Datei ist mit der Hektar- und Kantonsstufe entfallen, siehe
+oben.)
 
 Zusammen mit dem Inhalt der Firmen-CSV (siehe Schritt 2 oben — welche
 Unternehmen im neuen Kanton kotiert sind, lässt sich nicht automatisiert
-recherchieren) sind das die einzigen drei Schritte, die ein Kantonswechsel
+recherchieren) sind das die einzigen zwei Schritte, die ein Kantonswechsel
 nicht automatisiert.
 
 ## Befehlsübersicht

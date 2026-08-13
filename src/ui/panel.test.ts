@@ -1,16 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { Level, LevelMeta } from '../data/loader'
 import type { Company } from '../layers/visible'
-import {
-  aggregateCellContent,
-  companyContent,
-  configureCanton,
-  hectareCellContent,
-} from './panel'
+import { aggregateCellContent, companyContent, configureCanton } from './panel'
 
 // Diese Tests prüfen genau die Formulierungen, deren Regression dieses
-// Projekt am meisten schaden würde: den Ableitungshinweis auf der
-// Hektar-Top-3, die Ambiguitätsnotiz, die Obergrenzen-Notiz auf Aggregaten
+// Projekt am meisten schaden würde: die Obergrenzen-Notiz auf Aggregaten
 // (mit korrektem Geltungsbereich Gemeinde vs. Kanton) und die
 // Nicht-Vergleichbarkeits-Kennzeichnung bei `operating_income` (siehe
 // Abschluss-Review, Finding I9). `panel.ts` ist bewusst DOM-frei dafür gebaut
@@ -23,7 +17,7 @@ const NOGA_GROUPS: LevelMeta['nogaGroups'] = [
 
 function baseMeta(overrides: Partial<LevelMeta> = {}): LevelMeta {
   return {
-    level: 'hektar',
+    level: 'gemeinde',
     year: 2023,
     canton: 'AG',
     count: 2,
@@ -33,36 +27,6 @@ function baseMeta(overrides: Partial<LevelMeta> = {}): LevelMeta {
     unknownIndex: 255,
     stats: { min: 4, max: 100, sum: 104, p99: 100, ambiguousCells: 1, overstatementMax: 3 },
     ...overrides,
-  }
-}
-
-function hectareLevel(
-  opts: {
-    value?: number
-    ambiguous?: boolean
-    gemeinden?: LevelMeta['gemeinden']
-    gemeindeIdx?: number
-    mix?: [number, number][]
-  } = {},
-): Level {
-  const mix = opts.mix ?? [
-    [0, 60],
-    [1, 40],
-  ]
-  const mixGroup = new Uint8Array([mix[0]?.[0] ?? 255, mix[1]?.[0] ?? 255, 255])
-  const mixValue = new Uint16Array([mix[0]?.[1] ?? 0, mix[1]?.[1] ?? 0, 0])
-  return {
-    meta: baseMeta({ level: 'hektar', gemeinden: opts.gemeinden }),
-    arrays: {
-      positions: new Float32Array([8.0, 47.4]),
-      values: new Float32Array([opts.value ?? 100]),
-      noga: new Uint8Array([0]),
-      flags: new Uint8Array([opts.ambiguous ? 1 : 0]),
-      mixGroup,
-      mixValue,
-      gemeindeIdx:
-        opts.gemeindeIdx !== undefined ? new Uint16Array([opts.gemeindeIdx]) : undefined,
-    },
   }
 }
 
@@ -109,24 +73,6 @@ function company(overrides: Partial<Company> = {}): Company {
     ...overrides,
   }
 }
-
-describe('hectareCellContent', () => {
-  it('labels the top-3 branch list as derived, not an officially reported figure', () => {
-    const content = hectareCellContent(hectareLevel(), 0)
-    expect(content.list?.caption).toMatch(/abgeleitet/)
-    expect(content.list?.caption).toMatch(/Top 3/)
-  })
-
-  it('adds the ambiguity note exactly when the flag is set', () => {
-    const ambiguous = hectareCellContent(hectareLevel({ ambiguous: true }), 0)
-    expect(ambiguous.notes).toEqual([
-      'Wert auf 4 aufgerundet (Datenschutz): der wahre Wert liegt zwischen 1 und 4.',
-    ])
-
-    const plain = hectareCellContent(hectareLevel({ ambiguous: false }), 0)
-    expect(plain.notes).toEqual([])
-  })
-})
 
 describe('aggregateCellContent', () => {
   it('marks the sum as an upper bound (Obergrenze), never as an exact figure', () => {

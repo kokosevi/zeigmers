@@ -7,40 +7,31 @@ from draufsicht_etl import binpack, config
 
 pytestmark = pytest.mark.integration
 
+# Seit 2026-08-13 wird nur noch die Gemeindestufe ausgeliefert (siehe README):
+# View B zeigt ausschliesslich die 196 Gemeindebalken. Kanton- und Hektarstufe
+# werden im ETL weiterhin berechnet (siehe cli.py, `_run_statent`), aber nicht
+# mehr als eigenes Artefakt geschrieben — Tests, die `ag_kanton`/`ag_hektar`
+# vom Datenträger lasen, sind darum entfallen oder auf `ag_gemeinde`
+# umgestellt, dessen `stats` (Summe, `ambiguousCells`, `overstatementMax`)
+# dank `aggregate.stats(municipality, source=hectare)` weiterhin kantonsweite
+# Grössen sind, nicht auf die Gemeindestufe beschränkte.
+
 
 @pytest.fixture(scope="module")
-def artifacts():
-    missing = [
-        n for n in ("ag_kanton", "ag_gemeinde", "ag_hektar")
-        if not (config.PUBLIC_DATA / f"{n}.bin").exists()
-    ]
-    if missing:
-        pytest.skip(f"Artefakte fehlen, zuerst `draufsicht-etl all` laufen lassen: {missing}")
-    return {
-        name: binpack.read_level(
-            config.PUBLIC_DATA / f"{name}.bin", config.PUBLIC_DATA / f"{name}.json"
-        )
-        for name in ("ag_kanton", "ag_gemeinde", "ag_hektar")
-    }
+def gemeinde_artifact():
+    if not (config.PUBLIC_DATA / "ag_gemeinde.bin").exists():
+        pytest.skip("Artefakt fehlt, zuerst `draufsicht-etl all` laufen lassen: ag_gemeinde")
+    return binpack.read_level(
+        config.PUBLIC_DATA / "ag_gemeinde.bin", config.PUBLIC_DATA / "ag_gemeinde.json"
+    )
 
 
-def test_hectare_count_is_plausible_for_aargau(artifacts):
-    _, meta = artifacts["ag_hektar"]
-    assert 10_000 < meta["count"] < 60_000, meta["count"]
-
-
-def test_municipality_count_is_plausible(artifacts):
-    _, meta = artifacts["ag_gemeinde"]
+def test_municipality_count_is_plausible(gemeinde_artifact):
+    _, meta = gemeinde_artifact
     assert 180 <= meta["count"] <= 200, meta["count"]
 
 
-def test_sums_match_across_levels(artifacts):
-    sums = {name: meta["stats"]["sum"] for name, (_, meta) in artifacts.items()}
-    assert sums["ag_hektar"] == pytest.approx(sums["ag_gemeinde"], rel=1e-6)
-    assert sums["ag_gemeinde"] == pytest.approx(sums["ag_kanton"], rel=1e-6)
-
-
-def test_canton_total_is_within_the_plausible_window(artifacts):
+def test_canton_total_is_within_the_plausible_window(gemeinde_artifact):
     """Kein geschätzter Toleranzwert, sondern ein Fenster aus den zwei bekannten,
     gegenläufigen Verzerrungen zwischen Hektarsumme und amtlicher Referenz.
 
@@ -52,6 +43,12 @@ def test_canton_total_is_within_the_plausible_window(artifacts):
     Ambiguous-Flagging-Logik in `aggregate.stats`), und eine Regression dort
     soll diesen Test tatsächlich zum Kippen bringen können.
 
+    Die Gesamtsumme wird aus `ag_gemeinde` gelesen, nicht aus einem eigenen
+    `ag_kanton`-Artefakt (das seit 2026-08-13 nicht mehr geschrieben wird):
+    `Σ Gemeinde = Kanton` gilt exakt (Aggregations-Invariante, siehe Spec
+    6.5), und `stats.sum`/`stats.overstatementMax` werden im ETL ohnehin mit
+    `source=hectare` berechnet, zählen also bereits kantonsweit.
+
     Untere Grenze: Referenz minus die Beschäftigten aus STATENT_NOLOC, die
     keine belastbare Hektarlage haben und deshalb nie in unserer Summe
     auftauchen. Obere Grenze: Referenz plus die maximal mögliche
@@ -62,7 +59,7 @@ def test_canton_total_is_within_the_plausible_window(artifacts):
     """
     reference = 363_288
     noloc = 3_389
-    _, meta = artifacts["ag_kanton"]
+    _, meta = gemeinde_artifact
     total = meta["stats"]["sum"]
     overstatement_max = meta["stats"]["overstatementMax"]
     lower, upper = reference - noloc, reference + overstatement_max
@@ -73,13 +70,8 @@ def test_canton_total_is_within_the_plausible_window(artifacts):
     )
 
 
-def test_minimum_hectare_value_is_four(artifacts):
-    arrays, _ = artifacts["ag_hektar"]
-    assert arrays["values"].min() == 4.0, "Aufrundungsregel aus Spec 6.4 verletzt"
-
-
-def test_positions_are_inside_the_aargau_bounding_box(artifacts):
-    arrays, _ = artifacts["ag_hektar"]
+def test_positions_are_inside_the_aargau_bounding_box(gemeinde_artifact):
+    arrays, _ = gemeinde_artifact
     positions = arrays["positions"].reshape(-1, 2)
     assert 7.6 < positions[:, 0].min() and positions[:, 0].max() < 8.6
     assert 47.1 < positions[:, 1].min() and positions[:, 1].max() < 47.7
@@ -90,7 +82,7 @@ def test_total_artifact_size_within_budget():
     assert total < config.MAX_PUBLIC_DATA_BYTES, f"{total / 1024:.0f} KB"
 
 
-def test_meta_json_lists_all_levels():
+def test_meta_json_lists_only_shipped_levels():
     meta = json.loads((config.PUBLIC_DATA / "meta.json").read_text(encoding="utf-8"))
-    assert meta["levels"] == ["kanton", "gemeinde", "hektar"]
+    assert meta["levels"] == ["gemeinde"]
     assert meta["canton"]["code"] == "AG"

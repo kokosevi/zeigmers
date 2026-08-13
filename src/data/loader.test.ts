@@ -88,21 +88,29 @@ describe('decodeLevel', () => {
 // eine handkodierte Fixture. Eine Änderung an `_ORDER`, einem dtype oder der
 // Padding-Regel in binpack.py, die still ein falsches Array produziert, fiele
 // hier auf (siehe Abschluss-Review, Finding I8).
-describe('decodeLevel against the real ag_hektar artifact', () => {
+//
+// Zeigt seit 2026-08-13 auf `ag_gemeinde` statt `ag_hektar`: die Hektarstufe
+// wird nicht mehr ausgeliefert (siehe README), `ag_gemeinde` ist jetzt das
+// einzige committete Ansicht-B-Artefakt und übernimmt denselben Vertragstest.
+// Die Prüfung bleibt inhaltlich dieselbe (Array-Längen aus `count` und
+// `nogaGroups` hergeleitet, Min/Max/Summe gegen `meta.stats`); nur `dist`
+// (volle Verteilung, nur Gemeinde-/Kantonsstufe) ersetzt die hektarspezifischen
+// `mixGroup`/`mixValue` (Top-3, nur Hektarstufe).
+describe('decodeLevel against the real ag_gemeinde artifact', () => {
   const dataDir = fileURLToPath(new URL('../../public/data/', import.meta.url))
 
   it('round-trips the on-disk artifact with lengths and stats matching meta', () => {
     const meta = JSON.parse(
-      readFileSync(`${dataDir}ag_hektar.json`, 'utf-8'),
+      readFileSync(`${dataDir}ag_gemeinde.json`, 'utf-8'),
     ) as LevelMeta
-    const buffer = readFileSync(`${dataDir}ag_hektar.bin`).buffer as ArrayBuffer
+    const buffer = readFileSync(`${dataDir}ag_gemeinde.bin`).buffer as ArrayBuffer
 
     const { arrays } = decodeLevel(buffer, meta)
 
     expect(arrays.values.length).toBe(meta.count)
     expect(arrays.positions.length).toBe(2 * meta.count)
-    expect(arrays.mixGroup?.length).toBe(3 * meta.count)
-    expect(arrays.mixValue?.length).toBe(3 * meta.count)
+    expect(arrays.gemeindeIdx?.length).toBe(meta.count)
+    expect(arrays.dist?.length).toBe(meta.count * meta.nogaGroups.length)
 
     let min = Infinity
     let max = -Infinity

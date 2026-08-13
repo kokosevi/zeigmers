@@ -5,17 +5,9 @@ import { computeElevations, type ScaleMode } from '../domain/scale'
 
 export const MAX_BAR_HEIGHT_M = 12000
 
-/** Hektarbalken füllen ihre Zelle; höhere Stufen brauchen sichtbare Grundflächen. */
-export function radiusFor(level: string): number {
-  switch (level) {
-    case 'hektar':
-      return 50
-    case 'gemeinde':
-      return 700
-    default:
-      return 4000
-  }
-}
+/** Gemeindebalken brauchen eine sichtbar grosse Grundfläche — anders als eine
+ *  einzelne Hektare (100 m Raster) steht hier nur noch diese eine Stufe. */
+export const GEMEINDE_RADIUS_M = 700
 
 export interface LayerOptions {
   level: Level
@@ -44,17 +36,17 @@ interface CacheEntry {
   data: LayerData
 }
 
-/** Hält je Stufe die zuletzt berechneten Höhen/Farben und das dazugehörige
+/** Hält die zuletzt berechneten Höhen/Farben und das dazugehörige
  *  `data`-Objekt fest. `computeElevations`/`buildColors` hängen nur von
- *  (values, vmax, maxHeight, mode) bzw. (noga, flags) ab — keiner dieser Werte
- *  ändert sich beim Zoomen, nur `opacity`/`visible` tun das. Ohne diesen Cache
- *  würde `buildColumnLayer` bei jedem Zoom-Tick neue Arrays UND ein neues
- *  `data.attributes`-Objekt anlegen; deck.gls `AttributeManager` erkennt einen
- *  unveränderten Buffer nur über Referenzgleichheit (siehe
- *  `Attribute.setBinaryValue`: `state.binaryValue === buffer`) und würde sonst
- *  auch die numerisch unveränderten Positionen bei jedem Tick neu ins GPU
- *  hochladen. Der Cache ist bewusst pro Level-Id (nicht pro Level-Objekt), weil
- *  `main.ts` dieselben drei Level-Objekte über die gesamte Sitzung wiederverwendet. */
+ *  (values, vmax, maxHeight, mode) bzw. (noga, flags) ab. Ohne diesen Cache
+ *  würde `buildColumnLayer` bei jedem Render (z. B. Skalenwechsel linear ↔
+ *  logarithmisch) neue Arrays UND ein neues `data.attributes`-Objekt anlegen;
+ *  deck.gls `AttributeManager` erkennt einen unveränderten Buffer nur über
+ *  Referenzgleichheit (siehe `Attribute.setBinaryValue`:
+ *  `state.binaryValue === buffer`) und würde sonst auch die numerisch
+ *  unveränderten Positionen jedes Mal neu ins GPU hochladen. Der Cache ist
+ *  bewusst pro Level-Id (nicht pro Level-Objekt), weil `main.ts` dasselbe
+ *  Level-Objekt über die gesamte Sitzung wiederverwendet. */
 const cache = new Map<string, CacheEntry>()
 
 function getLayerData(id: string, level: Level, vmax: number, mode: ScaleMode): LayerData {
@@ -95,9 +87,9 @@ export function buildColumnLayer(id: string, options: LayerOptions): ColumnLayer
     id,
     data,
     positionFormat: 'XY',
-    diskResolution: 4, // Quadrate, passend zum Hektarraster
+    diskResolution: 4, // achsparallele Quadrate statt Zylinder
     angle: 45,
-    radius: radiusFor(meta.level),
+    radius: GEMEINDE_RADIUS_M,
     radiusUnits: 'meters',
     extruded: true,
     material: false, // flaches Shading, spürbar günstiger

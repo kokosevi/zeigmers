@@ -1,5 +1,4 @@
 import type { Level } from '../data/loader'
-import { FLAG_AMBIGUOUS } from '../domain/colors'
 import type { Company } from '../layers/visible'
 import { formatNumber, formatRevenue } from './format'
 
@@ -43,47 +42,6 @@ export function configureCanton(name: string): void {
 
 function groupLabel(level: Level, groupIndex: number): string {
   return level.meta.nogaGroups[groupIndex]?.label ?? 'unbekannt'
-}
-
-/** Hektarzelle: Beschäftigte, Ambiguitätshinweis, Top-3-Branchen als
- *  ausdrücklich abgeleitete (nicht amtlich gemeldete) Werte. */
-export function hectareCellContent(level: Level, index: number): PanelContent {
-  const { values, flags, mixGroup, mixValue, gemeindeIdx } = level.arrays
-  const value = values[index] ?? 0
-  const ambiguous = ((flags[index] ?? 0) & FLAG_AMBIGUOUS) !== 0
-
-  let title = 'Hektare'
-  if (gemeindeIdx && level.meta.gemeinden) {
-    const gemeinde = level.meta.gemeinden[gemeindeIdx[index] ?? -1]
-    if (gemeinde) title = gemeinde.name
-  }
-
-  const notes: string[] = []
-  if (ambiguous) {
-    notes.push(
-      'Wert auf 4 aufgerundet (Datenschutz): der wahre Wert liegt zwischen 1 und 4.',
-    )
-  }
-
-  const content: PanelContent = {
-    title,
-    fields: [{ label: 'Beschäftigte', value: formatNumber(value) }],
-    notes,
-  }
-
-  if (mixGroup && mixValue) {
-    const groupCount = level.meta.nogaGroups.length
-    const items: string[] = []
-    for (let k = 0; k < 3; k++) {
-      const group = mixGroup[index * 3 + k] ?? level.meta.unknownIndex
-      const groupValue = mixValue[index * 3 + k] ?? 0
-      if (groupValue <= 0 || group === level.meta.unknownIndex) continue
-      items.push(`${groupLabel(level, group)}: ${formatNumber(groupValue)}`)
-    }
-    content.list = { caption: `Top 3 von ${groupCount} Gruppen, abgeleitet`, items }
-  }
-
-  return content
 }
 
 /** Gemeinde- oder Kantonszelle: Summe (als Obergrenze ausgewiesen), volle
@@ -239,17 +197,10 @@ function renderContent(box: HTMLElement, content: PanelContent): void {
   box.appendChild(close)
 }
 
-/** Zeigt das Panel für eine Zelle aus Ansicht B — Hektare, Gemeinde oder
- *  Kanton, je nachdem, welche Stufe `level` ist (erkennbar an `mixGroup`, das
- *  nur die Hektarstufe führt). Alle drei Stufen teilen sich Wertespalte und
- *  Indexierung, deshalb genügt eine Funktion mit (level, index). */
-export function showHectarePanel(level: Level, index: number): void {
+/** Zeigt das Panel für eine angeklickte Gemeinde in Ansicht B. */
+export function showMunicipalityPanel(level: Level, index: number): void {
   const box = panelBox()
-  const content =
-    level.arrays.mixGroup && level.arrays.mixValue
-      ? hectareCellContent(level, index)
-      : aggregateCellContent(level, index)
-  renderContent(box, content)
+  renderContent(box, aggregateCellContent(level, index))
 }
 
 export function showCompanyPanel(company: Company): void {

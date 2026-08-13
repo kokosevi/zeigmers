@@ -12,11 +12,11 @@ Eine statische, auf Netlify deploybare Website mit zwei 3D-Kartenansichten des K
 
 **Ansicht A — «Die Sichtbaren».** Börsenkotierte Unternehmen mit Sitz im Kanton Aargau, je ein Balken am Hauptsitz. Höhe = Jahresumsatz (Konzernumsatz, letztes verfügbares Geschäftsjahr). Farbe = Branchengruppe. Klick öffnet ein Panel mit Name, Umsatz, Mitarbeitenden, Geschäftsjahr und Link auf den Geschäftsbericht.
 
-**Ansicht B — «Die Vielen».** Hektarraster des Kantons, je ein Balken pro Hektare mit Beschäftigten. Höhe = Anzahl Beschäftigte. Farbe = dominante Branchengruppe. Klick öffnet ein Panel mit Beschäftigtenzahl, Branchenverteilung und Gemeinde.
+**Ansicht B — «Die Vielen».** 196 Gemeindebalken des Kantons, je einer pro Gemeinde, mit Beschäftigten am Arbeitsort. Höhe = Anzahl Beschäftigte. Farbe = dominante Branchengruppe. Klick öffnet ein Panel mit Beschäftigtenzahl, Branchenverteilung und dem Betrag der Aufrundungs-Obergrenze für genau diese Gemeinde.
 
-Erwartete Grössenordnung: 8–12 Firmen in Ansicht A, **17 940** besetzte Hektaren in Ansicht B (gemessen, Stand 2026-08-13; die ursprüngliche Schätzung lautete 20 000–25 000). Die grosse Asymmetrie ist der Inhalt, nicht ein Fehler.
+> **Stand 2026-08-13, nachträglich.** Bis zu diesem Datum zeigte Ansicht B drei überblendete Detailstufen: einen Kantonsbalken unterhalb Zoom 9, die 196 Gemeindebalken zwischen Zoom 9 und 12, und **17 940** besetzte Hektarbalken oberhalb Zoom 12 (gemessen; die ursprüngliche Schätzung in diesem Dokument lautete 20 000–25 000). Auf Entscheid des Auftraggebers wurden die Kanton- und die Hektarstufe entfernt: Ansicht B zeigt seither ausschliesslich die Gemeindestufe, bei jedem Zoom. Der Rest dieses Abschnitts, 5, 6.4, 6.5 und 9 beschreibt zur Nachvollziehbarkeit weiterhin alle drei Stufen — das ETL berechnet sie unverändert intern, siehe 6.5 — und markiert explizit, was seit 2026-08-13 nicht mehr **ausgeliefert** wird.
 
-**Die Zahl hinter dem Titel «Die Vielen».** 10 109 dieser 17 940 Hektaren — **56,3 %** — tragen den Wert 4, der beim Bundesamt für alles unter 4 steht. Zurückgerechnet liegt der wahre Mittelwert dort bei **1,69 Beschäftigten**. Mehr als die Hälfte der wirtschaftlich genutzten Fläche des Kantons besteht aus Ein- und Zweipersonenbetrieben, die in keiner Statistik einzeln auftauchen.
+**Die Zahl hinter dem Titel «Die Vielen».** 10 109 dieser 17 940 Hektaren — **56,3 %** — tragen den Wert 4, der beim Bundesamt für alles unter 4 steht. Zurückgerechnet liegt der wahre Mittelwert dort bei **1,69 Beschäftigten**. Mehr als die Hälfte der wirtschaftlich genutzten Fläche des Kantons besteht aus Ein- und Zweipersonenbetrieben, die in keiner Statistik einzeln auftauchen. Diese Verzerrung trifft, nach oben aggregiert, auch die 196 Gemeindesummen, die einzigen Zahlen, die Ansicht B seit dem Entscheid noch zeigt: **im Median 15,7 %, im Maximum 54,1 % (Obermumpf), 76 der 196 Gemeinden über 20 %** — gemessen am committeten `ag_gemeinde.json`. Das ist der Grund, warum der Pflichthinweis in Ansicht B (Abschnitt 9) seit diesem Entscheid die Grössenordnung explizit benennt statt nur ein theoretisches Maximum.
 
 ## 2. Nicht Teil dieses Piloten
 
@@ -72,16 +72,14 @@ Draufsicht/
 │   └── manual/ag_listed_companies.csv     versioniert, von Hand gepflegt
 ├── public/data/                  committed Artefakte, Zielgrösse gesamt < 2 MB
 │   ├── meta.json
-│   ├── ag_kanton.bin  / ag_kanton.json
-│   ├── ag_gemeinde.bin / ag_gemeinde.json
-│   ├── ag_hektar.bin  / ag_hektar.json
-│   ├── ag_boundaries.geojson
+│   ├── ag_gemeinde.bin / ag_gemeinde.json     einziges Ansicht-B-Artefakt seit 2026-08-13
+│   ├── ag_boundaries.geojson                  erzeugt, aber von niemandem geladen
 │   └── companies.json
 ├── src/                          Vite + Vanilla TS
 │   ├── main.ts
 │   ├── map.ts                    MapLibre + deck.gl Overlay, ViewState-Besitzer
 │   ├── layers/visible.ts         Ansicht A
-│   ├── layers/many.ts            Ansicht B inkl. LOD-Überblendung
+│   ├── layers/many.ts            Ansicht B (eine Stufe, kein LOD mehr seit 2026-08-13)
 │   ├── data/loader.ts            .bin + .json → deck.gl Binary Attributes
 │   ├── domain/noga.generated.ts  aus etl/noga_groups.json erzeugt, nicht von Hand editiert
 │   ├── domain/scale.ts           log/linear
@@ -89,6 +87,8 @@ Draufsicht/
 ├── netlify.toml
 └── README.md
 ```
+
+**Entfallen seit 2026-08-13** (Entscheid des Auftraggebers, Details Abschnitt 1): `ag_kanton.bin`/`.json`, `ag_hektar.bin`/`.json` und `src/domain/lod.ts` (LOD-Überblendung Kanton ↔ Gemeinde ↔ Hektare). Das ETL (`aggregate.py`, `binpack.py`) berechnet Kanton- und Hektarstufe weiterhin, siehe 6.5 — nur `cli.py`s Schreibaufruf für die beiden Artefakte entfällt.
 
 **Build-Aufteilung.** `npm run build:data` ruft `uv run draufsicht-etl all` auf. Netlify führt nur `vite build` aus; die fertigen Artefakte liegen versioniert im Repo. Andernfalls zöge jeder Deploy ein ~60-MB-BFS-ZIP und eine vollständige Python-Toolchain durch die Netlify-Build-Umgebung.
 
@@ -98,7 +98,9 @@ Draufsicht/
 
 ## 5. Binärformat
 
-Pro LOD-Stufe ein Paar `<level>.bin` + `<level>.json`. Die `.bin` ist die Konkatenation typisierter Arrays; die `.json` nennt Byte-Offsets, Längen und Typen. deck.gl konsumiert sie als `data: { length, attributes: {…} }` ohne Umkopieren.
+Pro Stufe ein Paar `<level>.bin` + `<level>.json`. Die `.bin` ist die Konkatenation typisierter Arrays; die `.json` nennt Byte-Offsets, Längen und Typen. deck.gl konsumiert sie als `data: { length, attributes: {…} }` ohne Umkopieren.
+
+> Das Format ist stufengenerisch (`binpack.write_level` in Python, `decodeLevel` in TypeScript nehmen jede der drei Stufen entgegen) und bleibt das seit 2026-08-13 auch, obwohl `public/data/` seither nur noch `ag_gemeinde.*` enthält — siehe Abschnitt 1. Die Tabelle unten dokumentiert deshalb weiterhin alle drei Stufen.
 
 | Array | Typ | Inhalt |
 |---|---|---|
@@ -198,10 +200,10 @@ Das ist **kein Suppressions-Code und keine Klassierung, sondern ein Aufrunden**.
 
 1. Die **Höhe kommt ausschliesslich aus der Totalspalte** `B{nn}EMPT`. Die Abteilungsspalten werden nie aufsummiert, um ein Total zu bilden.
 2. Die Abteilungsspalten bestimmen **nur die Mischung**: dominante Gruppe und Top-3. Die daraus abgeleiteten Anteile werden **auf das Total normiert** (`anteil_g = emp_div_g / Σ emp_div`), und die im Panel gezeigten absoluten Zahlen sind `anteil_g · emp_total`. Sie sind als abgeleitete Näherung beschriftet, nicht als ausgewiesener Wert.
-3. Zellen mit `emp_total == 4` bekommen `flags |= 1` (`AMBIGUOUS`). Sie behalten Farbe und Höhe des Werts 4 — das ist der **vom BFS publizierte Wert**, keine Erfindung und keine Interpolation. Zusätzlich werden sie über eine sichtbare Randmarkierung und in der Legende als «Wert 4 = 1 bis 4, exakter Wert nicht ausgewiesen» kenntlich gemacht.
+3. Zellen mit `emp_total == 4` bekommen `flags |= 1` (`AMBIGUOUS`). Sie behalten Farbe und Höhe des Werts 4 — das ist der **vom BFS publizierte Wert**, keine Erfindung und keine Interpolation. *Bis 2026-08-13* wurden sie zusätzlich über eine sichtbare Randmarkierung und in der Legende als «Wert 4 = 1 bis 4, exakter Wert nicht ausgewiesen» kenntlich gemacht — das war eine Markierung einzelner **Hektarzellen** und ist mit der Hektarstufe entfallen (Abschnitt 1). `flags`/`AMBIGUOUS` werden weiterhin gesetzt (auf der intern berechneten Hektarstufe, siehe 6.5) und fliessen unverändert in `ambiguousCells`/`overstatementMax` je Gemeinde ein — nur die Cell-für-Cell-Randmarkierung selbst gibt es nicht mehr, weil keine Hektarzelle mehr gezeichnet wird.
 4. Ist bei einer solchen Zelle auch die Abteilungsmischung mehrdeutig (alle Abteilungswerte gleich 4), wird `noga = 255` gesetzt und die Zelle im reservierten Grau `#BFBFBF` gezeichnet, weil eine dominante Branche nicht bestimmbar ist.
 
-**Offenlegung der Überschätzung.** Weil kleine Werte aufgerundet sind, ist jede Summe eine **Obergrenze**, keine exakte Zahl. Das ETL berechnet je Aggregatstufe zusätzlich `ambiguousCells` und `overstatementMax = 3 · ambiguousCells` (der maximale Betrag, um den die Summe zu hoch sein kann). Panel und Legende weisen ihn aus: «Summe X, davon bis zu Y durch Aufrundung kleiner Werte». Damit ist die Unschärfe beziffert statt verschwiegen.
+**Offenlegung der Überschätzung.** Weil kleine Werte aufgerundet sind, ist jede Summe eine **Obergrenze**, keine exakte Zahl. Das ETL berechnet je Aggregatstufe zusätzlich `ambiguousCells` und `overstatementMax = 3 · ambiguousCells` (der maximale Betrag, um den die Summe zu hoch sein kann). Panel und Legende weisen ihn aus: «Summe X, davon bis zu Y durch Aufrundung kleiner Werte». Damit ist die Unschärfe beziffert statt verschwiegen. Seit dem Entfernen der Hektar- und Kantonstufe (Abschnitt 1) ist die Gemeindesumme die einzige noch gezeigte Zahl, auf die das zutrifft — gemessen liegt die Überschätzung dort im Median bei 15,7 %, im Maximum bei 54,1 % (Obermumpf).
 
 Es wird nichts interpoliert und nichts geraten; dargestellt werden die publizierten Werte, samt quantifizierter Unschärfe.
 
@@ -218,7 +220,7 @@ Damit wird aus der theoretischen Obergrenze `overstatementMax` eine gemessene Gr
 - **nach oben:** die Aufrundung `< 4 → 4` je Hektare und je Abteilung
 - **nach unten:** die nicht verorteten Datensätze (siehe unten)
 
-Die Darstellung bleibt bei der Aggregation aus Hektaren, damit `Σ Hektar = Σ Gemeinde = Kanton` exakt gilt und die Zahlen beim Zoomwechsel nicht springen.
+Die Darstellung bleibt bei der Aggregation aus Hektaren, damit `Σ Hektar = Σ Gemeinde = Kanton` exakt gilt — eine Invariante, die auch dann geprüft bleibt, wenn (seit 2026-08-13) nur noch die Gemeindesumme gezeichnet wird.
 
 **`STATENT_NOLOC_2023.csv` — nicht verortbare Datensätze.** 7249 Zeilen mit **56 073 Beschäftigten schweizweit, rund 0,99 % des Totals**. Ihre Koordinaten sind nur auf Strasse, PLZ oder Gemeinde genau (`NOLOCSCE` 2/3/4); das BFS trennt sie deshalb vom Hektarraster ab.
 
@@ -228,11 +230,13 @@ Die Darstellung bleibt bei der Aggregation aus Hektaren, damit `Σ Hektar = Σ G
 
 Drei Stufen aus derselben Quelle, alle im ETL aus den Hektarwerten berechnet:
 
-| Stufe | Zeilen | Wert | Farbe |
-|---|---|---|---|
-| Kanton | 1 | Σ `emp_total` über alle AG-Hektaren | dominante Gruppe |
-| Gemeinde | ~196 | Σ `emp_total` je `GMDE` | dominante Gruppe je Gemeinde |
-| Hektare | ~20 000–25 000 | `emp_total` je Hektare | dominante Gruppe je Hektare |
+| Stufe | Zeilen | Wert | Farbe | Ausgeliefert? |
+|---|---|---|---|---|
+| Kanton | 1 | Σ `emp_total` über alle AG-Hektaren | dominante Gruppe | nein, seit 2026-08-13 (Abschnitt 1) |
+| Gemeinde | 196 | Σ `emp_total` je `GMDE` | dominante Gruppe je Gemeinde | **ja — einzige Stufe** |
+| Hektare | 17 940 | `emp_total` je Hektare | dominante Gruppe je Hektare | nein, seit 2026-08-13 (Abschnitt 1) |
+
+Alle drei Stufen werden im ETL nach wie vor berechnet (`aggregate.build_hectare`/`build_municipality`/`build_canton`), weil die Gemeindeaggregation und die Mehrdeutigkeits-Zählung je Gemeinde direkt an der Hektarstufe hängen (siehe `entries[i]["ambiguousCells"]` in `aggregate.build_hectare`) und weil die Kantonssumme für die Plausibilitätsprüfung unten gebraucht wird. `cli.py` ruft `binpack.write_level` seit 2026-08-13 aber nur noch für die Gemeindestufe auf; `meta.json` führt entsprechend nur noch `"levels": ["gemeinde"]`.
 
 Auf Gemeinde- und Kantonsstufe wird die Branchenmischung als Summe der **normierten** Abteilungsbeiträge (Abschnitt 6.4, Punkt 2) gebildet, nie als Summe der rohen Abteilungsspalten.
 
@@ -348,43 +352,45 @@ Der ETL **bricht ab**, wenn eine Zeile mit gesetztem `revenue` kein `report_url`
 
 **Basemap.** swisstopo Vektorkacheln, `https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json` — schlüsselfrei. Der Style wird zur Laufzeit von swisstopo geladen; fällt er aus, rendert die Karte auf einfarbigem Grund weiter und zeigt einen Hinweis.
 
-**Layer.** Je LOD-Stufe ein `ColumnLayer` mit `diskResolution: 4` und `angle: 45` (achsparallele Quadrate, passend zum Raster), `extruded: true`, `material: false` für flaches, günstigeres Shading. Alle drei Stufen werden beim Start geladen (zusammen unter 2 MB) und existieren dauerhaft.
+**Layer.** Ansicht B ist seit 2026-08-13 (Abschnitt 1) ein einzelner `ColumnLayer` für die Gemeindestufe, mit `diskResolution: 4` und `angle: 45` (achsparallele Quadrate), `extruded: true`, `material: false` für flaches, günstigeres Shading. Er wird beim Start geladen und existiert dauerhaft, bei jedem Zoom gleich.
 
-**LOD-Überblendung.**
+> **Bis 2026-08-13: LOD-Überblendung.** Ansicht B rendere drei überblendete `ColumnLayer` (Kanton, Gemeinde, Hektare), gewichtet nach Zoom:
+>
+> | Zoom | sichtbar |
+> |---|---|
+> | ≤ 8.625 | nur Kanton |
+> | 8.625 – 9.375 | Kanton → Gemeinde, linear überblendet |
+> | 9.375 – 11.625 | nur Gemeinde |
+> | 11.625 – 12.375 | Gemeinde → Hektare, linear überblendet |
+> | ≥ 12.375 | nur Hektare |
+>
+> Die Übergänge lagen mittig auf Zoom 9 und Zoom 12, mit einer Breite von 0.75 Zoomstufen, überblendet über Opacity **und** Höhe. Implementiert in `src/domain/lod.ts` (`lodWeights`/`activeLevel`/`BAND_CENTERS`). Mit Kanton- und Hektarstufe entfernt (Abschnitt 1); mit der Gemeindestufe permanent sichtbar hätte ein einzelner Kantonsturm unterhalb Zoom 9 keine Information mehr getragen.
 
-| Zoom | sichtbar |
-|---|---|
-| ≤ 8.625 | nur Kanton |
-| 8.625 – 9.375 | Kanton → Gemeinde, linear überblendet |
-| 9.375 – 11.625 | nur Gemeinde |
-| 11.625 – 12.375 | Gemeinde → Hektare, linear überblendet |
-| ≥ 12.375 | nur Hektare |
-
-Die Übergänge liegen mittig auf Zoom 9 und Zoom 12, mit einer Breite von 0.75 Zoomstufen. Überblendet wird über Opacity **und** Höhe, damit die abtretende Stufe nicht als flacher Geisterteppich stehen bleibt. Kein hartes Umschalten.
-
-**Toggle A ↔ B.** Tauscht ausschliesslich die Layer-Menge. Der `viewState` wird nicht angefasst — das ist der Punkt der Übung.
+**Toggle A ↔ B.** Tauscht ausschliesslich die Layer-Menge. Der `viewState` wird nicht angefasst — das ist der Punkt der Übung. Diese Eigenschaft ist von der Entfernung der LOD-Überblendung unberührt: `main.ts` rendert seit 2026-08-13 zwar nicht mehr auf jeden Zoom-Tick neu, ruft aber weiterhin ausschliesslich `map.ts`s schmale `setLayers`/`onZoom`-Schnittstelle auf, nie den `viewState` selbst.
 
 **Höhenskala.** Umschalter linear ↔ logarithmisch, mit **je Ansicht unterschiedlichem Default**:
 
 | Ansicht | Default | Grund |
 |---|---|---|
-| B «Die Vielen» | **logarithmisch** | 17 940 Zellen, Werte von 4 bis 4 670, extrem schief. Linear ergäbe einen Turm und eine Ebene. |
+| B «Die Vielen» | **logarithmisch** | 196 Gemeinden, Werte von 78 (Habsburg) bis 36 677 (Aarau) — Faktor 470, extrem schief. Linear läge die mittlere Gemeinde (Median 890) bei 291 m gegen Aarau bei 12 000 m; logarithmisch bei 7755 m. Linear ergäbe im Bild einen Turm und eine Ebene. |
 | A «Die Sichtbaren» | **linear** | Nur 8 Balken, Umsätze von 0,14 bis 9,03 Mrd. Logarithmisch lägen alle acht zwischen **82 % und 100 %** der Höhe — ein Umsatzunterschied vom Faktor 66 würde zu 22 % Höhenunterschied. Die Ansicht verfehlte damit genau das, wofür sie da ist. |
 
-Formeln: `h_log = log10(1+v)/log10(1+vmax) · H`, `h_linear = v/vmax · H`.
+Formeln: `h_log = log10(1+v)/log10(1+vmax) · H`, `h_linear = v/vmax · H`. Die Bezugsgrösse `vmax` für Ansicht B ist seit 2026-08-13 das **Gemeindemaximum** (Aarau, 36 677), nicht mehr das Kantonstotal (383 203, Abschnitt 1): mit nur einer sichtbaren Stufe reserviert ein fremdes, nie erreichtes Maximum sonst einen Teil der Höhe ungenutzt — beim alten, geteilten Kantons-`vmax` erreichte auf Gemeindestufe kein Balken je die volle Höhe.
 
 Die Legende nennt die aktive Skala unmissverständlich und zeigt drei Referenzhöhen mit echten Zahlen.
 
 **Die beiden Ansichten sind nicht ineinander umrechenbar.** Ansicht A misst Geld, Ansicht B misst Menschen; jede skaliert gegen ihr eigenes Maximum. Ein Balken in A und ein Balken in B haben trotz gleicher Höhe nichts miteinander zu tun. Da der Toggle sie einen Tastendruck auseinander legt, **muss die Legende in beiden Ansichten die dargestellte Einheit benennen** («Beschäftigte» beziehungsweise «Jahresumsatz»), nicht nur die Skalenart.
 
-**Legende.** Fix eingeblendet, nicht ausblendbar: Branchenfarben, graue Klassiert-Kategorie, Höhenmassstab mit aktiver Skala, Datenjahr, Quellenangabe.
+**Legende.** Fix eingeblendet, nicht ausblendbar: Branchenfarben, graue Klassiert-Kategorie, Höhenmassstab mit aktiver Skala, Datenjahr, Quellenangabe, Obergrenzen-Hinweis (Ansicht B). *Bis 2026-08-13* zeigte die Legende in Ansicht B zusätzlich einen Swatch für die transluzente Randmarkierung mehrdeutiger Hektarzellen; er ist mit der Hektarstufe entfallen — eine Zeichenerklärung für eine nicht mehr existierende Markierung wäre irreführender als keine.
 
 **Pflichthinweise.** Beide Sätze sind sichtbarer Bestandteil der jeweiligen Ansicht, nicht in ein Info-Panel versteckt:
 
 1. Ansicht A: Der dargestellte Umsatz ist der **weltweite Konzernumsatz**, nicht die Wertschöpfung am Standort.
-2. Ansicht B: Das BFS rundet aus Datenschutzgründen **alle Werte unter 4 auf 4 auf**. Hektaren mit dem Wert 4 sind deshalb gesondert markiert — ihr wahrer Wert liegt zwischen 1 und 4. Summen sind dadurch Obergrenzen; die maximale Überschätzung wird beziffert.
+2. Ansicht B *(Wortlaut neu gefasst am 2026-08-13, siehe Abschnitt 1)*: Das BFS rundet aus Datenschutzgründen **alle Werte unter 4 auf 4 auf**. Die Gemeindesummen sind dadurch Obergrenzen — im Median rund 16 %, bei kleinen Gemeinden bis 54 % zu hoch. Das Klick-Panel nennt den Betrag je Gemeinde.
 
 > **Abweichung vom Briefing, bewusst.** Das Briefing gab für Ansicht B den Satz «Hektaren mit vier oder weniger Beschäftigten sind aus Datenschutzgründen nur klassiert verfügbar» vor. Die Variablenliste belegt eine andere Regel (Aufrundung statt Klassierung, Abschnitt 6.4). Der vorgegebene Wortlaut wäre selbst irreführend und wurde deshalb sachlich korrigiert; Zweck und Sichtbarkeit des Hinweises bleiben unverändert.
+>
+> **Zweite Abweichung, 2026-08-13.** Der bis dahin gültige Wortlaut («Hektaren mit dem Wert 4 sind gesondert markiert») wurde mit der Hektarstufe selbst falsch: Es gibt keine gezeichnete Hektarzelle mehr, die markiert sein könnte. Der neue Wortlaut benennt stattdessen direkt, was jetzt der einzige sichtbare Effekt der Aufrundung ist — die Verzerrung der Gemeindesummen —, und beziffert sie (Median, Maximum) statt nur ein Intervall („zwischen 1 und 4“) zu nennen, das auf Gemeindeebene ohnehin nicht mehr zutrifft.
 
 ---
 
@@ -436,7 +442,7 @@ Alles Weitere leitet sich daraus ab: Kantonsfläche, Gemeindeliste, Artefaktname
 ## 13. Abnahmekriterien
 
 1. `npm run build:data && npm run build` läuft aus leerem Zustand durch.
-2. Die Hektaransicht bleibt beim Drehen und Zoomen flüssig; Ziel 60 fps auf einem Laptop ohne dedizierte GPU.
+2. Ansicht B bleibt beim Drehen und Zoomen flüssig; Ziel 60 fps auf einem Laptop ohne dedizierte GPU. *(Ursprünglich als Sorge um die Hektarstufe mit bis zu 17 940 Balken formuliert; mit nur noch 196 Gemeindebalken seit 2026-08-13 trivial erfüllt.)*
 3. Jede Zahl in Ansicht A ist auf eine Quell-URL im CSV zurückführbar; der ETL erzwingt das.
 4. Das README dokumentiert den Kantonswechsel.
 5. Beide Pflichthinweise sind in der jeweiligen Ansicht sichtbar, ohne Interaktion.

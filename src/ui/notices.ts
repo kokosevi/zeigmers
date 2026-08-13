@@ -9,10 +9,19 @@ const TEXTS: Record<ViewName, string> = {
     'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort. ' +
     'Die Balkenhöhen vergleichen zudem unterschiedliche Konzernwährungen (CHF, EUR, USD) ' +
     'unverändert, ohne Umrechnung in eine gemeinsame Einheit.',
+  // Neu gefasst am 2026-08-13, als die Hektarstufe entfiel (siehe README):
+  // der alte Wortlaut verwies auf eine "gesonderte Markierung" von Hektaren
+  // mit Wert 4 — die es, ohne gezeichnete Hektarzellen, nicht mehr gibt. Die
+  // Aufrundung selbst bleibt und wirkt jetzt ausschliesslich auf die einzig
+  // noch gezeigte Zahl, die Gemeindesumme; die Grössenordnung der Verzerrung
+  // (Median ~16 %, bis 54 % bei kleinen Gemeinden) ist gemessen, nicht
+  // geschätzt — siehe README, Abschnitt "Warum die Hektarsumme …". Wortlaut
+  // exakt wie vorgegeben, nicht umformulieren.
   viele:
     'Das BFS rundet aus Datenschutzgründen alle Werte unter 4 auf 4 auf. ' +
-    'Hektaren mit dem Wert 4 sind gesondert markiert — ihr wahrer Wert liegt ' +
-    'zwischen 1 und 4. Summen sind dadurch Obergrenzen.',
+    'Die Gemeindesummen sind dadurch Obergrenzen — im Median rund 16 %, bei ' +
+    'kleinen Gemeinden bis 54 % zu hoch. Das Klick-Panel nennt den Betrag je ' +
+    'Gemeinde.',
 }
 
 export function renderNotices(view: ViewName): void {

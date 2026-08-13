@@ -6,14 +6,10 @@
   },
   "year": 2023,
   "levels": [
-    "kanton",
-    "gemeinde",
-    "hektar"
+    "gemeinde"
   ],
   "counts": {
-    "kanton": 1,
-    "gemeinde": 196,
-    "hektar": 17940
+    "gemeinde": 196
   },
   "source": "Bundesamt für Statistik (BFS), STATENT",
   "hectareCsv": "STATENT_2023.csv"
