@@ -204,7 +204,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         from . import companies, geocode, noga
 
-        path = config.DATA_MANUAL / "ag_listed_companies.csv"
+        path = companies.csv_path()
         rows = companies.load_csv(path)
         filled = geocode.fill_missing(rows)
         if filled:

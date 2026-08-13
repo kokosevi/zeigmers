@@ -28,7 +28,28 @@ REVENUE_TYPES = {"net_sales", "operating_income"}
 Fetcher = Callable[[str], bytes]
 
 
+def csv_path() -> Path:
+    """Pfad zur Firmen-CSV des aktuell in `config.CANTON` gesetzten Kantons.
+
+    Ein Kantonswechsel ändert nur `config.CANTON["code"]`; der Dateiname folgt
+    automatisch. Diese Datei selbst bleibt aber Handarbeit (siehe `load_csv`),
+    das ist der einzige Schritt, den ein Kantonswechsel nicht automatisieren kann.
+    """
+    return config.DATA_MANUAL / f"{config.CANTON['code'].lower()}_listed_companies.csv"
+
+
 def load_csv(path: Path) -> list[dict]:
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Firmen-CSV fehlt: {path}\n"
+            f"Für einen Kantonswechsel ist das der einzige Schritt, der sich nicht "
+            f"automatisch erzeugen lässt: Welche Unternehmen mit Sitz in "
+            f"{config.CANTON['name']} ({config.CANTON['code']}) an der SIX kotiert "
+            f"sind und was sie ausweisen, muss von Hand recherchiert und unter "
+            f"diesem Pfad als CSV angelegt werden (Spalten wie in "
+            f"data/manual/ag_listed_companies.csv, siehe README, Abschnitt "
+            f"\"Kantonswechsel\")."
+        )
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         actual = tuple(reader.fieldnames or ())

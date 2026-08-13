@@ -171,25 +171,29 @@ Ein Kantonswechsel ist als Dreischritt gedacht:
 
 1. `CANTON` in `etl/src/draufsicht_etl/config.py` auf den neuen Kanton setzen
    (`code`, `bfs_nr`, `name`).
-2. Eine neue Firmen-CSV unter `data/manual/` anlegen — Spalten wie in
+2. Die Firmen-CSV unter dem daraus abgeleiteten Namen anlegen:
+   `data/manual/<code>_listed_companies.csv` (kleingeschrieben, z. B.
+   `data/manual/zh_listed_companies.csv` für `code = "ZH"`) —
+   `companies.csv_path()` löst diesen Pfad automatisch aus `CANTON["code"]`
+   auf, keine weitere Änderung am Code nötig. Spalten wie in
    `data/manual/ag_listed_companies.csv`, ein Unternehmen pro Zeile, jede
    `revenue`-Zeile mit `report_url`, `fiscal_year`, `revenue_currency` und
    `revenue_type` belegt (`companies.validate()` erzwingt das beim Build).
    `companies.candidates_from_lindas(canton_code)` kann beim Auffinden von
    Firmenkandidaten mit Sitz im neuen Kanton helfen; welche davon
    SIX-kotiert sind und welche Kennzahlen sie ausweisen, bleibt Recherche in
-   den jeweiligen Geschäftsberichten. **Stand heute liest `cli.py` dafür
-   immer den festen Namen `data/manual/ag_listed_companies.csv`** (nicht von
-   `CANTON["code"]` abgeleitet) — die neue Datei muss also entweder diesen
-   Namen tragen, oder die eine Zeile in `cli.py` (`companies`-Zweig) wird auf
-   `f"{config.CANTON['code'].lower()}_listed_companies.csv"` umgestellt.
+   den jeweiligen Geschäftsberichten. Fehlt die Datei für den konfigurierten
+   Kanton, bricht `npm run build:data` mit einer klaren deutschen
+   Fehlermeldung ab, die den erwarteten Pfad nennt, statt mit einem rohen
+   `FileNotFoundError`.
 3. `npm run build:data` laufen lassen.
 
 Alles andere — Gemeindegrenzen, Hektarraster, BFS-Referenzsumme, das
-Plausibilitätsfenster — leitet sich selbst aus der Geometrie und `bfs_nr` her
-und braucht keine eigene Tabelle. **Der einzige Schritt, der von Hand bleibt,
-ist die Firmen-CSV** — welche Unternehmen im neuen Kanton kotiert sind und was
-sie ausweisen, lässt sich nicht automatisiert recherchieren.
+Plausibilitätsfenster, der Pfad der Firmen-CSV selbst — leitet sich
+automatisch aus `CANTON` und der Geometrie her und braucht keinen Eingriff
+in den Code. **Der einzige Schritt, der von Hand bleibt, ist der Inhalt der
+Firmen-CSV** — welche Unternehmen im neuen Kanton kotiert sind und was sie
+ausweisen, lässt sich nicht automatisiert recherchieren.
 
 ## Befehlsübersicht
 
