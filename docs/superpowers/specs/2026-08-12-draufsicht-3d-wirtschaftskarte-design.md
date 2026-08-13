@@ -241,7 +241,11 @@ Okabe-Ito umfasst acht Farben, NOGA hat 21 Abschnitte (A–U). Das geht nicht au
 | Öffentlich/Bildung/Gesundheit | O, P, Q |
 | Übrige | R, S, T, U |
 
-Zugeordnet auf die acht Okabe-Ito-Töne plus drei ergänzte, gegen Deuteranopie und Protanopie geprüfte Farben. Die Zuordnung lebt **einmal**, in `etl/noga_groups.json`, und wird beim Build nach `src/domain/noga.generated.ts` geschrieben. Beide Ansichten benutzen zwingend dieselbe Tabelle. `#999999` ist für «nicht bestimmbar» reserviert und wird nie einer Branche zugewiesen.
+Zugeordnet auf die acht Okabe-Ito-Töne plus drei ergänzte Farben (`#004949`, `#DDCC77`, `#490092`).
+
+**Die Farbtauglichkeit ist gemessen, nicht behauptet.** `etl/tests/test_palette.py` simuliert Protanopie und Deuteranopie nach Machado et al. (2009, Schweregrad 1.0) und verlangt über alle Farbpaare — einschliesslich des reservierten Graus — einen Mindestabstand von 50.0 im simulierten sRGB-Raum. Gemessener Ist-Wert: **51.5**. Dieser Wert ist zugleich die Obergrenze; er wird von `industrie` (`#0072B2`) gegen `gastgewerbe` (`#CC79A7`) gesetzt, also von zwei *originalen* Okabe-Ito-Farben. Eine bessere Trennung wäre nur erreichbar, indem man Okabe-Ito selbst verlässt.
+
+Ein früherer Entwurf verwendete `#924900` für Unternehmensdienstleistungen. Die Simulation wies es als das am schlechtesten unterscheidbare Farbpaar der gesamten Palette aus (45.6 gegen `handel` `#D55E00` unter Protanopie, beides Rot-Orange-Töne, die sich nur in Helligkeit unterscheiden — genau der Dimension, die Farbfehlsichtigkeit staucht). Ersetzt durch `#DDCC77`. Die Zuordnung lebt **einmal**, in `etl/noga_groups.json`, und wird beim Build nach `src/domain/noga.generated.ts` geschrieben. Beide Ansichten benutzen zwingend dieselbe Tabelle. `#999999` ist für «nicht bestimmbar» reserviert und wird nie einer Branche zugewiesen.
 
 Die STATENT-Hektardaten liefern NOGA-**Abteilungen** (2-Steller), nicht Abschnitte. `noga_groups.json` enthält deshalb die vollständige Kette **Abteilung → Abschnitt → Gruppe → Farbe**, mit allen 88 gültigen NOGA-2008-Abteilungsnummern als Schlüssel. Ein Test stellt sicher, dass jede in den Daten auftretende Abteilung abgedeckt ist; eine unbekannte Abteilung bricht das ETL ab, statt still in «Übrige» zu fallen.
 
