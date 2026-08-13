@@ -1,0 +1,30 @@
+[project]
+name = "draufsicht-etl"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "pandas>=2.2",
+    "geopandas>=1.0",
+    "pyogrio>=0.10",
+    "pyproj>=3.6",
+    "shapely>=2.1",  # force_2d() gibt es erst ab 2.1
+    "requests>=2.32",
+    "openpyxl>=3.1",
+    "matplotlib>=3.9",
+]
+
+[project.scripts]
+draufsicht-etl = "draufsicht_etl.cli:run"
+
+[dependency-groups]
+dev = ["pytest>=8.3"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/draufsicht_etl"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
