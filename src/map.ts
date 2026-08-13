@@ -15,7 +15,7 @@ export const INITIAL_VIEW = {
 
 export interface MapHandle {
   readonly map: maplibregl.Map
-  setLayers(layers: unknown[]): void
+  setLayers(layers: LayersList): void
   onZoom(handler: (zoom: number) => void): void
   getZoom(): number
 }
@@ -40,10 +40,7 @@ export function createMap(container: HTMLElement): MapHandle {
 
   return {
     map,
-    // deck.gl's eigener LayersList-Typ verlangt Layer-Instanzen; MapHandle hält
-    // sich bewusst an `unknown[]`, damit map.ts nicht von Layer-Modulen abhängt.
-    // Die Umwandlung ist der bewusste Übergabepunkt zwischen den beiden Typwelten.
-    setLayers: (layers) => overlay.setProps({ layers: layers as LayersList }),
+    setLayers: (layers) => overlay.setProps({ layers }),
     onZoom: (handler) => {
       map.on('zoom', () => handler(map.getZoom()))
       handler(map.getZoom())
