@@ -133,7 +133,7 @@ dependencies = [
     "geopandas>=1.0",
     "pyogrio>=0.10",
     "pyproj>=3.6",
-    "shapely>=2.0",
+    "shapely>=2.1",  # force_2d() gibt es erst ab 2.1
     "requests>=2.32",
     "openpyxl>=3.1",
     "matplotlib>=3.9",
@@ -324,7 +324,9 @@ Expected: Hilfetext mit allen sieben Subkommandos, Rückgabecode 0
     "build:data": "uv run --project etl draufsicht-etl all"
   },
   "dependencies": {
-    "deck.gl": "^9.0.0",
+    "@deck.gl/core": "^9.0.0",
+    "@deck.gl/layers": "^9.0.0",
+    "@deck.gl/mapbox": "^9.0.0",
     "maplibre-gl": "^4.7.1"
   },
   "devDependencies": {
@@ -362,7 +364,9 @@ Expected: Hilfetext mit allen sieben Subkommandos, Rückgabecode 0
 `vite.config.ts`:
 
 ```ts
-import { defineConfig } from 'vite'
+// defineConfig stammt aus vitest/config, nicht aus vite — sonst lehnt TypeScript
+// den `test`-Block als unbekannte Eigenschaft ab und `npm run build` bricht ab.
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   build: { target: 'es2022', assetsInlineLimit: 0 },
@@ -445,6 +449,7 @@ git commit -m "chore: Repo-Gerüst, ETL-CLI-Skelett und Vite-Frontend"
 `etl/tests/test_fetch.py`:
 
 ```python
+import hashlib
 import json
 
 import pytest
@@ -468,10 +473,9 @@ def test_download_writes_file_and_manifest(tmp_path):
 
     manifest = json.loads((dest.parent / "manifest.json").read_text())
     entry = manifest["https://example.test/a"]
-    # sha256 von b"hallo"
+    assert entry["sha256"] == hashlib.sha256(b"hallo").hexdigest()
     assert entry["sha256"] == (
-        "d3751d33f9cd5673c0f0a3e8a13d5a25a9e9c73f7e4b0b6a2b1e7c2b0f2d0f1e"[:0]
-        or entry["sha256"]
+        "d3751d33f9cd5049c4af2b462735457e4d3baf130bcbb87f389e349fbaeb20b9"
     )
     assert entry["bytes"] == 5
     assert entry["path"] == "a.bin"
@@ -1010,9 +1014,11 @@ def generate_typescript(table: NogaTable, out: Path) -> None:
     ]
     for group in table.groups:
         r, g, b = _hex_to_rgb(group.color)
-        lines.append(
-            f"  {{ key: {group.key!r}, label: {group.label!r}, color: [{r}, {g}, {b}] }},"
-        )
+        # json.dumps liefert gültige TS-Stringliterale mit korrektem Escaping.
+        # Ein nachträgliches replace("'", '"') würde Apostrophe in Labels zerstören.
+        key = json.dumps(group.key, ensure_ascii=False)
+        label = json.dumps(group.label, ensure_ascii=False)
+        lines.append(f"  {{ key: {key}, label: {label}, color: [{r}, {g}, {b}] }},")
     r, g, b = _hex_to_rgb(table.unknown_color)
     lines += [
         "]",
@@ -1022,7 +1028,7 @@ def generate_typescript(table: NogaTable, out: Path) -> None:
         "",
     ]
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text("\n".join(lines).replace("'", '"'), encoding="utf-8")
+    out.write_text("\n".join(lines), encoding="utf-8")
 ```
 
 - [ ] **Step 5: Test laufen lassen, Erfolg prüfen**
@@ -1301,8 +1307,8 @@ def write_geojson(b: Boundaries, out: Path, *, simplify_percent: float = 8.0) ->
         subprocess.run(
             [
                 "npx", "--no-install", "mapshaper", str(tmp),
-                "-simplify", f"visvalingam", f"{percent}%", "keep-shapes",
-                "-o", "precision=0.00001", "format=geojson", str(out),
+                "-simplify", "visvalingam", f"{percent}%", "keep-shapes",
+                "-o", str(out), "precision=0.00001", "format=geojson",
             ],
             check=True,
             cwd=config.ROOT,
@@ -1707,8 +1713,15 @@ def test_resolve_raises_on_missing_role():
 
 
 def test_resolve_raises_on_mixed_prefixes():
+    # Abteilung 55 kommt in GOOD nicht vor, sonst schlägt die Dublettenprüfung
+    # zuerst zu und der Präfixtest würde gar nicht erreicht.
     with pytest.raises(ValueError, match="uneinheitlich"):
-        columns.resolve([*GOOD, "B2410EMP"])
+        columns.resolve([*GOOD, "B2455EMP"])
+
+
+def test_resolve_raises_on_duplicate_division():
+    with pytest.raises(ValueError, match="mehrfach"):
+        columns.resolve([*GOOD, "B2310EMP", "B2310EMP "])
 
 
 def test_resolve_raises_on_ambiguous_role():
@@ -2317,8 +2330,11 @@ def test_ambiguous_cells_are_counted_consistently_across_levels(table):
     hectare = aggregate.build_hectare(cells, table, _municipalities())
     canton = aggregate.build_canton(hectare, box(2600000, 1200000, 2602000, 1201000))
 
+    # Mehrdeutigkeit ist definitionsgemäss eine Eigenschaft der Hektarzellen.
+    # Höhere Stufen zählen sie deshalb über `source`, nicht über eigene Flags.
     assert aggregate.stats(hectare)["ambiguousCells"] == 2
-    assert aggregate.stats(canton)["ambiguousCells"] == 2
+    assert aggregate.stats(canton, source=hectare)["ambiguousCells"] == 2
+    assert aggregate.stats(canton)["ambiguousCells"] == 0
 
 
 def test_stats_overstatement_is_three_times_ambiguous_cells(table):
@@ -2550,11 +2566,6 @@ def stats(level: LevelData, *, source: LevelData | None = None) -> dict:
 Run: `uv run --project etl pytest etl/tests/test_aggregate.py -v`
 Expected: 20 passed
 
-Hinweis für `test_ambiguous_cells_are_counted_consistently_across_levels`: `stats`
-muss dort mit `source=hectare` aufgerufen werden. Falls der Test scheitert, ist der
-Aufruf im Test auf `aggregate.stats(canton, source=hectare)` zu korrigieren — die
-Zählung mehrdeutiger Zellen bezieht sich definitionsgemäss auf die Hektarstufe.
-
 - [ ] **Step 5: Committen**
 
 ```bash
@@ -2667,6 +2678,17 @@ def test_municipality_stores_full_distribution(tmp_path, table):
     assert arrays["dist"].reshape(level.count, -1).shape == (3, table.group_count)
 
 
+def test_municipality_also_stores_the_gemeinde_index(tmp_path, table):
+    """Ohne diesen Verweis kann das Frontend einer Gemeindezeile keinen Namen
+    zuordnen, sobald Gemeinden ohne Beschäftigte verworfen wurden."""
+    level = _level(name="gemeinde")
+    bin_path, json_path = binpack.write_level(
+        level, table, tmp_path, year=2023, canton="AG"
+    )
+    arrays, _ = binpack.read_level(bin_path, json_path)
+    np.testing.assert_array_equal(arrays["gemeindeIdx"], level.gemeinde_idx)
+
+
 def test_metadata_carries_groups_year_and_stats(tmp_path, table):
     level = _level()
     _, json_path = binpack.write_level(
@@ -2751,10 +2773,13 @@ def _collect(level: LevelData) -> dict[str, np.ndarray]:
         groups, values = top3(level.dist.astype("float64"))
         arrays["mixValue"] = values.reshape(-1)
         arrays["mixGroup"] = groups.reshape(-1)
-        assert level.gemeinde_idx is not None
-        arrays["gemeindeIdx"] = level.gemeinde_idx.astype("uint16")
     else:
         arrays["dist"] = level.dist.astype("float32").reshape(-1)
+
+    # Auch die Gemeindestufe braucht den Verweis: Gemeinden ohne Beschäftigte
+    # werden verworfen, Zeilenindex und Gemeindetabelle laufen sonst auseinander.
+    if level.gemeinde_idx is not None:
+        arrays["gemeindeIdx"] = level.gemeinde_idx.astype("uint16")
 
     arrays["noga"] = level.noga.astype("uint8")
     arrays["flags"] = level.flags.astype("uint8")
@@ -2839,7 +2864,7 @@ def read_level(bin_path: Path, json_path: Path) -> tuple[dict[str, np.ndarray], 
 - [ ] **Step 4: Test laufen lassen, Erfolg prüfen**
 
 Run: `uv run --project etl pytest etl/tests/test_binpack.py -v`
-Expected: 7 passed
+Expected: 8 passed
 
 - [ ] **Step 5: Committen**
 
@@ -2990,25 +3015,41 @@ Und in `main()`:
 ```python
     if args.command in ("statent", "all"):
         result = _run_statent(args.force)
-        if args.command == "all":
-            from . import sanity_map
+        if args.command == "statent":
+            return 0
 
-            out = sanity_map.render(
-                result["municipality"], result["bounds"].municipalities,
-                config.DATA_INTERIM / "sanity_gemeinde.png",
-            )
-            print(f"[sanity-map] {out}")
-            total = sum(
-                p.stat().st_size for p in config.PUBLIC_DATA.glob("*")
-                if p.is_file()
-            )
-            print(f"[all] public/data: {total / 1024:.0f} KB "
-                  f"(Budget {config.MAX_PUBLIC_DATA_BYTES / 1024:.0f} KB)")
-            if total > config.MAX_PUBLIC_DATA_BYTES:
-                print("[all] FEHLER: Grössenbudget überschritten")
-                return 1
-        return 0
+        # `all` läuft weiter: Firmen (Task 15), Kontrollkarte, Budgetprüfung.
+        # Kein vorzeitiges `return` — sonst wird companies.json nie geschrieben.
+        from . import sanity_map
+
+        out = sanity_map.render(
+            result["municipality"], result["bounds"].municipalities,
+            config.DATA_INTERIM / "sanity_gemeinde.png",
+        )
+        print(f"[sanity-map] {out}")
 ```
+
+Der Budget-Check bildet den Abschluss von `main()` und läuft erst, nachdem auch
+`companies` gelaufen ist:
+
+```python
+    if args.command == "all":
+        total = sum(
+            p.stat().st_size for p in config.PUBLIC_DATA.glob("*") if p.is_file()
+        )
+        print(f"[all] public/data: {total / 1024:.0f} KB "
+              f"(Budget {config.MAX_PUBLIC_DATA_BYTES / 1024:.0f} KB)")
+        if total > config.MAX_PUBLIC_DATA_BYTES:
+            print("[all] FEHLER: Grössenbudget überschritten")
+            return 1
+    return 0
+```
+
+**Reihenfolge in `main()`, verbindlich:** `noga` → `boundaries` → `statent`/`all`
+→ `sanity-map` → `companies` → Budget-Check. In Task 10 existiert der
+`companies`-Zweig noch nicht; er wird in Task 15 Step 7 zwischen Kontrollkarte
+und Budget-Check eingesetzt. Bis dahin schreibt `all` kein `companies.json`, und
+der Budget-Check läuft direkt nach der Kontrollkarte.
 
 - [ ] **Step 3: Den Abnahmetest schreiben**
 
@@ -4143,7 +4184,7 @@ def test_validate_rejects_missing_coordinates():
 
 
 def test_validate_rejects_unknown_noga_group():
-    with pytest.raises(ValueError, match="gibt.s.nicht|unbekannt"):
+    with pytest.raises(ValueError, match="unbekannt"):
         companies.validate([_row(noga_group="raumfahrt")])
 
 
@@ -4503,7 +4544,7 @@ git commit -m "feat: Ansicht A mit erzwungener Quellenpflicht und Geokodierung"
   - `visible.CompanyData = { canton: string; companies: Company[]; stats: {count, withRevenue, max} }`
   - `visible.UNKNOWN_BAR_FRACTION = 0.4`
   - `visible.companyElevations(data: CompanyData, maxHeight: number, mode: ScaleMode): Float32Array`
-  - `visible.buildCompanyLayer(data: CompanyData, mode: ScaleMode, onClick: (c: Company) => void): ScatterplotLayer | ColumnLayer`
+  - `visible.buildCompanyLayer(data: CompanyData, mode: ScaleMode, onClick: (c: Company) => void): ColumnLayer<Company>`
   - `visible.loadCompanies(base?: string): Promise<CompanyData>`
 
 - [ ] **Step 1: Den fehlschlagenden Test schreiben**
