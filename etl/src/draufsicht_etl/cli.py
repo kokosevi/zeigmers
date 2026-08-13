@@ -6,6 +6,8 @@ import argparse
 import sys
 from collections.abc import Sequence
 
+from . import config
+
 COMMANDS: dict[str, str] = {
     "inspect-statent": "Rohdaten laden und Spaltenbericht ausgeben",
     "boundaries": "Kantons- und Gemeindegrenzen aufbereiten",
@@ -30,6 +32,17 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+
+    if args.command == "noga":
+        from . import noga
+
+        table = noga.load_table()
+        out = config.ROOT / "src" / "domain" / "noga.generated.ts"
+        noga.generate_typescript(table, out)
+        print(f"[noga] {table.group_count} Gruppen, "
+              f"{len(table.division_to_group)} Abteilungen -> {out}")
+        return 0
+
     print(f"[draufsicht-etl] {args.command} — noch nicht implementiert")
     return 0
 
