@@ -103,12 +103,15 @@ def test_resolve_asset_url_appends_master():
 
 
 def test_resolve_asset_url_raises_on_no_match():
-    with pytest.raises(LookupError, match="1999"):
+    with pytest.raises(LookupError, match="1999") as excinfo:
         fetch.resolve_asset_url(
             "https://model.test/x.model.json",
             r"Geodaten\s+1999",
             fetcher=lambda _: MODEL_JSON,
         )
+    assert "Geodaten 2023" in str(excinfo.value), (
+        "Fehlermeldung muss auch die verfuegbaren Titel auflisten"
+    )
 
 
 def test_resolve_asset_url_raises_on_ambiguous_match():
