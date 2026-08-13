@@ -33,6 +33,37 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
+    if args.command == "inspect-statent":
+        from . import fetch, inspect_statent
+
+        geo_url = fetch.statent_geodata_url(config.STATENT_YEAR)
+        var_url = fetch.statent_variables_url()
+        zip_path = fetch.download(
+            geo_url, config.DATA_RAW / f"statent_{config.STATENT_YEAR}.zip",
+            force=args.force,
+        )
+        fetch.download(
+            var_url, config.DATA_RAW / "statent_variablenliste.xlsx", force=args.force
+        )
+
+        out = config.DATA_INTERIM / "statent_inspection.json"
+        report = inspect_statent.run(zip_path, out)
+
+        print(f"ZIP        : {report['zip']}")
+        print(f"Hektar-CSV : {report['hectareCsv']}")
+        print(f"Zeilen     : {report['rows']:,}")
+        print(f"Spalten    : {report['columnCount']}")
+        print("\nDateien im ZIP:")
+        for m in report["members"][:15]:
+            print(f"  {m['bytes']:>14,}  {m['name']}")
+        print("\nErste 40 Spalten:")
+        print(f"  {'Spalte':<16}{'dtype':<10}{'min':>12}{'max':>14}{'nulls':>10}{'distinct':>10}")
+        for c in report["columns"][:40]:
+            print(f"  {c['name']:<16}{c['dtype']:<10}{str(c['min']):>12}"
+                  f"{str(c['max']):>14}{c['nulls']:>10}{c['distinct']:>10}")
+        print(f"\nVollständiger Bericht: {out}")
+        return 0
+
     if args.command == "noga":
         from . import noga
 
