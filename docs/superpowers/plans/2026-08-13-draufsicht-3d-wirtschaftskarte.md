@@ -3793,8 +3793,8 @@ git commit -m "feat: Binärlader, Höhenskala und Farbexpansion"
 - Consumes: `loader.Level`, `scale.computeElevations`, `colors.buildColors`
 - Produces:
   - `many.MAX_BAR_HEIGHT_M = 12000`
-  - `many.LayerOptions = { level: Level; mode: ScaleMode; opacity: number; visible: boolean;
-    onClick?: (index: number) => void }`
+  - `many.LayerOptions = { level: Level; vmax: number; mode: ScaleMode; opacity: number;
+    visible: boolean; onClick?: (index: number) => void }`
   - `many.buildColumnLayer(id: string, options: LayerOptions): ColumnLayer`
   - `many.radiusFor(level: string): number`
 
@@ -3829,15 +3829,14 @@ export interface LayerOptions {
 }
 
 export function buildColumnLayer(id: string, options: LayerOptions): ColumnLayer {
-  const { level, mode, opacity, visible, onClick } = options
+  const { level, vmax, mode, opacity, visible, onClick } = options
   const { arrays, meta } = level
 
-  const elevations = computeElevations(
-    arrays.values,
-    meta.stats.max,
-    MAX_BAR_HEIGHT_M,
-    mode,
-  )
+  // vmax kommt von aussen und ist fuer alle drei Stufen dasselbe. Wuerde jede
+  // Stufe auf ihr eigenes Maximum normieren, erreichten die groesste Hektare
+  // (4'670 Beschaeftigte) und die groesste Gemeinde (36'677) dieselbe Hoehe --
+  // die Balken sprengen beim LOD-Uebergang und die Karte behauptete etwas Falsches.
+  const elevations = computeElevations(arrays.values, vmax, MAX_BAR_HEIGHT_M, mode)
   const colors = buildColors(arrays.noga, arrays.flags)
 
   return new ColumnLayer({
@@ -4090,12 +4089,18 @@ async function start() {
 
   const mode: ScaleMode = 'log'
 
+  // Eine gemeinsame Bezugsgroesse fuer alle drei Stufen: das Kantonstotal.
+  // Nur so sind Balkenhoehen ueber die Stufen hinweg vergleichbar und der
+  // Uebergang bleibt stetig.
+  const sharedVmax = levels.kanton.meta.stats.max
+
   const render = (zoom: number) => {
     const weights = lodWeights(zoom)
     handle.setLayers(
       LEVEL_NAMES.map((name) =>
         buildColumnLayer(name, {
           level: levels[name],
+          vmax: sharedVmax,
           mode,
           opacity: weights[name],
           visible: weights[name] > 0.01,
