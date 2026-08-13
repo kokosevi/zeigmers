@@ -47,7 +47,7 @@ Diese gelten für **jede** Task. Sie werden in den Tasks nicht wiederholt.
 - `overstatementMax = 3 · ambiguousCells`.
 
 **Farb- und Textkonstanten**
-- Reservierte Farbe für «nicht bestimmbar»: `#999999`. Nie einer Branche zuweisen.
+- Reservierte Farbe für «nicht bestimmbar»: `#BFBFBF` (gemessen, siehe Spec 7). Nie einer Branche zuweisen.
 - `NOGA_UNKNOWN_INDEX = 255`.
 - Pflichthinweis Ansicht A, wörtlich:
   «Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.»
@@ -244,7 +244,7 @@ HECTARE_CENTER_OFFSET_M = HECTARE_SIZE_M / 2.0
 FLAG_AMBIGUOUS = 1
 AMBIGUOUS_VALUE = 4
 NOGA_UNKNOWN_INDEX = 255
-UNKNOWN_COLOR_HEX = "#999999"
+UNKNOWN_COLOR_HEX = "#BFBFBF"
 
 MAX_PUBLIC_DATA_BYTES = 2 * 1024 * 1024
 MAX_BOUNDARIES_BYTES = 300 * 1024
@@ -886,7 +886,7 @@ Abteilungen werden als Bereiche notiert, damit die Datei lesbar bleibt und nachp
 ```json
 {
   "nomenclature": "NOGA 2008",
-  "unknownColor": "#999999",
+  "unknownColor": "#BFBFBF",
   "sections": {
     "A": "1-3",  "B": "5-9",  "C": "10-33", "D": "35",   "E": "36-39",
     "F": "41-43","G": "45-47","H": "49-53", "I": "55-56","J": "58-63",
@@ -3437,7 +3437,7 @@ function fixture() {
       flags: { byteOffset: 30, length: 2, type: 'Uint8' },
     },
     nogaGroups: [{ key: 'a', label: 'A', color: '#000000' }],
-    unknownColor: '#999999', unknownIndex: 255,
+    unknownColor: '#BFBFBF', unknownIndex: 255,
     stats: { min: 4, max: 250, sum: 254, p99: 250, ambiguousCells: 1, overstatementMax: 3 },
     gemeinden: [{ bfsNr: 4001, name: 'Aarau' }, { bfsNr: 4002, name: 'Baden' }],
   }
