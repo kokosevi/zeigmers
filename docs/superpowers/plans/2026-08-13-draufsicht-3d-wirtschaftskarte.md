@@ -3283,7 +3283,7 @@ Wettingen, Wohlen und Rheinfelden. Auf Freigabe warten, bevor Task 11 beginnt.
 - Produces:
   - `map.MapHandle` — Interface mit
     - `readonly map: maplibregl.Map`
-    - `setLayers(layers: unknown[]): void`
+    - `setLayers(layers: LayersList): void` (`LayersList` aus `@deck.gl/core`)
     - `onZoom(handler: (zoom: number) => void): void`
     - `getZoom(): number`
   - `map.createMap(container: HTMLElement): MapHandle`
@@ -3322,6 +3322,7 @@ In `src/style.css` ergänzen:
 - [ ] **Step 2: `map.ts` implementieren**
 
 ```ts
+import type { LayersList } from '@deck.gl/core'
 import { MapboxOverlay } from '@deck.gl/mapbox'
 import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
@@ -3338,7 +3339,7 @@ export const INITIAL_VIEW = {
 
 export interface MapHandle {
   readonly map: maplibregl.Map
-  setLayers(layers: unknown[]): void
+  setLayers(layers: LayersList): void
   onZoom(handler: (zoom: number) => void): void
   getZoom(): number
 }
