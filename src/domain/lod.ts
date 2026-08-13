@@ -15,13 +15,17 @@ function ramp(zoom: number, centre: number): number {
 /** Gewichte der drei Stufen. Summiert sich immer auf 1, damit die Überblendung
  *  keine Lücke und keine doppelte Deckung erzeugt.
  *
- *  Das setzt voraus, dass sich die beiden Übergangsbänder nicht überlappen:
- *  Band 1 liegt in [kantonGemeinde - BAND_WIDTH/2, kantonGemeinde + BAND_WIDTH/2],
- *  Band 2 entsprechend um gemeindeHektar. Nur wenn toMunicipality bereits 1 ist,
- *  bevor toHectare die Null verlässt, gilt hektar-Gewicht = 0 solange
- *  (1 - toMunicipality) > 0 — sonst würde `1 - toMunicipality*toHectare + toHectare`
- *  grösser als 1. Mit den aktuellen Konstanten (Bandbreite 0.75, Zentren 3
- *  Zoomstufen auseinander) ist das immer erfüllt. */
+ *  Algebraisch gilt kanton + gemeinde + hektar = 1 + toHectare * (1 - toMunicipality).
+ *  Das ist nur dann > 1, wenn toHectare > 0 UND toMunicipality < 1 gleichzeitig gelten
+ *  — also wenn sich die beiden Übergangsbänder überlappen. Band 1 (toMunicipality)
+ *  liegt in [kantonGemeinde - BAND_WIDTH/2, kantonGemeinde + BAND_WIDTH/2], mit den
+ *  aktuellen Konstanten also [8.625, 9.375]. Band 2 (toHectare) liegt entsprechend in
+ *  [11.625, 12.375]. Zwischen den Bändern liegt eine Lücke von 11.625 - 9.375 = 2.25
+ *  Zoomstufen, in der toMunicipality bereits 1 und toHectare noch 0 ist — die Bänder
+ *  überlappen sich also nicht, und die Summe bleibt exakt 1. Das gilt nur, solange
+ *  BAND_WIDTH kleiner bleibt als der Abstand zwischen den Bandzentren (hier: 3
+ *  Zoomstufen); werden BAND_WIDTH oder BAND_CENTERS künftig geändert, muss das erneut
+ *  geprüft werden. */
 export function lodWeights(zoom: number): LodWeights {
   const toMunicipality = ramp(zoom, BAND_CENTERS.kantonGemeinde)
   const toHectare = ramp(zoom, BAND_CENTERS.gemeindeHektar)
