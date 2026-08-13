@@ -16,7 +16,7 @@ export const NOGA_GROUPS: readonly NogaGroup[] = [
   { key: "gastgewerbe", label: "Gastgewerbe", color: [204, 121, 167] },
   { key: "ikt", label: "Information und Kommunikation", color: [240, 228, 66] },
   { key: "finanz", label: "Finanz und Versicherung", color: [0, 73, 73] },
-  { key: "dienstleistung", label: "Unternehmensdienstleistungen", color: [146, 73, 0] },
+  { key: "dienstleistung", label: "Unternehmensdienstleistungen", color: [221, 204, 119] },
   { key: "oeffentlich", label: "Öffentlich, Bildung, Gesundheit", color: [73, 0, 146] },
   { key: "uebrige", label: "Übrige", color: [0, 0, 0] },
 ]

@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from draufsicht_etl import config, noga
@@ -66,6 +68,37 @@ def test_industrie_group_covers_manufacturing(table):
 
 def test_handel_group(table):
     assert table.groups[table.group_index(47)].key == "handel"
+
+
+def test_unknown_color_matches_config(table):
+    # noga_groups.json und config.UNKNOWN_COLOR_HEX sind zwei Quellen für denselben
+    # Wert; load_table muss Abweichungen erkennen, damit sie nicht auseinanderlaufen.
+    assert table.unknown_color.lower() == config.UNKNOWN_COLOR_HEX.lower()
+
+
+def test_mismatched_unknown_color_raises(tmp_path):
+    bad = {
+        "nomenclature": "NOGA 2008",
+        "unknownColor": "#123456",
+        "sections": {"A": "1-3"},
+        "groups": [
+            {
+                "key": "landwirtschaft",
+                "label": "Land- und Forstwirtschaft",
+                "color": "#009E73",
+                "sections": ["A"],
+            }
+        ],
+    }
+    path = tmp_path / "noga_groups.json"
+    path.write_text(json.dumps(bad), encoding="utf-8")
+
+    with pytest.raises(ValueError) as exc_info:
+        noga.load_table(path)
+
+    message = str(exc_info.value)
+    assert "#123456" in message
+    assert config.UNKNOWN_COLOR_HEX in message
 
 
 def test_generate_typescript_roundtrip(table, tmp_path):

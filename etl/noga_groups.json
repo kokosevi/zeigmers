@@ -17,7 +17,7 @@
     { "key": "gastgewerbe",    "label": "Gastgewerbe",                      "color": "#CC79A7", "sections": ["I"] },
     { "key": "ikt",            "label": "Information und Kommunikation",    "color": "#F0E442", "sections": ["J"] },
     { "key": "finanz",         "label": "Finanz und Versicherung",          "color": "#004949", "sections": ["K"] },
-    { "key": "dienstleistung", "label": "Unternehmensdienstleistungen",     "color": "#924900", "sections": ["L", "M", "N"] },
+    { "key": "dienstleistung", "label": "Unternehmensdienstleistungen",     "color": "#DDCC77", "sections": ["L", "M", "N"] },
     { "key": "oeffentlich",    "label": "Öffentlich, Bildung, Gesundheit",  "color": "#490092", "sections": ["O", "P", "Q"] },
     { "key": "uebrige",        "label": "Übrige",                           "color": "#000000", "sections": ["R", "S", "T", "U"] }
   ]

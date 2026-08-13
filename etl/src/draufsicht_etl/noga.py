@@ -52,6 +52,16 @@ def _parse_range(spec: str) -> list[int]:
 def load_table(path: Path | None = None) -> NogaTable:
     raw = json.loads((path or DEFAULT_PATH).read_text(encoding="utf-8"))
 
+    # noga_groups.json und config.UNKNOWN_COLOR_HEX sind zwei unabhängige Quellen
+    # für dieselbe Farbe. Ohne diesen Abgleich könnten sie stillschweigend
+    # auseinanderlaufen, wenn nur eine der beiden Stellen geändert wird.
+    if raw["unknownColor"].lower() != config.UNKNOWN_COLOR_HEX.lower():
+        raise ValueError(
+            "unknownColor in noga_groups.json "
+            f"({raw['unknownColor']}) weicht von config.UNKNOWN_COLOR_HEX "
+            f"({config.UNKNOWN_COLOR_HEX}) ab"
+        )
+
     division_to_section: dict[int, str] = {}
     for section, spec in raw["sections"].items():
         for division in _parse_range(spec):
