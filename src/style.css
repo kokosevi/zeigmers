@@ -3,3 +3,10 @@ html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
 #map { position: absolute; inset: 0; }
 #ui { position: absolute; inset: 0; pointer-events: none; }
 #ui > * { pointer-events: auto; }
+
+#fehler {
+  position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
+  max-width: min(40rem, calc(100vw - 2rem));
+  padding: .75rem 1rem; border-radius: .375rem;
+  background: #7f1d1d; color: #fff; font-size: .875rem; line-height: 1.4;
+}
