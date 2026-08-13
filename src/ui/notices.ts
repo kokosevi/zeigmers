@@ -15,8 +15,9 @@ const TEXTS: Record<ViewName, string> = {
   // Aufrundung selbst bleibt und wirkt jetzt ausschliesslich auf die einzig
   // noch gezeigte Zahl, die Gemeindesumme; die Grössenordnung der Verzerrung
   // (Median ~16 %, bis 54 % bei kleinen Gemeinden) ist gemessen, nicht
-  // geschätzt — siehe README, Abschnitt "Warum die Hektarsumme …". Wortlaut
-  // exakt wie vorgegeben, nicht umformulieren.
+  // geschätzt — siehe README, Abschnitte "Warum die Gemeindesumme über der
+  // offiziellen Zahl liegt" und "Warum die Hektar- und die Kantonsstufe
+  // entfernt wurden". Wortlaut exakt wie vorgegeben, nicht umformulieren.
   viele:
     'Das BFS rundet aus Datenschutzgründen alle Werte unter 4 auf 4 auf. ' +
     'Die Gemeindesummen sind dadurch Obergrenzen — im Median rund 16 %, bei ' +

@@ -53,6 +53,16 @@ def _run_statent(force: bool) -> dict:
     municipality = aggregate.build_municipality(hectare, bounds.municipalities)
     canton = aggregate.build_canton(hectare, bounds.canton_lv95)
 
+    # Harte Guards gegen die tatsächlich heruntergeladenen Aargauer Daten, nicht nur
+    # gegen 1-3-Zeilen-Fixtures in test_aggregate.py: Aggregations-Invariante (Spec 6.5)
+    # und der empirische Beleg der BFS-Aufrundungsregel (Spec 6.4). Beide liefen bis
+    # 2026-08-13 als Integrationstests gegen die committeten ag_kanton-/ag_hektar-
+    # Artefakte; die sind mit der Gemeinde-only-Umstellung entfallen (siehe README),
+    # die Prüfung selbst bleibt hier am intern berechneten Objekt scharf — jeder
+    # `draufsicht-etl statent`/`all`-Lauf bricht ab, falls sie nicht mehr gilt.
+    aggregate.assert_sums_match(hectare, municipality, canton)
+    aggregate.assert_minimum_hectare_value_is_four(hectare)
+
     # Nur noch die Gemeindestufe wird ausgeliefert (Entscheid vom 2026-08-13,
     # siehe README/Spec): View B zeigt seither ausschliesslich die 196
     # Gemeindebalken, bei jedem Zoom. Kanton- und Hektarstufe werden hier

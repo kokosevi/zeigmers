@@ -22,13 +22,16 @@ export const INITIAL_VIEW = {
 // map.ts ist die einzige Stelle, die den vollen maplibregl.Map-Zustand kennt
 // (siehe Task 11) — MapHandle gibt bewusst nur schmale Callbacks nach aussen,
 // nie die Karteninstanz selbst, sonst könnte main.ts (oder jeder andere
-// Aufrufer) den viewState direkt anfassen und die hier garantierte
-// Zoom-only-Kopplung umgehen.
+// Aufrufer) den viewState direkt anfassen.
+//
+// `onZoom`/`getZoom` gehörten bis 2026-08-13 dazu — main.ts brauchte den Zoom
+// ausschliesslich für die LOD-Überblendung zwischen Kanton-, Gemeinde- und
+// Hektarstufe (siehe README). Mit deren Entfernung hat niemand mehr einen
+// Aufrufer für Zoom-Callbacks; sie sind entfernt statt als toter Code auf
+// einer bewusst schmal gehaltenen Schnittstelle liegen zu bleiben.
 export interface MapHandle {
   setLayers(layers: LayersList): void
-  onZoom(handler: (zoom: number) => void): void
   onError(handler: (message: string) => void): void
-  getZoom(): number
 }
 
 export function createMap(container: HTMLElement): MapHandle {
@@ -51,10 +54,6 @@ export function createMap(container: HTMLElement): MapHandle {
 
   return {
     setLayers: (layers) => overlay.setProps({ layers }),
-    onZoom: (handler) => {
-      map.on('zoom', () => handler(map.getZoom()))
-      handler(map.getZoom())
-    },
     // MapLibre feuert `error` auch für einzelne fehlgeschlagene Kachel- oder
     // Glyphen-Requests, während die Karte danach normal weiterläuft — das darf
     // keinen dauerhaften roten Fehlerbalken auslösen. Nur melden, wenn der
@@ -67,6 +66,5 @@ export function createMap(container: HTMLElement): MapHandle {
         handler(event.error?.message ?? 'unbekannter Fehler')
       })
     },
-    getZoom: () => map.getZoom(),
   }
 }

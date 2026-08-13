@@ -1,4 +1,5 @@
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
+import type { OverstatementStats } from '../domain/overstatement'
 import { referenceTicks, type ScaleMode } from '../domain/scale'
 import { OUTLINE_COLOR } from '../layers/visible'
 import { formatNumber, formatRevenue } from './format'
@@ -44,7 +45,11 @@ export interface LegendOptions {
   year: number
   vmax: number
   ambiguousCells: number
-  overstatementMax: number
+  /** Median/Maximum der Überschätzung je Gemeinde in Prozent (siehe
+   *  `domain/overstatement.ts`) — dieselbe Grösse und Formulierung wie im
+   *  Pflichthinweis (`ui/notices.ts`), hier aber live berechnet statt als
+   *  AG-2023-Literal, damit ein Kantonswechsel die richtigen Zahlen zeigt. */
+  overstatementPct: OverstatementStats
 }
 
 function box(): HTMLElement {
@@ -85,7 +90,7 @@ function outlineSwatch(): HTMLLIElement {
  *  Wird bei jedem Wechsel von Ansicht oder Skala neu aufgerufen — die
  *  Legende ist ohne Interaktion sichtbar und aktualisiert sich mit. */
 export function renderLegend(options: LegendOptions): void {
-  const { view, mode, year, vmax, ambiguousCells, overstatementMax } = options
+  const { view, mode, year, vmax, ambiguousCells, overstatementPct } = options
   const el = box()
 
   const title = document.createElement('div')
@@ -107,16 +112,22 @@ export function renderLegend(options: LegendOptions): void {
   scale.textContent = `Höhe (${MODE_LABEL[mode]}): ${ticks.map(formatTick).join(' · ')}`
   el.appendChild(scale)
 
-  // Obergrenzen-Hinweis: `ambiguousCells`/`overstatementMax` kommen aus der
-  // Gemeindestufe, zählen aber — weil aus der vollen Hektarquelle berechnet
-  // (siehe `aggregate.stats(..., source=hectare)` im ETL) — kantonsweit, auch
-  // wenn keine Hektar- oder Kantonsstufe mehr gezeichnet wird.
+  // Obergrenzen-Hinweis, in derselben Prozent-Framing wie der Pflichthinweis
+  // (`ui/notices.ts`) — bis 2026-08-13 stand hier eine Kantonssumme in
+  // Beschäftigten absolut («Kantonssumme dadurch bis zu Y zu hoch»), obwohl
+  // gar keine Kantonssumme mehr gezeichnet wird. Zwei verschiedene Framings
+  // derselben Tatsache (Absolutwert hier, Median-Prozent im Pflichthinweis)
+  // liessen den Betrachter zwei verschiedene Tatsachen vermuten.
+  // `ambiguousCells` (Rohzahl Hektaren) und `overstatementPct` (Median/Max je
+  // Gemeinde, siehe `domain/overstatement.ts`) sind unabhängige, zueinander
+  // passende Fakten, keine zwei Versionen derselben Zahl.
   if (view === 'viele' && ambiguousCells > 0) {
     const hint = document.createElement('div')
     hint.className = 'legende-hinweis'
     hint.textContent =
       `${formatNumber(ambiguousCells)} Hektaren zeigen den aufgerundeten Wert 4 — ` +
-      `Kantonssumme dadurch bis zu ${formatNumber(overstatementMax)} Beschäftigte zu hoch.`
+      `die Gemeindesummen sind dadurch im Median ${Math.round(overstatementPct.medianPct)} %, ` +
+      `maximal ${Math.round(overstatementPct.maxPct)} % zu hoch.`
     el.appendChild(hint)
   }
 

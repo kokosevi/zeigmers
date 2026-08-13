@@ -1,11 +1,12 @@
 import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX, UNKNOWN_COLOR } from './noga.generated'
 
-export const FLAG_AMBIGUOUS = 1
-
-// Exportiert, damit die Legende (`ui/legend.ts`) exakt denselben Wert für
-// ihren Muster-Swatch verwendet statt eine zweite, potenziell abweichende
-// Zahl zu pflegen (siehe Abschluss-Review, Finding I2).
-export const AMBIGUOUS_ALPHA = 140
+// Bit 0 aus `flags` (siehe Spec 5/6.4): eine Zelle mit dem BFS-aufgerundeten
+// Wert 4. Bis 2026-08-13 hatte `ui/legend.ts` hierfür einen eigenen Muster-
+// Swatch, der denselben Alpha-Wert verwendete — daher waren beide Konstanten
+// exportiert. Der Swatch ist mit der Hektarstufe entfallen (siehe README),
+// `buildColors` ist seither der einzige Verwendungsort; nicht mehr exportiert.
+const FLAG_AMBIGUOUS = 1
+const AMBIGUOUS_ALPHA = 140
 
 /** RGBA je Zeile. Mehrdeutige Hektaren behalten ihre Branchenfarbe, werden aber
  *  durchscheinend gezeichnet — die Farbe bleibt lesbar, die Unschärfe sichtbar. */

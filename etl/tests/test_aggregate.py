@@ -201,3 +201,73 @@ def test_hectare_raises_on_unknown_gmde(table):
     cells = _cells([10.0], [[10.0]], [28], gmde=[9999])
     with pytest.raises(ValueError, match="9999"):
         aggregate.build_hectare(cells, table, _municipalities())
+
+
+# Guards gegen die tatsächlich heruntergeladenen Daten (cli.py, `_run_statent`), nicht
+# nur gegen die Aggregationsfunktionen selbst — siehe deren Docstrings. Diese Tests
+# prüfen die Guard-Logik an synthetischen Objekten (schnell, kein Download nötig); dass
+# die Invariante an den echten Aargauer Daten hält, prüft der Guard selbst bei jedem
+# `draufsicht-etl statent`/`all`-Lauf.
+
+
+def _canton_box():
+    from shapely.geometry import box
+
+    return box(2600000, 1200000, 2602000, 1201000)
+
+
+def test_assert_sums_match_passes_for_consistent_levels(table):
+    cells = _cells([10.0, 4.0, 6.0], [[10.0], [4.0], [6.0]], [28],
+                   gmde=[4001, 4001, 4002])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    municipality = aggregate.build_municipality(hectare, _municipalities())
+    canton = aggregate.build_canton(hectare, _canton_box())
+    aggregate.assert_sums_match(hectare, municipality, canton)  # nicht wirft
+
+
+def test_assert_sums_match_raises_when_municipality_sum_diverges(table):
+    cells = _cells([10.0, 4.0, 6.0], [[10.0], [4.0], [6.0]], [28],
+                   gmde=[4001, 4001, 4002])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    municipality = aggregate.build_municipality(hectare, _municipalities())
+    canton = aggregate.build_canton(hectare, _canton_box())
+    municipality.value[0] += 1000.0  # simuliert einen Regressionsfehler
+    with pytest.raises(ValueError, match="Σ Hektar"):
+        aggregate.assert_sums_match(hectare, municipality, canton)
+
+
+def test_assert_sums_match_raises_when_canton_sum_diverges(table):
+    cells = _cells([10.0, 4.0, 6.0], [[10.0], [4.0], [6.0]], [28],
+                   gmde=[4001, 4001, 4002])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    municipality = aggregate.build_municipality(hectare, _municipalities())
+    canton = aggregate.build_canton(hectare, _canton_box())
+    canton.value[0] += 1000.0
+    with pytest.raises(ValueError, match="Kanton"):
+        aggregate.assert_sums_match(hectare, municipality, canton)
+
+
+def test_assert_minimum_hectare_value_is_four_passes_when_a_cell_is_ambiguous(table):
+    cells = _cells([4.0, 10.0, 12.0], [[4.0], [10.0], [12.0]], [28])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    aggregate.assert_minimum_hectare_value_is_four(hectare)  # wirft nicht
+
+
+def test_assert_minimum_hectare_value_is_four_raises_when_no_cell_is_ambiguous(table):
+    cells = _cells([5.0, 10.0, 12.0], [[5.0], [10.0], [12.0]], [28])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    with pytest.raises(ValueError, match="4"):
+        aggregate.assert_minimum_hectare_value_is_four(hectare)
+
+
+def test_assert_minimum_hectare_value_is_four_tolerates_empty_input(table):
+    empty = aggregate.LevelData(
+        name="hektar",
+        lon=np.array([], dtype="float64"),
+        lat=np.array([], dtype="float64"),
+        value=np.array([], dtype="float64"),
+        noga=np.array([], dtype="uint8"),
+        flags=np.array([], dtype="uint8"),
+        dist=np.zeros((0, table.group_count), dtype="float32"),
+    )
+    aggregate.assert_minimum_hectare_value_is_four(empty)  # wirft nicht

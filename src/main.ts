@@ -1,5 +1,6 @@
 import './style.css'
 import { loadLevel, loadMeta } from './data/loader'
+import { municipalityOverstatementStats } from './domain/overstatement'
 import type { ScaleMode } from './domain/scale'
 import { buildColumnLayer } from './layers/many'
 import { buildCompanyLayer, loadCompanies } from './layers/visible'
@@ -39,6 +40,10 @@ async function start() {
   // Balken, der die volle Höhe je erreicht — ein Fünftel des Höhenbudgets wäre
   // für einen nie gezeichneten Kantonsturm reserviert.
   const vmax = gemeinde.meta.stats.max
+  // Median/Maximum der Überschätzung je Gemeinde für die Legende — dieselbe
+  // Grösse wie im Pflichthinweis (`ui/notices.ts`), hier aber live berechnet
+  // statt als AG-2023-Literal (siehe `domain/overstatement.ts`).
+  const overstatementPct = municipalityOverstatementStats(gemeinde)
   const statentYear = gemeinde.meta.year
   // Firmen können unterschiedliche Geschäftsjahre ausweisen; die Legende zeigt
   // eine einzelne Zahl, deshalb das jüngste erfasste Jahr.
@@ -76,7 +81,7 @@ async function start() {
       year: view === 'viele' ? statentYear : companyYear,
       vmax: view === 'viele' ? vmax : companies.stats.max,
       ambiguousCells: view === 'viele' ? gemeinde.meta.stats.ambiguousCells : 0,
-      overstatementMax: view === 'viele' ? gemeinde.meta.stats.overstatementMax : 0,
+      overstatementPct: view === 'viele' ? overstatementPct : { medianPct: 0, maxPct: 0 },
     })
     renderNotices(view)
   }

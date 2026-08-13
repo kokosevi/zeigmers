@@ -7,6 +7,7 @@ Abteilungsspalten liefern ausschliesslich die Mischung und werden dafür auf
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 import geopandas as gpd
@@ -191,3 +192,49 @@ def stats(level: LevelData, *, source: LevelData | None = None) -> dict:
         "ambiguousCells": ambiguous,
         "overstatementMax": 3 * ambiguous,
     }
+
+
+def assert_sums_match(hectare: LevelData, municipality: LevelData, canton: LevelData) -> None:
+    """Harter Guard für `Σ Hektar = Σ Gemeinde = Kanton` (Spec 6.5) — geprüft an den
+    tatsächlich für den aktuellen Lauf berechneten `LevelData`-Objekten, nicht nur an
+    handkodierten 1–3-Zeilen-Fixtures wie in `test_aggregate.py`. Bis 2026-08-13 deckte
+    ein Integrationstest dieselbe Invariante am committeten `ag_hektar`/`ag_gemeinde`/
+    `ag_kanton`-Artefakt ab; seit `ag_hektar`/`ag_kanton` nicht mehr geschrieben werden
+    (siehe README), gibt es diese Artefakte nicht mehr — die Invariante selbst ist aber
+    unverändert scharf, weil `hectare`/`municipality`/`canton` weiterhin aus derselben
+    Quelle im Speicher stehen. Ein Regressionsfehler in `build_municipality`/
+    `build_canton` (z. B. ein falsch gesetzter `keep`-Filter) fiele hier auf, statt nur
+    stillschweigend eine falsche Gemeindesumme auszuliefern.
+    """
+    hectare_sum = float(hectare.value.sum())
+    municipality_sum = float(municipality.value.sum())
+    canton_sum = float(canton.value.sum())
+    if not math.isclose(hectare_sum, municipality_sum, rel_tol=1e-6):
+        raise ValueError(
+            f"Σ Hektar ({hectare_sum:,.3f}) != Σ Gemeinde ({municipality_sum:,.3f}) — "
+            "Aggregations-Invariante aus Spec 6.5 verletzt."
+        )
+    if not math.isclose(municipality_sum, canton_sum, rel_tol=1e-6):
+        raise ValueError(
+            f"Σ Gemeinde ({municipality_sum:,.3f}) != Kanton ({canton_sum:,.3f}) — "
+            "Aggregations-Invariante aus Spec 6.5 verletzt."
+        )
+
+
+def assert_minimum_hectare_value_is_four(hectare: LevelData) -> None:
+    """Harter Guard: die kleinste `emp_total` über alle Hektaren muss exakt
+    `config.AMBIGUOUS_VALUE` (4) sein. Das ist der empirische Beleg der BFS-Regel
+    „Werte < 4 werden auf 4 aufgerundet" (Spec 6.4) an den echten Aargauer Daten — ohne
+    diesen Beleg wäre die Aufrundungsregel nur eine aus der Variablenliste zitierte
+    Behauptung, keine geprüfte Tatsache. Bis 2026-08-13 deckte ein Integrationstest das
+    committete `ag_hektar`-Artefakt ab; das Artefakt ist entfallen (siehe README), die
+    Prüfung selbst bleibt hier am intern berechneten `hectare`-Objekt bestehen.
+    """
+    if hectare.value.size == 0:
+        return
+    minimum = float(hectare.value.min())
+    if minimum != config.AMBIGUOUS_VALUE:
+        raise ValueError(
+            f"Kleinster Hektarwert ist {minimum:,.3f}, erwartet exakt "
+            f"{config.AMBIGUOUS_VALUE} — Aufrundungsregel aus Spec 6.4 verletzt."
+        )
