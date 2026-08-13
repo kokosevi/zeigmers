@@ -1650,7 +1650,7 @@ bevor Task 6 beginnt.
 - Consumes: `config.COLUMN_PATTERNS`
 - Produces:
   - `columns.ResolvedColumns` — Dataclass mit `prefix: str`, `reli: str`, `e_koord: str`,
-    `n_koord: str`, `gmde: str`, `emp_total: str`, `emp_div: dict[int, str]`
+    `n_koord: str`, `emp_total: str`, `emp_div: dict[int, str]` (kein `gmde`, siehe oben)
     - `.division_numbers -> list[int]` (sortiert)
     - `.to_dict() -> dict` / `ResolvedColumns.from_dict(d) -> ResolvedColumns`
   - `columns.resolve(available: Iterable[str]) -> ResolvedColumns`
@@ -1664,12 +1664,22 @@ COLUMN_PATTERNS = {
     "reli": r"^RELI$",
     "e_koord": r"^E_KOORD$",
     "n_koord": r"^N_KOORD$",
-    "gmde": r"^GMDE$",
     "emp_total": r"^B(?P<nn>\d{2})EMPT$",
     "emp_div": r"^B(?P<nn>\d{2})(?P<div>\d{2})EMP$",
 }
 COLUMNS_DIR = ETL_DIR / "columns"
+
+# Amtliche Gemeinde-Aggregation im selben ZIP, als unabhaengige Kontrollzahl.
+STATENT_GMDE_MEMBER_PATTERN = r"STATENT_GMDE_\d{4}\.csv$"
+CANTON_REFERENCE_TOLERANCE = 0.05  # +/- 5 % gegen die BFS-Referenz
 ```
+
+> **Achtung, gegenüber dem ursprünglichen Entwurf geändert.** Die Rolle `gmde`
+> ist **entfallen**. Die Inspektion in Task 5 hat belegt, dass das Hektarfile
+> keine Spalte `GMDE` führt — sie steht nur in der gemeinsamen Variablenliste
+> mehrerer STATENT-Produkte. Die Gemeindezuordnung kommt in Task 7 aus dem
+> räumlichen Verschnitt. Das ist ohnehin robuster: der Datenjahrgang 2023 kennt
+> 198 Aargauer Gemeinden, swissBOUNDARIES3D 2026-01 nur 196.
 
 - [ ] **Step 2: Den fehlschlagenden Test schreiben**
 
@@ -1681,7 +1691,7 @@ import pytest
 from draufsicht_etl import columns
 
 GOOD = [
-    "RELI", "E_KOORD", "N_KOORD", "GMDE", "GMDE_HIST", "ERHJAHR",
+    "RELI", "E_KOORD", "N_KOORD", "ERHJAHR",
     "B23T", "B23S1", "B23EMPT", "B23VZAT",
     "B2301EMP", "B2302EMP", "B2310EMP", "B2347EMP",
     "B2301AS", "B2301VZA", "B2301KB1",
@@ -1694,7 +1704,6 @@ def test_resolve_finds_all_roles():
     assert r.reli == "RELI"
     assert r.e_koord == "E_KOORD"
     assert r.n_koord == "N_KOORD"
-    assert r.gmde == "GMDE"
     assert r.emp_total == "B23EMPT"
 
 
@@ -1739,7 +1748,7 @@ def test_resolve_raises_on_ambiguous_role():
 
 
 def test_resolve_raises_without_divisions():
-    minimal = ["RELI", "E_KOORD", "N_KOORD", "GMDE", "B23EMPT"]
+    minimal = ["RELI", "E_KOORD", "N_KOORD", "B23EMPT"]
     with pytest.raises(LookupError, match="Abteilungsspalten"):
         columns.resolve(minimal)
 
@@ -1784,7 +1793,7 @@ from pathlib import Path
 
 from . import config
 
-_SINGLE_ROLES = ("reli", "e_koord", "n_koord", "gmde", "emp_total")
+_SINGLE_ROLES = ("reli", "e_koord", "n_koord", "emp_total")
 
 
 @dataclass(frozen=True)
@@ -1793,7 +1802,6 @@ class ResolvedColumns:
     reli: str
     e_koord: str
     n_koord: str
-    gmde: str
     emp_total: str
     emp_div: dict[int, str]
 
@@ -1807,7 +1815,6 @@ class ResolvedColumns:
             "reli": self.reli,
             "e_koord": self.e_koord,
             "n_koord": self.n_koord,
-            "gmde": self.gmde,
             "emp_total": self.emp_total,
             "emp_div": {str(k): v for k, v in sorted(self.emp_div.items())},
         }
@@ -1819,7 +1826,6 @@ class ResolvedColumns:
             reli=data["reli"],
             e_koord=data["e_koord"],
             n_koord=data["n_koord"],
-            gmde=data["gmde"],
             emp_total=data["emp_total"],
             emp_div={int(k): v for k, v in data["emp_div"].items()},
         )
@@ -1938,13 +1944,20 @@ git commit -m "feat: musterbasierte Spaltenauflösung mit versionierter Zuordnun
     - `.count -> int`
   - `statent.to_center_lv95(e: ndarray, n: ndarray) -> tuple[ndarray, ndarray]`
   - `statent.lv95_to_wgs84(e: ndarray, n: ndarray) -> tuple[ndarray, ndarray]`
-  - `statent.load_cells(frame: pandas.DataFrame, resolved: ResolvedColumns, canton_lv95) -> CellTable`
+  - `statent.load_cells(frame: pandas.DataFrame, resolved: ResolvedColumns, municipalities: geopandas.GeoDataFrame) -> CellTable`
+
+> **Achtung, gegenüber dem ursprünglichen Entwurf geändert.** `load_cells` bekommt
+> die **Gemeindepolygone** statt der Kantonsfläche. Ein einziger räumlicher Verschnitt
+> leistet damit beides: er filtert auf den Kanton (wer in keiner Gemeinde liegt, ist
+> draussen) und liefert zugleich die Gemeindenummer, die das Hektarfile nicht mitbringt
+> (Task 5 hat das belegt). Das ist weiterhin ausdrücklich **keine Bounding-Box**.
 
 - [ ] **Step 1: Den fehlschlagenden Test schreiben**
 
 `etl/tests/test_statent.py`:
 
 ```python
+import geopandas as gpd
 import numpy as np
 import pandas as pd
 import pytest
@@ -1983,7 +1996,6 @@ def _frame():
             "RELI": [60001200, 60011200, 99999999],
             "E_KOORD": [2600000, 2601000, 2700000],
             "N_KOORD": [1200000, 1200000, 1300000],
-            "GMDE": [4001, 4001, 4002],
             "B23EMPT": [10.0, 4.0, 99.0],
             "B2301EMP": [4.0, 4.0, 0.0],
             "B2328EMP": [8.0, 0.0, 99.0],
@@ -1993,23 +2005,53 @@ def _frame():
 
 def _resolved():
     return columns.resolve(
-        ["RELI", "E_KOORD", "N_KOORD", "GMDE", "B23EMPT", "B2301EMP", "B2328EMP"]
+        ["RELI", "E_KOORD", "N_KOORD", "B23EMPT", "B2301EMP", "B2328EMP"]
     )
 
 
-def _canton_around_bern():
-    # Rechteck, das die ersten beiden Zellen enthält, die dritte nicht
-    return box(2599000, 1199000, 2602000, 1201000)
+def _municipalities():
+    """Zwei benachbarte Gemeinden. Zelle 1 liegt in der ersten, Zelle 2 in der
+    zweiten, Zelle 3 in keiner von beiden und faellt damit aus dem Kanton."""
+    return gpd.GeoDataFrame(
+        {"bfs_nr": [4001, 4002], "name": ["Eins", "Zwei"]},
+        geometry=[
+            box(2599000, 1199000, 2600500, 1201000),
+            box(2600500, 1199000, 2602000, 1201000),
+        ],
+        crs="EPSG:2056",
+    )
 
 
-def test_load_cells_filters_by_canton_polygon():
-    table = statent.load_cells(_frame(), _resolved(), _canton_around_bern())
+def test_load_cells_filters_by_municipality_polygons():
+    table = statent.load_cells(_frame(), _resolved(), _municipalities())
     assert table.count == 2
     assert list(table.reli) == [60001200, 60011200]
 
 
+def test_load_cells_derives_gemeindenummer_from_the_spatial_join():
+    """Die Hektardaten fuehren keine Gemeindespalte (Task 5) - sie entsteht hier."""
+    table = statent.load_cells(_frame(), _resolved(), _municipalities())
+    assert list(table.gmde) == [4001, 4002]
+
+
+def test_load_cells_is_deterministic_when_a_centre_sits_on_a_border():
+    import geopandas as gpd_
+    from shapely.geometry import box as box_
+
+    overlapping = gpd_.GeoDataFrame(
+        {"bfs_nr": [4002, 4001], "name": ["Zwei", "Eins"]},
+        geometry=[box_(2599000, 1199000, 2602000, 1201000)] * 2,
+        crs="EPSG:2056",
+    )
+    first = statent.load_cells(_frame(), _resolved(), overlapping)
+    second = statent.load_cells(_frame(), _resolved(), overlapping)
+    assert list(first.gmde) == list(second.gmde)
+    assert set(first.gmde) == {4001}, "bei Gleichstand gewinnt die kleinere Nummer"
+    assert first.count == 2, "keine Zeilendopplung durch den Mehrfachtreffer"
+
+
 def test_load_cells_uses_totals_column_not_division_sum():
-    table = statent.load_cells(_frame(), _resolved(), _canton_around_bern())
+    table = statent.load_cells(_frame(), _resolved(), _municipalities())
     # Zeile 0: Abteilungen 4 + 8 = 12, Total ist aber 10
     assert table.emp_total[0] == 10.0
     # Zeile 1: Abteilungen 4 + 0 = 4, Total ist 4
@@ -2017,14 +2059,14 @@ def test_load_cells_uses_totals_column_not_division_sum():
 
 
 def test_load_cells_keeps_division_matrix_shape():
-    table = statent.load_cells(_frame(), _resolved(), _canton_around_bern())
+    table = statent.load_cells(_frame(), _resolved(), _municipalities())
     assert table.divisions == [1, 28]
     assert table.div_emp.shape == (2, 2)
     assert table.div_emp[0].tolist() == [4.0, 8.0]
 
 
 def test_load_cells_positions_are_cell_centres_in_wgs84():
-    table = statent.load_cells(_frame(), _resolved(), _canton_around_bern())
+    table = statent.load_cells(_frame(), _resolved(), _municipalities())
     lon0, lat0 = statent.lv95_to_wgs84(np.array([2600050.0]), np.array([1200050.0]))
     assert table.lon[0] == pytest.approx(lon0[0])
     assert table.lat[0] == pytest.approx(lat0[0])
@@ -2033,14 +2075,14 @@ def test_load_cells_positions_are_cell_centres_in_wgs84():
 def test_load_cells_drops_rows_without_employment():
     frame = _frame()
     frame.loc[0, "B23EMPT"] = 0.0
-    table = statent.load_cells(frame, _resolved(), _canton_around_bern())
+    table = statent.load_cells(frame, _resolved(), _municipalities())
     assert table.count == 1
 
 
 def test_load_cells_fills_missing_division_values_with_zero():
     frame = _frame()
     frame.loc[0, "B2301EMP"] = np.nan
-    table = statent.load_cells(frame, _resolved(), _canton_around_bern())
+    table = statent.load_cells(frame, _resolved(), _municipalities())
     assert table.div_emp[0][0] == 0.0
 
 
@@ -2073,7 +2115,6 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from pyproj import Transformer
-from shapely.geometry.base import BaseGeometry
 
 from . import config
 from .columns import ResolvedColumns
@@ -2108,7 +2149,7 @@ def lv95_to_wgs84(e: np.ndarray, n: np.ndarray) -> tuple[np.ndarray, np.ndarray]
 
 
 def load_cells(
-    frame: pd.DataFrame, resolved: ResolvedColumns, canton_lv95: BaseGeometry
+    frame: pd.DataFrame, resolved: ResolvedColumns, municipalities: gpd.GeoDataFrame
 ) -> CellTable:
     emp_total = pd.to_numeric(frame[resolved.emp_total], errors="coerce").fillna(0.0)
     frame = frame.loc[emp_total > 0].copy()
@@ -2118,20 +2159,30 @@ def load_cells(
     n_sw = pd.to_numeric(frame[resolved.n_koord], errors="raise").to_numpy("float64")
     e_c, n_c = to_center_lv95(e_sw, n_sw)
 
-    # Räumlicher Verschnitt gegen die Kantonsfläche — ausdrücklich keine Bounding-Box.
+    # Ein Verschnitt, zwei Ergebnisse: Kantonsfilter und Gemeindenummer.
+    # Ausdrücklich keine Bounding-Box. Die Gemeindenummer steht nicht in den
+    # Hektardaten (Task 5), sie entsteht hier.
     points = gpd.GeoDataFrame(
         {"_i": np.arange(len(frame))},
         geometry=gpd.points_from_xy(e_c, n_c),
         crs=config.SRC_LV95,
     )
-    canton = gpd.GeoDataFrame(geometry=[canton_lv95], crs=config.SRC_LV95)
-    inside = gpd.sjoin(points, canton, predicate="within", how="inner")["_i"].to_numpy()
-    inside.sort()
+    joined = gpd.sjoin(
+        points, municipalities[["bfs_nr", "geometry"]], predicate="within", how="inner"
+    )
+    # Eine Hektare kann zwei Gemeinden berühren, wenn ihr Zentrum exakt auf der
+    # Grenze liegt. Deterministisch die kleinere Nummer nehmen, statt zu würfeln.
+    joined = joined.sort_values(["_i", "bfs_nr"]).drop_duplicates("_i", keep="first")
+
+    inside = joined["_i"].to_numpy()
+    gmde = joined["bfs_nr"].to_numpy("int32")
+    order = np.argsort(inside)
+    inside, gmde = inside[order], gmde[order]
 
     if inside.size == 0:
         raise ValueError(
             "Der Verschnitt liefert keine Hektare innerhalb der Kantonsfläche — "
-            "prüfen, ob Kantonsgeometrie und Hektardaten dasselbe CRS haben"
+            "prüfen, ob Gemeindegeometrie und Hektardaten dasselbe CRS haben"
         )
 
     divisions = resolved.division_numbers
@@ -2146,7 +2197,7 @@ def load_cells(
         reli=frame[resolved.reli].to_numpy("int64")[inside],
         lon=lon,
         lat=lat,
-        gmde=frame[resolved.gmde].to_numpy("int32")[inside],
+        gmde=gmde,
         emp_total=emp_total.to_numpy("float64")[inside],
         div_emp=div_emp,
         divisions=divisions,
@@ -2980,7 +3031,7 @@ def _run_statent(force: bool) -> dict:
     resolved = columns.resolve(frame.columns)
     columns.save(resolved, config.STATENT_YEAR)
 
-    cells = statent.load_cells(frame, resolved, bounds.canton_lv95)
+    cells = statent.load_cells(frame, resolved, bounds.municipalities)
     hectare = aggregate.build_hectare(cells, table, bounds.municipalities)
     municipality = aggregate.build_municipality(hectare, bounds.municipalities)
     canton = aggregate.build_canton(hectare, bounds.canton_lv95)
@@ -3015,9 +3066,59 @@ def _run_statent(force: bool) -> dict:
     print(f"[statent] Mehrdeutig: {s['ambiguousCells']:,} Hektaren "
           f"(Überschätzung bis {s['overstatementMax']:,})")
 
-    return {"hectare": hectare, "municipality": municipality,
-            "canton": canton, "bounds": bounds}
+    reference = statent.canton_reference(statent_zip, resolved, config.CANTON["bfs_nr"])
+    deviation = (canton.value[0] - reference) / reference
+    print(f"[statent] BFS-Referenz: {reference:,.0f} Beschäftigte "
+          f"(amtliche Gemeinde-Aggregation)")
+    print(f"[statent] Abweichung : {deviation:+.2%}")
+    if abs(deviation) > config.CANTON_REFERENCE_TOLERANCE:
+        raise ValueError(
+            f"Kantonssumme weicht um {deviation:+.2%} von der BFS-Referenz ab, "
+            f"erlaubt sind ±{config.CANTON_REFERENCE_TOLERANCE:.0%}. Das deutet auf "
+            "einen Verschnitt- oder Spaltenfehler hin, nicht auf Rundung."
+        )
+
+    return {"hectare": hectare, "municipality": municipality, "canton": canton,
+            "bounds": bounds, "reference": reference}
 ```
+
+Dazu in `statent.py` die Kontrollzahl aus der amtlichen Gemeinde-Aggregation im
+selben ZIP (Task 5 hat sie gefunden):
+
+```python
+def canton_reference(
+    zip_path: Path, resolved: ResolvedColumns, canton_bfs_nr: int
+) -> float:
+    """Amtliche Beschäftigtenzahl des Kantons aus STATENT_GMDE_<jahr>.csv.
+
+    Dient ausschliesslich als unabhängige Kontrolle. Sie wird nie dargestellt:
+    das BFS aggregiert vor dem Runden, unsere Hektarsumme danach — beide Zahlen
+    nebeneinander in der Karte würden beim Zoomwechsel springen.
+    """
+    pattern = re.compile(config.STATENT_GMDE_MEMBER_PATTERN)
+    with zipfile.ZipFile(zip_path) as zf:
+        members = [n for n in zf.namelist() if pattern.search(n)]
+        if len(members) != 1:
+            raise LookupError(
+                f"Erwartet genau eine Gemeindedatei in {zip_path.name}, "
+                f"gefunden: {members}"
+            )
+        with zf.open(members[0]) as handle:
+            frame = pd.read_csv(handle, sep=";", encoding="latin-1", low_memory=False)
+
+    # GDENR, nicht GMDE: die Gemeindedatei benennt den Schlüssel anders.
+    low, high = canton_bfs_nr * 1000 + 1, (canton_bfs_nr + 1) * 1000
+    rows = frame[frame["GDENR"].between(low, high)]
+    if rows.empty:
+        raise LookupError(
+            f"Keine Gemeinden im Nummernbereich {low}–{high} für Kanton "
+            f"{canton_bfs_nr} in {members[0]}"
+        )
+    return float(rows[resolved.emp_total].sum())
+```
+
+`import re`, `import zipfile` und `from pathlib import Path` oben in `statent.py`
+ergänzen.
 
 Und in `main()`:
 
@@ -3107,10 +3208,21 @@ def test_sums_match_across_levels(artifacts):
     assert sums["ag_gemeinde"] == pytest.approx(sums["ag_kanton"], rel=1e-6)
 
 
-def test_canton_total_is_in_the_expected_order_of_magnitude(artifacts):
+def test_canton_total_matches_the_official_bfs_reference(artifacts):
+    """Amtliche Referenz aus STATENT_GMDE_2023.csv: 363'288 Beschäftigte (Task 5).
+
+    Zwei gegenläufige Abweichungen sind erwartbar: die Aufrundung <4 -> 4 treibt
+    nach oben, die nicht verorteten NOLOC-Datensätze (rund 1 %) nach unten.
+    Zusammen dürfen sie 5 % nicht überschreiten — mehr wäre ein Verschnitt- oder
+    Spaltenfehler, keine Rundung.
+    """
     _, meta = artifacts["ag_kanton"]
-    # Aargau hat rund 350'000 bis 400'000 Beschäftigte
-    assert 250_000 < meta["stats"]["sum"] < 500_000, meta["stats"]["sum"]
+    reference = 363_288
+    deviation = (meta["stats"]["sum"] - reference) / reference
+    assert abs(deviation) < 0.05, (
+        f"Kantonssumme {meta['stats']['sum']:,.0f} weicht {deviation:+.2%} "
+        f"von der BFS-Referenz {reference:,} ab"
+    )
 
 
 def test_minimum_hectare_value_is_four(artifacts):

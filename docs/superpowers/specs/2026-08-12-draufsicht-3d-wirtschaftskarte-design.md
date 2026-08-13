@@ -139,7 +139,7 @@ Die Variablenliste (Asset `36073025`, Blatt `STATENT_NOGA_2008`, Stand 2025-08-2
 |---|---|---|
 | `RELI` | Primärschlüssel (Stellen 2–5 der E- und N-Koordinate) | 1 |
 | `E_KOORD`, `N_KOORD` | LV95-Meterkoordinaten, **Südwest-Ecke** der Hektare | 2 |
-| `GMDE`, `GMDE_HIST` | BFS-Gemeindenummer, historisiert | 2 |
+| ~~`GMDE`, `GMDE_HIST`~~ | **im Hektarfile nicht vorhanden**, siehe 6.3 | 0 |
 | `ERHJAHR`, `PUBJAHR` | Erhebungs-, Publikationsjahr | 2 |
 | `B{nn}T`, `B{nn}S1..S3` | Arbeitsstätten total und je Wirtschaftssektor | 4 |
 | `B{nn}EMPT`, `B{nn}EMP{F,M}S{1,2,3}` | Beschäftigte total, nach Sektor und Geschlecht | 10 |
@@ -175,7 +175,9 @@ Der Präfix `{nn}` muss über alle aufgelösten Spalten **identisch** sein, sons
 
 - `E_KOORD` / `N_KOORD` bezeichnen die **Südwest-Ecke** der Hektare. Für die Balkenposition **+50 m in beiden Achsen**, dann Reprojektion EPSG:2056 → EPSG:4326 mit pyproj. Die Reprojektion passiert ausschliesslich im ETL, nie zur Laufzeit.
 - Kantonsfilter über räumlichen Verschnitt: `sjoin(predicate="within")` der Hektarzentren gegen die AG-Kantonsfläche aus swissBOUNDARIES3D. **Keine Koordinaten-Bounding-Box.**
-- Gemeindezuordnung über die mitgelieferte Spalte `GMDE` (BFS-Gemeindenummer), nicht über den Verschnitt — sie ist autoritativ und immun gegen Jahrgangsunterschiede zwischen STATENT und swissBOUNDARIES3D. Der räumliche Join liefert die Gemeinde zusätzlich; das ETL vergleicht beide und **meldet die Anzahl der Abweichungen** als Warnung, statt einer Quelle blind zu trauen. Verwendet wird `GMDE`.
+- Gemeindezuordnung ebenfalls über den räumlichen Verschnitt, gegen die Gemeindepolygone aus swissBOUNDARIES3D.
+
+> **Korrektur nach der Inspektion (2026-08-13).** Ein früherer Entwurf wollte die Gemeinde aus einer mitgelieferten Spalte `GMDE` lesen. **Diese Spalte existiert im Hektarfile nicht** — sie steht in der Variablenliste, die mehrere STATENT-Produkte gemeinsam beschreibt, und ist nur im NOLOC- und im Gemeindefile belegt. Der räumliche Verschnitt ist ohnehin die robustere Wahl: die BFS-Gemeindenummern des Datenjahrgangs 2023 kennen **198** Aargauer Gemeinden, swissBOUNDARIES3D 2026-01 nur noch **196** — zwei Fusionen liegen dazwischen. Ein Join über die Nummer wäre daran gescheitert, ein Verschnitt gegen die aktuelle Geometrie ist dagegen immun.
 - Grenzen werden nach EPSG:4326 reprojiziert und mit mapshaper vereinfacht (Visvalingam, Zieltoleranz so gewählt, dass das GeoJSON unter 300 KB bleibt und Gemeindegrenzen bei Zoom 12 noch sauber aussehen).
 
 ### 6.4 Datenschutz: Aufrundung kleiner Werte
@@ -203,6 +205,23 @@ Es wird nichts interpoliert und nichts geraten; dargestellt werden die publizier
 
 **Anmerkung zur Konstante `UNKNOWN_BAR_HEIGHT`:** Sie wird für Ansicht B nicht mehr benötigt, da dort ein publizierter Wert vorliegt. Sie bleibt allein für die Hinweis-Balken in Ansicht A (Firmen ohne auffindbaren Umsatz, Abschnitt 8.3) und ist dort definiert als 40 % der Höhe des kleinsten dargestellten Umsatzes auf der aktiven Skala.
 
+### 6.4a Was das ZIP sonst noch enthält
+
+Die Inspektion hat zwei Dateien zutage gefördert, die der Entwurf nicht kannte:
+
+**`STATENT_GMDE_2023.csv` — die Gemeinde-Aggregation des BFS.** 2136 Gemeinden, gleiche Variablenstruktur, Schlüssel `GDENR`. Sie wird **nicht** zur Darstellung verwendet, sondern als **unabhängige Kontrollzahl**: das ETL vergleicht die aus Hektaren gerechnete Kantonssumme gegen die amtliche und meldet die Abweichung. Amtliche Referenz Aargau 2023: **363 288 Beschäftigte** in 46 890 Arbeitsstätten.
+
+Damit wird aus der theoretischen Obergrenze `overstatementMax` eine gemessene Grösse. Die Abweichung hat zwei gegenläufige Ursachen, die das ETL getrennt ausweist:
+
+- **nach oben:** die Aufrundung `< 4 → 4` je Hektare und je Abteilung
+- **nach unten:** die nicht verorteten Datensätze (siehe unten)
+
+Die Darstellung bleibt bei der Aggregation aus Hektaren, damit `Σ Hektar = Σ Gemeinde = Kanton` exakt gilt und die Zahlen beim Zoomwechsel nicht springen.
+
+**`STATENT_NOLOC_2023.csv` — nicht verortbare Datensätze.** 7249 Zeilen mit **56 073 Beschäftigten schweizweit, rund 0,99 % des Totals**. Ihre Koordinaten sind nur auf Strasse, PLZ oder Gemeinde genau (`NOLOCSCE` 2/3/4); das BFS trennt sie deshalb vom Hektarraster ab.
+
+**Sie werden nicht dargestellt.** Sie auf Gemeinde- oder PLZ-Zentroide zu setzen, hiesse Positionen zu erfinden — teils mitten in ein Wohnquartier, teils auf ein Feld — und widerspräche dem Grundsatz, nichts zu interpolieren. Der fehlende Anteil wird in Legende und README beziffert.
+
 ### 6.5 Aggregation
 
 Drei Stufen aus derselben Quelle, alle im ETL aus den Hektarwerten berechnet:
@@ -217,6 +236,7 @@ Auf Gemeinde- und Kantonsstufe wird die Branchenmischung als Summe der **normier
 
 Als Test geprüfte Invarianten:
 - `Σ Hektar emp_total = Σ Gemeinde = Kanton` — exakt, da alle drei aus derselben Spalte aggregiert werden.
+- Die Kantonssumme liegt innerhalb ±5 % der amtlichen BFS-Referenz (363 288). Ein grösserer Abstand deutet auf einen Verschnitt- oder Spaltenfehler hin, nicht auf Rundung.
 - `Σ Hektar ambiguousCells = Σ Gemeinde = Kanton`.
 - Je Stufe: `Σ_g dist_g ≈ emp_total` (Toleranz 0.5 pro Zeile, Rundung).
 - Kein `dist_g` ist negativ; keine Zeile hat `emp_total < 4` (die Aufrundungsregel schliesst das aus, ein Verstoss deutet auf einen Auflösungsfehler hin).
