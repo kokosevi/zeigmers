@@ -12,6 +12,11 @@ export const UNKNOWN_BAR_FRACTION = 0.4
 // Bruchteil, sondern eine feste Höhe in Metern.
 const PLACEHOLDER_BASE_HEIGHT = 200
 
+// Exportiert, damit die Legende (`ui/legend.ts`) denselben Wert für ihren
+// Muster-Swatch verwendet statt eine zweite, potenziell abweichende Zahl zu
+// pflegen (siehe Abschluss-Review, Finding I2).
+export const OUTLINE_COLOR: readonly [number, number, number, number] = [30, 30, 30, 220]
+
 export type RevenueType = 'net_sales' | 'operating_income'
 
 export interface Company {
@@ -74,8 +79,7 @@ export function buildCompanyLayer(
     // Nettoumsatz aus) bekommen einen sichtbaren Rand. Ohne diese Markierung
     // vergleicht der Betrachter Balkenhoehen, die Verschiedenes messen.
     stroked: true,
-    getLineColor: (c) =>
-      c.revenueType === 'net_sales' ? [0, 0, 0, 0] : [30, 30, 30, 220],
+    getLineColor: (c) => (c.revenueType === 'net_sales' ? [0, 0, 0, 0] : OUTLINE_COLOR),
     getLineWidth: (c) => (c.revenueType === 'net_sales' ? 0 : 60),
     lineWidthUnits: 'meters',
     diskResolution: 16,

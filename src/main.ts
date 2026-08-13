@@ -1,6 +1,6 @@
 import './style.css'
-import { loadLevel, type Level } from './data/loader'
-import { lodWeights } from './domain/lod'
+import { loadLevel, loadMeta, type Level } from './data/loader'
+import { activeLevel, lodWeights } from './domain/lod'
 import type { ScaleMode } from './domain/scale'
 import { buildColumnLayer } from './layers/many'
 import { buildCompanyLayer, loadCompanies } from './layers/visible'
@@ -8,7 +8,7 @@ import { createMap } from './map'
 import { showError } from './ui/error'
 import { renderLegend } from './ui/legend'
 import { renderNotices } from './ui/notices'
-import { configureAmbiguity, hidePanel, showCompanyPanel, showHectarePanel } from './ui/panel'
+import { configureCanton, hidePanel, showCompanyPanel, showHectarePanel } from './ui/panel'
 import { createToggle, DEFAULT_MODE, type ViewName } from './ui/toggle'
 
 const LEVEL_NAMES = ['kanton', 'gemeinde', 'hektar'] as const
@@ -19,21 +19,24 @@ async function start() {
   const ui = document.getElementById('ui')
 
   const handle = createMap(container)
-  handle.map.on('error', (event) =>
-    showError(`Basiskarte: ${event.error?.message ?? 'unbekannter Fehler'}`),
-  )
+  handle.onError((message) => showError(`Basiskarte: ${message}`))
+
+  // meta.json zuerst: es trägt den Kanton (Code fürs Artefakt-Präfix, Name
+  // für Titel und Panel) und wird bislang von niemandem gelesen, obwohl das
+  // ETL es bei jedem Lauf schreibt. Ohne diesen Schritt bliebe ein
+  // Kantonswechsel auf `ag_*`-Dateinamen hängen, egal was `CANTON` im ETL sagt.
+  const meta = await loadMeta()
+  const prefix = meta.canton.code.toLowerCase()
+  document.title = `Draufsicht — Wirtschaftskarte Kanton ${meta.canton.name}`
+  configureCanton(meta.canton.name)
 
   const [loaded, companies] = await Promise.all([
-    Promise.all(LEVEL_NAMES.map((n) => loadLevel(`ag_${n}`))),
+    Promise.all(LEVEL_NAMES.map((n) => loadLevel(`${prefix}_${n}`))),
     loadCompanies(),
   ])
   const levels = Object.fromEntries(
     LEVEL_NAMES.map((name, i) => [name, loaded[i]!]),
   ) as Record<(typeof LEVEL_NAMES)[number], Level>
-
-  // Ermöglicht dem Gemeindepanel, die Überschätzung durch Wert-4-Rundung je
-  // Gemeinde statt nur kantonsweit auszuweisen (siehe panel.ts).
-  configureAmbiguity(levels.hektar)
 
   // Eine gemeinsame Bezugsgroesse fuer alle drei Stufen von Ansicht B: das
   // Kantonstotal. Nur so sind Balkenhoehen ueber die Stufen hinweg vergleichbar
@@ -55,6 +58,8 @@ async function start() {
   // das lässt die Kameraposition beim Umschalten unverändert.
   const render = () => {
     hidePanel()
+
+    const dominant = activeLevel(zoom)
 
     if (view === 'viele') {
       const weights = lodWeights(zoom)
@@ -81,6 +86,12 @@ async function start() {
       vmax: view === 'viele' ? sharedVmax : companies.stats.max,
       ambiguousCells: view === 'viele' ? levels.hektar.meta.stats.ambiguousCells : 0,
       overstatementMax: view === 'viele' ? levels.hektar.meta.stats.overstatementMax : 0,
+      // Die geteilte Kantons-vmax macht die Legenden-Stützwerte im linearen
+      // Modus auf Gemeinde-/Hektarebene unlesbar (jede Zahl dort liegt um
+      // Grössenordnungen unter dem Kantonstotal) — die aktuell dominante
+      // Stufe liefert deshalb zusätzlich ihr eigenes Maximum (siehe I5).
+      activeLevel:
+        view === 'viele' ? { level: dominant, max: levels[dominant].meta.stats.max } : undefined,
     })
     renderNotices(view)
   }

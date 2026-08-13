@@ -95,7 +95,10 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
             )
 
         if row.get("revenue", "").strip():
-            for field in ("report_url", "fiscal_year", "revenue_currency", "revenue_type"):
+            for field in (
+                "report_url", "fiscal_year", "revenue_currency", "revenue_type",
+                "revenue_unit",
+            ):
                 if not row.get(field, "").strip():
                     problems.append(
                         f"{label}: revenue gesetzt, aber {field} fehlt — "

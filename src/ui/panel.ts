@@ -29,23 +29,16 @@ export interface PanelContent {
   links?: PanelLink[]
 }
 
-// Je Gemeinde (Index in meta.gemeinden) die Anzahl mehrdeutiger Hektaren —
-// berechnet aus der Hektarstufe, weil die Gemeindestufe selbst kein flags-Bit
-// je Gemeinde führt (ihr `flags`-Array ist im ETL stets 0). Ohne das würde das
-// Gemeindepanel nur die kantonsweite Zahl zeigen können, die für eine einzelne
-// (oft viel kleinere) Gemeinde grob irreführend wäre.
-let ambiguousByGemeinde: Uint32Array | null = null
+// Titel der Kantonszelle (Ansicht B, Kantonstufe). Default nur ein Fallback
+// für Aufrufe ohne vorheriges configureCanton() (z. B. Tests); im Betrieb
+// überschreibt main.ts das beim Start mit `meta.canton.name` aus
+// /data/meta.json — ein Kantonswechsel braucht hier keine Codeänderung.
+let cantonName = 'Aargau'
 
-/** Einmal beim Start mit der Hektarstufe aufrufen. */
-export function configureAmbiguity(hectare: Level): void {
-  const { gemeindeIdx, flags } = hectare.arrays
-  if (!gemeindeIdx) return
-  const size = hectare.meta.gemeinden?.length ?? 0
-  const counts = new Uint32Array(size)
-  for (let i = 0; i < gemeindeIdx.length; i++) {
-    if ((flags[i]! & FLAG_AMBIGUOUS) !== 0) counts[gemeindeIdx[i]!]!++
-  }
-  ambiguousByGemeinde = counts
+/** Einmal beim Start mit dem Namen des aktuell konfigurierten Kantons
+ *  aufrufen (aus meta.json, nicht hartcodiert). */
+export function configureCanton(name: string): void {
+  cantonName = name
 }
 
 function groupLabel(level: Level, groupIndex: number): string {
@@ -99,13 +92,18 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
   const { values, dist, gemeindeIdx } = level.arrays
   const value = values[index] ?? 0
 
-  let title = 'Kanton Aargau'
+  let title = `Kanton ${cantonName}`
   let ambiguousHere: number | null = null
   if (level.meta.level === 'gemeinde' && gemeindeIdx && level.meta.gemeinden) {
     const gemeindeNr = gemeindeIdx[index] ?? -1
     const gemeinde = level.meta.gemeinden[gemeindeNr]
-    if (gemeinde) title = gemeinde.name
-    if (ambiguousByGemeinde) ambiguousHere = ambiguousByGemeinde[gemeindeNr] ?? 0
+    if (gemeinde) {
+      title = gemeinde.name
+      // Kommt direkt aus dem Artefakt (`aggregate.build_hectare` in Python) —
+      // keine Neuberechnung im Browser durch Scan aller Hektarzellen mehr
+      // nötig (siehe Abschluss-Review, deferred finding zu aggregate.py).
+      ambiguousHere = gemeinde.ambiguousCells
+    }
   }
 
   const overstatement =

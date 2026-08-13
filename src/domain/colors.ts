@@ -2,7 +2,10 @@ import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX, UNKNOWN_COLOR } from './noga.generated
 
 export const FLAG_AMBIGUOUS = 1
 
-const AMBIGUOUS_ALPHA = 140
+// Exportiert, damit die Legende (`ui/legend.ts`) exakt denselben Wert für
+// ihren Muster-Swatch verwendet statt eine zweite, potenziell abweichende
+// Zahl zu pflegen (siehe Abschluss-Review, Finding I2).
+export const AMBIGUOUS_ALPHA = 140
 
 /** RGBA je Zeile. Mehrdeutige Hektaren behalten ihre Branchenfarbe, werden aber
  *  durchscheinend gezeichnet — die Farbe bleibt lesbar, die Unschärfe sichtbar. */

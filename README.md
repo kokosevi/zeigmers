@@ -95,8 +95,19 @@ optisch anders — ein sichtbarer Rand statt keinem, siehe `getLineColor`/
 jeweiligen `note`-Text aus dem CSV (`src/ui/panel.ts`); jede einzelne Zahl trägt ausserdem eine
 `report_url` zur Primärquelle. `companies.validate()` (`etl/src/draufsicht_etl/
 companies.py`) erzwingt das: jede Zeile mit einem `revenue`-Wert braucht
-`report_url`, `fiscal_year`, `revenue_currency` **und** `revenue_type`, sonst
-bricht der Build ab.
+`report_url`, `fiscal_year`, `revenue_currency`, `revenue_type` **und**
+`revenue_unit`, sonst bricht der Build ab.
+
+Eine weitere, unabhängige Uneinheitlichkeit: Die acht Firmen weisen ihren
+Umsatz in **drei verschiedenen Währungen** aus (CHF, EUR, USD — Spalte
+`revenue_currency`). Die Balkenhöhen in Ansicht A vergleichen diese Zahlen
+unverändert, **ohne Umrechnung in eine gemeinsame Währung** — eine
+Umrechnung würde aus einer gemeldeten Zahl eine abgeleitete machen, und genau
+das will dieses Projekt bei Ansicht A explizit nicht (derselbe Grundsatz, der
+oben bei DSM-Firmenich schon die fortgeführten Geschäfte statt einer
+umgerechneten Kennzahl gewählt hat). Die App legt das offen statt es zu
+verschweigen: der Pflichthinweis und die Legende in Ansicht A nennen den
+Währungsmix ausdrücklich (`src/ui/notices.ts`, `src/ui/legend.ts`).
 
 ## Datenschutzhinweis
 
@@ -186,14 +197,32 @@ Ein Kantonswechsel ist als Dreischritt gedacht:
    Kanton, bricht `npm run build:data` mit einer klaren deutschen
    Fehlermeldung ab, die den erwarteten Pfad nennt, statt mit einem rohen
    `FileNotFoundError`.
-3. `npm run build:data` laufen lassen.
+3. `npm run build:data` laufen lassen. Das Frontend liest den Kantons-Code
+   und -Namen selbst aus `public/data/meta.json` (`src/main.ts`, per
+   `loadMeta()`) — die Artefakt-Dateinamen (`<code>_kanton.*` usw.), der
+   Fenstertitel und der Titel des Kantonspanels folgen also ohne weitere
+   Codeänderung.
 
-Alles andere — Gemeindegrenzen, Hektarraster, BFS-Referenzsumme, das
-Plausibilitätsfenster, der Pfad der Firmen-CSV selbst — leitet sich
-automatisch aus `CANTON` und der Geometrie her und braucht keinen Eingriff
-in den Code. **Der einzige Schritt, der von Hand bleibt, ist der Inhalt der
-Firmen-CSV** — welche Unternehmen im neuen Kanton kotiert sind und was sie
-ausweisen, lässt sich nicht automatisiert recherchieren.
+Gemeindegrenzen, Hektarraster, BFS-Referenzsumme, das Plausibilitätsfenster,
+der Pfad der Firmen-CSV und alle Artefaktnamen leiten sich automatisch aus
+`CANTON` und der Geometrie her. Zwei Stellen bleiben trotzdem **Handarbeit im
+Code**, weil sie auf die räumliche Ausdehnung des jeweiligen Kantons
+zugeschnitten sind und sich nicht aus `CANTON` allein ableiten lassen:
+
+- **`INITIAL_VIEW` in `src/map.ts`** — Kartenzentrum, Startzoom, Neigung und
+  Blickrichtung sind von Hand auf den Kanton Aargau justiert. Ein deutlich
+  grösserer, kleinerer oder anders geformter Kanton braucht andere Werte,
+  sonst zeigt die Karte beim Start ins Leere oder nur einen Ausschnitt.
+- **`BAND_CENTERS` in `src/domain/lod.ts`** — die Zoomstufen, bei denen
+  zwischen Kanton-, Gemeinde- und Hektaransicht überblendet wird, sind auf die
+  Fläche des Kantons Aargau (1'404 km²) abgestimmt. Ein Kanton anderer Grösse
+  sollte diese Zentren neu justieren, sonst wechselt die Detailstufe zu früh
+  oder zu spät zur tatsächlichen Kartengrösse.
+
+Zusammen mit dem Inhalt der Firmen-CSV (siehe Schritt 2 oben — welche
+Unternehmen im neuen Kanton kotiert sind, lässt sich nicht automatisiert
+recherchieren) sind das die einzigen drei Schritte, die ein Kantonswechsel
+nicht automatisiert.
 
 ## Befehlsübersicht
 

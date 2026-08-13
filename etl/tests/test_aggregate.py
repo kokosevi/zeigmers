@@ -149,6 +149,28 @@ def test_ambiguous_cells_are_counted_consistently_across_levels(table):
     assert aggregate.stats(canton)["ambiguousCells"] == 0
 
 
+def test_hectare_entries_carry_the_ambiguous_count_per_gemeinde(table):
+    # Zwei mehrdeutige Hektaren in Aarau (4001), eine echte in Baden (4002) —
+    # ohne diesen Eintrag müsste das Frontend entweder die kantonsweite Zahl
+    # zeigen oder alle Hektarzellen selbst durchzählen (siehe Abschluss-
+    # Review, deferred finding zu aggregate.py:133-134).
+    cells = _cells([4.0, 4.0, 6.0], [[4.0], [4.0], [6.0]], [28],
+                   gmde=[4001, 4001, 4002])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    by_bfs = {e["bfsNr"]: e["ambiguousCells"] for e in hectare.gemeinden}
+    assert by_bfs == {4001: 2, 4002: 0}
+
+
+def test_municipality_entries_share_the_same_ambiguous_count(table):
+    # `build_municipality` mutiert `entries` nicht erneut — beide Stufen
+    # teilen sich dasselbe von `build_hectare` befüllte Objekt.
+    cells = _cells([4.0, 4.0, 6.0], [[4.0], [4.0], [6.0]], [28],
+                   gmde=[4001, 4001, 4002])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    muni = aggregate.build_municipality(hectare, _municipalities())
+    assert muni.gemeinden is hectare.gemeinden
+
+
 def test_stats_overstatement_is_three_times_ambiguous_cells(table):
     cells = _cells([4.0, 4.0, 6.0], [[4.0], [4.0], [6.0]], [28])
     level = aggregate.build_hectare(cells, table, _municipalities())

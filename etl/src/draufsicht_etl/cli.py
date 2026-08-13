@@ -35,7 +35,7 @@ def _run_statent(force: bool) -> dict:
         force=force,
     )
     bounds = boundaries.build(zip_path, config.CANTON["bfs_nr"])
-    boundaries.write_geojson(bounds, config.PUBLIC_DATA / "ag_boundaries.geojson")
+    boundaries.write_geojson(bounds, boundaries.geojson_path())
 
     statent_zip = fetch.download(
         fetch.statent_geodata_url(config.STATENT_YEAR),
@@ -178,19 +178,21 @@ def main(argv: Sequence[str] | None = None) -> int:
             url, config.DATA_RAW / "swissboundaries3d.gpkg.zip", force=args.force
         )
         b = boundaries.build(zip_path, config.CANTON["bfs_nr"])
-        out = boundaries.write_geojson(b, config.PUBLIC_DATA / "ag_boundaries.geojson")
+        out = boundaries.write_geojson(b, boundaries.geojson_path())
         print(f"[boundaries] {len(b.municipalities)} Gemeinden, "
               f"{b.canton_lv95.area / 1e6:.0f} km2 -> {out} "
               f"({out.stat().st_size / 1024:.0f} KB)")
         return 0
 
-    if args.command in ("statent", "all"):
+    if args.command in ("statent", "all", "sanity-map"):
         result = _run_statent(args.force)
         if args.command == "statent":
             return 0
 
-        # `all` läuft weiter: Firmen (Task 15), Kontrollkarte, Budgetprüfung.
-        # Kein vorzeitiges `return` — sonst wird companies.json nie geschrieben.
+        # `all` und `sanity-map` laufen weiter, bis hierhin identisch: die
+        # Kontrollkarte braucht die Gemeindestufe aus `_run_statent`. Kein
+        # vorzeitiges `return` bei `all` — sonst wird companies.json nie
+        # geschrieben.
         from . import sanity_map
 
         out = sanity_map.render(
@@ -198,6 +200,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             config.DATA_INTERIM / "sanity_gemeinde.png",
         )
         print(f"[sanity-map] {out}")
+        if args.command == "sanity-map":
+            return 0
 
     if args.command in ("companies", "all"):
         import csv as _csv

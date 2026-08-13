@@ -28,6 +28,15 @@ class Boundaries:
     municipalities: gpd.GeoDataFrame
 
 
+def geojson_path() -> Path:
+    """Pfad zum Gemeindegrenzen-Artefakt des aktuell konfigurierten Kantons.
+
+    Spiegelt `companies.csv_path()`: der Dateiname folgt `config.CANTON['code']`,
+    ein Kantonswechsel braucht hier keine Codeänderung.
+    """
+    return config.PUBLIC_DATA / f"{config.CANTON['code'].lower()}_boundaries.geojson"
+
+
 def _extract(gpkg_zip: Path) -> Path:
     target = config.DATA_INTERIM / "swissboundaries"
     target.mkdir(parents=True, exist_ok=True)

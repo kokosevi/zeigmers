@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 import { decodeLevel, type LevelMeta } from './loader'
 
@@ -22,7 +24,10 @@ function fixture() {
     nogaGroups: [{ key: 'a', label: 'A', color: '#000000' }],
     unknownColor: '#BFBFBF', unknownIndex: 255,
     stats: { min: 4, max: 250, sum: 254, p99: 250, ambiguousCells: 1, overstatementMax: 3 },
-    gemeinden: [{ bfsNr: 4001, name: 'Aarau' }, { bfsNr: 4002, name: 'Baden' }],
+    gemeinden: [
+      { bfsNr: 4001, name: 'Aarau', ambiguousCells: 1 },
+      { bfsNr: 4002, name: 'Baden', ambiguousCells: 0 },
+    ],
   }
   return { buffer, meta }
 }
@@ -64,5 +69,51 @@ describe('decodeLevel', () => {
     const { buffer, meta } = fixture()
     meta.arrays.values!.length = 99
     expect(() => decodeLevel(buffer, meta)).toThrow(/values/)
+  })
+
+  it('throws when a decoded array length disagrees with meta.count, even inside the buffer', () => {
+    // Ein zu kurzes Array kann innerhalb der Pufferbytes liegen (der Puffer
+    // hat schlicht noch andere Arrays danach) — die reine Bytegrenzen-Prüfung
+    // in `view()` würde das nicht bemerken. Das ist genau der Fall, den ein
+    // Schreibfehler in binpack.py erzeugen würde: `count` stimmt, aber ein
+    // einzelnes Array ist zu kurz.
+    const { buffer, meta } = fixture()
+    meta.count = 3 // positions bleibt bei deklarierter Länge 4 -> erwartet wären 6
+    expect(() => decodeLevel(buffer, meta)).toThrow(/positions/)
+  })
+})
+
+// Testet den Schreiber (binpack.py, Python) gegen den Leser (decodeLevel,
+// TypeScript) am tatsächlich committeten Artefakt — nicht nur den Leser gegen
+// eine handkodierte Fixture. Eine Änderung an `_ORDER`, einem dtype oder der
+// Padding-Regel in binpack.py, die still ein falsches Array produziert, fiele
+// hier auf (siehe Abschluss-Review, Finding I8).
+describe('decodeLevel against the real ag_hektar artifact', () => {
+  const dataDir = fileURLToPath(new URL('../../public/data/', import.meta.url))
+
+  it('round-trips the on-disk artifact with lengths and stats matching meta', () => {
+    const meta = JSON.parse(
+      readFileSync(`${dataDir}ag_hektar.json`, 'utf-8'),
+    ) as LevelMeta
+    const buffer = readFileSync(`${dataDir}ag_hektar.bin`).buffer as ArrayBuffer
+
+    const { arrays } = decodeLevel(buffer, meta)
+
+    expect(arrays.values.length).toBe(meta.count)
+    expect(arrays.positions.length).toBe(2 * meta.count)
+    expect(arrays.mixGroup?.length).toBe(3 * meta.count)
+    expect(arrays.mixValue?.length).toBe(3 * meta.count)
+
+    let min = Infinity
+    let max = -Infinity
+    let sum = 0
+    for (const v of arrays.values) {
+      min = Math.min(min, v)
+      max = Math.max(max, v)
+      sum += v
+    }
+    expect(min).toBe(meta.stats.min)
+    expect(max).toBe(meta.stats.max)
+    expect(sum).toBeCloseTo(meta.stats.sum, 3)
   })
 })

@@ -1,9 +1,17 @@
+export type LevelName = 'kanton' | 'gemeinde' | 'hektar'
+
 export interface LodWeights {
   kanton: number
   gemeinde: number
   hektar: number
 }
 
+// Von Hand auf die Ausdehnung des Kantons Aargau abgestimmt: bei Zoom 9 ist
+// der ganze Kanton im Bild (Kanton -> Gemeinde macht dann Sinn), bei Zoom 12
+// füllt eine Gemeinde den Bildschirm (Gemeinde -> Hektare). Anders als die
+// Artefaktnamen hängt das nicht automatisch an `CANTON` — ein deutlich
+// grösserer oder kleinerer Kanton bräuchte andere Zentren (siehe README,
+// Abschnitt "Kantonswechsel").
 export const BAND_CENTERS = { kantonGemeinde: 9, gemeindeHektar: 12 } as const
 export const BAND_WIDTH = 0.75
 
@@ -36,7 +44,7 @@ export function lodWeights(zoom: number): LodWeights {
   }
 }
 
-export function activeLevel(zoom: number): 'kanton' | 'gemeinde' | 'hektar' {
+export function activeLevel(zoom: number): LevelName {
   const w = lodWeights(zoom)
   if (w.hektar >= w.gemeinde && w.hektar >= w.kanton) return 'hektar'
   return w.gemeinde >= w.kanton ? 'gemeinde' : 'kanton'

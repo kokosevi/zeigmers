@@ -57,6 +57,15 @@ def test_validate_rejects_revenue_without_revenue_type():
         companies.validate([_row(revenue_type="")])
 
 
+def test_validate_rejects_revenue_without_revenue_unit():
+    # Ohne diese Pflicht liest build_artifact() ein leeres revenue_unit als
+    # Faktor 1 (`float(row.get("revenue_unit") or 1)`) und verschiebt eine in
+    # Millionen gemeldete Zahl unbemerkt um den Faktor 10**6 — siehe I4 im
+    # Abschluss-Review.
+    with pytest.raises(ValueError, match="revenue_unit"):
+        companies.validate([_row(revenue_unit="")])
+
+
 def test_validate_rejects_unknown_revenue_type():
     with pytest.raises(ValueError, match="unbekannt"):
         companies.validate([_row(revenue_type="ebitda")])

@@ -104,6 +104,20 @@ def build_hectare(
             "Jahrgang von STATENT und swissBOUNDARIES3D prüfen."
         )
 
+    gemeinde_idx = np.array([index[g] for g in cells.gmde], dtype="uint16")
+
+    # Mehrdeutige Hektaren je Gemeinde, direkt im `gemeinden`-Eintrag
+    # mitgeliefert: ohne das müsste das Frontend entweder die kantonsweite
+    # Zahl zeigen (für eine einzelne, oft viel kleinere Gemeinde irreführend)
+    # oder alle 17'940 Hektarzellen im Browser danach durchsuchen. Beide
+    # Aggregationsstufen (`hektar`, `gemeinde`) teilen sich dasselbe
+    # `entries`-Objekt (siehe build_municipality), der Wert steht also in
+    # beiden Artefakten.
+    ambiguous = np.zeros(len(entries), dtype="int64")
+    np.add.at(ambiguous, gemeinde_idx, (flags & config.FLAG_AMBIGUOUS) > 0)
+    for entry, count in zip(entries, ambiguous.tolist(), strict=True):
+        entry["ambiguousCells"] = int(count)
+
     return LevelData(
         name="hektar",
         lon=cells.lon,
@@ -112,7 +126,7 @@ def build_hectare(
         noga=dominant_group(dist),
         flags=flags,
         dist=dist,
-        gemeinde_idx=np.array([index[g] for g in cells.gmde], dtype="uint16"),
+        gemeinde_idx=gemeinde_idx,
         gemeinden=entries,
     )
 
@@ -129,9 +143,6 @@ def build_municipality(
 
     dist = np.zeros((n, hectare.dist.shape[1]), dtype="float64")
     np.add.at(dist, hectare.gemeinde_idx, hectare.dist.astype("float64"))
-
-    ambiguous = np.zeros(n, dtype="int64")
-    np.add.at(ambiguous, hectare.gemeinde_idx, (hectare.flags & config.FLAG_AMBIGUOUS) > 0)
 
     ordered = municipalities.set_index("bfs_nr").loc[[e["bfsNr"] for e in entries]]
     points = ordered.geometry.representative_point()

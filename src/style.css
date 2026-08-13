@@ -48,8 +48,10 @@ html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
 .legende-branchen li { display: flex; align-items: center; gap: .4rem; }
 .legende-punkt { width: .6rem; height: .6rem; border-radius: 50%; flex: none; }
 .legende-skala { margin-bottom: .35rem; }
+.legende-aktiv-max { margin-bottom: .35rem; color: #d1d5db; }
 .legende-hinweis { margin-bottom: .35rem; color: #fca5a5; }
 .legende-quelle { color: #9ca3af; font-size: .6875rem; }
+.legende-quelle + .legende-quelle { margin-top: .2rem; }
 
 #panel {
   position: absolute; right: 1rem; top: 4.5rem;
@@ -67,4 +69,27 @@ html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
   margin-top: .5rem; border: none; background: #374151; color: #fff;
   padding: .3rem .7rem; border-radius: .375rem; cursor: pointer; font-size: .75rem;
   font-family: inherit;
+}
+
+/* Unter ~800px überlappen #legende (unten links) und #hinweis (unten
+   zentriert) sich sonst — #hinweis gewinnt den z-Order (später im DOM,
+   siehe main.ts), die lizenzpflichtige Quellenangabe in #legende würde also
+   verdeckt. Löst beide aus der Absolut-Positionierung und stapelt sie im
+   normalen Fluss am unteren Rand von #ui, statt sie an derselben Stelle zu
+   überlagern. #fehler, #steuerung und #panel bleiben unberührt: sie sind
+   weiterhin absolut positioniert und damit aus dem Flex-Fluss ausgenommen. */
+@media (max-width: 800px) {
+  #ui {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .5rem;
+    padding-bottom: 1rem;
+  }
+  #legende, #hinweis {
+    position: static;
+    left: auto; right: auto; bottom: auto; transform: none;
+    max-width: calc(100vw - 2rem);
+  }
 }

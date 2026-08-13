@@ -25,7 +25,7 @@ export interface LevelMeta {
   unknownColor: string
   unknownIndex: number
   stats: LevelStats
-  gemeinden?: { bfsNr: number; name: string }[]
+  gemeinden?: { bfsNr: number; name: string; ambiguousCells: number }[]
 }
 
 export interface LevelArrays {
@@ -52,6 +52,22 @@ const CONSTRUCTORS = {
 
 const REQUIRED = ['positions', 'values', 'noga', 'flags'] as const
 
+// Erwartete Länge je Array als Vielfaches von `meta.count` (und bei `dist`
+// zusätzlich der Anzahl Branchengruppen). Ohne diese Prüfung würde ein zu
+// kurzes `values`-Array (z. B. durch einen Schreibfehler in `binpack.py`)
+// deck.gl klaglos ein Buffer übergeben, das `many.ts` über sein Ende hinaus
+// liest — siehe Abschluss-Review, Finding I8.
+const EXPECTED_LENGTH: Record<string, (meta: LevelMeta) => number> = {
+  positions: (meta) => meta.count * 2,
+  values: (meta) => meta.count,
+  noga: (meta) => meta.count,
+  flags: (meta) => meta.count,
+  gemeindeIdx: (meta) => meta.count,
+  mixGroup: (meta) => meta.count * 3,
+  mixValue: (meta) => meta.count * 3,
+  dist: (meta) => meta.count * meta.nogaGroups.length,
+}
+
 function view(buffer: ArrayBuffer, name: string, spec: ArraySpec) {
   const Ctor = CONSTRUCTORS[spec.type]
   const end = spec.byteOffset + spec.length * Ctor.BYTES_PER_ELEMENT
@@ -74,9 +90,35 @@ export function decodeLevel(buffer: ArrayBuffer, meta: LevelMeta): Level {
 
   const decoded: Record<string, unknown> = {}
   for (const [name, spec] of Object.entries(meta.arrays)) {
-    if (spec) decoded[name] = view(buffer, name, spec)
+    if (!spec) continue
+    const array = view(buffer, name, spec)
+    const expected = EXPECTED_LENGTH[name]?.(meta)
+    if (expected !== undefined && array.length !== expected) {
+      throw new Error(
+        `Array "${name}" hat ${array.length} Elemente, erwartet ${expected} ` +
+          `(aus count=${meta.count} von ${meta.level}).`,
+      )
+    }
+    decoded[name] = array
   }
   return { meta, arrays: decoded as unknown as LevelArrays }
+}
+
+export interface Meta {
+  canton: { code: string; bfs_nr: number; name: string }
+  year: number
+  levels: string[]
+}
+
+/** Wird von jedem Kantonswechsel automatisch mitgeschrieben (siehe
+ *  `draufsicht-etl statent`/`all`) und hier als erstes gelesen: der
+ *  Artefakt-Dateipräfix (`meta.canton.code`) und der Kantonsname für Titel
+ *  und Panel kommen ausschliesslich von hier, nicht aus einer hartcodierten
+ *  Konstante im Frontend. */
+export async function loadMeta(base = '/data'): Promise<Meta> {
+  const response = await fetch(`${base}/meta.json`)
+  if (!response.ok) throw new Error(`meta.json: HTTP ${response.status}`)
+  return (await response.json()) as Meta
 }
 
 export async function loadLevel(name: string, base = '/data'): Promise<Level> {

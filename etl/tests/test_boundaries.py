@@ -8,6 +8,16 @@ from shapely.geometry import Polygon
 from draufsicht_etl import boundaries, config
 
 
+def test_geojson_path_derives_from_configured_canton(monkeypatch):
+    # Regressionstest fürs Critical Finding C1 des Abschluss-Reviews: der
+    # Boundaries-Dateiname war zweimal in cli.py hartcodiert ("ag_..."), ein
+    # Kantonswechsel hätte die Grenzen-Datei stillschweigend am falschen Namen
+    # vorbeigeschrieben. `geojson_path()` ist jetzt die einzige Stelle, die den
+    # Namen kennt; cli.py ruft nur noch sie auf.
+    monkeypatch.setitem(config.CANTON, "code", "ZH")
+    assert boundaries.geojson_path() == config.PUBLIC_DATA / "zh_boundaries.geojson"
+
+
 def test_find_layer_matches_case_insensitively(tmp_path):
     path = tmp_path / "x.gpkg"
     gpd.GeoDataFrame(
