@@ -19,6 +19,7 @@ export function radiusFor(level: string): number {
 
 export interface LayerOptions {
   level: Level
+  vmax: number
   mode: ScaleMode
   opacity: number
   visible: boolean
@@ -26,10 +27,10 @@ export interface LayerOptions {
 }
 
 export function buildColumnLayer(id: string, options: LayerOptions): ColumnLayer {
-  const { level, mode, opacity, visible, onClick } = options
+  const { level, vmax, mode, opacity, visible, onClick } = options
   const { arrays, meta } = level
 
-  const elevations = computeElevations(arrays.values, meta.stats.max, MAX_BAR_HEIGHT_M, mode)
+  const elevations = computeElevations(arrays.values, vmax, MAX_BAR_HEIGHT_M, mode)
   const colors = buildColors(arrays.noga, arrays.flags)
 
   return new ColumnLayer({
