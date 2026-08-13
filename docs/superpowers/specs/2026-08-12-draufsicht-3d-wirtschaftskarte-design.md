@@ -364,7 +364,18 @@ Die Übergänge liegen mittig auf Zoom 9 und Zoom 12, mit einer Breite von 0.75 
 
 **Toggle A ↔ B.** Tauscht ausschliesslich die Layer-Menge. Der `viewState` wird nicht angefasst — das ist der Punkt der Übung.
 
-**Höhenskala.** Logarithmisch als Default: `h = log10(1 + v) / log10(1 + vmax) · H`. Umschalter auf linear. Die Legende nennt die aktive Skala unmissverständlich und zeigt drei Referenzhöhen mit echten Zahlen.
+**Höhenskala.** Umschalter linear ↔ logarithmisch, mit **je Ansicht unterschiedlichem Default**:
+
+| Ansicht | Default | Grund |
+|---|---|---|
+| B «Die Vielen» | **logarithmisch** | 17 940 Zellen, Werte von 4 bis 4 670, extrem schief. Linear ergäbe einen Turm und eine Ebene. |
+| A «Die Sichtbaren» | **linear** | Nur 8 Balken, Umsätze von 0,14 bis 9,03 Mrd. Logarithmisch lägen alle acht zwischen **82 % und 100 %** der Höhe — ein Umsatzunterschied vom Faktor 66 würde zu 22 % Höhenunterschied. Die Ansicht verfehlte damit genau das, wofür sie da ist. |
+
+Formeln: `h_log = log10(1+v)/log10(1+vmax) · H`, `h_linear = v/vmax · H`.
+
+Die Legende nennt die aktive Skala unmissverständlich und zeigt drei Referenzhöhen mit echten Zahlen.
+
+**Die beiden Ansichten sind nicht ineinander umrechenbar.** Ansicht A misst Geld, Ansicht B misst Menschen; jede skaliert gegen ihr eigenes Maximum. Ein Balken in A und ein Balken in B haben trotz gleicher Höhe nichts miteinander zu tun. Da der Toggle sie einen Tastendruck auseinander legt, **muss die Legende in beiden Ansichten die dargestellte Einheit benennen** («Beschäftigte» beziehungsweise «Jahresumsatz»), nicht nur die Skalenart.
 
 **Legende.** Fix eingeblendet, nicht ausblendbar: Branchenfarben, graue Klassiert-Kategorie, Höhenmassstab mit aktiver Skala, Datenjahr, Quellenangabe.
 

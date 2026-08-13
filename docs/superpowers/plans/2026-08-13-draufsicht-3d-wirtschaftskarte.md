@@ -4867,9 +4867,14 @@ git commit -m "feat: Ansicht A als ColumnLayer mit Hinweis-Balken"
   - `format.formatNumber(value: number): string` — Schweizer Tausendertrennung
   - `format.formatRevenue(value: number, currency: string | null): string`
   - `toggle.ViewName = 'sichtbare' | 'viele'`
+  - `toggle.DEFAULT_MODE: Record<ViewName, ScaleMode>` — `{ sichtbare: 'linear', viele: 'log' }`
   - `toggle.createToggle(onChange: (view: ViewName, mode: ScaleMode) => void): HTMLElement`
   - `legend.renderLegend(options: { view: ViewName; mode: ScaleMode; year: number;
     vmax: number; ambiguousCells: number; overstatementMax: number }): void`
+    Die Legende **muss die dargestellte Einheit benennen** — «Beschäftigte» in
+    Ansicht B, «Jahresumsatz» in Ansicht A — nicht nur die Skalenart. Die beiden
+    Ansichten sind nicht ineinander umrechenbar, liegen aber einen Tastendruck
+    auseinander.
   - `panel.showHectarePanel(level: Level, index: number): void`
   - `panel.showCompanyPanel(company: Company): void`
   - `panel.hidePanel(): void`
@@ -4969,11 +4974,20 @@ import type { ScaleMode } from '../domain/scale'
 
 export type ViewName = 'sichtbare' | 'viele'
 
+/** Je Ansicht ein eigener Default. Ansicht B ist extrem schief verteilt und
+ *  braucht die logarithmische Skala; Ansicht A hat acht Balken, die logarithmisch
+ *  alle zwischen 82 % und 100 % der Hoehe laegen -- Faktor 66 im Umsatz wuerde
+ *  zu 22 % im Bild. Die zuletzt gewaehlte Skala bleibt je Ansicht erhalten. */
+export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
+  sichtbare: 'linear',
+  viele: 'log',
+}
+
 export function createToggle(
   onChange: (view: ViewName, mode: ScaleMode) => void,
 ): HTMLElement {
   let view: ViewName = 'viele'
-  let mode: ScaleMode = 'log'
+  const modes: Record<ViewName, ScaleMode> = { ...DEFAULT_MODE }
 
   const root = document.createElement('div')
   root.id = 'steuerung'
@@ -4990,18 +5004,18 @@ export function createToggle(
   const sync = () => {
     for (const button of root.querySelectorAll<HTMLButtonElement>('button')) {
       const active =
-        button.dataset.view === view || button.dataset.mode === mode
+        button.dataset.view === view || button.dataset.mode === modes[view]
       button.classList.toggle('aktiv', active)
       button.setAttribute('aria-checked', String(active))
     }
-    onChange(view, mode)
+    onChange(view, modes[view])
   }
 
   root.addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest('button')
     if (!button) return
     if (button.dataset.view) view = button.dataset.view as ViewName
-    if (button.dataset.mode) mode = button.dataset.mode as ScaleMode
+    if (button.dataset.mode) modes[view] = button.dataset.mode as ScaleMode
     sync()
   })
 
