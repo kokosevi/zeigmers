@@ -21,5 +21,5 @@ export const NOGA_GROUPS: readonly NogaGroup[] = [
   { key: "uebrige", label: "Übrige", color: [0, 0, 0] },
 ]
 
-export const UNKNOWN_COLOR: readonly [number, number, number] = [153, 153, 153]
+export const UNKNOWN_COLOR: readonly [number, number, number] = [191, 191, 191]
 export const NOGA_UNKNOWN_INDEX = 255
