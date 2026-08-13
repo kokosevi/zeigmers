@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from collections.abc import Sequence
 
@@ -197,6 +198,30 @@ def main(argv: Sequence[str] | None = None) -> int:
             config.DATA_INTERIM / "sanity_gemeinde.png",
         )
         print(f"[sanity-map] {out}")
+
+    if args.command in ("companies", "all"):
+        import csv as _csv
+
+        from . import companies, geocode, noga
+
+        path = config.DATA_MANUAL / "ag_listed_companies.csv"
+        rows = companies.load_csv(path)
+        filled = geocode.fill_missing(rows)
+        if filled:
+            with path.open("w", newline="", encoding="utf-8") as handle:
+                writer = _csv.DictWriter(handle, fieldnames=companies.CSV_COLUMNS)
+                writer.writeheader()
+                writer.writerows(rows)
+            print(f"[companies] {filled} Zeilen neu geokodiert und persistiert")
+
+        companies.validate(rows)
+        artifact = companies.build_artifact(rows, noga.load_table())
+        out = config.PUBLIC_DATA / "companies.json"
+        out.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
+        print(f"[companies] {artifact['stats']['count']} Firmen, "
+              f"{artifact['stats']['withRevenue']} mit Umsatz -> {out}")
+        if args.command == "companies":
+            return 0
 
     if args.command == "all":
         total = sum(
