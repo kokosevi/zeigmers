@@ -102,8 +102,8 @@ Pro LOD-Stufe ein Paar `<level>.bin` + `<level>.json`. Die `.bin` ist die Konkat
 |---|---|---|
 | `positions` | Float32 ×2N | lon, lat in WGS84. Float32 löst bei lon ≈ 8 auf rund 0.1 m auf — für ein 100-m-Raster reichlich |
 | `values` | Float32 ×N | Beschäftigte |
-| `noga` | Uint8 ×N | Index in die Branchengruppen-Tabelle; `255` = klassiert/unbekannt |
-| `flags` | Uint8 ×N | Bit 0 = datenschutz-klassiert |
+| `noga` | Uint8 ×N | Index in die Branchengruppen-Tabelle; `255` = dominante Gruppe nicht bestimmbar |
+| `flags` | Uint8 ×N | Bit 0 = `AMBIGUOUS` (`emp_total == 4`, wahrer Wert 1–4) |
 | `gemeindeIdx` | Uint16 ×N | nur Hektarstufe; Verweis auf die Gemeindenamen-Tabelle im JSON |
 | `mixGroup` | Uint8 ×3N | nur Hektarstufe; Gruppenindizes der Top-3 |
 | `mixValue` | Uint16 ×3N | nur Hektarstufe; zugehörige Beschäftigtenzahlen |
@@ -120,8 +120,8 @@ Begleitendes JSON:
   "arrays": { "positions": {"byteOffset": 0, "length": 46290, "type": "Float32"}, "…": {} },
   "nogaGroups": ["Land-/Forstwirtschaft", "…"],
   "gemeinden": [{"bfsNr": 4001, "name": "Aarau"}],
-  "stats": {"min": 1, "max": 4820, "sum": 371002, "p99": 340,
-            "classifiedCells": 8123}
+  "stats": {"min": 4, "max": 4820, "sum": 371002, "p99": 340,
+            "ambiguousCells": 8123, "overstatementMax": 24369}
 }
 ```
 
@@ -131,48 +131,95 @@ Begleitendes JSON:
 
 ## 6. STATENT-Verarbeitung
 
-### 6.1 Inspektion vor Transformation
+### 6.1 Variablenstruktur (Variablenliste gelesen am 2026-08-13)
 
-Kein Spaltenname wird vor der Inspektion hartkodiert. `draufsicht-etl inspect-statent` lädt Geodaten und Variablenliste und gibt aus:
+Die Variablenliste (Asset `36073025`, Blatt `STATENT_NOGA_2008`, Stand 2025-08-21) ist ausgewertet. Das Hektarfile führt folgende Variablenformen, wobei `{nn}` der Nomenklatur-/Jahrgangspräfix (in der Variablenliste durchgehend `08`) und `{dd}` die zweistellige NOGA-Abteilung ist:
 
-- Dateiliste im ZIP mit Grössen
-- alle Spaltennamen mit dtype, min, max, Nullanteil, Anzahl eindeutiger Werte
-- Zeilenzahl
-- die Variablenliste als lesbare Tabelle
+| Form | Bedeutung | Anzahl |
+|---|---|---|
+| `RELI` | Primärschlüssel (Stellen 2–5 der E- und N-Koordinate) | 1 |
+| `E_KOORD`, `N_KOORD` | LV95-Meterkoordinaten, **Südwest-Ecke** der Hektare | 2 |
+| `GMDE`, `GMDE_HIST` | BFS-Gemeindenummer, historisiert | 2 |
+| `ERHJAHR`, `PUBJAHR` | Erhebungs-, Publikationsjahr | 2 |
+| `B{nn}T`, `B{nn}S1..S3` | Arbeitsstätten total und je Wirtschaftssektor | 4 |
+| `B{nn}EMPT`, `B{nn}EMP{F,M}S{1,2,3}` | Beschäftigte total, nach Sektor und Geschlecht | 10 |
+| `B{nn}VZAT`, … | Vollzeitäquivalente, analog | 10 |
+| `B{nn}EMP{OF,PR}{T,F,M}`, `B{nn}EMP{NM,UM}{T,F,M}` | öffentlich/privat, markt-/nicht-marktwirtschaftlich | 12 |
+| `B{nn}{dd}AS` | Arbeitsstätten je Abteilung | 85 |
+| **`B{nn}{dd}EMP`** | **Beschäftigte je NOGA-Abteilung** | **85** |
+| `B{nn}{dd}VZA` | Vollzeitäquivalente je Abteilung | 85 |
+| `B{nn}{dd}KB1..KB4` | Arbeitsstätten je Grössenklasse und Abteilung | 340 |
 
-`config.py` enthält nur **Muster** (`B{yy}…T` für Totalwerte und Verwandte), keine festen Namen. Der Inspektionsschritt verifiziert jedes Muster gegen die tatsächlichen Spalten und bricht mit einer Meldung ab, die den erwarteten und den gefundenen Spaltensatz nennt. Die Benennung ändert je Jahrgang; dieser Mechanismus ist der Grund dafür, dass ein Jahrgangswechsel keine Codeänderung erfordert.
+Damit liegt die Branchenzusammensetzung **auf Abteilungsebene (2-Steller)** vor, nicht nur nach den drei Wirtschaftssektoren. Abteilungen mappen deterministisch auf NOGA-Abschnitte A–U und damit auf die 11 Gruppen aus Abschnitt 7. Die Farbcodierung nach Branche ist auf Hektarstufe also uneingeschränkt möglich.
 
-### 6.2 Geometrie
+### 6.2 Spaltenauflösung
+
+Kein Spaltenname wird hartkodiert. `config.py` enthält **Muster**; `columns.py` löst sie gegen die tatsächlichen Spalten des geladenen Jahrgangs auf und schreibt das Ergebnis nach `etl/columns/statent_<jahr>.json` (versioniert, nachprüfbar):
+
+```python
+COLUMN_PATTERNS = {
+    "reli":      r"^RELI$",
+    "e_koord":   r"^E_KOORD$",
+    "n_koord":   r"^N_KOORD$",
+    "gmde":      r"^GMDE$",
+    "emp_total": r"^B(?P<nn>\d{2})EMPT$",
+    "emp_div":   r"^B(?P<nn>\d{2})(?P<div>\d{2})EMP$",
+}
+```
+
+Der Präfix `{nn}` muss über alle aufgelösten Spalten **identisch** sein, sonst bricht die Auflösung ab. Fehlt eine Rolle oder trifft ein Muster mehrdeutig, bricht sie ebenfalls ab und nennt erwarteten wie gefundenen Spaltensatz. Ein Jahrgangswechsel erfordert damit keine Codeänderung.
+
+`draufsicht-etl inspect-statent` gibt zusätzlich Dateiliste im ZIP, alle Spalten mit dtype, min, max, Nullanteil und Zeilenzahl aus.
+
+### 6.3 Geometrie
 
 - `E_KOORD` / `N_KOORD` bezeichnen die **Südwest-Ecke** der Hektare. Für die Balkenposition **+50 m in beiden Achsen**, dann Reprojektion EPSG:2056 → EPSG:4326 mit pyproj. Die Reprojektion passiert ausschliesslich im ETL, nie zur Laufzeit.
-- Kantonsfilter über räumlichen Verschnitt: `sjoin(predicate="within")` der Hektarzentren gegen die AG-Kantonsfläche aus swissBOUNDARIES3D. **Keine Koordinaten-Bounding-Box.** Die Gemeindezuordnung fällt im selben Join an.
+- Kantonsfilter über räumlichen Verschnitt: `sjoin(predicate="within")` der Hektarzentren gegen die AG-Kantonsfläche aus swissBOUNDARIES3D. **Keine Koordinaten-Bounding-Box.**
+- Gemeindezuordnung über die mitgelieferte Spalte `GMDE` (BFS-Gemeindenummer), nicht über den Verschnitt — sie ist autoritativ und immun gegen Jahrgangsunterschiede zwischen STATENT und swissBOUNDARIES3D. Der räumliche Join liefert die Gemeinde zusätzlich; das ETL vergleicht beide und **meldet die Anzahl der Abweichungen** als Warnung, statt einer Quelle blind zu trauen. Verwendet wird `GMDE`.
 - Grenzen werden nach EPSG:4326 reprojiziert und mit mapshaper vereinfacht (Visvalingam, Zieltoleranz so gewählt, dass das GeoJSON unter 300 KB bleibt und Gemeindegrenzen bei Zoom 12 noch sauber aussehen).
 
-### 6.3 Datenschutz-Klassierung
+### 6.4 Datenschutz: Aufrundung kleiner Werte
 
-Hektarwerte von 1 bis 4 werden vom BFS aus Datenschutzgründen klassiert statt exakt ausgewiesen. **Ob das als Code, als Wert oder als separates Suppressions-Flag geliefert wird, entscheidet die Variablenliste — nicht eine Vorabannahme.** Der Inspektionsschritt legt die tatsächliche Kodierung offen und wird vor dem Schreiben der Transformation vorgelegt.
+Die Variablenliste nennt die Regel wörtlich:
 
-Vorgesehene Behandlung, sofern die Inspektion nichts anderes nahelegt:
+> Datenschutzmassnahmen: Allen Werten < 4 wird die Zahl 4 zugeordnet
 
-- `flags |= 1`, `noga = 255`
-- Farbe neutralgrau `#999999`
-- Höhe: **fixe Minimalhöhe**, nicht ein geratener oder interpolierter Wert. Damit ist sichtbar, dass dort etwas ist, ohne eine Menge zu behaupten. Konkret: eine Konstante `UNKNOWN_BAR_HEIGHT`, gesetzt auf 40 % der Höhe, die der kleinste exakt ausgewiesene Wert (5 Beschäftigte) auf der aktiven Skala erhält. Dieselbe Konstante gilt für Hinweis-Balken in Ansicht A (Abschnitt 8.3), damit «unbekannt» in beiden Ansichten gleich aussieht.
-- In den Aggregaten auf Gemeinde- und Kantonsstufe fliessen klassierte Zellen **nicht** in die Summe ein. Stattdessen führt jede Aggregatzeile ein Feld `classifiedCells`, und das Panel weist getrennt aus: «zusätzlich N Hektaren mit 1–4 Beschäftigten, Wert nicht ausgewiesen».
-- Die Legende benennt die graue Kategorie explizit.
+Das ist **kein Suppressions-Code und keine Klassierung, sondern ein Aufrunden**. Die ursprüngliche Annahme des Briefings («≤ 4 werden klassiert ausgewiesen») trifft nicht zu. Daraus folgt:
 
-Diese Behandlung interpoliert nicht und rät nicht. Sie hat den Preis, dass die Gemeindesummen eine bekannte, quantifizierte Untergrenze sind statt exakter Werte — das ist im Panel und in der Legende so benannt.
+- Werte 1, 2 und 3 erscheinen in den Daten als 4. Werte ab 5 sind exakt.
+- Eine Zelle mit dem Wert 4 ist **mehrdeutig**: ihr wahrer Wert liegt zwischen 1 und 4. Es gibt kein Flag; erkennbar ist das allein am Wert.
+- Die Regel gilt **auch je NOGA-Abteilung**. Eine Zelle mit vier verstreuten Kleinstbetrieben in vier Abteilungen zeigt in jeder dieser Abteilungen eine 4. Die Summe über 85 Abteilungen überschätzt die Zelle daher grob.
 
-### 6.4 Aggregation
+**Zwingende Konsequenz für die Verarbeitung:**
 
-Drei Stufen aus derselben Quelle, alle im ETL berechnet:
+1. Die **Höhe kommt ausschliesslich aus der Totalspalte** `B{nn}EMPT`. Die Abteilungsspalten werden nie aufsummiert, um ein Total zu bilden.
+2. Die Abteilungsspalten bestimmen **nur die Mischung**: dominante Gruppe und Top-3. Die daraus abgeleiteten Anteile werden **auf das Total normiert** (`anteil_g = emp_div_g / Σ emp_div`), und die im Panel gezeigten absoluten Zahlen sind `anteil_g · emp_total`. Sie sind als abgeleitete Näherung beschriftet, nicht als ausgewiesener Wert.
+3. Zellen mit `emp_total == 4` bekommen `flags |= 1` (`AMBIGUOUS`). Sie behalten Farbe und Höhe des Werts 4 — das ist der **vom BFS publizierte Wert**, keine Erfindung und keine Interpolation. Zusätzlich werden sie über eine sichtbare Randmarkierung und in der Legende als «Wert 4 = 1 bis 4, exakter Wert nicht ausgewiesen» kenntlich gemacht.
+4. Ist bei einer solchen Zelle auch die Abteilungsmischung mehrdeutig (alle Abteilungswerte gleich 4), wird `noga = 255` gesetzt und die Zelle grau `#999999` gezeichnet, weil eine dominante Branche nicht bestimmbar ist.
+
+**Offenlegung der Überschätzung.** Weil kleine Werte aufgerundet sind, ist jede Summe eine **Obergrenze**, keine exakte Zahl. Das ETL berechnet je Aggregatstufe zusätzlich `ambiguousCells` und `overstatementMax = 3 · ambiguousCells` (der maximale Betrag, um den die Summe zu hoch sein kann). Panel und Legende weisen ihn aus: «Summe X, davon bis zu Y durch Aufrundung kleiner Werte». Damit ist die Unschärfe beziffert statt verschwiegen.
+
+Es wird nichts interpoliert und nichts geraten; dargestellt werden die publizierten Werte, samt quantifizierter Unschärfe.
+
+**Anmerkung zur Konstante `UNKNOWN_BAR_HEIGHT`:** Sie wird für Ansicht B nicht mehr benötigt, da dort ein publizierter Wert vorliegt. Sie bleibt allein für die Hinweis-Balken in Ansicht A (Firmen ohne auffindbaren Umsatz, Abschnitt 8.3) und ist dort definiert als 40 % der Höhe des kleinsten dargestellten Umsatzes auf der aktiven Skala.
+
+### 6.5 Aggregation
+
+Drei Stufen aus derselben Quelle, alle im ETL aus den Hektarwerten berechnet:
 
 | Stufe | Zeilen | Wert | Farbe |
 |---|---|---|---|
-| Kanton | 1 | Σ Beschäftigte AG (bekannte Werte) | dominante Gruppe |
-| Gemeinde | ~196 | Σ je Gemeinde | dominante Gruppe je Gemeinde |
-| Hektare | ~20 000–25 000 | Wert je Hektare | dominante Gruppe je Hektare |
+| Kanton | 1 | Σ `emp_total` über alle AG-Hektaren | dominante Gruppe |
+| Gemeinde | ~196 | Σ `emp_total` je `GMDE` | dominante Gruppe je Gemeinde |
+| Hektare | ~20 000–25 000 | `emp_total` je Hektare | dominante Gruppe je Hektare |
 
-Invariante, als Test geprüft: `Σ Hektar = Σ Gemeinde = Kanton`, jeweils über die bekannten Werte, mit separat übereinstimmender Bilanz der klassierten Zellen.
+Auf Gemeinde- und Kantonsstufe wird die Branchenmischung als Summe der **normierten** Abteilungsbeiträge (Abschnitt 6.4, Punkt 2) gebildet, nie als Summe der rohen Abteilungsspalten.
+
+Als Test geprüfte Invarianten:
+- `Σ Hektar emp_total = Σ Gemeinde = Kanton` — exakt, da alle drei aus derselben Spalte aggregiert werden.
+- `Σ Hektar ambiguousCells = Σ Gemeinde = Kanton`.
+- Je Stufe: `Σ_g dist_g ≈ emp_total` (Toleranz 0.5 pro Zeile, Rundung).
+- Kein `dist_g` ist negativ; keine Zeile hat `emp_total < 4` (die Aufrundungsregel schliesst das aus, ein Verstoss deutet auf einen Auflösungsfehler hin).
 
 ---
 
@@ -194,7 +241,9 @@ Okabe-Ito umfasst acht Farben, NOGA hat 21 Abschnitte (A–U). Das geht nicht au
 | Öffentlich/Bildung/Gesundheit | O, P, Q |
 | Übrige | R, S, T, U |
 
-Zugeordnet auf die acht Okabe-Ito-Töne plus drei ergänzte, gegen Deuteranopie und Protanopie geprüfte Farben. Die Zuordnung lebt **einmal**, in `etl/noga_groups.json`, und wird beim Build nach `src/domain/noga.generated.ts` geschrieben. Beide Ansichten benutzen zwingend dieselbe Tabelle. `#999999` ist für «klassiert/unbekannt» reserviert und wird nie einer Branche zugewiesen.
+Zugeordnet auf die acht Okabe-Ito-Töne plus drei ergänzte, gegen Deuteranopie und Protanopie geprüfte Farben. Die Zuordnung lebt **einmal**, in `etl/noga_groups.json`, und wird beim Build nach `src/domain/noga.generated.ts` geschrieben. Beide Ansichten benutzen zwingend dieselbe Tabelle. `#999999` ist für «nicht bestimmbar» reserviert und wird nie einer Branche zugewiesen.
+
+Die STATENT-Hektardaten liefern NOGA-**Abteilungen** (2-Steller), nicht Abschnitte. `noga_groups.json` enthält deshalb die vollständige Kette **Abteilung → Abschnitt → Gruppe → Farbe**, mit allen 88 gültigen NOGA-2008-Abteilungsnummern als Schlüssel. Ein Test stellt sicher, dass jede in den Daten auftretende Abteilung abgedeckt ist; eine unbekannte Abteilung bricht das ETL ab, statt still in «Übrige» zu fallen.
 
 ---
 
@@ -265,7 +314,9 @@ Die Übergänge liegen mittig auf Zoom 9 und Zoom 12, mit einer Breite von 0.75 
 **Pflichthinweise.** Beide Sätze sind sichtbarer Bestandteil der jeweiligen Ansicht, nicht in ein Info-Panel versteckt:
 
 1. Ansicht A: Der dargestellte Umsatz ist der **weltweite Konzernumsatz**, nicht die Wertschöpfung am Standort.
-2. Ansicht B: Hektaren mit **vier oder weniger** Beschäftigten sind aus Datenschutzgründen nur klassiert verfügbar und deshalb gesondert markiert.
+2. Ansicht B: Das BFS rundet aus Datenschutzgründen **alle Werte unter 4 auf 4 auf**. Hektaren mit dem Wert 4 sind deshalb gesondert markiert — ihr wahrer Wert liegt zwischen 1 und 4. Summen sind dadurch Obergrenzen; die maximale Überschätzung wird beziffert.
+
+> **Abweichung vom Briefing, bewusst.** Das Briefing gab für Ansicht B den Satz «Hektaren mit vier oder weniger Beschäftigten sind aus Datenschutzgründen nur klassiert verfügbar» vor. Die Variablenliste belegt eine andere Regel (Aufrundung statt Klassierung, Abschnitt 6.4). Der vorgegebene Wortlaut wäre selbst irreführend und wurde deshalb sachlich korrigiert; Zweck und Sichtbarkeit des Hinweises bleiben unverändert.
 
 ---
 
@@ -282,10 +333,15 @@ Die Übergänge liegen mittig auf Zoom 9 und Zoom 12, mit einer Breite von 0.75 
 **ETL (pytest).**
 - Reprojektion gegen einen bekannten LV95↔WGS84-Referenzpunkt
 - SW-Ecke → Zentrum-Offset (+50 m) an einem konstruierten Fall
-- Aggregations-Invariante: Σ Hektar = Σ Gemeinde = Kanton über die bekannten Werte, klassierte Zellen separat und übereinstimmend bilanziert
+- Aggregations-Invarianten aus Abschnitt 6.5, alle vier
+- **Abteilungsspalten werden nie zu einem Total summiert**: ein konstruierter Fall mit `emp_total = 4` und vier Abteilungen à 4 muss `emp_total == 4` liefern, nicht 16
+- Mischungsnormierung: `Σ_g dist_g == emp_total` bei einer Zelle mit ungleich verteilten Abteilungswerten
+- `AMBIGUOUS`-Flag wird genau bei `emp_total == 4` gesetzt, nicht bei 5
+- `overstatementMax == 3 · ambiguousCells`
+- Jede NOGA-Abteilung in den Daten ist in `noga_groups.json` abgedeckt; eine unbekannte Abteilung bricht ab
 - Bin-Roundtrip: schreiben → lesen ergibt bitgleiche Arrays
 - CSV-Validierung schlägt bei fehlender `report_url` fehl
-- Spaltenmuster-Auflösung schlägt bei unbekanntem Jahrgangsschema fehl
+- Spaltenmuster-Auflösung schlägt bei unbekanntem Jahrgangsschema und bei uneinheitlichem `{nn}`-Präfix fehl
 
 **Frontend (vitest).**
 - `scale.ts`: log und linear, Randfälle v=0 und v=vmax
@@ -339,7 +395,9 @@ Nach jedem Schritt wird ein Ergebnis vorgelegt, bevor der nächste beginnt.
 
 | Risiko | Umgang |
 |---|---|
-| Kodierung der Datenschutz-Klassierung erst nach Inspektion bekannt | Schritt 2 legt sie offen und wird vorgelegt, bevor Abschnitt 6.3 festgezurrt wird |
+| ~~Kodierung der Datenschutz-Klassierung unbekannt~~ | **Erledigt am 2026-08-13**: Variablenliste gelesen, Regel ist Aufrundung < 4 → 4. Abschnitt 6.4 festgezurrt |
+| Spaltenpräfix `{nn}` im Datenfile weicht von der Variablenliste (`08`) ab | Auflösung ist musterbasiert und präfix-agnostisch; Uneinheitlichkeit bricht ab |
+| Aufrundung verzerrt Summen nach oben | Beziffert als `overstatementMax`, in Panel und Legende ausgewiesen |
 | SIX-Emittentenliste maschinell nicht zugänglich | Fallback auf eine dokumentierte, datierte Symbolliste im Repo |
 | Fehlerhaft übernommene Umsatzzahl bleibt unmarkiert | Bewusst akzeptiert; `report_url` pro Zeile ist der einzige Kontrollmechanismus |
 | Hektarzahl weicht deutlich von der Schätzung ab | Binärformat und LOD-Ansatz tragen bis mindestens 10⁵ Zellen; darüber wäre Kachelung nachzurüsten |
