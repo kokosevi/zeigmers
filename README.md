@@ -274,9 +274,13 @@ App ist mit dieser Unschärfe zu lesen, nicht als amtlich verbindliche Zahl.
 | Firmen-Stammdaten (LINDAS/Zefix, Geokodierung) | LINDAS SPARQL-Endpunkt, swisstopo SearchServer | Kandidatensuche und Adress→Koordinate für Ansicht A |
 | Umsatz, Mitarbeitende, Geschäftsjahr je Firma | Geschäftsberichte der acht Unternehmen selbst | Ansicht A (siehe `report_url` je Zeile) |
 
-Abgerufen: 13. August 2026 (Datum der zuletzt committeten Artefakte in
-`public/data/`; ein erneuter `npm run build:data`-Lauf lädt jeweils die
-aktuellste Version nach).
+Abgerufen: 13. August 2026 (Datum, an dem die zugrundeliegenden Rohdaten
+zuletzt heruntergeladen wurden, siehe `data/raw/manifest.json`); die
+committeten Artefakte in `public/data/` wurden am 14. August 2026 aus
+denselben Rohdaten neu erzeugt (Phase 1: Ausweitung auf alle 26 Kantone,
+siehe „Phase 1: das ETL deckt jetzt die ganze Schweiz ab" oben). Ein
+erneuter `npm run build:data`-Lauf lädt jeweils die aktuellste Version der
+Rohdaten nach.
 
 **Lizenzhinweis:** STATENT ist auf opendata.swiss unter den Nutzungsbedingungen
 „Freie Nutzung, Quellenangabe Pflicht“ eingetragen. swisstopo-Geodaten
@@ -323,12 +327,175 @@ unverändertem Präfix stillschweigend danebengegriffen. Das Ergebnis der
 Auflösung wird nach `etl/columns/statent_<jahr>.json` geschrieben und bei
 jedem Lauf neu erzeugt.
 
+## Phase 1: das ETL deckt jetzt die ganze Schweiz ab
+
+Seit dem 14. August 2026 baut `npm run build:data` nicht mehr nur Aargau,
+sondern **alle 26 Kantone und alle Gemeinden** — dies ist reine Datenarbeit
+(„Phase 1" einer grösseren Ausweitung); die Karte selbst (`src/`) zeigt
+weiterhin ausschliesslich Aargau, unverändert (siehe unten, „Rückwärts-
+kompatibilität fürs Frontend"). Die folgenden Abschnitte dokumentieren, was
+sich am ETL geändert hat.
+
+**Woher die Daten kommen, hat sich nicht geändert.** STATENT war schon immer
+gesamtschweizerisch (224'788 Hektarzellen), swissBOUNDARIES3D enthielt schon
+immer alle Gemeinde- und Kantonsgrenzen — das Ein-Kanton-ETL hat diese Daten
+nur bisher auf Aargau herunter­gefiltert. `boundaries.build_all()` liest das
+Gemeinde-Layer jetzt einmal komplett und liefert ein Dictionary
+`{Kantons-BFS-Nummer: Boundaries}`; `cli.py` läuft in einer Schleife über
+alle 26 Einträge, statt einmalig über den in `CANTON` konfigurierten.
+
+**2'110 Gemeinden, nicht 2'123.** Eine erste Abschätzung ging von 2'123
+Gemeinden aus. Die tatsächliche Zahl ist **2'110**: `tlm_hoheitsgebiet`
+(swissBOUNDARIES3D) führt neben den echten Gemeinden (Objektart
+`Gemeindegebiet`) auch 11 Seeflächen ohne eigene Gemeinde (Objektart
+`Kantonsgebiet` — Greifensee, Zürichsee, Thuner-/Brienzersee, Bieler-/
+Neuenburgersee je Kanton, Bodensee je Kanton) und 2 geteilte Tessiner Gebiete
+ohne eigene Zuordnung (Objektart `Kommunanz`). Ungefiltert zählen diese 13
+Zeilen wie zusätzliche „Gemeinden" — `boundaries._load_municipalities_raw()`
+filtert seither auf `objektart == "Gemeindegebiet"`. Für Aargau ändert das
+nichts (alle 196 Zeilen sind bereits `Gemeindegebiet`, siehe unten), für
+andere Kantone aber schon: siehe nächster Abschnitt.
+
+**`canton_reference()`s Nummernbereich: fünf Kantone waren betroffen, nicht
+geprüft wäre das nie aufgefallen.** Die Aufgabenstellung verwies auf einen
+historischen Fehler, bei dem eine ältere Formel „die Hälfte von Thurgau nach
+Aargau zog" — behoben durch den heutigen `min`/`max`-Ansatz über die
+tatsächliche Gemeindegeometrie. Bei der Ausweitung auf alle 26 Kantone kam
+ein **neuer, verwandter Fehler** zum Vorschein: Ohne den `Gemeindegebiet`-
+Filter (siehe oben) tragen die Seeflächen sehr hohe `bfs_nummer`-Werte
+(9000er-Block, z. B. Zürichsee = 9051). Für jeden Kanton mit einer solchen
+Seefläche — **ZH, BE, SG, TG, NE** (Thurgau also tatsächlich wieder, diesmal
+aus einem anderen Grund) — sprengt das den aus `min`/`max` abgeleiteten
+Nummernbereich bis in den 9000er-Block und erfasst dabei praktisch jede
+`STATENT_GMDE`-Zeile jedes anderen Kantons mit. Der `Gemeindegebiet`-Filter
+behebt das: `etl/tests/test_boundaries.py::
+test_build_all_covers_all_26_cantons_with_no_foreign_municipality_numbers`
+prüft es seither automatisiert gegen die echten Daten — für alle 26 Kantone
+liegt kein fremder Gemeinde-Code mehr im abgeleiteten Bereich.
+
+**Artefakte je Kanton, plus eine nationale Übersicht.** Statt eines einzigen
+`ag_*`-Tripels schreibt das ETL jetzt für jeden der 26 Kantone
+`<code>_gemeinde.{bin,json}` und `<code>_boundaries.geojson` (identisches
+Format, das die Karte bereits kennt), sowie einmalig `ch_kantone.{bin,json}`
+— eine nationale Übersichtsstufe mit einer Zeile je Kanton und denselben
+Feldern wie eine Gemeindezeile (Beschäftigte, dominante Branchengruppe, volle
+Verteilung, `ambiguousCells`, `einwohnerzahl`). `ch_kantone.geojson` (die
+Kantonsflächen für die Basiskarte) gab es schon vorher und bleibt unverändert.
+Diese Artefakte werden in Phase 1 nur **erzeugt**, nicht **verwendet** — das
+Frontend liest sie nicht (siehe „Rückwärtskompatibilität fürs Frontend"
+unten); sie sind die Datengrundlage für eine spätere Kantons-Übersicht.
+
+**`meta.json` ist jetzt ein Index über alle 26 Kantone.** Ein neues Feld
+`cantons` listet zu jedem Kanton `code`, `bfsNr`, `name`, `gemeindeCount` und
+`employment` — genug, damit ein künftiges Frontend die Übersicht aufbauen und
+die passenden `<code>_*`-Dateien anfragen kann, ohne Dateinamen zu raten. Die
+bisherigen Felder `canton`, `year`, `levels` bleiben unverändert bestehen
+(siehe „Rückwärtskompatibilität" unten); das nicht mehr benötigte Feld
+`counts` (nur die Gemeindezahl des konfigurierten Kantons) entfällt zugunsten
+von `cantons[].gemeindeCount`.
+
+**Zwei Grössenbudgets statt eines Gesamtbudgets.** Ein einziges
+Gesamtbudget über `public/data/` (bisher 2 MB) ist mit 26 Kantonen das
+falsche Mass: die Karte lädt nie mehr als zwei Pakete gleichzeitig — die
+nationale Übersicht beim Start, danach je ein einzelnes Kanton-Paar. Neu
+gelten deshalb zwei Budgets (`config.py`, `MAX_STARTUP_BYTES`/
+`MAX_CANTON_PAYLOAD_BYTES`), beide von `draufsicht-etl all` geprüft und
+gemeldet:
+
+| Budget | Inhalt | Budget | Gemessen |
+|---|---|---:|---:|
+| Start-Payload | `meta.json` + `ch_kantone.{bin,json,geojson}` + `companies.json` | 800 KB | 282 KB |
+| Grösstes Kanton-Paket | `<code>_gemeinde.{bin,json}` + `<code>_boundaries.geojson` | 2'048 KB | 1'486 KB (Bern) |
+
+Bern (334 Gemeinden nach dem `Gemeindegebiet`-Filter, der grösste Kanton) ist
+der gemessene Extremfall. Seine Gemeindegrenzen brauchen bei der für Aargau
+kalibrierten 900-KB-Toleranzstufe von `write_geojson()` mehr Anläufe, um zu
+passen, als das ursprüngliche Budget erlaubt — `cli.py` versucht deshalb
+zuerst mit dem alten, Aargau-kalibrierten Budget (identisches Verhalten,
+damit Aargau unverändert bleibt) und erst danach, falls das nicht reicht, mit
+dem grösseren `MAX_MUNICIPALITY_BOUNDARIES_BYTES_PER_CANTON` (1.7 MB). Für
+Bern greift dieser zweite Versuch; seine Gemeindegrenzen sind dadurch sichtbar
+gröber vereinfacht als Aargaus (7.5 % Toleranz statt 30 %) — eine offengelegte,
+keine verschwiegene Qualitätseinbusse, siehe `config.py`.
+
+**Aargau bleibt byte-identisch.** `ag_gemeinde.bin`, `ag_gemeinde.json` und
+`ag_boundaries.geojson` sind nach der Ausweitung exakt dieselben Bytes wie
+vor dieser Änderung — geprüft per SHA-256 gegen den committeten Stand
+(`etl/tests/test_pipeline.py::
+test_aargau_artifacts_are_byte_identical_to_the_committed_baseline`) und per
+direktem Geometrie-Vergleich zwischen `boundaries.build()` und
+`boundaries.build_all()` (`etl/tests/test_boundaries.py::
+test_build_all_matches_build_for_aargau`).
+
+**Das Plausibilitätsfenster hält für 24 von 26 Kantonen hart — für zwei
+schlägt es an, ohne den Lauf abzubrechen.** Bis Phase 1 brach ein
+Fensterverstoss den gesamten ETL-Lauf ab (sinnvoll bei einem einzigen
+Kanton). National würde das bedeuten: ein einziger auffälliger Kanton
+verhindert, dass die anderen 25 überhaupt Artefakte bekommen. Der Guard
+prüft deshalb weiterhin **jeden** Kanton gegen seine eigene BFS-Referenz und
+seinen eigenen NOLOC-Anteil, meldet einen Verstoss aber als **Warnung**
+(`[statent] WARNUNG [<code>] ...`, gesammelt und am Ende noch einmal
+aufgelistet) statt mit einem harten Abbruch. Die beiden anderen Guards
+(Σ Hektar = Σ Gemeinde = Kanton; kleinster Hektarwert = 4) bleiben hart —
+dafür gibt es keine legitime Ausnahme, ein Verstoss dort ist immer ein Bug.
+
+Zwei Kantone verletzen das Fenster tatsächlich:
+
+- **Basel-Stadt** (196'257 Beschäftigte, Referenz 199'745, **-1.75 %**,
+  unterhalb der unteren Grenze 199'245): BS ist mit 37 km² der kleinste
+  Kanton und vollständig von einem einzigen Nachbarn (Basel-Landschaft)
+  umschlossen. Rund 10'400 Beschäftigte liegen in einem 300-m-Ring um BS,
+  praktisch vollständig in BL — das feste 100-m-STATENT-Hektarraster
+  ordnet einen Teil der administrativ BS zugerechneten Beschäftigten
+  geometrisch knapp jenseits der Kantonsgrenze zu. Ein realer Grenzeffekt,
+  kein Pipeline-Fehler.
+- **Jura** (56'370 Beschäftigte, Referenz 48'533, **+16.15 %**, oberhalb der
+  oberen Grenze 54'911): weniger eindeutig geklärt. Ein 300-m-Grenzring
+  zu Bern enthält nur ~245 Beschäftigte — Grenzeffekt scheidet als
+  Haupterklärung aus. JU hat einen überdurchschnittlichen Anteil
+  mehrdeutiger (auf 4 gerundeter) Hektarzellen (61.9 % gegenüber 56.3 % in
+  Aargau) und mindestens einen auffälligen Einzelfall: Die Gemeinde
+  Fontenais (282 Beschäftigte laut amtlicher Referenz) enthält eine
+  einzelne Hektarzelle mit 453 Beschäftigten — mutmasslich ein grösserer
+  Arbeitgeber, dessen Hektarlage laut Geometrie in Fontenais liegt, dessen
+  Beschäftigte administrativ aber (teilweise) einer anderen Gemeinde
+  zugerechnet werden. Ob das die vollständige Erklärung ist, ist **nicht**
+  abschliessend verifiziert — dieser Befund braucht eine genauere Prüfung,
+  bevor er als verstanden gelten kann.
+
+**Reproduzierbarkeit.** Zwei vollständige, aufeinanderfolgende
+`draufsicht-etl all`-Läufe erzeugen alle 83 Artefaktdateien (26 × 3 Kanton-
+Dateien + `ch_kantone.{bin,json,geojson}` + `meta.json` + `companies.json`)
+byte-identisch — per SHA-256/`cmp` über jede einzelne Datei geprüft, nicht nur
+stichprobenartig.
+
+**Rückwärtskompatibilität fürs Frontend.** `src/` wurde für diese Phase nicht
+angefasst (Vorgabe: „this phase produces data only"). Damit die bestehende
+Karte unverändert gegen Aargau weiterläuft, behält `meta.json` exakt die
+Felder, die `src/data/loader.ts`s `Meta`-Interface und `src/main.ts`
+(`loadMeta()`) lesen — `canton.{code,bfs_nr,name}`, `year`, `levels` — bei;
+`cantons` ist ein reines Zusatzfeld, das die bestehende Karte ignoriert (ein
+zusätzliches Feld in einem JSON-Objekt bricht kein `as Meta`-Cast). Die
+Karte fragt weiterhin nur `ag_*`-Dateien an (aus `meta.canton.code`), die
+jetzt einfach eines von 26 gleichwertigen Kanton-Paketen sind.
+
 ## Kantonswechsel
 
-Ein Kantonswechsel ist als Dreischritt gedacht:
+Mit Phase 1 baut das ETL immer alle 26 Kantone — ein Kantonswechsel ändert
+nicht mehr, **was** gebaut wird, sondern nur noch, welchen der bereits
+gebauten 26 Kantone die Karte beim Start zeigt. `CANTON` in
+`etl/src/draufsicht_etl/config.py` bedeutet seither: der Startkanton der
+Karte (`meta.canton`, gelesen in `src/main.ts`) und der Pfad der (bislang
+einzigen) Firmen-CSV (`companies.csv_path()`) — nicht mehr, welche Gemeinden
+und Grenzen das ETL berechnet.
+
+Ein Kantonswechsel ist als Zweischritt gedacht:
 
 1. `CANTON` in `etl/src/draufsicht_etl/config.py` auf den neuen Kanton setzen
-   (`code`, `bfs_nr`, `name`).
+   (`code`, `bfs_nr`, `name`). Gemeindegrenzen und -summen für diesen Kanton
+   existieren bereits in `public/data/<code>_gemeinde.*`/
+   `<code>_boundaries.geojson` — das ETL baut sie bei jedem Lauf für alle 26
+   Kantone, unabhängig von `CANTON` (siehe oben).
 2. Die Firmen-CSV unter dem daraus abgeleiteten Namen anlegen:
    `data/manual/<code>_listed_companies.csv` (kleingeschrieben, z. B.
    `data/manual/zh_listed_companies.csv` für `code = "ZH"`) —
@@ -344,17 +511,19 @@ Ein Kantonswechsel ist als Dreischritt gedacht:
    Kanton, bricht `npm run build:data` mit einer klaren deutschen
    Fehlermeldung ab, die den erwarteten Pfad nennt, statt mit einem rohen
    `FileNotFoundError`.
-3. `npm run build:data` laufen lassen. Das Frontend liest den Kantons-Code
-   und -Namen selbst aus `public/data/meta.json` (`src/main.ts`, per
-   `loadMeta()`) — die Artefakt-Dateinamen (`<code>_gemeinde.*`), der
-   Fenstertitel und der Titel des Kantonspanels folgen also ohne weitere
-   Codeänderung.
 
-Gemeindegrenzen, Hektarraster, BFS-Referenzsumme, das Plausibilitätsfenster,
-der Pfad der Firmen-CSV und alle Artefaktnamen leiten sich automatisch aus
-`CANTON` und der Geometrie her. Eine Stelle bleibt trotzdem **Handarbeit im
-Code**, weil sie auf die räumliche Ausdehnung des jeweiligen Kantons
-zugeschnitten ist und sich nicht aus `CANTON` allein ableiten lässt:
+Danach `npm run build:data` laufen lassen (schreibt vor allem ein neues
+`meta.json` und `companies.json` — die 26 Gemeinde-/Grenzen-Pakete ändern
+sich dabei nicht, ausser ein neuer STATENT-/swissBOUNDARIES3D-Jahrgang
+verändert ihren Inhalt). Das Frontend liest den Kantons-Code und -Namen
+weiterhin selbst aus `public/data/meta.json` (`src/main.ts`, per
+`loadMeta()`) — die Artefakt-Dateinamen (`<code>_gemeinde.*`), der
+Fenstertitel und der Titel des Kantonspanels folgen also ohne weitere
+Codeänderung.
+
+Eine Stelle bleibt trotzdem **Handarbeit im Code**, weil sie auf die
+räumliche Ausdehnung des jeweiligen Kantons zugeschnitten ist und sich nicht
+aus `CANTON` allein ableiten lässt:
 
 - **`INITIAL_VIEW` in `src/map.ts`** — Kartenzentrum, Startzoom, Neigung und
   Blickrichtung sind von Hand auf den Kanton Aargau justiert. Ein deutlich

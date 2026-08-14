@@ -61,6 +61,7 @@ def write_level(
     year: int,
     canton: str,
     extra: dict | None = None,
+    entries_key: str = "gemeinden",
 ) -> tuple[Path, Path]:
     arrays = _collect(level)
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -99,7 +100,7 @@ def write_level(
         "unknownIndex": config.NOGA_UNKNOWN_INDEX,
     }
     if level.gemeinden is not None:
-        meta["gemeinden"] = level.gemeinden
+        meta[entries_key] = level.gemeinden
     if extra:
         meta.update(extra)
 

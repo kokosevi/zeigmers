@@ -22,6 +22,22 @@ _CANTON_LAYER_NEEDLES = ["kantonsgebiet"]
 _BFS_FIELD_NEEDLES = ["bfs_nummer", "bfs_nr", "gemeindenummer"]
 _NAME_FIELD_NEEDLES = ["name", "gemeindename"]
 _CANTON_FIELD_NEEDLES = ["kantonsnummer", "kanton_nr", "kantonsnr"]
+_OBJEKTART_FIELD_NEEDLES = ["objektart"]
+# `tlm_hoheitsgebiet` führt neben den 2'110 echten Gemeinden (Objektart
+# "Gemeindegebiet") auch Seeflächen ohne Gemeindezugehörigkeit ("Kantonsgebiet",
+# 11 Zeilen: Greifensee, Zürichsee, Thuner-/Brienzersee, Bieler-/Neuenburgersee
+# je Kanton, Bodensee je Kanton) und geteilte Gebiete zweier Tessiner Gemeinden
+# ohne eigene Zuordnung ("Kommunanz", 2 Zeilen). Ungefiltert würden diese 13
+# Zeilen als zusätzliche "Gemeinden" mitgezählt — mit im Schnitt sehr hohen
+# `bfs_nummer`-Werten (9000er-Block), die `statent.canton_reference()`s
+# Nummernbereich (min..max je Kanton) für genau die Kantone sprengen, die eine
+# solche Seefläche führen (ZH, BE, SG, TG, NE): der abgeleitete Bereich reicht
+# dann bis in den 9000er-Block und erfasst dabei jede STATENT_GMDE-Zeile jedes
+# anderen Kantons mit. Aargau ist unbetroffen (keine Seefläche in `tlm_hoheits-
+# gebiet` mit `kantonsnummer=19`), deshalb ändert dieser Filter nichts an den
+# committeten AG-Artefakten — siehe ETL-Report für die vollständige Prüfung
+# aller 26 Kantone.
+_MUNICIPALITY_OBJEKTART = "Gemeindegebiet"
 # Change 2 (2026-08-14): `einwohnerzahl` trägt laut swissBOUNDARIES3D-
 # Objektkatalog (Attribut EINWOHNERZAHL, TLM_HOHEITSGEBIET) die Einwohnerzahl
 # der Gemeinde, Stand 31.12.2024 laut den Nachführungsinformationen der
@@ -37,13 +53,18 @@ class Boundaries:
     municipalities: gpd.GeoDataFrame
 
 
-def geojson_path() -> Path:
-    """Pfad zum Gemeindegrenzen-Artefakt des aktuell konfigurierten Kantons.
+def geojson_path(code: str | None = None) -> Path:
+    """Pfad zum Gemeindegrenzen-Artefakt eines Kantons — `code` ist der
+    zweistellige Kantonscode (z.B. "BE"). Ohne Argument der aktuell in
+    `config.CANTON` konfigurierte Kanton (Rückwärtskompatibilität für Aufrufer,
+    die "den" Kanton meinen, z.B. ältere Tests/Skripte).
 
-    Spiegelt `companies.csv_path()`: der Dateiname folgt `config.CANTON['code']`,
-    ein Kantonswechsel braucht hier keine Codeänderung.
+    Seit der Ausweitung auf alle 26 Kantone (Phase 1) baut das ETL diese Datei
+    für jeden Kanton, nicht mehr nur für `config.CANTON` — `cli.py` ruft diese
+    Funktion deshalb in einer Schleife mit jedem Kantonscode auf.
     """
-    return config.PUBLIC_DATA / f"{config.CANTON['code'].lower()}_boundaries.geojson"
+    resolved = code if code is not None else config.CANTON["code"]
+    return config.PUBLIC_DATA / f"{resolved.lower()}_boundaries.geojson"
 
 
 def cantons_geojson_path() -> Path:
@@ -98,7 +119,12 @@ def _find_column(columns: list[str], needles: list[str]) -> str:
     raise LookupError(f"Keine Spalte passt auf {needles}; vorhanden: {columns}")
 
 
-def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
+def _load_municipalities_raw(gpkg_zip: Path) -> gpd.GeoDataFrame:
+    """Liest `tlm_hoheitsgebiet` einmal, undissolved, mit einer zusätzlichen
+    `canton_bfs_nr`-Spalte — die gemeinsame Grundlage für `build()` (ein
+    Kanton) und `build_all()` (alle 26). Ein Aufruf, eine GeoPackage-Lesung,
+    egal wie viele Kantone am Ende gebraucht werden.
+    """
     gpkg = _extract(gpkg_zip)
     layer = find_layer(gpkg, _MUNICIPALITY_LAYER_NEEDLES)
     gdf = gpd.read_file(gpkg, layer=layer)
@@ -107,12 +133,18 @@ def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
     bfs_col = _find_column(list(gdf.columns), _BFS_FIELD_NEEDLES)
     name_col = _find_column(list(gdf.columns), _NAME_FIELD_NEEDLES)
     population_col = _find_column(list(gdf.columns), _POPULATION_FIELD_NEEDLES)
+    objektart_col = _find_column(list(gdf.columns), _OBJEKTART_FIELD_NEEDLES)
+
+    # Nur echte Gemeinden (siehe `_MUNICIPALITY_OBJEKTART`-Kommentar oben) —
+    # vor dem Kantonsfilter, damit weder `build()` noch `build_all()` je eine
+    # Seefläche oder ein Kommunanz-Gebiet als Gemeinde zählen.
+    gdf = gdf[gdf[objektart_col] == _MUNICIPALITY_OBJEKTART].copy()
 
     # Der Layer enthält auch Enklaven ohne Schweizer Kanton (FL-Gemeinden,
     # Büsingen am Hochrhein, Campione d'Italia) mit leerer Kantonsnummer.
     # Diese Zeilen werden verworfen statt sie mit einem Sentinel-Wert still
     # zu übergehen; der Verlust wird gezählt und gemeldet, damit ein künftiger
-    # Jahrgang, der versehentlich echte Aargauer Gemeinden ausdünnt, auffällt.
+    # Jahrgang, der versehentlich echte Gemeinden ausdünnt, auffällt.
     rows_before = len(gdf)
     gdf = gdf.dropna(subset=[canton_col])
     dropped = rows_before - len(gdf)
@@ -122,33 +154,82 @@ def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
             "(Ausland: FL, Büsingen, Campione)"
         )
 
-    gdf = gdf[gdf[canton_col].astype(int) == canton_bfs_nr].copy()
-    if gdf.empty:
-        raise ValueError(
-            f"Kanton {canton_bfs_nr} liefert keine Gemeinden aus Layer {layer}"
-        )
-
     # 3D-Geometrien auf 2D reduzieren; die Höhe stört jeden weiteren Schritt.
     gdf["geometry"] = gdf.geometry.force_2d()
     gdf = gdf.set_crs(config.SRC_LV95, allow_override=True)
 
-    municipalities = (
-        gdf[[bfs_col, name_col, population_col, "geometry"]]
-        .rename(columns={bfs_col: "bfs_nr", name_col: "name", population_col: "einwohnerzahl"})
+    return (
+        gdf[[bfs_col, name_col, population_col, canton_col, "geometry"]]
+        .rename(
+            columns={
+                bfs_col: "bfs_nr",
+                name_col: "name",
+                population_col: "einwohnerzahl",
+                canton_col: "canton_bfs_nr",
+            }
+        )
         # Laut Objektkatalog führen Exklaven-Teilpolygone keinen Wert für
         # EINWOHNERZAHL (siehe swissBOUNDARIES3D-Produktinformation, Abschnitt
         # 2.3) — NaN wird hier zu 0 normalisiert, bevor `dissolve()` mehrere
         # Zeilen desselben `bfs_nr` zu einer zusammenführt (aggfunc "first"
         # unten würde ein NaN sonst unverändert durchreichen).
-        .assign(einwohnerzahl=lambda d: d["einwohnerzahl"].fillna(0))
-        .dissolve(by=["bfs_nr", "name"], as_index=False)  # Exklaven zusammenführen
+        .assign(
+            einwohnerzahl=lambda d: d["einwohnerzahl"].fillna(0),
+            canton_bfs_nr=lambda d: d["canton_bfs_nr"].astype(int),
+        )
+        .reset_index(drop=True)
+    )
+
+
+def _dissolve_municipalities(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """Fasst Exklaven-Teilpolygone (mehrere Zeilen mit gleichem `bfs_nr`) zu
+    einer Zeile zusammen und bringt sie in eine deterministische Ordnung —
+    gemeinsamer letzter Schritt für `build()` und `build_all()`."""
+    return (
+        gdf.dissolve(by=["bfs_nr", "name"], as_index=False)
         .astype({"bfs_nr": "int32", "einwohnerzahl": "int64"})
         .sort_values("bfs_nr")
         .reset_index(drop=True)
     )
 
+
+def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
+    raw = _load_municipalities_raw(gpkg_zip)
+    gdf = raw[raw["canton_bfs_nr"] == canton_bfs_nr].drop(columns=["canton_bfs_nr"])
+    if gdf.empty:
+        raise ValueError(
+            f"Kanton {canton_bfs_nr} liefert keine Gemeinden aus tlm_hoheitsgebiet"
+        )
+
+    municipalities = _dissolve_municipalities(gdf)
     canton = municipalities.geometry.union_all()
     return Boundaries(canton_lv95=canton, municipalities=municipalities)
+
+
+def build_all(gpkg_zip: Path) -> dict[int, Boundaries]:
+    """Wie `build()`, aber für alle Kantone auf einmal — eine GeoPackage-
+    Lesung statt 26 (siehe `_load_municipalities_raw`). Schlüssel ist die
+    Kantons-BFS-Nummer (1-26), Werte wie bei `build()`: die dissolvten
+    Gemeinden dieses Kantons plus die Union ihrer Flächen.
+
+    Für den bereits konfigurierten Kanton (`config.CANTON`) liefert dieser Pfad
+    exakt dieselben `municipalities`-Zeilen wie `build(gpkg_zip, bfs_nr)` — der
+    Kantonsfilter kommt in beiden Fällen aus derselben `_load_municipalities_raw`,
+    Dissolve/Sortierung sind identisch, nur der Zeitpunkt des Filterns
+    unterscheidet sich (vor vs. nach dem gemeinsamen Dissolve macht keinen
+    Unterschied: `dissolve(by=["bfs_nr","name"])` gruppiert ohnehin nur
+    innerhalb desselben `bfs_nr`, unbeeinflusst davon, welche anderen Kantone
+    im Frame stehen).
+    """
+    raw = _load_municipalities_raw(gpkg_zip)
+    result: dict[int, Boundaries] = {}
+    for canton_bfs_nr, group in raw.groupby("canton_bfs_nr"):
+        municipalities = _dissolve_municipalities(group.drop(columns=["canton_bfs_nr"]))
+        result[int(canton_bfs_nr)] = Boundaries(
+            canton_lv95=municipalities.geometry.union_all(),
+            municipalities=municipalities,
+        )
+    return result
 
 
 def build_cantons(gpkg_zip: Path) -> gpd.GeoDataFrame:

@@ -123,3 +123,29 @@ def test_gemeinden_table_only_on_hectare_and_municipality(tmp_path, table):
     )
     meta = json.loads(json_path.read_text(encoding="utf-8"))
     assert "gemeinden" not in meta
+
+
+# --- Phase 1 (alle 26 Kantone): entries_key für die nationale Kantonsstufe ----
+
+
+def test_entries_key_controls_the_json_field_name(tmp_path, table):
+    # Die nationale `ch_kantone`-Übersicht (Change: Phase 1) trägt Kantone,
+    # keine Gemeinden — `entries_key="kantone"` schreibt die Einträge unter
+    # diesem Namen statt unter "gemeinden", ohne `_collect()`/`_ORDER` oder
+    # das Array-Layout selbst zu berühren.
+    level = _level(name="kantone", n=2)
+    bin_path, json_path = binpack.write_level(
+        level, table, tmp_path, year=2023, canton="CH", entries_key="kantone",
+    )
+    assert bin_path.name == "ch_kantone.bin"
+    assert json_path.name == "ch_kantone.json"
+    meta = json.loads(json_path.read_text(encoding="utf-8"))
+    assert "gemeinden" not in meta
+    assert meta["kantone"] == level.gemeinden
+
+
+def test_entries_key_defaults_to_gemeinden(tmp_path, table):
+    level = _level(name="gemeinde")
+    _, json_path = binpack.write_level(level, table, tmp_path, year=2023, canton="AG")
+    meta = json.loads(json_path.read_text(encoding="utf-8"))
+    assert meta["gemeinden"] == level.gemeinden

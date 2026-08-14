@@ -14,8 +14,16 @@ def test_geojson_path_derives_from_configured_canton(monkeypatch):
     # Kantonswechsel hätte die Grenzen-Datei stillschweigend am falschen Namen
     # vorbeigeschrieben. `geojson_path()` ist jetzt die einzige Stelle, die den
     # Namen kennt; cli.py ruft nur noch sie auf.
+    #
+    # Seit Phase 1 (alle 26 Kantone) baut das ETL diese Datei für jeden
+    # Kanton, nicht mehr nur für `config.CANTON` — `geojson_path(code)` nimmt
+    # den Code deshalb explizit entgegen; ohne Argument bleibt der
+    # konfigurierte Kanton der Standard (Rückwärtskompatibilität).
     monkeypatch.setitem(config.CANTON, "code", "ZH")
     assert boundaries.geojson_path() == config.PUBLIC_DATA / "zh_boundaries.geojson"
+    assert boundaries.geojson_path("BE") == config.PUBLIC_DATA / "be_boundaries.geojson"
+    # Der explizite Code sticht die Konfiguration, egal was `config.CANTON` sagt.
+    assert boundaries.geojson_path("GE") == config.PUBLIC_DATA / "ge_boundaries.geojson"
 
 
 def test_find_layer_matches_case_insensitively(tmp_path):
@@ -48,6 +56,7 @@ def test_build_drops_rows_without_kantonsnummer(tmp_path, capsys):
             "name": ["Aarau", "Vaduz"],
             "kantonsnummer": [19.0, float("nan")],
             "einwohnerzahl": [22710, 40000],
+            "objektart": ["Gemeindegebiet", "Gemeindegebiet"],
             "geometry": [
                 Polygon([(0, 0), (1, 0), (1, 1)]),
                 Polygon([(10, 10), (11, 10), (11, 11)]),
@@ -86,6 +95,7 @@ def test_build_normalises_a_missing_einwohnerzahl_to_zero(tmp_path):
             "name": ["Ohnebevölkerung"],
             "kantonsnummer": [19.0],
             "einwohnerzahl": [float("nan")],
+            "objektart": ["Gemeindegebiet"],
             "geometry": [Polygon([(0, 0), (1, 0), (1, 1)])],
         },
         crs="EPSG:2056",
@@ -98,6 +108,73 @@ def test_build_normalises_a_missing_einwohnerzahl_to_zero(tmp_path):
     b = boundaries.build(zip_path, 19)
 
     assert list(b.municipalities["einwohnerzahl"]) == [0]
+
+
+def _multi_canton_gpkg(tmp_path, extra_rows=None):
+    """Zwei Kantone (19=Aargau, 1 Gemeinde; 1=Zürich, 1 Gemeinde) plus optional
+    zusätzliche Zeilen (z.B. eine Seefläche) — Grundlage für die
+    `build_all()`-Tests unten."""
+    rows = {
+        "bfs_nummer": [4001, 261],
+        "name": ["Aarau", "Zürich"],
+        "kantonsnummer": [19.0, 1.0],
+        "einwohnerzahl": [22710, 434008],
+        "objektart": ["Gemeindegebiet", "Gemeindegebiet"],
+        "geometry": [
+            Polygon([(0, 0), (1, 0), (1, 1)]),
+            Polygon([(100, 100), (101, 100), (101, 101)]),
+        ],
+    }
+    if extra_rows:
+        for key, values in extra_rows.items():
+            rows[key] = rows[key] + values
+
+    gpkg_path = tmp_path / "multi_canton.gpkg"
+    gpd.GeoDataFrame(rows, crs="EPSG:2056").to_file(
+        gpkg_path, layer="tlm_hoheitsgebiet", driver="GPKG"
+    )
+    zip_path = tmp_path / "multi_canton.gpkg.zip"
+    with zipfile.ZipFile(zip_path, "w") as zf:
+        zf.write(gpkg_path, arcname=gpkg_path.name)
+    return zip_path
+
+
+def test_build_all_splits_municipalities_by_canton(tmp_path):
+    zip_path = _multi_canton_gpkg(tmp_path)
+    result = boundaries.build_all(zip_path)
+
+    assert set(result) == {19, 1}
+    assert list(result[19].municipalities["bfs_nr"]) == [4001]
+    assert list(result[1].municipalities["bfs_nr"]) == [261]
+
+
+def test_build_all_excludes_lake_and_kommunanz_pseudo_units(tmp_path):
+    # Regressionstest für den Fund im ETL-Report: `tlm_hoheitsgebiet` führt
+    # neben echten Gemeinden auch Seeflächen ("Kantonsgebiet", z.B.
+    # "Zürichsee") und geteilte Gebiete ("Kommunanz") mit sehr hohen
+    # `bfs_nummer`-Werten. Ungefiltert sprengen die den von
+    # `statent.canton_reference()` aus `bfs_nr` min/max abgeleiteten
+    # Nummernbereich für genau die Kantone, die eine solche Zeile führen.
+    zip_path = _multi_canton_gpkg(
+        tmp_path,
+        extra_rows={
+            "bfs_nummer": [9051, 5391],
+            "name": ["Zürichsee (ZH)", "Comunanza Cadenazzo/Monteceneri"],
+            "kantonsnummer": [1.0, 21.0],
+            "einwohnerzahl": [0, 0],
+            "objektart": ["Kantonsgebiet", "Kommunanz"],
+            "geometry": [
+                Polygon([(200, 200), (201, 200), (201, 201)]),
+                Polygon([(300, 300), (301, 300), (301, 301)]),
+            ],
+        },
+    )
+    result = boundaries.build_all(zip_path)
+
+    assert set(result) == {19, 1}, "Kanton 21 (Tessin) hat hier nur eine Kommunanz-Zeile"
+    assert list(result[1].municipalities["bfs_nr"]) == [261], (
+        "Zürichsee (bfs_nr 9051, Kantonsgebiet) darf nicht als Gemeinde erscheinen"
+    )
 
 
 @pytest.mark.integration
@@ -137,6 +214,64 @@ def test_write_geojson_is_wgs84_and_small(boundaries_real, tmp_path):
 
     assert 7.6 < min(lons) and max(lons) < 8.6, (min(lons), max(lons))
     assert 47.1 < min(lats) and max(lats) < 47.7, (min(lats), max(lats))
+
+
+@pytest.mark.integration
+def test_build_all_matches_build_for_aargau(boundaries_real, all_bounds_real):
+    # Die stärkste verfügbare Prüfung, dass die Generalisierung auf 26 Kantone
+    # den Aargau-Sonderfall nicht verändert hat: `build_all()`s Aargau-Eintrag
+    # muss geometrisch und tabellarisch mit dem eigenständigen `build()`-Aufruf
+    # übereinstimmen, den `boundaries_real` verwendet.
+    via_build_all = all_bounds_real[config.CANTON["bfs_nr"]]
+    assert list(via_build_all.municipalities["bfs_nr"]) == list(
+        boundaries_real.municipalities["bfs_nr"]
+    )
+    assert list(via_build_all.municipalities["name"]) == list(
+        boundaries_real.municipalities["name"]
+    )
+    assert list(via_build_all.municipalities["einwohnerzahl"]) == list(
+        boundaries_real.municipalities["einwohnerzahl"]
+    )
+    assert via_build_all.municipalities.geometry.geom_equals_exact(
+        boundaries_real.municipalities.geometry, tolerance=0
+    ).all()
+    assert via_build_all.canton_lv95.equals_exact(boundaries_real.canton_lv95, tolerance=0)
+
+
+@pytest.mark.integration
+def test_build_all_covers_all_26_cantons_with_no_foreign_municipality_numbers(all_bounds_real):
+    # Verifiziert, statt anzunehmen (siehe ETL-Report): `statent.canton_reference()`
+    # leitet den Gemeindenummern-Bereich eines Kantons aus `min`/`max` seiner
+    # eigenen `bfs_nr`-Werte her (statt einer Mitgliedschaftsmenge, wegen
+    # Fusionen zwischen STATENT- und Geometriejahrgang — siehe Docstring dort).
+    # Das setzt voraus, dass dieser Bereich keine fremde Gemeinde einschliesst.
+    # Genau das brach vor der Korrektur für ZH/BE/SG/TG/NE: `tlm_hoheitsgebiet`
+    # führt für diese Kantone je eine Seefläche mit `bfs_nummer` im 9000er-Block
+    # (Objektart "Kantonsgebiet", z.B. Zürichsee), die den abgeleiteten Bereich
+    # bis dorthin aufspannte und dabei praktisch jeden anderen Kanton mit
+    # einschloss — behoben durch den `objektart == "Gemeindegebiet"`-Filter in
+    # `_load_municipalities_raw()`.
+    assert set(all_bounds_real) == set(range(1, 27))
+
+    all_bfs_nr = {
+        int(bfs_nr): canton_bfs_nr
+        for canton_bfs_nr, b in all_bounds_real.items()
+        for bfs_nr in b.municipalities["bfs_nr"]
+    }
+
+    offenders = []
+    for canton_bfs_nr, b in all_bounds_real.items():
+        own = set(b.municipalities["bfs_nr"].astype(int))
+        low, high = min(own), max(own)
+        foreign = {
+            bfs_nr: owner
+            for bfs_nr, owner in all_bfs_nr.items()
+            if low <= bfs_nr <= high and owner != canton_bfs_nr
+        }
+        if foreign:
+            offenders.append((canton_bfs_nr, low, high, foreign))
+
+    assert not offenders, offenders
 
 
 def test_cantons_geojson_path_is_canton_independent(monkeypatch):

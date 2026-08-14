@@ -6,11 +6,193 @@
   },
   "year": 2023,
   "levels": [
-    "gemeinde"
+    "gemeinde",
+    "kantone"
   ],
-  "counts": {
-    "gemeinde": 196
-  },
   "source": "Bundesamt für Statistik (BFS), STATENT",
-  "hectareCsv": "STATENT_2023.csv"
+  "hectareCsv": "STATENT_2023.csv",
+  "cantons": [
+    {
+      "code": "ZH",
+      "bfsNr": 1,
+      "name": "Zürich",
+      "gemeindeCount": 160,
+      "employment": 1167319.0
+    },
+    {
+      "code": "BE",
+      "bfsNr": 2,
+      "name": "Bern",
+      "gemeindeCount": 334,
+      "employment": 704018.0
+    },
+    {
+      "code": "LU",
+      "bfsNr": 3,
+      "name": "Luzern",
+      "gemeindeCount": 79,
+      "employment": 285583.0
+    },
+    {
+      "code": "UR",
+      "bfsNr": 4,
+      "name": "Uri",
+      "gemeindeCount": 19,
+      "employment": 21183.0
+    },
+    {
+      "code": "SZ",
+      "bfsNr": 5,
+      "name": "Schwyz",
+      "gemeindeCount": 30,
+      "employment": 97291.0
+    },
+    {
+      "code": "OW",
+      "bfsNr": 6,
+      "name": "Obwalden",
+      "gemeindeCount": 7,
+      "employment": 25467.0
+    },
+    {
+      "code": "NW",
+      "bfsNr": 7,
+      "name": "Nidwalden",
+      "gemeindeCount": 11,
+      "employment": 26866.0
+    },
+    {
+      "code": "GL",
+      "bfsNr": 8,
+      "name": "Glarus",
+      "gemeindeCount": 3,
+      "employment": 24724.0
+    },
+    {
+      "code": "ZG",
+      "bfsNr": 9,
+      "name": "Zug",
+      "gemeindeCount": 11,
+      "employment": 134078.0
+    },
+    {
+      "code": "FR",
+      "bfsNr": 10,
+      "name": "Fribourg",
+      "gemeindeCount": 119,
+      "employment": 179771.0
+    },
+    {
+      "code": "SO",
+      "bfsNr": 11,
+      "name": "Solothurn",
+      "gemeindeCount": 104,
+      "employment": 161144.0
+    },
+    {
+      "code": "BS",
+      "bfsNr": 12,
+      "name": "Basel-Stadt",
+      "gemeindeCount": 3,
+      "employment": 196257.0
+    },
+    {
+      "code": "BL",
+      "bfsNr": 13,
+      "name": "Basel-Landschaft",
+      "gemeindeCount": 86,
+      "employment": 166969.0
+    },
+    {
+      "code": "SH",
+      "bfsNr": 14,
+      "name": "Schaffhausen",
+      "gemeindeCount": 26,
+      "employment": 50781.0
+    },
+    {
+      "code": "AR",
+      "bfsNr": 15,
+      "name": "Appenzell Ausserrhoden",
+      "gemeindeCount": 20,
+      "employment": 31010.0
+    },
+    {
+      "code": "AI",
+      "bfsNr": 16,
+      "name": "Appenzell Innerrhoden",
+      "gemeindeCount": 5,
+      "employment": 10801.0
+    },
+    {
+      "code": "SG",
+      "bfsNr": 17,
+      "name": "St. Gallen",
+      "gemeindeCount": 75,
+      "employment": 334907.0
+    },
+    {
+      "code": "GR",
+      "bfsNr": 18,
+      "name": "Graubünden",
+      "gemeindeCount": 100,
+      "employment": 149193.0
+    },
+    {
+      "code": "AG",
+      "bfsNr": 19,
+      "name": "Aargau",
+      "gemeindeCount": 196,
+      "employment": 383203.0
+    },
+    {
+      "code": "TG",
+      "bfsNr": 20,
+      "name": "Thurgau",
+      "gemeindeCount": 80,
+      "employment": 158604.0
+    },
+    {
+      "code": "TI",
+      "bfsNr": 21,
+      "name": "Ticino",
+      "gemeindeCount": 100,
+      "employment": 262915.0
+    },
+    {
+      "code": "VD",
+      "bfsNr": 22,
+      "name": "Vaud",
+      "gemeindeCount": 300,
+      "employment": 516416.0
+    },
+    {
+      "code": "VS",
+      "bfsNr": 23,
+      "name": "Valais",
+      "gemeindeCount": 122,
+      "employment": 212062.0
+    },
+    {
+      "code": "NE",
+      "bfsNr": 24,
+      "name": "Neuchâtel",
+      "gemeindeCount": 24,
+      "employment": 119434.0
+    },
+    {
+      "code": "GE",
+      "bfsNr": 25,
+      "name": "Genève",
+      "gemeindeCount": 45,
+      "employment": 400499.0
+    },
+    {
+      "code": "JU",
+      "bfsNr": 26,
+      "name": "Jura",
+      "gemeindeCount": 51,
+      "employment": 56370.0
+    }
+  ]
 }

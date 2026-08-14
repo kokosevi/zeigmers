@@ -327,6 +327,87 @@ def test_assert_minimum_hectare_value_is_four_raises_when_no_cell_is_ambiguous(t
         aggregate.assert_minimum_hectare_value_is_four(hectare)
 
 
+# --- Phase 1 (alle 26 Kantone): build_national_cantons / stats_from_entries --
+
+
+def test_build_national_cantons_sorts_rows_by_bfs_nr(table):
+    from shapely.geometry import box
+
+    cells_ag = _cells([10.0], [[10.0]], [28], gmde=[4001])
+    hectare_ag = aggregate.build_hectare(cells_ag, table, _municipalities())
+    canton_ag = aggregate.build_canton(hectare_ag, box(2600000, 1200000, 2601000, 1201000))
+
+    cells_zh = _cells([20.0], [[20.0]], [28], gmde=[4002])
+    hectare_zh = aggregate.build_hectare(cells_zh, table, _municipalities())
+    canton_zh = aggregate.build_canton(hectare_zh, box(2601000, 1200000, 2602000, 1201000))
+
+    # Absichtlich in "falscher" (Zürich zuerst, Aargau zweitens) Reihenfolge
+    # übergeben — das Ergebnis muss trotzdem nach bfsNr sortiert sein (1 vor 19).
+    national = aggregate.build_national_cantons([
+        ({"bfsNr": 19, "code": "AG", "name": "Aargau",
+          "ambiguousCells": 0, "einwohnerzahl": 700000}, canton_ag),
+        ({"bfsNr": 1, "code": "ZH", "name": "Zürich",
+          "ambiguousCells": 0, "einwohnerzahl": 1500000}, canton_zh),
+    ])
+
+    assert [e["code"] for e in national.gemeinden] == ["ZH", "AG"]
+    assert national.value.tolist() == [20.0, 10.0]
+    assert national.count == 2
+
+
+def test_build_national_cantons_carries_full_dist_not_top3(table):
+    from shapely.geometry import box
+
+    cells = _cells([10.0, 4.0], [[6.0, 4.0], [4.0, 0.0]], [1, 28], gmde=[4001, 4002])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    canton = aggregate.build_canton(hectare, box(2600000, 1200000, 2602000, 1201000))
+
+    national = aggregate.build_national_cantons([
+        ({"bfsNr": 19, "code": "AG", "name": "Aargau",
+          "ambiguousCells": 1, "einwohnerzahl": 700000}, canton),
+    ])
+    assert national.dist.shape == (1, table.group_count)
+    assert national.dist[0].sum() == pytest.approx(14.0, abs=0.5)
+
+
+def test_stats_from_entries_sums_ambiguous_and_population_across_rows(table):
+    from shapely.geometry import box
+
+    cells = _cells([10.0], [[10.0]], [28])
+    hectare = aggregate.build_hectare(cells, table, _municipalities())
+    canton = aggregate.build_canton(hectare, box(2600000, 1200000, 2601000, 1201000))
+
+    national = aggregate.build_national_cantons([
+        ({"bfsNr": 19, "code": "AG", "name": "Aargau",
+          "ambiguousCells": 3, "einwohnerzahl": 700000}, canton),
+        ({"bfsNr": 1, "code": "ZH", "name": "Zürich",
+          "ambiguousCells": 5, "einwohnerzahl": 1500000}, canton),
+    ])
+    entries = national.gemeinden
+    s = aggregate.stats_from_entries(national, entries)
+    assert s["ambiguousCells"] == 8
+    assert s["overstatementMax"] == 24
+    assert s["population"] == 2200000
+    assert s["sum"] == pytest.approx(national.value.sum())
+
+
+def test_stats_from_entries_ignores_level_flags():
+    # `national.flags` ist bei build_national_cantons() durchgehend 0 (jede
+    # Zeile ist ein Kanton, keine Hektare) — stats_from_entries() muss trotzdem
+    # die tatsächliche Mehrdeutigkeit aus den Einträgen ziehen, nicht 0 melden.
+    level = aggregate.LevelData(
+        name="kantone",
+        lon=np.array([8.0]), lat=np.array([47.0]),
+        value=np.array([100.0]),
+        noga=np.array([0], dtype="uint8"),
+        flags=np.zeros(1, dtype="uint8"),
+        dist=np.zeros((1, 1), dtype="float32"),
+    )
+    s = aggregate.stats_from_entries(level, [{"ambiguousCells": 7, "einwohnerzahl": 42}])
+    assert s["ambiguousCells"] == 7
+    assert s["population"] == 42
+
+
 def test_assert_minimum_hectare_value_is_four_tolerates_empty_input(table):
     empty = aggregate.LevelData(
         name="hektar",

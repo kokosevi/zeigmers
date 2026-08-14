@@ -24,3 +24,18 @@ def test_public_data_points_at_repo_public_dir():
 
 def test_user_agent_is_identifiable():
     assert config.USER_AGENT.startswith("draufsicht-etl/")
+
+
+def test_canton_codes_cover_all_26_official_bfs_numbers():
+    assert set(config.CANTON_CODES) == set(range(1, 27))
+    assert len(set(config.CANTON_CODES.values())) == 26, "Codes müssen eindeutig sein"
+    assert config.CANTON_CODES[19] == "AG"
+    assert all(len(code) == 2 for code in config.CANTON_CODES.values())
+
+
+def test_startup_budget_is_smaller_than_the_canton_payload_budget():
+    # Der Start lädt nur die nationale Übersicht (klein), ein Kantonswechsel
+    # danach ein einzelnes Kanton-Paar (deutlich grösser, siehe config.py) —
+    # ein invertiertes Verhältnis wäre ein Zeichen, dass eines der beiden
+    # Budgets versehentlich vertauscht wurde.
+    assert config.MAX_STARTUP_BYTES < config.MAX_CANTON_PAYLOAD_BYTES

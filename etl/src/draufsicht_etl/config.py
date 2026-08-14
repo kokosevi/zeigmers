@@ -1,9 +1,32 @@
-"""Zentrale Konstanten. Ein Kantonswechsel geschieht ausschliesslich hier."""
+"""Zentrale Konstanten.
+
+Seit der Ausweitung auf die ganze Schweiz (Phase 1, 2026-08-14) baut das ETL
+IMMER alle 26 Kantone und alle Gemeinden — `CANTON` steuert das nicht mehr.
+`CANTON` bedeutet jetzt nur noch: welcher Kanton ist im Frontend beim Start
+aktiv/hervorgehoben (`meta.canton`, gelesen in `src/main.ts`) und unter
+welchem Pfad liegt die (bislang einzige) Firmen-CSV (`companies.csv_path()`).
+Ein Wechsel des Startkantons ändert an den ETL-Artefakten nichts mehr ausser
+`meta.json`s `canton`-Feld und `companies.json` — siehe README, Abschnitt
+"Kantonswechsel".
+"""
 
 from pathlib import Path
 
 CANTON = {"code": "AG", "bfs_nr": 19, "name": "Aargau"}
 STATENT_YEAR = 2023
+
+# Amtliche BFS-Kantonsnummerierung (1-26) -> zweistelliger Kantonscode. Fix und
+# stabil seit Jahrzehnten (zuletzt durch den Kanton Jura 1979 belegt) — anders
+# als Gemeindenummern ändert sich diese Zuordnung nicht durch Fusionen.
+# swissBOUNDARIES3D führt in `tlm_kantonsgebiet` kein eigenes Code-Feld (nur
+# `icc`, das für alle 26 Kantone "CH" trägt), deshalb hier als Konstante statt
+# aus der Geometrie abgeleitet.
+CANTON_CODES: dict[int, str] = {
+    1: "ZH", 2: "BE", 3: "LU", 4: "UR", 5: "SZ", 6: "OW", 7: "NW", 8: "GL",
+    9: "ZG", 10: "FR", 11: "SO", 12: "BS", 13: "BL", 14: "SH", 15: "AR",
+    16: "AI", 17: "SG", 18: "GR", 19: "AG", 20: "TG", 21: "TI", 22: "VD",
+    23: "VS", 24: "NE", 25: "GE", 26: "JU",
+}
 
 # ROOT = Repo-Wurzel: config.py -> draufsicht_etl -> src -> etl -> ROOT
 ROOT = Path(__file__).resolve().parents[3]
@@ -42,7 +65,25 @@ AMBIGUOUS_VALUE = 4
 NOGA_UNKNOWN_INDEX = 255
 UNKNOWN_COLOR_HEX = "#BFBFBF"
 
-MAX_PUBLIC_DATA_BYTES = 2 * 1024 * 1024
+# Bis Phase 1 (ein Kanton) galt ein einziges Gesamtbudget für `public/data/`.
+# Mit 26 Kantonen ist eine Gesamtsumme das falsche Mass: `public/data/` trägt
+# jetzt 26 Gemeinde-/Grenzen-Paare, aber die Karte lädt zu keinem Zeitpunkt
+# mehr als zwei davon (die Übersicht beim Start, ein Kanton nach Klick) — die
+# Summe über alle 26 sagt nichts über die tatsächliche Netzlast. Ersetzt durch
+# zwei Budgets, die tatsächlich etwas laden:
+#
+# - MAX_STARTUP_BYTES: was beim Kartenstart lädt, bevor irgendein Kanton
+#   aufgeklappt ist — `meta.json`, `ch_kantone.{bin,json,geojson}`,
+#   `companies.json`. Gemessen ~520 KB (siehe ETL-Report); 800 KB lässt Luft
+#   für künftige Jahrgänge/mehr Firmen, ohne beliebig grosszügig zu sein.
+# - MAX_CANTON_PAYLOAD_BYTES: das grösste einzelne Kantons-Paar
+#   (`<code>_gemeinde.{bin,json}` + `<code>_boundaries.geojson`), geladen erst
+#   beim Wechsel in diesen Kanton. Bern (338 Gemeinden, grösster Kanton) ist
+#   der Erwartungswert für den Extremfall — gemessen ~1.3 MB; 2 MB Budget
+#   entspricht dem alten Gesamtbudget, jetzt aber pro Kanton statt einmalig
+#   über alle 26.
+MAX_STARTUP_BYTES = 800 * 1024
+MAX_CANTON_PAYLOAD_BYTES = 2 * 1024 * 1024
 
 # Gemeindegrenzen werden extrudiert (Ansicht B, Change 2) — grobe Vereinfachung
 # zeigt an den Seitenwänden sichtbare Facetten. 300 KB (Toleranz 8 %, ~38
@@ -74,6 +115,22 @@ MUNICIPALITY_ROUND_RADIUS_M = 100.0
 # Luft, ohne das 2-MB-Gesamtbudget (`MAX_PUBLIC_DATA_BYTES`) zu gefährden
 # (aktuell ~1.05 MB über alle Artefakte, siehe ETL-Report).
 MAX_BOUNDARIES_BYTES = 900 * 1024
+
+# `MAX_BOUNDARIES_BYTES` (900 KB) ist auf Aargau (196 Gemeinden) kalibriert und
+# bleibt `write_geojson()`s Standardwert — u.a. weil `test_boundaries.py` ihn
+# gegen die echten AG-Daten prüft und AG dadurch unverändert bleibt (siehe
+# ETL-Report, Abschnitt "Aargau byte-identisch"). Für den bevölkerungsreichsten
+# Kanton reicht er nicht: Bern (334 Gemeinden nach Objektart-Filter, siehe
+# `boundaries._MUNICIPALITY_OBJEKTART`) liegt bei dergleichen 30-%-Toleranz bei
+# rund 1.4 MB — mehr Gemeinden bei ähnlicher Grenzlänge pro Gemeinde ergeben
+# proportional mehr Stützpunkte. `cli.py` übergibt für den Pro-Kanton-Lauf
+# deshalb dieses grössere Budget statt des AG-Standardwerts; `write_geojson()`s
+# bestehende Rückfallschleife (Toleranz, halbe, viertel Toleranz) greift
+# unverändert — bei Bern erst auf der dritten, gröbsten Stufe (7.5 %,
+# gemessen ~1.41 MB). Das ist ein sichtbarer, aber offengelegter
+# Qualitätsunterschied zu Aargau (siehe README) und bleibt weit unter dem
+# 2-MB-Kanton-Paket-Budget (`MAX_CANTON_PAYLOAD_BYTES`).
+MAX_MUNICIPALITY_BOUNDARIES_BYTES_PER_CANTON = 1_700_000
 
 # Kantone bleiben flach (nur Basiskarten-Orientierung, keine Extrusion) — eine
 # gröbere Vereinfachung fällt dort nicht als Facette auf. 7 % Toleranz ergibt

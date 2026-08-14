@@ -202,6 +202,48 @@ def build_canton(hectare: LevelData, canton_lv95: BaseGeometry) -> LevelData:
     )
 
 
+def build_national_cantons(rows: list[tuple[dict, LevelData]]) -> LevelData:
+    """Baut die nationale Übersichtsstufe `ch_kantone` (Phase 1: alle Schweiz)
+    aus den 26 einzeln berechneten Kanton-`LevelData`-Objekten (`build_canton`,
+    je Kanton eine Zeile mit `count == 1`) zusammen — eine Zeile je Kanton,
+    dieselben Felder wie eine Gemeindezeile: Beschäftigte (`value`), dominante
+    Branchengruppe (`noga`), volle Mischung (`dist`).
+
+    `rows` ist eine Liste aus (Eintrag, Kanton-`LevelData`) — der Eintrag trägt
+    `bfsNr`/`code`/`name`/`ambiguousCells`/`einwohnerzahl` (siehe Aufrufer in
+    `cli.py`, wo `ambiguousCells`/`einwohnerzahl` bereits aus `stats(hectare)`
+    dieses Kantons stammen). Sortiert nach `bfsNr`, wie `_municipality_lookup`
+    es für Gemeinden tut — deterministisch und reproduzierbar über Läufe hinweg,
+    unabhängig von der Reihenfolge, in der `cli.py` die Kantone verarbeitet.
+    """
+    ordered = sorted(rows, key=lambda pair: pair[0]["bfsNr"])
+    entries = [entry for entry, _ in ordered]
+    levels = [level for _, level in ordered]
+
+    n = len(levels)
+    lon = np.concatenate([lvl.lon for lvl in levels]) if n else np.array([])
+    lat = np.concatenate([lvl.lat for lvl in levels]) if n else np.array([])
+    value = np.concatenate([lvl.value for lvl in levels]) if n else np.array([])
+    dist = (
+        np.concatenate([lvl.dist for lvl in levels], axis=0).astype("float32")
+        if n
+        else np.zeros((0, 0), dtype="float32")
+    )
+    noga = dominant_group(dist.astype("float64"))
+
+    return LevelData(
+        name="kantone",
+        lon=lon,
+        lat=lat,
+        value=value,
+        noga=noga,
+        flags=np.zeros(n, dtype="uint8"),
+        dist=dist,
+        gemeinde_idx=np.arange(n, dtype="uint16"),
+        gemeinden=entries,
+    )
+
+
 def stats(level: LevelData, *, source: LevelData | None = None) -> dict:
     """Kennzahlen. `ambiguousCells` zählt immer die Hektaren, auch auf höheren Stufen."""
     basis = source if source is not None else level
@@ -217,6 +259,28 @@ def stats(level: LevelData, *, source: LevelData | None = None) -> dict:
         if level.gemeinden is not None
         else 0
     )
+    return {
+        "min": float(values.min()) if values.size else 0.0,
+        "max": float(values.max()) if values.size else 0.0,
+        "sum": float(values.sum()),
+        "p99": float(np.percentile(values, 99)) if values.size else 0.0,
+        "ambiguousCells": ambiguous,
+        "overstatementMax": 3 * ambiguous,
+        "population": population,
+    }
+
+
+def stats_from_entries(level: LevelData, entries: list[dict]) -> dict:
+    """Wie `stats()`, aber für Ebenen ohne eigene Hektar-`flags` — die nationale
+    `kantone`-Übersicht (Phase 1): jede Zeile ist ein ganzer Kanton, nicht eine
+    Hektare, `level.flags` ist deshalb durchgehend 0 und taugt hier nicht als
+    Mehrdeutigkeits-Basis. `entries` trägt statt dessen `ambiguousCells`/
+    `einwohnerzahl` bereits vorberechnet je Kanton (`cli.py` befüllt sie aus
+    `stats(hectare)` dieses Kantons) — hier nur noch aufsummiert.
+    """
+    values = level.value
+    ambiguous = sum(int(e.get("ambiguousCells", 0)) for e in entries)
+    population = sum(_clean_population(e.get("einwohnerzahl", 0)) for e in entries)
     return {
         "min": float(values.min()) if values.size else 0.0,
         "max": float(values.max()) if values.size else 0.0,
