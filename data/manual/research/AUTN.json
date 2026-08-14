@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 2290.6,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 60.0,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Akustik- und Wärmemanagement-Komponenten (Schall- und Hitzeschutz für Motorraum, Unterboden, Innenraumboden und Innenverkleidung) für Personen- und Nutzfahrzeuge.",
+ "products_url": "https://www.autoneum.com/products-technologies/",
+ "founding_year": 1901,
+ "founding_year_source": "https://www.autoneum.com/company/about-autoneum/geschichte-timeline/ ('1901 Martin Keller gründet Handelsgesellschaft für Farben und Lacke in der Schweiz')",
+ "employees": 16407,
+ "fiscal_year": 2025,
+ "report_url": "https://www.autoneum.com/wp-content/uploads/2026/03/Autoneum-Annual_Report_2025.pdf",
+ "note": "Als eigenständige, börsenkotierte Autoneum Holding Ltd. entstand die Firma erst 2011 durch Abspaltung von Rieter (Timeline nennt '2011 Verselbständigung und Börsengang von Autoneum'); founding_year 1901 folgt der von Autoneum selbst publizierten Firmengeschichte-Timeline, die 1901 als Ursprung der Handelsgesellschaft von Martin Keller nennt, aus der die heutige Autoneum-Technologie (via Rieter-Übernahme von Unikeller 1984) hervorging. Gewinn: 'Net result' Gesamtkonzern CHF 80.2 Mio., davon 'attributable to shareholders of Autoneum Holding Ltd' CHF 60.0 Mio. (eingetragen) und 'attributable to non-controlling interests' CHF 20.2 Mio. Beschäftigte: Bericht weist nur eine Kennzahl aus - 'Headcount increased to 16'407 FTEs' (Full-time equivalents including temporary employees); eine reine Kopfzahl wird im Bericht nicht separat ausgewiesen.",
+ "_verification": "Konzern-Erfolgsrechnung 'Consolidated Income Statement' (Autoneum Annual Report 2025, S. 63): Zeile 'Revenue' CHF 2'290.6 Mio. (2025), Zeile 'Net result' CHF 80.2 Mio., darunter aufgeteilt in 'attributable to shareholders of Autoneum Holding Ltd' CHF 60.0 Mio. und 'attributable to non-controlling interests' CHF 20.2 Mio. Geprüft per pdftotext-Volltextsuche: sorgfältig von der ähnlich lautenden, aber anderen Kennzahl 'attributable to shareholders of Autoneum Holding Ltd' in der separaten Gesamtergebnisrechnung (Total comprehensive income, dort CHF 54.0 Mio.) abgegrenzt - diese wurde NICHT verwendet, da sie das Comprehensive Income und nicht das Net result betrifft. Keine 'Gross profit'-Zeile im Bericht (Aufwandsgliederung nach Art). Beschäftigtenzahl von der Kennzahlenseite ('Headcount... FTEs') und Note zu Mitarbeitenden abgeglichen."
+}

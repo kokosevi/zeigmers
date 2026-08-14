@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 613.2,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -28.9,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Maschinen, Laser- und Biegesysteme sowie Automatisierungslösungen für die Blechbearbeitung (Laserschneiden, Abkanten) für die metallverarbeitende Industrie.",
+ "products_url": "https://www.bystronic.com/int/de/",
+ "founding_year": 1964,
+ "founding_year_source": "https://www.bystronic.com/int/de/career/ueber-uns/geschichte",
+ "employees": 2899,
+ "fiscal_year": 2025,
+ "report_url": "https://ir.bystronic.com/media/document/34b18936-7271-45e5-a7a2-4e6578dcff7c/assets/Annual_Report_2025_small.pdf",
+ "note": "Bystronic weist 2025 einen Konzernverlust aus (Net result CHF -28.9 Mio.), vollständig den Aktionären von Bystronic AG zurechenbar (keine Minderheitsanteile ausgewiesen). Beschäftigte: Der ESRS-S1-Abschnitt 'Total workforce' nennt 2'899 Köpfe ('Total employees') per Ende 2025; daneben wird in den Kennzahlen der 'Average number of full-time equivalents' von 2'907 genannt - hier wurde gemäss Regel die Kopfzahl (2'899) eingetragen.",
+ "_verification": "Konzern-Erfolgsrechnung 'Consolidated income statement' (Bystronic Annual Report 2025, S. 98): Zeile 'Net sales' CHF 613.2 Mio. (2025), Zeile 'Net result' CHF -28.9 Mio., unmittelbar darunter 'Attributable to shareholders of Bystronic AG' ebenfalls CHF -28.9 Mio. (keine Non-controlling-interests-Zeile vorhanden, da vollständig konsolidiert den Aktionären zugerechnet). Geprüft per pdftotext-Volltextsuche über das gesamte PDF; keine 'Gross profit'-Zeile vorhanden (Aufwandsgliederung nach Art gemäss Swiss GAAP FER: Material-, Personal- und sonstiger Betriebsaufwand). Beschäftigtenzahl aus ESRS-Tabelle 'Total workforce' (S. 4094 im extrahierten Text) mit Kennzahlenseite (Average FTE) abgeglichen."
+}
