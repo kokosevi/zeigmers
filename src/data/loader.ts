@@ -44,6 +44,20 @@ export interface LevelMeta {
      *  gleich, nie als Grundlage einer Division durch 0. */
     einwohnerzahl?: number
   }[]
+  /** Analog zu `gemeinden` oben, aber für die Kantonsstufe (`ch_kantone.json`,
+   *  Phase 2): 26 Einträge, dieselben Felder plus `code` (das ETL schreibt
+   *  „die Zeilen-Metadaten" jedes Level-Artefakts unter dem Namen der
+   *  jeweiligen Ebene — `gemeinden` bei `level: 'gemeinde'`, `kantone` bei
+   *  `level: 'kantone'`). `data/boundaries.ts` (`joinCantonGeometry`) und
+   *  `main.ts` lesen daraus Kantonsname und -kürzel für Hover, Titel und den
+   *  Artefakt-Dateipräfix eines betretenen Kantons. */
+  kantone?: {
+    bfsNr: number
+    code: string
+    name: string
+    ambiguousCells: number
+    einwohnerzahl?: number
+  }[]
 }
 
 export interface LevelArrays {

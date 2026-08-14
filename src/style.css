@@ -95,6 +95,30 @@ a:focus-visible, button:focus-visible {
 }
 #steuerung button.aktiv { background: var(--tinte); color: var(--grund); }
 
+/* «Zurück zur Schweiz-Übersicht» (Phase 2, nationale Navigation) — nur
+   sichtbar auf der Kantonsstufe von Ansicht «Beschäftigte» (`main.ts`,
+   `renderBackControl`). Eigenständiges Element statt Teil von `#steuerung`
+   (siehe `ui/backControl.ts` für die Begründung); Position von Hand unter die
+   Steuerung gesetzt, wie auch `#panel`s `top: 4.5rem` unten kein hergeleiteter
+   Wert ist, sondern auf die tatsächliche Höhe von `#steuerung` abgestimmt —
+   unverifiziert, ob 5.75rem bei zwei gestapelten `.gruppe`-Zeilen exakt
+   passt (siehe Bericht). Duplication von `#steuerung .gruppe`/`button` ist
+   hier bewusst: derselbe Look, aber ohne die beiden Elemente im selben
+   DOM-Teilbaum zu verschmelzen. */
+#zurueck-gruppe {
+  position: absolute; top: 5.75rem; left: 1rem;
+  display: flex;
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  border-radius: .5rem; padding: .25rem;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
+}
+#zurueck-gruppe button {
+  border: none; background: transparent; color: var(--tinte-leise);
+  padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
+  cursor: pointer; font-family: inherit;
+}
+#zurueck-gruppe[hidden] { display: none; }
+
 /* Pflichthinweis: muss ohne Interaktion sichtbar sein, deshalb kein
    hidden/Toggle-Mechanismus wie bei #panel. Redesign-Vorgabe (Change 1):
    ein ruhiger, kleiner Block statt eines dominanten braunen Banners —

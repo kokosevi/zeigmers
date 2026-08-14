@@ -1,47 +1,67 @@
 import type { ViewName } from './toggle'
 
+/** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
+ *  welche der zwei Stufen gerade zu sehen ist. `'schweiz'` = 26 Kantonsbalken,
+ *  `'kanton'` = die Gemeinden des betretenen Kantons (siehe `main.ts`). */
+export type NoticeLevel = 'schweiz' | 'kanton'
+
 /** Pflichthinweis je Ansicht — muss ohne Interaktion sichtbar bleiben (siehe
  *  `style.css`, `#hinweis`); das ist eine Spezifikationsvorgabe, kein
  *  Stilentscheid. Redesign (2026-08-14, Change 1): der Text ist gestrafft,
  *  damit er in eine kleine, ruhige Eckbox passt statt in ein dominantes
- *  Banner — vier inhaltliche Aussagen bleiben in Ansicht B dabei unverändert
- *  erhalten: die «< 4 → 4»-Rundung, die Median-/Maximum-Überschätzung, der
- *  Verweis aufs Klick-Panel für den exakten Betrag je Gemeinde, und der
- *  Flächenverzerrungs-Hinweis (Höhe vs. Grundfläche). Vorheriger, längerer
- *  Wortlaut: siehe Git-Historie bzw. Redesign-Report (`.superpowers/
- *  redesign-report.md`), Abschnitt „Pflichthinweis vorher/nachher". Der erste
- *  Satz von `beschaeftigte` wurde am selben Tag (Change 4) noch einmal
- *  umformuliert — Statistik-Jargon durch Alltagssprache ersetzt, siehe
- *  Kommentar direkt darüber; die drei übrigen Sätze sind seit Change 1
- *  unverändert. */
-const HAUPT: Record<ViewName, string> = {
-  // Der frühere zweite Satz zur Währungsvermischung ist entfallen: dieselbe
-  // Aussage steht jetzt, wortgleich mit der Legende zuvor, in `CURRENCY_NOTE`
-  // direkt darunter — zwei Sätze für dieselbe Tatsache in derselben Box
-  // wären in einer bewusst ruhigen Ecke Redundanz, keine zusätzliche
-  // Information.
-  sichtbare:
-    'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.',
-  // Redesign Change 4 (2026-08-14): der erste Satz stand vorher als
-  // «BFS rundet Werte unter 4 auf 4 auf — Gemeindesummen sind Obergrenzen
-  // (Median +16 %, einzelne Gemeinden bis +54 %)» — korrekt, aber in
-  // Statistik-Jargon («rundet auf», «Obergrenzen», zwei nackte
-  // Prozentzahlen), der erklärt, was passiert, aber nicht, was es für die
-  // Leserin bedeutet. Der neue Satz sagt dieselbe Sache in Alltagssprache:
-  // das BFS veröffentlicht für sehr kleine Betriebe keine genauen Zahlen
-  // (der eigentliche Grund für die Rundung), und die beiden Zahlen bleiben
-  // erhalten — nur als Bruchteil statt als Prozentzahl, näher an der
-  // Grössenordnung, die eine Leserin sich vorstellen kann. Die übrigen drei
-  // Sätze (Verweis aufs Klick-Panel, Höhe/Fläche-Verzerrung) sind wörtlich
-  // unverändert.
-  beschaeftigte:
-    'Für sehr kleine Betriebe veröffentlicht das BFS keine genauen Zahlen — ' +
-    'alles unter 4 Beschäftigten wird als 4 ausgewiesen. Die Gemeindesummen ' +
-    'hier sind deshalb etwas zu hoch: im Schnitt um rund ein Sechstel, in ' +
-    'kleinen Gemeinden bis zur Hälfte. Genauer Betrag je Gemeinde: ' +
-    'Klick-Panel. Höhe = Beschäftigte, Grundfläche = Gemeindefläche — grosse ' +
-    'Gemeinden wirken dadurch gewichtiger, als sie sind.',
+ *  Banner — die «< 4 → 4»-Rundung und der Flächenverzerrungs-Hinweis (Höhe
+ *  vs. Grundfläche) bleiben dabei erhalten. Vorheriger, längerer Wortlaut:
+ *  siehe Git-Historie bzw. Redesign-Report (`.superpowers/redesign-report.md`),
+ *  Abschnitt „Pflichthinweis vorher/nachher".
+ *
+ *  Phase 2 (2026-08-14, nationale Navigation): der Satz nannte bis dahin eine
+ *  Median-/Maximum-Überschätzung («im Schnitt um rund ein Sechstel, in
+ *  kleinen Gemeinden bis zur Hälfte») — zwei Zahlen, die spezifisch für
+ *  Aargaus Gemeinden gemessen wurden (siehe Auftrag), nicht für die anderen
+ *  25 Kantone oder deren Summe. Mit der neuen Kantonsstufe und beliebigen
+ *  Kantonen auf der Gemeindestufe gäbe es dafür keine gemessene Entsprechung
+ *  mehr — die zwei Zahlen unbesehen weiterzuzeigen würde sie stillschweigend
+ *  als gesamtschweizerisch ausgeben, was sie nicht sind. Der Mechanismus
+ *  (Rundung auf 4, deshalb tendenziell zu hohe Summen) bleibt wörtlich
+ *  erhalten; die zwei Zahlen sind ersatzlos entfernt, nicht durch neue
+ *  ersetzt (siehe Bericht, Abschnitt „Notices" — Datengrundlage fehlt für
+ *  eine ehrliche Herleitung ohne ETL-Änderung). Beide Stufen bekommen
+ *  stattdessen je einen eigenen, flächenrichtigen Fassungssatz
+ *  (`ROUNDING_KANTON`/`ROUNDING_SCHWEIZ` unten) statt eines gemeinsamen. */
+const ROUNDING_MECHANISM =
+  'Für sehr kleine Betriebe veröffentlicht das BFS keine genauen Zahlen — ' +
+  'alles unter 4 Beschäftigten wird als 4 ausgewiesen.'
+
+const ROUNDING_KANTON =
+  `${ROUNDING_MECHANISM} Die Gemeindesummen hier sind deshalb etwas zu hoch, ` +
+  'in unterschiedlichem Ausmass. Genauer Betrag je Gemeinde: Klick-Panel.'
+
+// Kein Klick-Panel auf dieser Stufe (ein Klick auf einen Kantonsbalken
+// betritt den Kanton, siehe `main.ts`, statt ein Panel zu öffnen) — der
+// Verweis darauf ersetzt durch einen Verweis auf den nächsten Schritt.
+const ROUNDING_SCHWEIZ =
+  `${ROUNDING_MECHANISM} Die Kantonssummen hier sind deshalb ebenfalls etwas ` +
+  'zu hoch, je nach Kanton unterschiedlich stark. Details je Gemeinde: nach ' +
+  'Klick auf einen Kanton.'
+
+const AREA_NOTE_KANTON =
+  'Höhe = Beschäftigte, Grundfläche = Gemeindefläche — grosse Gemeinden ' +
+  'wirken dadurch gewichtiger, als sie sind.'
+const AREA_NOTE_SCHWEIZ =
+  'Höhe = Beschäftigte, Grundfläche = Kantonsfläche — grosse Kantone wirken ' +
+  'dadurch gewichtiger, als sie sind.'
+
+const HAUPT_BESCHAEFTIGTE: Record<NoticeLevel, string> = {
+  kanton: `${ROUNDING_KANTON} ${AREA_NOTE_KANTON}`,
+  schweiz: `${ROUNDING_SCHWEIZ} ${AREA_NOTE_SCHWEIZ}`,
 }
+
+// Der frühere zweite Satz zur Währungsvermischung ist entfallen: dieselbe
+// Aussage steht jetzt, wortgleich mit der Legende zuvor, in `CURRENCY_NOTE`
+// direkt darunter — zwei Sätze für dieselbe Tatsache in derselben Box wären
+// in einer bewusst ruhigen Ecke Redundanz, keine zusätzliche Information.
+const HAUPT_SICHTBARE =
+  'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.'
 
 // Verschoben aus `ui/legend.ts` (Redesign Change 2/3, siehe `ui/legend.ts`
 // für die Begründung): „die Legende trägt, was man zum Lesen braucht, die
@@ -103,8 +123,14 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
  *  (bis 2026-08-13 genügte ein String, weil hier nur der Pflichthinweis
  *  stand) — seit Change 2/3 trägt dieselbe Box zusätzlich die aus der
  *  Legende verschobene Quellen- und Währungszeile, mit eigener, leiserer
- *  Textstufe (`.hinweis-quelle` in style.css). */
-export function renderNotices(view: ViewName): void {
+ *  Textstufe (`.hinweis-quelle` in style.css).
+ *
+ *  `level` (Phase 2): nur bei `view === 'beschaeftigte'` gelesen — welche der
+ *  zwei Stufen den passenden Rundungs-/Flächenhinweis braucht (siehe
+ *  `HAUPT_BESCHAEFTIGTE` oben). Bei `view === 'sichtbare'` bedeutungslos, aber
+ *  Pflichtparameter statt optional: ein main.ts, das ihn vergisst, soll ein
+ *  Typfehler sein, kein still falscher Text zur Laufzeit. */
+export function renderNotices(view: ViewName, level: NoticeLevel): void {
   let box = document.getElementById('hinweis')
   if (!box) {
     box = document.createElement('div')
@@ -112,7 +138,8 @@ export function renderNotices(view: ViewName): void {
     document.getElementById('ui')?.appendChild(box)
   }
   box.replaceChildren()
-  box.appendChild(paragraph(HAUPT[view], 'hinweis-haupt'))
+  const haupt = view === 'sichtbare' ? HAUPT_SICHTBARE : HAUPT_BESCHAEFTIGTE[level]
+  box.appendChild(paragraph(haupt, 'hinweis-haupt'))
   if (view === 'sichtbare') box.appendChild(paragraph(CURRENCY_NOTE, 'hinweis-haupt'))
   box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Skalenschalter (und damit die Formel, um
@@ -120,5 +147,11 @@ export function renderNotices(view: ViewName): void {
   // nur in Ansicht B.
   box.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
   if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
-  if (view === 'beschaeftigte') box.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
+  // Nur auf der Kantonsstufe: die «Beschäftigte je Einwohner»-Zeile, die
+  // dieser Hinweis erklärt, steht ausschliesslich im Gemeinde-Klick-Panel
+  // (`ui/panel.ts`) — auf der Schweiz-Stufe öffnet ein Klick keinen Panel
+  // (er betritt den Kanton, siehe `main.ts`), die Zeile erscheint dort nie.
+  if (view === 'beschaeftigte' && level === 'kanton') {
+    box.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
+  }
 }

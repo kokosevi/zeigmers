@@ -33,6 +33,16 @@ export interface LegendOptions {
    *  hartcodiert, damit ein Kantons- oder Jahreswechsel automatisch die
    *  richtige Teilmenge zeigt. */
   presentGroups: PresentGroups
+  /** Phase 2 (nationale Navigation): welche Fläche die aktuelle Karte zeigt —
+   *  ein Kantonsname auf der Kantonsstufe von Ansicht «Beschäftigte», sonst
+   *  `undefined` (Schweiz-Stufe: alle 26, kein Einzelname nötig). Ansicht
+   *  «Börsennotierte Firmen» bleibt in dieser Phase Aargau-spezifisch, ihre
+   *  Kamera folgt aber Kantonswechseln in Ansicht «Beschäftigte» nicht (siehe
+   *  `main.ts`, Auftrag „Kamera unangetastet") — ohne diesen Zusatz stünde
+   *  dort nur „Jahresumsatz", ohne zu sagen, welchen Ausschnitt der
+   *  Schweiz die acht Firmen abdecken, während die Kamera möglicherweise
+   *  einen ganz anderen Kanton zeigt. */
+  scopeLabel?: string
 }
 
 function box(): HTMLElement {
@@ -73,12 +83,13 @@ function outlineSwatch(): HTMLLIElement {
  *  aufgerufen — die Legende ist ohne Interaktion sichtbar und aktualisiert
  *  sich mit. */
 export function renderLegend(options: LegendOptions): void {
-  const { view, year, presentGroups } = options
+  const { view, year, presentGroups, scopeLabel } = options
   const el = box()
 
   const title = document.createElement('div')
   title.className = 'legende-titel'
-  title.textContent = `${UNIT_LABEL[view]} · Datenjahr ${year}`
+  const scopePart = scopeLabel ? ` · ${scopeLabel}` : ''
+  title.textContent = `${UNIT_LABEL[view]}${scopePart} · Datenjahr ${year}`
   el.appendChild(title)
 
   const branchen = document.createElement('ul')

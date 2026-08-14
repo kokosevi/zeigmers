@@ -32,9 +32,14 @@ export const CANTON_ELEVATION_M = 300
 
 export interface CantonsLayerOptions {
   data: BoundaryFeatureCollection
-  /** `meta.canton.bfs_nr` aus `/data/meta.json` — nicht hartcodiert, damit ein
-   *  Kantonswechsel (siehe README) automatisch den richtigen der 26 hervorhebt. */
-  activeBfsNr: number
+  /** Welcher der 26 Kantone hervorgehoben wird — in Ansicht «Börsennotierte
+   *  Firmen» weiterhin `meta.canton.bfs_nr` (Aargau, siehe `main.ts`), in
+   *  Ansicht «Beschäftigte» auf der Kantonsstufe der gerade betretene Kanton.
+   *  `null` auf der Schweiz-Stufe von Ansicht «Beschäftigte» (Phase 2): dort
+   *  ist kein einzelner Kanton „aktiv" — alle 26 sind gleichrangig Inhalt
+   *  (die Balken darüber, siehe `layers/many.ts`), nicht Hintergrund mit
+   *  einem hervorgehobenen Ausnahme-Kanton. */
+  activeBfsNr: number | null
 }
 
 /** Selbstgezeichnete Basiskarte: alle 26 Kantone, jetzt mit einer flachen,

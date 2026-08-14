@@ -40,26 +40,31 @@ export function loadCantons(base = '/data'): Promise<BoundaryFeatureCollection> 
   return loadGeojson(`${base}/ch_kantone.geojson`)
 }
 
-/** Ordnet jeder Zeile der Gemeindestufe (indiziert wie `level.arrays.values`)
- *  ihre Polygongeometrie zu, per `bfs_nr` aus `level.meta.gemeinden` —
- *  reines In-Memory-Matching zweier bereits geladener Objekte, kein weiterer
- *  Netzwerkzugriff. Der Join passiert bewusst einmal beim Laden (siehe
- *  `main.ts`), nicht bei jedem Render: `many.ts` bekommt das Ergebnis fertig
- *  und bleibt dadurch weiterhin eine reine `(daten, uiState) → Layer`-Funktion
- *  ohne eigene Join-Logik über zwei Artefakte hinweg.
+/** Gemeinsame Join-Logik hinter `joinMunicipalityGeometry` und
+ *  `joinCantonGeometry` unten: beide ordnen jeder Zeile eines Levels
+ *  (indiziert wie `level.arrays.values`) über `gemeindeIdx` und eine Liste von
+ *  `{ bfsNr }`-Einträgen ihre Polygongeometrie zu, per `bfs_nr` aus der
+ *  jeweiligen Grenzdatei — reines In-Memory-Matching zweier bereits geladener
+ *  Objekte, kein weiterer Netzwerkzugriff. Beide Level-Artefakte
+ *  (`<code>_gemeinde.json` und `ch_kantone.json`) werden vom selben
+ *  ETL-Schreiber erzeugt und tragen das Feld nur unter verschiedenem Namen
+ *  (`gemeinden` bzw. `kantone`, siehe `LevelMeta`) — deshalb ein gemeinsamer
+ *  Kern statt zweier Kopien derselben Schleife.
  *
- *  Bricht hart ab, wenn einer Gemeinde keine Geometrie zugeordnet werden
- *  kann: eine Gemeinde ohne Fläche wäre eine unsichtbare Zeile, die trotzdem
- *  in jeder Summe steckt — genau die Art stiller Fehler, die dieses Projekt
- *  an anderer Stelle ausdrücklich vermeidet (README, „Fehlerbehandlung“). */
-export function joinMunicipalityGeometry(
-  level: Level,
+ *  Bricht hart ab, wenn einer Zeile keine Geometrie zugeordnet werden kann:
+ *  eine Fläche ohne Geometrie wäre eine unsichtbare Zeile, die trotzdem in
+ *  jeder Summe steckt — genau die Art stiller Fehler, die dieses Projekt an
+ *  anderer Stelle ausdrücklich vermeidet (README, „Fehlerbehandlung“). */
+function joinGeometry(
+  count: number,
+  gemeindeIdx: Uint16Array | undefined,
+  entries: readonly { bfsNr: number }[] | undefined,
   boundaries: BoundaryFeatureCollection,
+  missingFieldLabel: string,
+  rowLabel: string,
 ): Geometry[] {
-  const { gemeindeIdx } = level.arrays
-  const gemeinden = level.meta.gemeinden
-  if (!gemeindeIdx || !gemeinden) {
-    throw new Error('Gemeindestufe ohne gemeindeIdx/gemeinden — Geometrie-Join nicht möglich.')
+  if (!gemeindeIdx || !entries) {
+    throw new Error(`${missingFieldLabel} — Geometrie-Join nicht möglich.`)
   }
 
   const byBfsNr = new Map<number, Geometry>()
@@ -69,22 +74,61 @@ export function joinMunicipalityGeometry(
   }
 
   const missing: number[] = []
-  const geometries: Geometry[] = new Array(level.meta.count)
-  for (let i = 0; i < level.meta.count; i++) {
-    const gemeindeNr = gemeindeIdx[i] ?? -1
-    const gemeinde = gemeinden[gemeindeNr]
-    const geometry = gemeinde ? byBfsNr.get(gemeinde.bfsNr) : undefined
+  const geometries: Geometry[] = new Array(count)
+  for (let i = 0; i < count; i++) {
+    const rowNr = gemeindeIdx[i] ?? -1
+    const entry = entries[rowNr]
+    const geometry = entry ? byBfsNr.get(entry.bfsNr) : undefined
     if (!geometry) {
-      missing.push(gemeinde?.bfsNr ?? -1)
+      missing.push(entry?.bfsNr ?? -1)
       continue
     }
     geometries[i] = geometry
   }
   if (missing.length > 0) {
     throw new Error(
-      `${missing.length} Gemeinde(n) ohne Polygongeometrie in den Grenzen ` +
+      `${missing.length} ${rowLabel}(n) ohne Polygongeometrie in den Grenzen ` +
         `(bfs_nr: ${missing.join(', ')}).`,
     )
   }
   return geometries
+}
+
+/** Ordnet jeder Zeile der Gemeindestufe ihre Polygongeometrie zu, per
+ *  `bfs_nr` aus `level.meta.gemeinden`. Der Join passiert bewusst einmal beim
+ *  Laden (siehe `main.ts`), nicht bei jedem Render: `many.ts` bekommt das
+ *  Ergebnis fertig und bleibt dadurch weiterhin eine reine
+ *  `(daten, uiState) → Layer`-Funktion ohne eigene Join-Logik über zwei
+ *  Artefakte hinweg. */
+export function joinMunicipalityGeometry(
+  level: Level,
+  boundaries: BoundaryFeatureCollection,
+): Geometry[] {
+  return joinGeometry(
+    level.meta.count,
+    level.arrays.gemeindeIdx,
+    level.meta.gemeinden,
+    boundaries,
+    'Gemeindestufe ohne gemeindeIdx/gemeinden',
+    'Gemeinde',
+  )
+}
+
+/** Dieselbe Zuordnung wie `joinMunicipalityGeometry`, aber für die
+ *  Kantonsstufe (`ch_kantone.json`/`.bin`, `ch_kantone.geojson`) — 26 Zeilen,
+ *  je eine pro Kanton, aus `level.meta.kantone` statt `gemeinden` (Phase 2,
+ *  «Schweiz»-Ebene von Ansicht «Beschäftigte»). Dieselbe Fehlerbehandlung:
+ *  ein Kanton ohne Fläche bricht hart ab statt still zu fehlen. */
+export function joinCantonGeometry(
+  level: Level,
+  boundaries: BoundaryFeatureCollection,
+): Geometry[] {
+  return joinGeometry(
+    level.meta.count,
+    level.arrays.gemeindeIdx,
+    level.meta.kantone,
+    boundaries,
+    'Kantonsstufe ohne gemeindeIdx/kantone',
+    'Kanton',
+  )
 }
