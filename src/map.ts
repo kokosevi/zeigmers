@@ -69,9 +69,18 @@ export function createMap(container: HTMLElement): MapHandle {
     attributionControl: false,
   })
 
-  // interleaved: deck.gl-Balken werden in denselben WebGL-Kontext gezeichnet,
-  // damit die Basiskarte sie korrekt verdeckt.
-  const overlay = new MapboxOverlay({ interleaved: true, layers: [] })
+  // `interleaved: true` diente dazu, deck.gl-Layer in MapLibres eigenen
+  // Layer-Stack einzufügen, damit 3D-Geometrie der Basiskarte (Gebäude,
+  // Gelände) unsere Balken korrekt verdecken konnte — solange die
+  // swisstopo-Vektorkacheln als Basiskarte liefen, war das aktiv. Seit
+  // Change 3 gibt es keine Basiskarten-Geometrie mehr, mit der interleaved
+  // werden müsste (`BLANK_STYLE` hat nur eine einfarbige `background`-Ebene,
+  // keine 3D-Inhalte) — der Modus kostet dann nur eine nie im Browser
+  // geprüfte Annahme über das Zusammenspiel mit einem leeren Stil, ohne
+  // etwas dafür zu bekommen. `false` ist der unzweideutig sichere Weg: deck.gl
+  // zeichnet in einen eigenen Canvas über der Karte, unabhängig vom
+  // MapLibre-Stilinhalt.
+  const overlay = new MapboxOverlay({ interleaved: false, layers: [] })
   map.addControl(overlay)
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right')
 

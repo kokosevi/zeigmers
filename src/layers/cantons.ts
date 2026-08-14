@@ -48,6 +48,15 @@ export function buildCantonsLayer({
       f.properties.bfs_nr === activeBfsNr ? 2 : 1,
     lineWidthUnits: 'pixels',
     lineWidthMinPixels: 1,
-    updateTriggers: { getFillColor: [activeBfsNr], getLineColor: [activeBfsNr] },
+    // Alle drei Accessoren lesen `activeBfsNr` und müssen deshalb alle drei
+    // hier stehen — heute unschädlich, weil `main.ts` diesen Layer einmalig
+    // ausserhalb von `render()` baut, aber genau die Art Lücke, die erst
+    // auffällt, wenn ihn später jemand in den Render-Zyklus verschiebt
+    // (Review-Finding, Abschlussrunde).
+    updateTriggers: {
+      getFillColor: [activeBfsNr],
+      getLineColor: [activeBfsNr],
+      getLineWidth: [activeBfsNr],
+    },
   })
 }

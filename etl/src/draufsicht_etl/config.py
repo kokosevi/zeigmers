@@ -50,6 +50,13 @@ MAX_PUBLIC_DATA_BYTES = 2 * 1024 * 1024
 # reichte dafür; für Extrusion ist mehr Detail nötig. 30 % Toleranz ergibt
 # ~124 Stützpunkte/Gemeinde bei rund 460 KB — beides deutlich unter dem
 # 2-MB-Gesamtbudget, das noch reichlich Luft lässt.
+#
+# Ehrlich gesagt: dieser Wert ist nach Byte-Budget gewählt (er nutzt einen
+# grossen Teil der verfügbaren Reserve aus), nicht aus einer gemessenen
+# Abweichung zur Originalgeometrie oder einer Bildkontrolle der extrudierten
+# Flächen — dafür fehlte beim Umsetzungsschritt ein Browser. Wenn die Wände
+# im Rendering noch sichtbar facettiert (oder umgekehrt: unnötig fein)
+# wirken, ist dies die eine Stelle, an der zu drehen ist.
 MUNICIPALITY_SIMPLIFY_PERCENT = 30.0
 MAX_BOUNDARIES_BYTES = 600 * 1024
 
