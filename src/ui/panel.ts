@@ -44,6 +44,19 @@ function groupLabel(level: Level, groupIndex: number): string {
   return level.meta.nogaGroups[groupIndex]?.label ?? 'unbekannt'
 }
 
+/** Change 4 (Hover): löst den Gemeindenamen für eine Zeile auf, ohne das
+ *  volle Panel zu bauen — dieselbe `gemeindeIdx`/`gemeinden`-Auflösung wie in
+ *  `aggregateCellContent`, aber als eigener, leichter Export, weil die
+ *  Hover-Beschriftung (`main.ts`, `ui/hoverLabel.ts`) nur den Namen braucht,
+ *  keine Verteilung, keine Obergrenzen-Notiz. */
+export function municipalityName(level: Level, index: number): string | null {
+  const { gemeindeIdx } = level.arrays
+  const gemeinden = level.meta.gemeinden
+  if (!gemeindeIdx || !gemeinden) return null
+  const gemeinde = gemeinden[gemeindeIdx[index] ?? -1]
+  return gemeinde?.name ?? null
+}
+
 /** Gemeinde- oder Kantonszelle: Summe (als Obergrenze ausgewiesen), volle
  *  Verteilung über alle Branchengruppen aus `dist`. */
 export function aggregateCellContent(level: Level, index: number): PanelContent {
@@ -68,14 +81,22 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
     ambiguousHere !== null ? 3 * ambiguousHere : level.meta.stats.overstatementMax
   const scope = ambiguousHere !== null ? 'in dieser Gemeinde' : 'im ganzen Kanton'
 
+  // Change 5: absteigend nach Anteil, nicht mehr in Tabellenreihenfolge — die
+  // Gruppe mit den meisten Beschäftigten zuerst. Tabellenreihenfolge (der
+  // vorige Stand) ist eine Artefakt-Spaltenreihenfolge, keine Aussage; sie zu
+  // zeigen sagt der Leserin nichts darüber, welche Branche in dieser
+  // Gemeinde tatsächlich dominiert.
   const items: string[] = []
   if (dist) {
     const groupCount = level.meta.nogaGroups.length
+    const entries: { label: string; value: number }[] = []
     for (let group = 0; group < groupCount; group++) {
       const groupValue = dist[index * groupCount + group] ?? 0
       if (groupValue <= 0) continue
-      items.push(`${groupLabel(level, group)}: ${formatNumber(groupValue)}`)
+      entries.push({ label: groupLabel(level, group), value: groupValue })
     }
+    entries.sort((a, b) => b.value - a.value)
+    for (const entry of entries) items.push(`${entry.label}: ${formatNumber(entry.value)}`)
   }
 
   return {

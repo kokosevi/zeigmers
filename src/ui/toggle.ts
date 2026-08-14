@@ -4,6 +4,16 @@ import type { ScaleMode } from '../domain/scale'
 // ihrer Umbenennung «Die Vielen» und der Schlüssel entsprechend `viele`. Ein
 // Name-ohne-passenden-Schlüssel wäre genau die Art Drift, die die nächste
 // Leserin fehlleitet — deshalb wurde `viele` mitumbenannt, nicht nur das Label.
+//
+// Ausnahme, bewusst: Change 6 (2026-08-14) benennt das sichtbare Label «Die
+// Sichtbaren» → «Börsennotierte Firmen» um (unten im Template), der interne
+// Schlüssel `sichtbare` bleibt. Eine Umbenennung hätte hier keinen Gewinn:
+// anders als bei `viele` → `beschaeftigte` (Einheit vs. Anzeigename) trägt
+// `sichtbare` keine Zahl/Einheit, die aus dem Tritt geraten könnte — er ist
+// nur ein interner Bezeichner für „die achtköpfige Firmenansicht", und zieht
+// sich durch `layers/visible.ts`, `ui/legend.ts` (`UNIT_LABEL`), Tests
+// (`panel.test.ts`) und `main.ts`. Ihn mitzuziehen wäre für eine reine
+// Label-Änderung unverhältnismässig.
 export type ViewName = 'sichtbare' | 'beschaeftigte'
 
 /** Je Ansicht ein eigener Default. Ansicht B ist extrem schief verteilt und
@@ -25,7 +35,7 @@ export function createToggle(
   root.id = 'steuerung'
   root.innerHTML = `
     <div class="gruppe" role="radiogroup" aria-label="Ansicht">
-      <button data-view="sichtbare">Die Sichtbaren</button>
+      <button data-view="sichtbare">Börsennotierte Firmen</button>
       <button data-view="beschaeftigte">Beschäftigte</button>
     </div>
     <div class="gruppe" role="radiogroup" aria-label="Höhenskala">

@@ -1,43 +1,67 @@
 import type { ViewName } from './toggle'
 
-const TEXTS: Record<ViewName, string> = {
-  // Erster Satz wörtlich aus den Global Constraints — nicht umformulieren.
-  // Zweiter Satz ergänzt (Abschluss-Review, Finding I3): drei Währungen auf
-  // einer Höhenachse ohne Umrechnung müssen offengelegt werden, sonst
-  // vergleicht der Betrachter Balkenhöhen, die verschiedene Einheiten messen.
+/** Pflichthinweis je Ansicht — muss ohne Interaktion sichtbar bleiben (siehe
+ *  `style.css`, `#hinweis`); das ist eine Spezifikationsvorgabe, kein
+ *  Stilentscheid. Redesign (2026-08-14, Change 1): der Text ist gestrafft,
+ *  damit er in eine kleine, ruhige Eckbox passt statt in ein dominantes
+ *  Banner — vier inhaltliche Aussagen bleiben in Ansicht B dabei unverändert
+ *  erhalten: die «< 4 → 4»-Rundung, die Median-/Maximum-Überschätzung, der
+ *  Verweis aufs Klick-Panel für den exakten Betrag je Gemeinde, und der
+ *  Flächenverzerrungs-Hinweis (Höhe vs. Grundfläche). Vorheriger, längerer
+ *  Wortlaut: siehe Git-Historie bzw. Redesign-Report (`.superpowers/
+ *  redesign-report.md`), Abschnitt „Pflichthinweis vorher/nachher". */
+const HAUPT: Record<ViewName, string> = {
+  // Wörtlich aus den Global Constraints des Umsetzungsplans — nicht
+  // umformulieren. Der frühere zweite Satz zur Währungsvermischung ist
+  // entfallen: dieselbe Aussage steht jetzt, wortgleich mit der Legende
+  // zuvor, in `CURRENCY_NOTE` direkt darunter — zwei Sätze für dieselbe
+  // Tatsache in derselben Box wären in einer bewusst ruhigen Ecke Redundanz,
+  // keine zusätzliche Information.
   sichtbare:
-    'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort. ' +
-    'Die Balkenhöhen vergleichen zudem unterschiedliche Konzernwährungen (CHF, EUR, USD) ' +
-    'unverändert, ohne Umrechnung in eine gemeinsame Einheit.',
-  // Neu gefasst am 2026-08-13, als die Hektarstufe entfiel (siehe README):
-  // der alte Wortlaut verwies auf eine "gesonderte Markierung" von Hektaren
-  // mit Wert 4 — die es, ohne gezeichnete Hektarzellen, nicht mehr gibt. Die
-  // Aufrundung selbst bleibt und wirkt jetzt ausschliesslich auf die einzig
-  // noch gezeigte Zahl, die Gemeindesumme; die Grössenordnung der Verzerrung
-  // (Median ~16 %, bis 54 % bei kleinen Gemeinden) ist gemessen, nicht
-  // geschätzt — siehe README, Abschnitte "Warum die Gemeindesumme über der
-  // offiziellen Zahl liegt" und "Warum die Hektar- und die Kantonsstufe
-  // entfernt wurden". Erste beide Sätze exakt wie vorgegeben, nicht
-  // umformulieren.
-  //
-  // Dritter Satz ergänzt am 2026-08-13 (Change 2, extrudierte Gemeindeflächen
-  // statt Säulen an einem Referenzpunkt): das Auge liest Volumen, und Volumen
-  // ist Fläche mal Höhe. Aargauer Gemeindeflächen streuen um den Faktor 23
-  // (Böztal 22.3 km² gegen Ennetbaden 2.1 km², bei praktisch gleicher
-  // Beschäftigtenzahl) — eine grosse, dünn besiedelte Gemeinde wirkt dadurch
-  // gewichtiger, als ihre Beschäftigtenzahl hergibt, eine kleine, dicht
-  // besiedelte entsprechend unscheinbarer. Das ist keine Nebenwirkung, die
-  // sich vermeiden liesse, ohne die Gemeindegeometrie selbst zu verzerren
-  // (Kartogramm) — hier bewusst nicht gewählt, weil das eine echte Fläche
-  // durch eine erfundene ersetzen würde. Offengelegt statt verschwiegen.
+    'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.',
   beschaeftigte:
-    'Das BFS rundet aus Datenschutzgründen alle Werte unter 4 auf 4 auf. ' +
-    'Die Gemeindesummen sind dadurch Obergrenzen — im Median rund 16 %, bei ' +
-    'kleinen Gemeinden bis 54 % zu hoch. Das Klick-Panel nennt den Betrag je ' +
-    'Gemeinde. Die Höhe zeigt die Beschäftigten, die Grundfläche die ' +
-    'Gemeindefläche — grosse Gemeinden wirken dadurch gewichtiger, als sie sind.',
+    'BFS rundet Werte unter 4 auf 4 auf — Gemeindesummen sind Obergrenzen ' +
+    '(Median +16 %, einzelne Gemeinden bis +54 %). Genauer Betrag je Gemeinde: ' +
+    'Klick-Panel. Höhe = Beschäftigte, Grundfläche = Gemeindefläche — grosse ' +
+    'Gemeinden wirken dadurch gewichtiger, als sie sind.',
 }
 
+// Verschoben aus `ui/legend.ts` (Redesign Change 2/3, siehe `ui/legend.ts`
+// für die Begründung): „die Legende trägt, was man zum Lesen braucht, die
+// Eckbox, was man zum Vertrauen braucht" — Quellen- und Währungsangabe
+// gehören zu Letzterem. Wörtlicher Inhalt unverändert, nur der Ort.
+const CURRENCY_NOTE =
+  'Umsätze in der jeweiligen Konzernwährung (CHF, EUR, USD), nicht umgerechnet.'
+
+// Lizenzpflichtig (STATENT: „Freie Nutzung, Quellenangabe Pflicht"; swisstopo-
+// Geodaten: Nutzungsbedingungen für kostenlose Geodaten, siehe README) —
+// wörtlich und permanent sichtbar, unabhängig von jeder Nutzerinteraktion.
+// Wird verschoben, nicht gekürzt.
+const FOOTER =
+  'Quelle: Bundesamt für Statistik (BFS), Statistik der Unternehmensstruktur (STATENT) 2023 · ' +
+  'Gemeindegrenzen: swisstopo, swissBOUNDARIES3D · Basiskarte: swisstopo'
+
+// Zweite Quellenzeile, nur in Ansicht A: die Fixzeile oben nennt STATENT und
+// swisstopo, aber jede Zahl in Ansicht A stammt aus keiner dieser Quellen,
+// sondern aus den Geschäftsberichten der acht Unternehmen selbst (siehe
+// `report_url` je Firma im Panel). Ohne diese Zeile schriebe die Box
+// Ansicht-A-Zahlen implizit dem BFS zu (Abschluss-Review, Finding I7).
+const FOOTER_COMPANIES =
+  'Ansicht A: Umsatz, Mitarbeitende und Geschäftsjahr aus den Geschäftsberichten der ' +
+  'acht Unternehmen selbst (Quelle je Firma im Panel, «Geschäftsbericht öffnen»).'
+
+function paragraph(text: string, className: string): HTMLParagraphElement {
+  const p = document.createElement('p')
+  p.className = className
+  p.textContent = text
+  return p
+}
+
+/** Baut die Eckbox aus mehreren Absätzen statt eines einzelnen `textContent`
+ *  (bis 2026-08-13 genügte ein String, weil hier nur der Pflichthinweis
+ *  stand) — seit Change 2/3 trägt dieselbe Box zusätzlich die aus der
+ *  Legende verschobene Quellen- und Währungszeile, mit eigener, leiserer
+ *  Textstufe (`.hinweis-quelle` in style.css). */
 export function renderNotices(view: ViewName): void {
   let box = document.getElementById('hinweis')
   if (!box) {
@@ -45,5 +69,9 @@ export function renderNotices(view: ViewName): void {
     box.id = 'hinweis'
     document.getElementById('ui')?.appendChild(box)
   }
-  box.textContent = TEXTS[view]
+  box.replaceChildren()
+  box.appendChild(paragraph(HAUPT[view], 'hinweis-haupt'))
+  if (view === 'sichtbare') box.appendChild(paragraph(CURRENCY_NOTE, 'hinweis-haupt'))
+  box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
+  if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
 }

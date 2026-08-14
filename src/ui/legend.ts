@@ -5,26 +5,9 @@ import { OUTLINE_COLOR } from '../layers/visible'
 import { formatNumber, formatRevenue } from './format'
 import type { ViewName } from './toggle'
 
-// Wörtlich aus den Global Constraints des Umsetzungsplans — nicht umformulieren.
-const FOOTER =
-  'Quelle: Bundesamt für Statistik (BFS), Statistik der Unternehmensstruktur (STATENT) 2023 · ' +
-  'Gemeindegrenzen: swisstopo, swissBOUNDARIES3D · Basiskarte: swisstopo'
-
-// Zweite Quellenzeile, nur in Ansicht A: die Fixzeile oben nennt STATENT und
-// swisstopo, aber jede Zahl in Ansicht A stammt aus keiner dieser Quellen,
-// sondern aus den Geschäftsberichten der acht Unternehmen selbst (siehe
-// `report_url` je Firma im Panel). Ohne diese Zeile schreibt die Legende
-// Ansicht-A-Zahlen implizit dem BFS zu (Abschluss-Review, Finding I7).
-const FOOTER_COMPANIES =
-  'Ansicht A: Umsatz, Mitarbeitende und Geschäftsjahr aus den Geschäftsberichten der ' +
-  'acht Unternehmen selbst (Quelle je Firma im Panel, «Geschäftsbericht öffnen»).'
-
 const OUTLINE_LEGEND_TEXT =
   'Balken mit Rand: andere Kennzahl als Nettoumsatz (z. B. Geschäftsertrag einer Bank) — ' +
   'Höhe nicht direkt mit den unmarkierten Balken vergleichbar.'
-
-const CURRENCY_NOTE =
-  'Umsätze in der jeweiligen Konzernwährung (CHF, EUR, USD), nicht umgerechnet.'
 
 // Die beiden Ansichten sind nicht ineinander umrechenbar (Geld vs. Personen),
 // liegen aber einen Tastendruck auseinander — die Legende muss deshalb die
@@ -131,22 +114,9 @@ export function renderLegend(options: LegendOptions): void {
     el.appendChild(hint)
   }
 
-  if (view === 'sichtbare') {
-    const currency = document.createElement('div')
-    currency.className = 'legende-hinweis'
-    currency.textContent = CURRENCY_NOTE
-    el.appendChild(currency)
-  }
-
-  const footer = document.createElement('div')
-  footer.className = 'legende-quelle'
-  footer.textContent = FOOTER
-  el.appendChild(footer)
-
-  if (view === 'sichtbare') {
-    const footerCompanies = document.createElement('div')
-    footerCompanies.className = 'legende-quelle'
-    footerCompanies.textContent = FOOTER_COMPANIES
-    el.appendChild(footerCompanies)
-  }
+  // Währungshinweis und Quellenangabe standen bis zum Redesign (2026-08-14)
+  // hier — Change 2/3 verschiebt beide in die Eckbox (`ui/notices.ts`):
+  // „die Legende trägt, was man zum Lesen braucht, die Eckbox, was man zum
+  // Vertrauen braucht". Die Legende endet deshalb jetzt mit der Skala bzw.
+  // dem Obergrenzen-Hinweis oben.
 }

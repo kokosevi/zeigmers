@@ -8,9 +8,16 @@ import { buildMunicipalityLayer } from './layers/many'
 import { buildCompanyLayer, loadCompanies } from './layers/visible'
 import { createMap } from './map'
 import { showError } from './ui/error'
+import { hideHoverLabel, showHoverLabel } from './ui/hoverLabel'
 import { renderLegend } from './ui/legend'
 import { renderNotices } from './ui/notices'
-import { configureCanton, hidePanel, showCompanyPanel, showMunicipalityPanel } from './ui/panel'
+import {
+  configureCanton,
+  hidePanel,
+  municipalityName,
+  showCompanyPanel,
+  showMunicipalityPanel,
+} from './ui/panel'
 import { createToggle, DEFAULT_MODE, type ViewName } from './ui/toggle'
 
 async function start() {
@@ -75,6 +82,11 @@ async function start() {
   // sie werden in beiden Ansichten zuunterst gezeichnet, unabhängig vom Toggle.
   const render = () => {
     hidePanel()
+    // Ein Ansichts- oder Skalenwechsel baut den Layer neu (siehe unten) — ein
+    // Hover-Label, das zur vorigen Ansicht gehörte, muss dabei mit
+    // verschwinden, sonst zeigt Ansicht A kurz noch den Namen einer
+    // Gemeinde aus Ansicht B.
+    hideHoverLabel()
 
     if (view === 'beschaeftigte') {
       handle.setLayers([
@@ -87,6 +99,16 @@ async function start() {
           opacity: 1,
           visible: true,
           onClick: (index) => showMunicipalityPanel(gemeinde, index),
+          // Change 4: Hover ändert nur Farbe (via `autoHighlight` in
+          // `many.ts`) und zeigt den Namen in einem eigenen DOM-Label — der
+          // Klick auf dieselbe Fläche öffnet weiterhin unverändert das volle
+          // Panel (`onClick` oben), Hover ersetzt das nicht.
+          onHover: (index, x, y) => {
+            if (index === null) return hideHoverLabel()
+            const name = municipalityName(gemeinde, index)
+            if (name) showHoverLabel(name, x, y)
+            else hideHoverLabel()
+          },
         }),
       ])
     } else {

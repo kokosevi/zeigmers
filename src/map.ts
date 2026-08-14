@@ -3,6 +3,7 @@ import type { LayersList } from '@deck.gl/core'
 import maplibregl from 'maplibre-gl'
 import type { StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { mapLightingEffect } from './layers/lighting'
 
 // Bis Change 3 lud die Karte zur Laufzeit die swisstopo-Vektorkacheln
 // (66 Layer, davon 19 Beschriftungen und 30 Linien — Strassen, Gemeindenamen,
@@ -17,6 +18,9 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 // Request an einen fremden Dienst mehr — das in der Spezifikation (Abschnitt
 // 10) genannte Ausfallrisiko "swisstopo-Vektorkacheln fallen aus" entfällt
 // damit ersatzlos, siehe README.
+// Hintergrundfarbe = `--grund` aus style.css (kühles, blasses Blaugrau, kein
+// Weiss) — hier als Literal dupliziert, weil MapLibres Stil kein CSS liest;
+// bei einer Token-Änderung muss dieser Wert von Hand mitgezogen werden.
 const BLANK_STYLE: StyleSpecification = {
   version: 8,
   sources: {},
@@ -24,7 +28,7 @@ const BLANK_STYLE: StyleSpecification = {
     {
       id: 'hintergrund',
       type: 'background',
-      paint: { 'background-color': '#eef1f4' },
+      paint: { 'background-color': '#E8EDF2' },
     },
   ],
 }
@@ -80,7 +84,15 @@ export function createMap(container: HTMLElement): MapHandle {
   // etwas dafür zu bekommen. `false` ist der unzweideutig sichere Weg: deck.gl
   // zeichnet in einen eigenen Canvas über der Karte, unabhängig vom
   // MapLibre-Stilinhalt.
-  const overlay = new MapboxOverlay({ interleaved: false, layers: [] })
+  // Ein gemeinsamer LightingEffect für Kantons- und Gemeindeflächen (visueller
+  // Redesign, siehe `layers/lighting.ts`) — beide Layer haben jetzt
+  // `material` aktiv statt `false`, ohne diesen Effect gäbe es aber nur
+  // deck.gls Default-Licht, nicht die hier bewusst gewählte Richtung/Stärke.
+  const overlay = new MapboxOverlay({
+    interleaved: false,
+    layers: [],
+    effects: [mapLightingEffect],
+  })
   map.addControl(overlay)
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right')
 

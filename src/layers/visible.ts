@@ -1,6 +1,7 @@
 import { ColumnLayer } from '@deck.gl/layers'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import { computeElevations, type ScaleMode } from '../domain/scale'
+import { MAP_MATERIAL } from './material'
 
 /** Firmen ohne auffindbaren Umsatz erscheinen als Hinweis-Balken auf 40 % der
  *  Höhe des kleinsten echten Balkens — sichtbar, aber unverwechselbar klein. */
@@ -86,7 +87,12 @@ export function buildCompanyLayer(
     radius: 900,
     radiusUnits: 'meters',
     extruded: true,
-    material: false,
+    // Redesign (2026-08-14): dasselbe Material wie die Kantons-/Gemeinde-
+    // flächen (`layers/material.ts`), damit beide Ansichten unter demselben
+    // Licht (`layers/lighting.ts`) konsistent wirken, statt Ansicht A flach
+    // schattiert gegen ein beleuchtetes Ansicht B zu stellen. Nur acht Säulen
+    // — der Mehraufwand ist irrelevant.
+    material: MAP_MATERIAL,
     pickable: true,
     getPosition: (c) => [c.lon, c.lat],
     getElevation: (_c, { index }) => heights[index]!,

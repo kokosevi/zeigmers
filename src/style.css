@@ -1,8 +1,53 @@
+/* Redesign-Tokens (Auftrag: „visueller Redesign“, 2026-08-14). Elf gemessene
+   Branchenfarben (`domain/noga.generated.ts`, farbenblind-sicher geprüft von
+   `etl/tests/test_palette.py`) bleiben unangetastet — die Wirkung kommt aus
+   Licht (siehe `layers/lighting.ts`, `layers/material.ts`) und aus dieser
+   knappen, kühlen Kartenpalette drumherum, nicht aus neuen Farbtönen. */
+:root {
+  --grund: #E8EDF2;
+  --land: #CFD8E3;
+  --land-kante: #A8B6C6;
+  --aargau: #DDE5EE;
+  --tinte: #1B2733;
+  --tinte-leise: #5A6B7C;
+
+  /* Abgeleitete Oberflächenfarbe für Legende/Panel/Steuerung/Hinweis — helle,
+     halbtransparente Karten statt der früheren dunklen rgba(17,24,39)-Boxen,
+     damit die UI-Chrome zur selben pastellkühlen Karte gehört wie die Karte
+     selbst, statt sich als Dark-Mode-Fremdkörper darüberzulegen. */
+  --oberflaeche: rgba(255, 255, 255, .84);
+  --oberflaeche-rand: rgba(168, 182, 198, .55);
+  --schrift: "Helvetica Neue", Inter, system-ui, sans-serif;
+}
+
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
+html, body {
+  margin: 0; height: 100%;
+  font-family: var(--schrift);
+  background: var(--grund);
+  color: var(--tinte);
+  /* Das ist eine Datenkarte: Zahlen müssen untereinander ausrichten, nicht
+     nur innerhalb einer Zeile lesbar sein. */
+  font-variant-numeric: tabular-nums;
+}
 #map { position: absolute; inset: 0; }
 #ui { position: absolute; inset: 0; pointer-events: none; }
 #ui > * { pointer-events: auto; }
+
+/* Sichtbarer Tastaturfokus auf allen interaktiven Elementen — Buttons haben
+   unten `border: none; background: transparent`, was den nativen Fokusring
+   in manchen Browsern kaum sichtbar macht. */
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--tinte);
+  outline-offset: 2px;
+}
+
+/* Kein neu hinzugefügtes Bewegungsdesign (Auftrag: „keine Animation über das
+   Hover-Feedback hinaus") — diese Regel ist eine Vorsichtsmassnahme, falls
+   ein Browser-Default (z. B. `:focus-visible`-Übergänge) doch etwas animiert. */
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+}
 
 #fehler {
   position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
@@ -17,67 +62,112 @@ html, body { margin: 0; height: 100%; font-family: system-ui, sans-serif; }
 }
 #steuerung .gruppe {
   display: flex; gap: .25rem;
-  background: rgba(17, 24, 39, .85); border-radius: .5rem; padding: .25rem;
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  border-radius: .5rem; padding: .25rem;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
 }
 #steuerung button {
-  border: none; background: transparent; color: #e5e7eb;
+  border: none; background: transparent; color: var(--tinte-leise);
   padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
   cursor: pointer; font-family: inherit;
 }
-#steuerung button.aktiv { background: #2563eb; color: #fff; }
+#steuerung button.aktiv { background: var(--tinte); color: var(--grund); }
 
 /* Pflichthinweis: muss ohne Interaktion sichtbar sein, deshalb kein
-   hidden/Toggle-Mechanismus wie bei #panel. */
+   hidden/Toggle-Mechanismus wie bei #panel. Redesign-Vorgabe (Change 1):
+   ein ruhiger, kleiner Block statt eines dominanten braunen Banners —
+   dafür jetzt in der unteren rechten Ecke statt bodenmittig, mit klar
+   geringerem Kontrast als Legende/Panel. Trägt seit Change 2/3 auch die
+   Quellenzeile und den Währungshinweis, die zuvor in der Legende standen
+   (siehe `ui/notices.ts`) — „die Legende trägt, was man zum Lesen braucht,
+   die Eckbox, was man zum Vertrauen braucht“. */
 #hinweis {
-  position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
-  max-width: min(36rem, calc(100vw - 2rem));
-  padding: .6rem 1rem; border-radius: .375rem;
-  background: rgba(120, 53, 15, .92); color: #fff7ed;
-  font-size: .8125rem; line-height: 1.4; text-align: center;
+  position: absolute; right: 1rem; bottom: 1rem;
+  max-width: min(16rem, calc(100vw - 2rem));
+  padding: .55rem .7rem; border-radius: .375rem;
+  background: rgba(232, 237, 242, .8); border: 1px solid var(--oberflaeche-rand);
+  color: var(--tinte-leise);
+  font-size: .625rem; line-height: 1.4; text-align: left;
 }
+#hinweis p { margin: 0 0 .35rem; }
+#hinweis p:last-child { margin-bottom: 0; }
+.hinweis-haupt { color: var(--tinte); }
+.hinweis-quelle { font-size: .5625rem; opacity: .85; }
 
 #legende {
   position: absolute; left: 1rem; bottom: 1rem;
-  max-width: 19rem; max-height: calc(100vh - 2rem); overflow-y: auto;
-  background: rgba(17, 24, 39, .85); color: #f3f4f6;
+  max-width: 18rem; max-height: calc(100vh - 2rem); overflow-y: auto;
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  color: var(--tinte);
   border-radius: .5rem; padding: .75rem .875rem;
   font-size: .75rem; line-height: 1.4;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
 }
-.legende-titel { font-weight: 600; font-size: .875rem; margin-bottom: .4rem; }
-.legende-branchen { list-style: none; margin: 0 0 .5rem; padding: 0; display: grid; gap: .2rem; }
-.legende-branchen li { display: flex; align-items: center; gap: .4rem; }
-.legende-punkt { width: .6rem; height: .6rem; border-radius: 50%; flex: none; }
-.legende-skala { margin-bottom: .35rem; }
-.legende-aktiv-max { margin-bottom: .35rem; color: #d1d5db; }
-.legende-hinweis { margin-bottom: .35rem; color: #fca5a5; }
-.legende-quelle { color: #9ca3af; font-size: .6875rem; }
-.legende-quelle + .legende-quelle { margin-top: .2rem; }
+.legende-titel {
+  font-weight: 600; font-size: .6875rem; margin-bottom: .5rem;
+  color: var(--tinte-leise); text-transform: uppercase; letter-spacing: .08em;
+}
+.legende-branchen { list-style: none; margin: 0 0 .55rem; padding: 0; display: grid; gap: .25rem; }
+.legende-branchen li {
+  display: flex; align-items: center; gap: .45rem;
+  font-size: .6875rem; text-transform: uppercase; letter-spacing: .02em;
+  color: var(--tinte-leise);
+}
+.legende-punkt {
+  width: .55rem; height: .55rem; border-radius: 50%; flex: none;
+  box-shadow: inset 0 0 0 1px rgba(27, 39, 51, .18);
+}
+.legende-skala {
+  margin-bottom: .4rem; font-size: .8125rem; font-weight: 600;
+  color: var(--tinte); font-variant-numeric: tabular-nums;
+}
+.legende-hinweis { margin-bottom: .4rem; color: var(--tinte-leise); font-style: italic; }
 
 #panel {
   position: absolute; right: 1rem; top: 4.5rem;
   max-width: 21rem; max-height: calc(100vh - 6rem); overflow-y: auto;
-  background: rgba(17, 24, 39, .92); color: #f3f4f6;
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  color: var(--tinte);
   border-radius: .5rem; padding: 1rem; font-size: .8125rem; line-height: 1.4;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
 }
 #panel h3 { margin: 0 0 .5rem; font-size: 1rem; }
 #panel p { margin: .3rem 0; }
-.panel-hinweis { color: #fca5a5; }
-.panel-untertitel { font-weight: 600; margin-top: .5rem; }
+.panel-hinweis { color: var(--tinte-leise); font-style: italic; }
+.panel-untertitel {
+  font-weight: 600; margin-top: .5rem; font-size: .6875rem;
+  text-transform: uppercase; letter-spacing: .06em; color: var(--tinte-leise);
+}
 #panel ul { margin: .2rem 0 .5rem; padding-left: 1.1rem; }
-#panel a { color: #93c5fd; }
+#panel a { color: var(--tinte); }
 .panel-schliessen {
-  margin-top: .5rem; border: none; background: #374151; color: #fff;
-  padding: .3rem .7rem; border-radius: .375rem; cursor: pointer; font-size: .75rem;
-  font-family: inherit;
+  margin-top: .5rem; border: 1px solid var(--oberflaeche-rand); background: transparent;
+  color: var(--tinte); padding: .3rem .7rem; border-radius: .375rem; cursor: pointer;
+  font-size: .75rem; font-family: inherit;
 }
 
-/* Unter ~800px überlappen #legende (unten links) und #hinweis (unten
-   zentriert) sich sonst — #hinweis gewinnt den z-Order (später im DOM,
-   siehe main.ts), die lizenzpflichtige Quellenangabe in #legende würde also
-   verdeckt. Löst beide aus der Absolut-Positionierung und stapelt sie im
-   normalen Fluss am unteren Rand von #ui, statt sie an derselben Stelle zu
-   überlagern. #fehler, #steuerung und #panel bleiben unberührt: sie sind
-   weiterhin absolut positioniert und damit aus dem Flex-Fluss ausgenommen. */
+/* Hover-Beschriftung (Change 4): reine DOM-Aktualisierung bei jedem
+   `onHover`-Event, kein Layer-Rebuild — siehe `ui/hoverLabel.ts`. Folgt der
+   typografischen Stimme der Legende (klein, Großbuchstaben, Sperrung), damit
+   sie als Teil derselben Karte gelesen wird, nicht als generischer Tooltip. */
+#hover-label {
+  position: fixed; z-index: 5; pointer-events: none;
+  transform: translate(14px, 14px);
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  color: var(--tinte); font-size: .6875rem;
+  text-transform: uppercase; letter-spacing: .05em;
+  padding: .25rem .5rem; border-radius: .25rem;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .15);
+  white-space: nowrap;
+}
+#hover-label[hidden] { display: none; }
+
+/* Unter ~800px stehen #legende (unten links) und #hinweis (jetzt unten
+   rechts) sich nicht mehr im Weg wie zuvor (#hinweis war bodenmittig) —
+   auf sehr schmalen Viewports reicht die Breite trotzdem nicht für zwei
+   nebeneinanderliegende Eckboxen. Löst beide aus der Absolut-Positionierung
+   und stapelt sie im normalen Fluss am unteren Rand von #ui. #fehler,
+   #steuerung und #panel bleiben unberührt: weiterhin absolut positioniert. */
 @media (max-width: 800px) {
   #ui {
     display: flex;
