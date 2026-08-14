@@ -544,9 +544,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         companies.write_csv(path, rows)
         print(f"[companies-merge] {len(report['merged'])} Zeile(n) übernommen "
               f"({len(research)} Recherchedatei(en) gelesen) -> {path}")
-        if report["skippedResearched"]:
-            print(f"    {len(report['skippedResearched'])} bereits recherchiert, "
-                  f"unangetastet gelassen: {', '.join(report['skippedResearched'])}")
+        if report["updated"]:
+            print(f"    {len(report['updated'])} bestehende Zeile(n) aktualisiert "
+                  f"(Korrektur in der Recherchedatei): {', '.join(report['updated'])}")
         if report["unknownSymbol"]:
             print(f"    {len(report['unknownSymbol'])} Symbol(e) ohne passende "
                   f"Zeile: {', '.join(report['unknownSymbol'])}")

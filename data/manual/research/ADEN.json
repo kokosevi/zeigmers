@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": "23082",
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "295",
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Personaldienstleistungen: Zeitarbeit und Personalvermittlung (Adecco), IT- und Engineering-Consulting (Akkodis) sowie Karriereberatung/Outplacement und Weiterbildung (LHH).",
+ "products_url": "https://www.adeccogroup.com/what-we-do",
+ "founding_year": "1996",
+ "founding_year_source": "https://www.adeccogroup.com/our-group/about-us/history",
+ "employees": "71679",
+ "fiscal_year": "2025",
+ "report_url": "https://www.adeccogroup.com/-/media/project/adecco-group/adeccogroup/pdf-files/2026-march/the-adecco-group-annual-report-2025.pdf",
+ "note": "Beschäftigte sind Köpfe (\"Total headcount\" der company-based employees, S. 122/Non-Financial Report-Tabelle) = 71'679. Im selben Bericht wird an anderer Stelle (Note 1, Financial Statements) zusätzlich eine Näherung von ca. 34'000 FTE company-based employees 'excluding consultants' genannt – abweichender, engerer Umfang, nicht verwendet. Gewinn ist der auf Adecco-Group-Aktionäre entfallende Anteil (EUR 295 Mio.); der Konzerngewinn vor Minderheiten betrug EUR 294 Mio. (Minderheitsanteil: EUR -1 Mio. Verlust).",
+ "_verification": "Umsatz (Zeile \"Revenues\"/\"Total revenues\", Consolidated statements of operations, Note 2) und Gewinn (Zeile \"Net income attributable to Adecco Group shareholders\", ebd.) stammen aus den geprüften Konzernabschlüssen im Adecco Group Annual Report 2025 (FY endend 31.12.2025), S. 118 und Notes-Abschnitt; keine Umrechnung, Zahlen wie im PDF berichtet (EUR-Berichtswährung). Geprüft: Revenue 23'082 vs. Vorjahr 23'138 stimmt mit Note 2 und Operating & Financial Review überein; Gewinn 295 vs. Konzern-Nettoergebnis 294 (Differenz = Minderheitsanteile) stimmt; Headcount 71'679 aus separater Tabelle im Non-Financial Report gegen abweichende FTE-Angabe in Note 1 abgeglichen; keine Angaben zu discontinued operations gefunden, daher total_group; Gründungsjahr 1996 direkt von der offiziellen History-Seite der Adecco Group (\"Adia and Ecco merge to form Adecco\")."
+}

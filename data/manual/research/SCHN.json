@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "10947",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "1015",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Herstellung, Installation, Wartung und Modernisierung von Aufzügen, Fahrtreppen und Fahrsteigen.",
+ "products_url": "https://group.schindler.com/en/company/profile.html",
+ "founding_year": "1874",
+ "founding_year_source": "https://group.schindler.com/en/company/history.html",
+ "employees": "67381",
+ "fiscal_year": "2025",
+ "report_url": "https://group.schindler.com/content/dam/website/group/docs/investors/2025/2025-schindler-fy-financial-statements-en.pdf/_jcr_content/renditions/original./2025-schindler-fy-financial-statements-en.pdf",
+ "note": "Konzerngewinn (Net profit) 2025 betrug CHF 1'073 Mio.; davon CHF 1'015 Mio. den Aktionären von Schindler zurechenbar (attributable to Schindler shareholders) und CHF 58 Mio. Minderheitsanteilen (non-controlling interests) — als profit wurde der Aktionärsanteil eingetragen. Die Mitarbeiterzahl (67'381) ist im Bericht nicht explizit als Köpfe oder Vollzeitäquivalente bezeichnet; es wird nur eine einzige Zahl 'Number of employees' ausgewiesen.",
+ "_verification": "Umsatz (Revenue, CHF 10'947 Mio.) und Konzerngewinn (Net profit, CHF 1'073 Mio., davon 1'015 Mio. attributable to Schindler shareholders) stammen aus der 'Consolidated income statement' auf Seite 4 des testierten Berichts 'Financial Statements 2025' (Geschäftsjahr 2025, Stand 31.12.2025); die Mitarbeiterzahl 67'381 aus Note 6.1 'Personnel expenses' auf Seite 15 desselben Dokuments. Abgeglichen mit der Ad-hoc-Medienmitteilung 'Annual Results' vom 11.02.2026 (Key figures as of December 31, 2025), die dieselben Werte für Revenue, Net profit und Number of employees bestätigt."
+}

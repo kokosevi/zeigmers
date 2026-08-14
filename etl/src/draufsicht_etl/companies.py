@@ -381,11 +381,17 @@ def merge_research(rows: list[dict], research: dict[str, dict],
 
     Drei Zusicherungen, jede an einer Erfahrung dieses Projekts:
 
-    - **Bereits recherchierte Zeilen bleiben unangetastet.** Die acht von
-      Hand geprüften Zeilen sind das Teuerste in diesem Repo; ein
-      maschineller Lauf darf sie nicht überschreiben, auch nicht mit
-      zufällig richtigen Werten. Sie erscheinen im Bericht unter
-      `skippedResearched`.
+    - **Zeilen ohne Recherchedatei werden nie angefasst.** Die acht von Hand
+      geprüften Zeilen haben keine — und diese Funktion läuft nur über die
+      vorhandenen Dateien. Sie sind damit strukturell geschützt, nicht durch
+      eine Regel, die jemand später lockern könnte.
+    - **Zeilen MIT Recherchedatei werden mit ihr synchron gehalten.** Eine
+      Korrektur aus der Gegenprüfung (Swisscoms Gewinn: 1'270 war das
+      Konzernergebnis, 1'271 der Aktionärsanteil) landet in der Datei und von
+      dort in die CSV. Ohne das bliebe jede Korrektur liegen und müsste von
+      Hand nachgezogen werden — genau der Schritt, der vergessen wird. Der
+      Bericht trennt `merged` (neu) von `updated` (geändert), damit eine
+      Änderung an einer bestehenden Zeile nie unbemerkt passiert.
     - **Identität und Sitz kommen nicht aus der Recherche.** Name, UID, LEI
       und Adresse stammen aus GLEIF und sind geprüft (siehe `gleif.py`).
       Eine Rechercheantwort, die einen Ort mitliefert, wird an dieser Stelle
@@ -398,22 +404,26 @@ def merge_research(rows: list[dict], research: dict[str, dict],
     Mutiert `rows` in place (wie `geocode.fill_missing`); der Aufrufer
     persistiert selbst."""
     by_symbol = {row.get("six_symbol", "").strip(): row for row in rows}
-    report: dict = {"merged": [], "skippedResearched": [], "unknownSymbol": []}
+    report: dict = {"merged": [], "updated": [], "unknownSymbol": []}
 
     for symbol, payload in sorted(research.items()):
         row = by_symbol.get(symbol)
         if row is None:
             report["unknownSymbol"].append(symbol)
             continue
-        if row.get("researched", "").strip() == "yes":
-            report["skippedResearched"].append(symbol)
-            continue
 
+        was_researched = row.get("researched", "").strip() == "yes"
+        before = {field: row.get(field, "") for field in RESEARCH_ONLY_FIELDS}
         for field in RESEARCH_ONLY_FIELDS:
             value = payload.get(field)
             row[field] = "" if value is None else str(value).strip()
         row["researched"] = "yes"
-        report["merged"].append(symbol)
+
+        changed = any(before[field] != row[field] for field in RESEARCH_ONLY_FIELDS)
+        if not was_researched:
+            report["merged"].append(symbol)
+        elif changed:
+            report["updated"].append(symbol)
 
     validate(rows, table)
     return report

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "43136",
+ "revenue_currency": "USD",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "4740",
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Rückversicherung und Erstversicherung von Sach-, Haftpflicht-, Lebens- und Krankenrisiken sowie risikobezogene Beratungs-, Kapitalmarkt- und Vermögensverwaltungsdienstleistungen für Versicherer, Unternehmen und den öffentlichen Sektor.",
+ "products_url": "https://www.swissre.com/our-business.html",
+ "founding_year": "1863",
+ "founding_year_source": "https://www.swissre.com/about-us/history/established-1863.html",
+ "employees": "15238",
+ "fiscal_year": "2025",
+ "report_url": "https://www.swissre.com/dam/jcr:a7e9dca5-1911-404d-bc9d-a8875ca7cab9/2025-annual-report.pdf",
+ "note": "Swiss Re bilanziert seit FY2024 nach IFRS 17/9; die konsolidierte Konzern-Erfolgsrechnung weist keine Zeile 'Total revenues' mehr aus. Als Gesamtertrag wurde daher die Zeile 'Insurance revenue' (oberste Ertragszeile der Konzern-Erfolgsrechnung, auch im Fliesstext als 'Insurance revenue for the Group' bezeichnet) übernommen, keine selbst gebildete Summe. employees = Headcount (Köpfe) laut Sustainability-Report-Tabelle 'Employee data'; daneben nennt der Bericht separat 14'893 Permanent Employees und 14'449 FTE (Jahresdurchschnitt) - nicht verwendet.",
+ "_verification": "Umsatz: Konzern-Erfolgsrechnung 'Income statement' (Consolidated IFRS financial statements), Swiss Re Annual Report 2025, S. 153, Zeile 'Insurance revenue' = USD 43'136 Mio. für 2025 (Vorjahr 45'598), identisch wiederholt im Management Report 'Swiss Re Group results', S. 13/14. Gewinn: dieselbe Erfolgsrechnung, S. 153, Zeile 'Net income/loss attributable to common shareholders' = USD 4'740 Mio. für 2025 (Konzern-Netto-Nettogewinn 4'762 Mio., davon 22 Mio. Minderheitsanteile - nicht verwendet). Geprüft: Zeilenbezeichnungen wörtlich aus dem PDF extrahiert (pdftotext), Mitarbeiterzahl (Headcount 15'238) aus der Sustainability-Report-Tabelle im selben Bericht, Gründungsjahr 1863 und Sitz Zürich über swissre.com/about-us/history bestätigt."
+}

@@ -937,16 +937,41 @@ def test_merge_research_fills_an_unresearched_row_and_marks_it_researched():
     assert rows[0]["employees"] == "4200"
 
 
-def test_merge_research_refuses_to_overwrite_an_already_researched_row():
+def test_merge_research_never_touches_a_row_without_a_research_file():
     # Die acht handrecherchierten Zeilen sind das Teuerste in diesem Repo.
-    # Ein zweiter, maschineller Lauf darf sie unter keinen Umstaenden
-    # ueberschreiben — auch nicht "aus Versehen richtig".
-    rows = [_row(six_symbol="ALT", researched="yes", revenue="999")]
-    report = companies.merge_research(rows, {"ALT": _research()})
+    # Sie haben keine Recherchedatei — und `merge_research` laeuft nur ueber
+    # die vorhandenen Dateien. Damit sind sie strukturell geschuetzt, nicht
+    # durch eine Regel, die jemand spaeter lockern koennte.
+    rows = [_row(six_symbol="HAND", researched="yes", revenue="999"),
+            _row(six_symbol="NEU", researched="no", noga_group="", revenue="",
+                 revenue_currency="", revenue_type="", revenue_unit="",
+                 fiscal_year="", report_url="", uid="CHE-2", isin="CH0000000002")]
+    companies.merge_research(rows, {"NEU": _research()})
+    assert rows[0]["revenue"] == "999", "Zeile ohne Recherchedatei bleibt unberuehrt"
 
-    assert rows[0]["revenue"] == "999", "bestehende Recherche bleibt unangetastet"
-    assert report["merged"] == []
-    assert report["skippedResearched"] == ["ALT"]
+
+def test_merge_research_updates_a_row_whose_research_file_changed():
+    # Eine Korrektur aus der Gegenpruefung (z.B. Swisscoms Gewinn: 1'270 war
+    # das Konzernergebnis, 1'271 der Aktionaersanteil) landet in der
+    # Recherchedatei. Wuerde `merge_research` bestehende Zeilen grundsaetzlich
+    # auslassen, bliebe die Korrektur stillschweigend liegen und muesste von
+    # Hand in die CSV nachgezogen werden — genau der Schritt, der vergessen
+    # wird.
+    rows = [_row(six_symbol="KORR", researched="yes", profit="1270",
+                 profit_currency="CHF", profit_unit="1000000",
+                 consolidation_basis="total_group")]
+    report = companies.merge_research(rows, {"KORR": _research(profit="1271")})
+
+    assert rows[0]["profit"] == "1271"
+    assert report["updated"] == ["KORR"]
+    assert report["merged"] == [], "kein Neuzugang, sondern eine Aktualisierung"
+
+
+def test_merge_research_reports_nothing_when_a_row_already_matches_its_file():
+    rows = [_row(six_symbol="GLEICH", researched="yes")]
+    payload = {field: rows[0][field] for field in companies.RESEARCH_ONLY_FIELDS}
+    report = companies.merge_research(rows, {"GLEICH": payload})
+    assert report["merged"] == [] and report["updated"] == []
 
 
 def test_merge_research_reports_a_symbol_that_matches_no_row():
