@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { CANTON_ELEVATION_M } from './cantons'
 import {
   buildCompanyLayer,
   buildUnresearchedCompanyLayer,
@@ -191,5 +192,51 @@ describe('heightValue', () => {
     const usd = company({ revenue: 1e9, revenueChf: 8.3e8 })
     const heights = companyElevations([chf, usd], 1e9, 12000, 'linear')
     expect(heights[0]).toBeGreaterThan(heights[1]!)
+  })
+})
+
+describe('Marker der unrecherchierten Firmen', () => {
+  const data: CompanyData = {
+    companies: [company({ researched: false })],
+    stats: {
+      count: 1, withRevenue: 0, max: 0, revenueInChf: false,
+      researched: 0, totalListed: 1, sixRetrievedDate: null,
+    },
+  }
+
+  it('hat eine Mindestgrösse in Pixeln', () => {
+    // Ohne sie sind die Marker in Metern angegeben und schrumpfen beim
+    // Herauszoomen mit: auf der Schweiz-Ansicht wurden aus 350 m Radius
+    // rund zwei Bildpunkte, und der Nutzer sah nur noch die acht Aargauer
+    // Säulen. Die Marker waren da — sichtbar waren sie nicht.
+    const layer = buildUnresearchedCompanyLayer(data, () => {}, () => {})
+    expect(layer.props.radiusMinPixels).toBeGreaterThanOrEqual(3)
+  })
+
+  it('begrenzt die Grösse nach oben, damit sie beim Hineinzoomen nicht zu Flecken werden', () => {
+    const layer = buildUnresearchedCompanyLayer(data, () => {}, () => {})
+    expect(layer.props.radiusMaxPixels).toBeGreaterThan(layer.props.radiusMinPixels)
+    expect(layer.props.radiusMaxPixels).toBeLessThanOrEqual(12)
+  })
+})
+
+describe('Höhenlage der Marker über der Kantonsplatte', () => {
+  const data: CompanyData = {
+    companies: [company({ researched: false, lon: 8, lat: 47.4 })],
+    stats: {
+      count: 1, withRevenue: 0, max: 0, revenueInChf: false,
+      researched: 0, totalListed: 1, sixRetrievedDate: null,
+    },
+  }
+
+  it('setzt die Marker auf die Oberseite der Platte, nicht auf Höhe null', () => {
+    // Die Kantonsplatte ist auf CANTON_ELEVATION_M extrudiert. Ein flacher
+    // Marker auf Höhe 0 liegt damit UNTER ihr und ist unsichtbar — die
+    // Säulen ragen hindurch, die Punkte nicht. Genau so sah die Karte aus,
+    // als wären nur die acht Aargauer Firmen vorhanden.
+    const layer = buildUnresearchedCompanyLayer(data, () => {}, () => {})
+    const getPosition = layer.props.getPosition as unknown as (c: Company) => number[]
+    const position = getPosition(data.companies[0]!)
+    expect(position[2]).toBe(CANTON_ELEVATION_M)
   })
 })

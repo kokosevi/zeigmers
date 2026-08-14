@@ -1,6 +1,7 @@
 import { ColumnLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import { computeElevations, type ScaleMode } from '../domain/scale'
+import { CANTON_ELEVATION_M } from './cantons'
 import { MAP_MATERIAL } from './material'
 
 /** Firmen ohne auffindbaren Umsatz erscheinen als Hinweis-Balken auf 40 % der
@@ -205,6 +206,11 @@ export function buildCompanyLayer(
 // ohne es zu behaupten). Ein einzelner grauer Ton für alle ~216 Titel, klar
 // unterscheidbar von den Branchenfarben der acht recherchierten Balken.
 export const UNRESEARCHED_MARKER_RADIUS_M = 350
+
+// Sichtbarkeitsschranken in Bildpunkten, unabhängig vom Zoom — siehe
+// `buildUnresearchedCompanyLayer`.
+export const UNRESEARCHED_MARKER_MIN_PX = 4
+export const UNRESEARCHED_MARKER_MAX_PX = 10
 export const UNRESEARCHED_MARKER_COLOR: readonly [number, number, number, number] =
   [130, 130, 130, 190]
 
@@ -226,9 +232,24 @@ export function buildUnresearchedCompanyLayer(
     data: markers,
     pickable: true,
     stroked: false,
-    getPosition: (c) => [c.lon, c.lat],
+    // Auf der OBERSEITE der Kantonsplatte, nicht auf Höhe null. Die Platte
+    // ist auf `CANTON_ELEVATION_M` extrudiert; ein flacher Marker bei z=0
+    // liegt darunter und ist unsichtbar. Die Säulen fiel das nicht auf —
+    // sie ragen mit tausenden Metern hindurch —, die 189 Marker dagegen
+    // waren vollständig begraben, und die Karte sah aus, als gäbe es nur
+    // die acht Aargauer Firmen.
+    getPosition: (c) => [c.lon, c.lat, CANTON_ELEVATION_M],
     getRadius: UNRESEARCHED_MARKER_RADIUS_M,
     radiusUnits: 'meters',
+    // Ohne diese Schranken schrumpft ein in Metern angegebener Marker beim
+    // Herauszoomen mit der Karte: auf der Schweiz-Ansicht wurden aus 350 m
+    // Radius rund zwei Bildpunkte — die 189 Marker waren gezeichnet, aber
+    // nicht zu sehen, und die Karte wirkte, als gäbe es nur die acht
+    // Aargauer Säulen. Die Obergrenze verhindert das Gegenteil: beim
+    // Hineinzoomen auf eine Stadt sollen die Punkte nicht zu Flecken
+    // wachsen, die die Säulen daneben verdecken.
+    radiusMinPixels: UNRESEARCHED_MARKER_MIN_PX,
+    radiusMaxPixels: UNRESEARCHED_MARKER_MAX_PX,
     getFillColor: UNRESEARCHED_MARKER_COLOR,
     onClick: (info) => {
       if (info.object) onClick(info.object)
