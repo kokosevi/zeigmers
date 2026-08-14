@@ -1,203 +1,203 @@
-uid,name,six_symbol,isin,street,zip,city,lon,lat,geocode_query,noga_group,consolidation_basis,revenue,revenue_currency,revenue_type,revenue_unit,profit,profit_currency,profit_unit,core_products,products_url,founding_year,founding_year_source,employees,fiscal_year,report_url,note,researched
-CHE-102.443.567,Siegfried Holding AG,SFZN,CH1429326825,Untere Brühlstrasse 4,4800,Zofingen,7.939111,47.288231,Untere Brühlstrasse 4 4800 Zofingen,industrie,total_group,1327.8,CHF,net_sales,1000000,168.659,CHF,1000000,Pharmazeutische Wirkstoffe (Drug Substances) und Fertigprodukte (Drug Products) im Auftrag der Pharmaindustrie.,,1873,https://www.siegfried.ch/company/history/,3891,2025,https://www.siegfried.ch/app/uploads/2026/02/Siegfried_2025_AR_Financial_Report_EN.pdf,,yes
-CHE-100.707.011,Zehnder Group AG,ZEHN,CH0276534614,Moortalstrasse 1,5722,Gränichen,8.106647,47.353355,Moortalstrasse 1 5722 Gränichen,industrie,total_group,760.7,EUR,net_sales,1000000,46.3,EUR,1000000,"Lüftungs-, Heizkörper- und Heiz-/Kühldeckensysteme für ein gesundes Raumklima.",https://www.zehndergroup.com/en,1895,https://www.zehndergroup.com/en/company/about-us/our-history,3636,2025,https://report.zehndergroup.com/2025/app/uploads/Integrated-Annual-Report-2025.pdf,"Mitarbeitende als Vollzeitäquivalente im Jahresdurchschnitt gemäss Geschäftsbericht. Reingewinn wurde zunächst aus dem HTML-Spiegel des Berichts gelesen (report.zehndergroup.com/2025/consolidated-income-statement), weil das PDF unter report_url beim ersten Abruf die Grössenlimite überschritt; inzwischen direkt im PDF bestätigt (report_url, S. 88, Konsolidierte Erfolgsrechnung, Zeile ""shareholders of Zehnder Group AG"").",yes
-CHE-105.949.219,naturenergie holding AG,NEAG,CH0039651184,Baslerstrasse 44,5080,Laufenburg,8.051362,47.555576,Baslerstrasse 44 5080 Laufenburg,industrie,total_group,1557.7,EUR,net_sales,1000000,186.9,EUR,1000000,"Strom aus eigenen Wasserkraftwerken am Hochrhein, im Südschwarzwald und im Wallis, dazu Photovoltaik, Wärme und Netzbetrieb.",https://www.naturenergie-holding.ch/ueber-uns,1894,https://www.naturenergie-holding.ch/ueber-uns,1413,2025,https://www.naturenergie-holding.ch/fileadmin/energiedienst/Dokumente/Unternehmen/Geschaeftsbericht/GB_HJB_2025/naturenergie_Condensed_Report_2025_en_WEB.pdf,"Umsatz = Konzernkennzahl ""Net revenue from goods and services"" aus dem Condensed Report 2025; Mitarbeitende = ""Total number of employees"" (Headcount per 31.12.2025). Reingewinn EUR 186.9 Mio. stammt aus dem vollständigen Geschäftsbericht 2025 (naturenergie_Geschaeftsbericht_2025.pdf, im selben Ordner wie der zitierte Condensed Report), S. 133 (gedruckte Seitenzahl), Konsolidierte Erfolgsrechnung: ""Jahresgewinn"" 188.2, davon ""neh-Aktionärinnen und -Aktionäre"" 186.9, ""Minderheitsanteile"" 1.3 — der zuvor zitierte Condensed Report zeigt nur die ungeteilte Summe. Gründungsjahr 1894 bezieht sich auf die Vorgängergesellschaft Kraftübertragungswerke Rheinfelden AG; die heutige naturenergie holding AG entstand 2002 durch Fusion mit der Kraftwerk Laufenburg AG, aktueller Name seit 2024.",yes
-CHE-112.235.208,Dottikon ES Holding AG,DESN,CH0582581713,Hembrunnstrasse 17,5605,Dottikon,8.238302,47.37323,Hembrunnstrasse 17 5605 Dottikon,industrie,total_group,385.2,CHF,net_sales,1000000,105.578,CHF,1000000,"Veredelungschemikalien, Zwischenprodukte und Exklusivwirkstoffe für die chemische, Biotech- und pharmazeutische Industrie.",https://dottikon.com/de/about-us/overview/?switchLang=de,1913,https://dottikon.com/dottikon-es-de/about-us/history/,793,2025,https://dottikon.com/en/documents/investors/financial-reports/en/annual_report_2024_25/,"Geschäftsjahr 2024/25 (April 2024 - März 2025). Mitarbeitende als Vollzeitäquivalente im Jahresdurchschnitt (793); Headcount am Stichtag rund 860 gemäss Bericht. Reingewinn CHF 105.578 Mio. ist der Konzern-Reingewinn; das unkonsolidierte, für die Dividende massgebliche Jahresergebnis der Holding AG allein betrug CHF 8.861 Mio. Gegründet 1913 als Schweizerische Sprengstoff-Fabrik AG, mehrfach umbenannt (1989 Ems-Dottikon AG, 2005 Dottikon Exclusive Synthesis AG).",yes
-CHE-248.340.671,Montana Aerospace AG,AERO,CH1110425654,Alzbachstrasse 27,5734,Reinach,8.174534,47.257011,Alzbachstrasse 27 5734 Reinach AG,industrie,total_group,1504.981,EUR,net_sales,1000000,-3.071,EUR,1000000,Strukturbauteile für die Luftfahrt (Aerostructures) sowie Präzisionskomponenten für die Stahl- und Automobilindustrie (Alpine Metal Tech).,,2019,https://www.montana-aerospace.com/wp-content/uploads/2026/04/2025_Y_montana_aerospace_vF_signed-1.pdf,6346,2025,https://www.montana-aerospace.com/wp-content/uploads/2026/04/2025_Y_montana_aerospace_vF_signed-1.pdf,"Umsatz und Reingewinn beziehen sich beide auf den Gesamtkonzern (consolidation_basis = total_group), inklusive der per 25.9.2025 verkauften Energiesparte: Umsatz = fortgeführte Geschäfte (Aerostructures, Alpine Metal Tech; EUR 979.331 Mio., Anhang 5.3 Segmentberichterstattung) plus Energiesparte bis Verkaufsdatum (EUR 525.650 Mio., Anhang 23.1.1) = EUR 1'504.981 Mio. — der Bericht selbst weist keine einzelne Zeile mit dieser Summe aus, beide Teilbeträge stehen aber im selben geprüften Anhang. Reingewinn EUR -3.071 Mio. (Verlust) ist bereits die Gesamtkonzernzahl auf die Aktionäre entfallend, S. 134; eine Zahl nur für die fortgeführten Geschäfte weist der Bericht nicht als eigene Zeile aus (Anhang 15.2 nennt dafür nur das Ergebnis je Aktie, EUR 0.18, keinen Reingewinn-Betrag — daraus zurückzurechnen wäre eine Schätzung, keine gemeldete Zahl, deshalb nicht verwendet). Frühere Fassung dieser Zeile kombinierte fälschlich die Umsatzzahl der fortgeführten Geschäfte mit dem Gesamtkonzern-Reingewinn; korrigiert im Sourcing-Review vom 14.8.2026. Montana Aerospace AG wurde 2019 als Holding gegründet; die operativen Geschäftsbereiche Aerostructures und Alpine Metal Tech sind teils älter, die E-Mobility-Sparte wurde bereits 2024 verkauft.",yes
-CHE-270.303.139,Accelleron Industries AG,ACLN,CH1169360919,Bruggerstrasse 71a,5400,Baden,8.302003,47.479832,Bruggerstrasse 71a 5400 Baden,industrie,total_group,1263.1,USD,net_sales,1000000,232.930,USD,1000000,Turbolader und Einspritzsysteme für Grossmotoren in Schifffahrt und Energieerzeugung.,,2021,https://www.zefix.ch,3200,2025,https://accelleron.com/content/dam/accelleronind/documents/investors/accelleron-annual-report-2025.pdf,"Mitarbeitende gemäss Unternehmensangabe ""über 3200"" (Jahresbericht S. 51); keine exakte Stichtagszahl veröffentlicht. Mitarbeitende gemäss Unternehmensangabe ""über 3200"" (Jahresbericht S. 51); keine exakte Stichtagszahl veröffentlicht. Gründungsjahr laut Zefix (CHE-270.303.139): Neueintragung als ""Turbo Systems Holding AG"" am 26.5.2021 (Statutendatum 18.5.2021, SHAB-Publikation 31.5.2021), umbenannt in Accelleron Industries AG am 10.2.2022, vor der Abspaltung von ABB im Oktober 2022 — die Rechtseinheit selbst ist damit älter als der Börsengang.",yes
-CHE-441.853.769,DSM-Firmenich AG,DSFIR,CH1216478797,Wurmisweg 576,4303,Kaiseraugst,7.740992,47.539654,Wurmisweg 576 4303 Kaiseraugst,industrie,continuing_operations,9034,EUR,net_sales,1000000,340,EUR,1000000,"Nährstoffe, Aromen und Duftstoffe für Ernährung, Gesundheit und Körperpflege.",,2022,https://www.zefix.ch,28550,2025,https://www.dsm-firmenich.com/content/dam/dsm-firmenich/investors/documents/results-center/2026/press-release-dsm-firmenich-full-year-2025-report.pdf,"Umsatz = ""Net sales"" der fortgeführten Geschäfte (Continuing Operations), FY2025 EUR 9034 Mio. — die Tierernährungssparte Animal Nutrition & Health ist zur Veräusserung klassiert und hier nicht enthalten. Inkl. dieser Sparte (""Sales total Group"") betrug der Konzernumsatz EUR 12521 Mio. Reingewinn folgt demselben Massstab wie der Umsatz: EUR 340 Mio. ist der auf die Aktionäre entfallende Gewinn der fortgeführten Geschäfte (Continuing Operations). Inklusive der zur Veräusserung klassierten Tierernährungssparte verzeichnete der Konzern einen Verlust von EUR -1081 Mio. (auf die Aktionäre entfallend), vor allem wegen einer Wertminderung von rund EUR 1.9 Mrd. im Zusammenhang mit deren angekündigtem Verkauf. Die Rechtseinheit DSM-Firmenich AG (CHE-441.853.769) wurde laut Zefix am 16. Mai 2022 als ""Danube AG"" gegründet und am 18. April 2023 umbenannt — nicht zu verwechseln mit der Unternehmens-geschichte von DSM (gegr. 1902) oder Firmenich (gegr. 1895).",yes
-CHE-105.779.532,Hypothekarbank Lenzburg AG,HBLN,CH0001341608,Bahnhofstrasse 2,5600,Lenzburg,8.178392,47.387981,Bahnhofstrasse 2 5600 Lenzburg,finanz,total_group,137.058,CHF,operating_income,1000000,20.025,CHF,1000000,"Hypothekar- und Kommerzialkreditgeschäft sowie Spar- und Anlageprodukte für Privat- und Firmenkunden, dazu Banking-as-a-Service für digitale Drittanbieter.",https://www.hbl.ch/de/ueber-uns/,1868,https://www.hbl.ch/de/ueber-uns/,502,2025,https://www.hbl.ch/media/rpnbhmnk/2025_geschaefstbericht.pdf,"Banken weisen keinen Umsatz im klassischen Sinn aus; als Näherung dient der konsolidierte Geschäftsertrag (Konzern; erstmals 2025 inkl. Swiss Bankers Prepaid Services AG). Mitarbeitende: Konzern, teilzeitbereinigt ohne Lernende. Der Reingewinn ist — anders als der Geschäftsertrag — grundsätzlich branchenübergreifend vergleichbar (ein gewöhnlicher Gewinn nach Steuern), enthält aber mit der ""Veränderung von Reserven für allgemeine Bankrisiken"" (FY2025: CHF -2.35 Mio., direkt vor Steuern in der Erfolgsrechnung) ein bankspezifisches, ermessensabhängiges Glättungselement, das ein Industrieunternehmen so nicht kennt — vertretbar vergleichbar, nicht identisch definiert. Konzerngewinn FY2025 praktisch deckungsgleich mit dem Stammhausergebnis von CHF 20.007 Mio., dem ersten Jahr mit Konzernrechnung.",yes
-,Abb Ltd,ABBN,CH0012221716,,,,,,,,,,,,,,,,,,,,,,,,no
-,Addex,ADXN,CH0029850754,,,,,,,,,,,,,,,,,,,,,,,,no
-,Adecco,ADEN,CH0012138605,,,,,,,,,,,,,,,,,,,,,,,,no
-415204,Adval Tech Holding AG,ADVN,CH0008967926,Freiburgstrasse 556,3172,Niederwangen b. Bern,7.375957,46.924713,"Freiburgstrasse 556, 3172 Niederwangen b. Bern",,,,,,,,,,,,,,,,,,no
-458994,AEVIS VICTORIA SA,AEVS,CH0478634105,Rue Georges-Jordil 4,1700,Fribourg,7.154,46.799637,"Rue Georges-Jordil 4, 1700 Fribourg",,,,,,,,,,,,,,,,,,no
-1364173,Alcon AG,ALC,CH0432492467,Rue Louis-d'Affry 6,1701,Fribourg,7.150745,46.804157,"Rue Louis-d'Affry 6, 1701 Fribourg",,,,,,,,,,,,,,,,,,no
-465413,Allreal Home AG,ALLN,CH0008837566,Lindbergh-Allee 1,8152,Glattpark (Opfikon),8.561337,47.424648,"Lindbergh-Allee 1, 8152 Glattpark (Opfikon)",,,,,,,,,,,,,,,,,,no
-409830,Alpine Select AG,ALPN,CH0019199550,Gotthardstrasse 31,6300,Zug,8.511987,47.172539,"Gotthardstrasse 31, 6300 Zug",,,,,,,,,,,,,,,,,,no
-5164,ALSO Holding AG,ALSN,CH0024590272,Meierhofstrasse 5,6032,Emmen,8.304039,47.082161,"Meierhofstrasse 5, 6032 Emmen",,,,,,,,,,,,,,,,,,no
-1582969,Amrize AG,AMRZ,CH1430134226,Grafenauweg 8,6300,Zug,8.512655,47.174156,"Grafenauweg 8, 6300 Zug",,,,,,,,,,,,,,,,,,no
-454834,APG SGA SA,APGN,CH0019107025,Avenue Rosemont 8,1208,Genève,6.171688,46.202602,"Avenue Rosemont 8, 1208 Genève",,,,,,,,,,,,,,,,,,no
-2184,Arbonia AG,ARBN,CH0110240600,Amriswilerstrasse 50,9320,Arbon,9.407188,47.521637,"Amriswilerstrasse 50, 9320 Arbon",,,,,,,,,,,,,,,,,,no
-905160,ARYZTA AG,ARYN,CH1425684714,Ifangstrasse 9,8952,Schlieren,8.456182,47.401188,"Ifangstrasse 9, 8952 Schlieren",,,,,,,,,,,,,,,,,,no
-9541,Ascom Holding AG,ASCN,CH0011339204,Zugerstrasse 32,6340,Baar,8.521724,47.189472,"Zugerstrasse 32, 6340 Baar",,,,,,,,,,,,,,,,,,no
-1116348,ASMALLWORLD AG,ASWN,CH0404880129,Seidengasse 20,8001,Zürich,8.537298,47.375473,"Seidengasse 20, 8001 Zürich",,,,,,,,,,,,,,,,,,no
-1001845,Autoneum Holding AG,AUTN,CH0127480363,Schlosstalstrasse 43,8406,Winterthur,8.702294,47.495964,"Schlosstalstrasse 43, 8406 Winterthur",,,,,,,,,,,,,,,,,,no
-723492,Avolta AG,AVOL,CH0023405456,Brunngässlein 12,4052,Basel,7.594771,47.552879,"Brunngässlein 12, 4052 Basel",,,,,,,,,,,,,,,,,,no
-,Bachem,BANB,CH1176493729,,,,,,,,,,,,,,,,,,,,,,,,no
-,Baloise Swiss Property,BALSP1,CH1567469239,,,,,,,,,,,,,,,,,,,,,,,,no
-328925,Banque Cantonale de Genève,BCGE,CH1485899350,Quai de l'Ile 17,1204,Genève,6.14429,46.205269,"Quai de l'Ile 17, 1204 Genève",,,,,,,,,,,,,,,,,,no
-,Banque Cantonale Jura,BCJ,CH0350665672,,,,,,,,,,,,,,,,,,,,,,,,no
-,Banque Cantonale Vaud,BCVN,CH0531751755,,,,,,,,,,,,,,,,,,,,,,,,no
-395200,Barry Callebaut AG,BARN,CH0009002962,Hardturmstrasse 181,8005,Zürich,8.510482,47.393448,"Hardturmstrasse 181, 8005 Zürich",,,,,,,,,,,,,,,,,,no
-,Baselland Kantonalbank,BLKB,CH0001473559,,,,,,,,,,,,,,,,,,,,,,,,no
-,Basilea,BSLN,CH0011432447,,,,,,,,,,,,,,,,,,,,,,,,no
-218288,Basler Kantonalbank,BSKP,CH0009236461,Aeschenvorstadt 41,4051,Basel,7.593362,47.552692,"Aeschenvorstadt 41, 4051 Basel",,,,,,,,,,,,,,,,,,no
-326726,BB Biotech AG,BION,CH0038389992,Schwertstrasse 6,8200,Schaffhausen,8.632635,47.697353,"Schwertstrasse 6, 8200 Schaffhausen",,,,,,,,,,,,,,,,,,no
-,Bekb / Bcbe,BEKN,CH0009691608,,,,,,,,,,,,,,,,,,,,,,,,no
-427674,BELIMO Holding AG,BEAN,CH1101098163,Brunnenbachstrasse 1,8340,Hinwil,8.820086,47.305943,"Brunnenbachstrasse 1, 8340 Hinwil",,,,,,,,,,,,,,,,,,no
-,Bell Food Group,BELL,CH0315966322,,,,,,,,,,,,,,,,,,,,,,,,no
-,Bellevue Group,BBN,CH0028422100,,,,,,,,,,,,,,,,,,,,,,,,no
-922224,BioVersys AG,BIOV,CH0210362643,Hochbergerstr. 60C,4057,Basel,7.597158,47.578415,"Hochbergerstr. 60C, 4057 Basel",,,,,,,,,,,,,,,,,,no
-1011599,BKW AG,BKW,CH0130293662,Viktoriaplatz 2,3013,Bern,7.450731,46.955261,"Viktoriaplatz 2, 3013 Bern",,,,,,,,,,,,,,,,,,no
-,Bossard,BOSN,CH0238627142,,,,,,,,,,,,,,,,,,,,,,,,no
-,Bucher,BUCN,CH0002432174,,,,,,,,,,,,,,,,,,,,,,,,no
-,Burckhardt,BCHN,CH0025536027,,,,,,,,,,,,,,,,,,,,,,,,no
-,Burkhalter,BRKN,CH0212255803,,,,,,,,,,,,,,,,,,,,,,,,no
-,Bvz Hol,BVZN,CH0008207356,,,,,,,,,,,,,,,,,,,,,,,,no
-29123,Bystronic Laser AG,BYS,CH0244017502,Industriestrasse 21,3362,Niederönz,7.693327,47.191826,"Industriestrasse 21, 3362 Niederönz",,,,,,,,,,,,,,,,,,no
-,C Capital Holdings Ag,CCAP,CH0006326851,,,,,,,,,,,,,,,,,,,,,,,,no
-29918,Calida AG,CALN,CH0126639464,Bahnstrasse,6208,Oberkirch LU,8.115052,47.155628,"Bahnstrasse, 6208 Oberkirch LU",,,,,,,,,,,,,,,,,,no
-394483,Castle Private Equity AG,CPEN,CH0048854746,Schützenstrasse 6,8808,Pfäffikon SZ,8.786922,47.200813,"Schützenstrasse 6, 8808 Pfäffikon SZ",,,,,,,,,,,,,,,,,,no
-965857,Cembra Money Bank AG,CMBN,CH0225173167,Bändliweg 20,8048,Zürich,8.483872,47.394749,"Bändliweg 20, 8048 Zürich",,,,,,,,,,,,,,,,,,no
-166147,Centiel AG,CNTL,CH0024666528,Via la Stampa 15,6965,Cadro,8.974555,46.042416,"Via la Stampa 15, 6965 Cadro",,,,,,,,,,,,,,,,,,no
-,Cham Swiss Prop,CHAM,CH0524026959,,,,,,,,,,,,,,,,,,,,,,,,no
-,Cicor Tech,CICN,CH0008702190,,,,,,,,,,,,,,,,,,,,,,,,no
-,Cie Fin Tr,CFT,CH0014345117,,,,,,,,,,,,,,,,,,,,,,,,no
-356887,Clariant AG,CLN,CH0012142631,Rothausstrasse 61,4132,Muttenz,7.663604,47.531681,"Rothausstrasse 61, 4132 Muttenz",,,,,,,,,,,,,,,,,,no
-822528,COLTENE Holding AG,CLTN,CH0025343259,Feldwiesenstrasse 20,9450,Altstätten SG,9.555193,47.378788,"Feldwiesenstrasse 20, 9450 Altstätten SG",,,,,,,,,,,,,,,,,,no
-37162,Comet Holding AG,COTN,CH0360826991,Herrengasse 10,3175,Flamatt,7.320684,46.889618,"Herrengasse 10, 3175 Flamatt",,,,,,,,,,,,,,,,,,no
-,Cphg,CPHN,CH0001624714,,,,,,,,,,,,,,,,,,,,,,,,no
-321776,Curatis AG,CURN,CH1330780979,Weierweg 7,4410,Liestal,7.73359,47.486397,"Weierweg 7, 4410 Liestal",,,,,,,,,,,,,,,,,,no
-1099360,Daetwyler SwissTec AG,DAE,CH0030486770,Flugplatz 8,3368,Bleienbach,7.743105,47.182556,"Flugplatz 8, 3368 Bleienbach",,,,,,,,,,,,,,,,,,no
-429392,DKSH Holding AG,DKSH,CH0126673539,Wiesenstrasse 8,8008,Zürich,8.551631,47.362007,"Wiesenstrasse 8, 8008 Zürich",,,,,,,,,,,,,,,,,,no
-316569,DocMorris AG,DOCM,CH0042615283,Walzmühlestrasse 49,8500,Frauenfeld,8.893293,47.547657,"Walzmühlestrasse 49, 8500 Frauenfeld",,,,,,,,,,,,,,,,,,no
-356500,dormakaba Holding AG,DOKA,CH1486524122,Hofwisenstrasse 24,8153,Rümlang,8.536817,47.452469,"Hofwisenstrasse 24, 8153 Rümlang",,,,,,,,,,,,,,,,,,no
-822749,Edisun Power Europe AG,ESUN,CH0024736404,Limmatquai 4,8001,Zürich,8.544892,47.367981,"Limmatquai 4, 8001 Zürich",,,,,,,,,,,,,,,,,,no
-434592,EEII AG,EEII,CH0007162958,Alpenstrasse 15,6300,Zug,8.514692,47.173031,"Alpenstrasse 15, 6300 Zug",,,,,,,,,,,,,,,,,,no
-802556,EFG International AG,EFGN,CH0022268228,Bleicherweg 8,8001,Zürich,8.537754,47.368942,"Bleicherweg 8, 8001 Zürich",,,,,,,,,,,,,,,,,,no
-387518,Elma Electronic AG,ELMN,CH0005319162,Hofstrasse 93,8620,Wetzikon ZH 1,8.79801,47.309334,"Hofstrasse 93, 8620 Wetzikon ZH 1",,,,,,,,,,,,,,,,,,no
-402421,Emmi AG,EMMN,CH0012829898,Landenbergstrasse 1,6005,Luzern,8.321581,47.042149,"Landenbergstrasse 1, 6005 Luzern",,,,,,,,,,,,,,,,,,no
-52213,EMS-CHEMIE AG,EMSN,CH0016440353,Via Innovativa 1,7013,Domat/Ems,9.43092,46.828285,"Via Innovativa 1, 7013 Domat/Ems",,,,,,,,,,,,,,,,,,no
-,Epic,EPIC,CH0516131684,,,,,,,,,,,,,,,,,,,,,,,,no
-434398,EvoNext Holdings SA,EVE,CH1262055788,Angensteinerstrasse 6,4153,Reinach BL,7.592893,47.492268,"Angensteinerstrasse 6, 4153 Reinach BL",,,,,,,,,,,,,,,,,,no
-56719,Feintool International Holding AG,FTON,CH0009320091,Industriering 8,3250,Lyss,7.306711,47.085609,"Industriering 8, 3250 Lyss",,,,,,,,,,,,,,,,,,no
-,Flughafen Zuerich,FHZN,CH0319416936,,,,,,,,,,,,,,,,,,,,,,,,no
-268660,Forbo Holding AG,FORN,CH0003541510,Lindenstrasse 8,6340,Baar,8.518039,47.183872,"Lindenstrasse 8, 6340 Baar",,,,,,,,,,,,,,,,,,no
-858532,Fundamenta Real Estate AG,FREN,CH0045825517,Poststrasse 4a,6300,Zug,8.516384,47.168282,"Poststrasse 4a, 6300 Zug",,,,,,,,,,,,,,,,,,no
-1189175,Galderma Holding SA,GALD,CH1335392721,Zählerweg 10,6300,Zug,8.513452,47.177246,"Zählerweg 10, 6300 Zug",,,,,,,,,,,,,,,,,,no
-1294394,Galenica AG,GALE,CH0360674466,Untermattweg 8,3027,Bern,7.400105,46.949223,"Untermattweg 8, 3027 Bern",,,,,,,,,,,,,,,,,,no
-,Gam,GAM,CH0102659627,,,,,,,,,,,,,,,,,,,,,,,,no
-438346,CARLO GAVAZZI AG,GAV,CH1278877563,Sumpfstrasse 3,6312,Steinhausen,8.490209,47.185966,"Sumpfstrasse 3, 6312 Steinhausen",,,,,,,,,,,,,,,,,,no
-456402,Geberit AG,GEBN,CH0030170408,Schachenstrasse 77,8645,Jona,8.843736,47.224285,"Schachenstrasse 77, 8645 Jona",,,,,,,,,,,,,,,,,,no
-,Georg Fischer,GF,CH1169151003,,,,,,,,,,,,,,,,,,,,,,,,no
-,Givaudan,GIVN,CH0010645932,,,,,,,,,,,,,,,,,,,,,,,,no
-235643,Glarner Kantonalbank,GLKBN,CH0189396655,Hauptstrasse 21,8750,Glarus,9.068328,47.039173,"Hauptstrasse 21, 8750 Glarus",,,,,,,,,,,,,,,,,,no
-,Gmsa,GMI,CH0012949464,,,,,,,,,,,,,,,,,,,,,,,,no
-,Graub Kantonalbank,GRKP,CH0001340204,,,,,,,,,,,,,,,,,,,,,,,,no
-,Gurit,GURN,CH1173567111,,,,,,,,,,,,,,,,,,,,,,,,no
-,Hbm,HBMN,CH0012627250,,,,,,,,,,,,,,,,,,,,,,,,no
-374614,Helvetia Baloise Holding AG,HBAN,CH0466642201,Aeschengraben 21,4051,Basel,7.592971,47.54958,"Aeschengraben 21, 4051 Basel",,,,,,,,,,,,,,,,,,no
-73933,HIAG Immobilien Holding AG,HIAG,CH0239518779,Aeschenplatz 7,4052,Basel,7.595575,47.551765,"Aeschenplatz 7, 4052 Basel",,,,,,,,,,,,,,,,,,no
-,Highlight E And E,HLEE,CH0003583256,,,,,,,,,,,,,,,,,,,,,,,,no
-82135,Holcim AG,HOLN,CH0012214059,Grafenauweg 10,6300,Zug,8.512133,47.174183,"Grafenauweg 10, 6300 Zug",,,,,,,,,,,,,,,,,,no
-357264,Huber+Suhner AG,HUBN,CH0030380734,Degersheimerstrasse 14,9100,Herisau,9.272346,47.38493,"Degersheimerstrasse 14, 9100 Herisau",,,,,,,,,,,,,,,,,,no
-1297085,Idorsia Ltd,IDIA,CH0363463438,Hegenheimermattweg 91,4123,Allschwil,7.545484,47.556561,"Hegenheimermattweg 91, 4123 Allschwil",,,,,,,,,,,,,,,,,,no
-807949,Implenia AG,IMPN,CH0023868554,Thurgauerstrasse 101a,8152,Glattpark (Opfikon),8.555364,47.421013,"Thurgauerstrasse 101a, 8152 Glattpark (Opfikon)",,,,,,,,,,,,,,,,,,no
-531623,INFICON HOLDING AG,IFCN,CH1431598916,Hintergasse 15B,7310,Bad Ragaz,9.499408,47.001945,"Hintergasse 15B, 7310 Bad Ragaz",,,,,,,,,,,,,,,,,,no
-403408,Infracore SA,INFRAC,CH0019867685,Rue Georges-Jordil 4,1700,Fribourg,7.154,46.799637,"Rue Georges-Jordil 4, 1700 Fribourg",,,,,,,,,,,,,,,,,,no
-220639,INTERROLL HOLDING AG,INRN,CH0006372897,Via Gorelle 3,6592,S. Antonino,8.969701,46.155598,"Via Gorelle 3, 6592 S. Antonino",,,,,,,,,,,,,,,,,,no
-91186,Intershop Holding AG,ISN,CH1338987303,Giessereistrasse 18,8005,Zürich,8.517569,47.390182,"Giessereistrasse 18, 8005 Zürich",,,,,,,,,,,,,,,,,,no
-,Investis,IREN,CH0325094297,,,,,,,,,,,,,,,,,,,,,,,,no
-357403,IVF HARTMANN Holding AG,VBSN,CH0187624256,Victor von Bruns-Strasse 28,8212,Neuhausen am Rheinfall,8.624772,47.678173,"Victor von Bruns-Strasse 28, 8212 Neuhausen am Rheinfall",,,,,,,,,,,,,,,,,,no
-,Julius Baer,BAER,CH0102484968,,,,,,,,,,,,,,,,,,,,,,,,no
-338329,JUNGFRAUBAHN HOLDING AG,JFN,CH0017875789,Harderstrasse 14,3800,Interlaken,7.855578,46.686344,"Harderstrasse 14, 3800 Interlaken",,,,,,,,,,,,,,,,,,no
-,Kardex,KARN,CH0100837282,,,,,,,,,,,,,,,,,,,,,,,,no
-267691,Klingelnberg AG,KLIN,CH0420462266,Binzmühlestrasse 171,8050,Zürich,8.534141,47.41288,"Binzmühlestrasse 171, 8050 Zürich",,,,,,,,,,,,,,,,,,no
-100752,Komax AG,KOMN,CH0010702154,Industriestrasse 6,6036,Dierikon,8.362464,47.095768,"Industriestrasse 6, 6036 Dierikon",,,,,,,,,,,,,,,,,,no
-,Kudelski,KUD,CH0012268360,,,,,,,,,,,,,,,,,,,,,,,,no
-102266,Kühne + Nagel International AG,KNIN,CH0025238863,Dorfstrasse 50,8834,Schindellegi,8.707649,47.178299,"Dorfstrasse 50, 8834 Schindellegi",,,,,,,,,,,,,,,,,,no
-351842,Kuros Biosciences AG,KURN,CH0325814116,Wagistrasse 25,8952,Schlieren,8.459614,47.399288,"Wagistrasse 25, 8952 Schlieren",,,,,,,,,,,,,,,,,,no
-1027068,Landis+Gyr Group AG,LAND,CH0371153492,Alte Steinhauserstrasse 14,6330,Cham,8.475839,47.188297,"Alte Steinhauserstrasse 14, 6330 Cham",,,,,,,,,,,,,,,,,,no
-1516125,Leclanché E-Mobility SA,LECN,CH0110303119,Avenue des Découvertes 14,1400,Yverdon-les-Bains,6.641872,46.767025,"Avenue des Découvertes 14, 1400 Yverdon-les-Bains",,,,,,,,,,,,,,,,,,no
-106419,LEM HOLDING SA,LEHN,CH0022427626,Route du Nant-d'Avril 152,1217,Meyrin,6.05935,46.227699,"Route du Nant-d'Avril 152, 1217 Meyrin",,,,,,,,,,,,,,,,,,no
-891618,Leonteq AG,LEON,CH0190891181,Europaallee 39,8004,Zürich,8.532084,47.378712,"Europaallee 39, 8004 Zürich",,,,,,,,,,,,,,,,,,no
-1097879,Lindt Dessous-Moden GmbH,LISN,CH0010570759,Hauptgasse 40,4500,Solothurn,7.53667,47.207474,"Hauptgasse 40, 4500 Solothurn",,,,,,,,,,,,,,,,,,no
-108995,Logitech S.A.,LOGN,CH0025751329,,,,,,,,,,,,,,,,,,,,,,,,no
-464709,Lonza Group AG,LONN,CH0013841017,Münchensteinerstr. 38,4052,Basel,7.598073,47.54594,"Münchensteinerstr. 38, 4052 Basel",,,,,,,,,,,,,,,,,,no
-219753,Luzerner Kantonalbank AG,LUKN,CH1252930610,Pilatusstrasse 12,6003,Luzern,8.306769,47.049416,"Pilatusstrasse 12, 6003 Luzern",,,,,,,,,,,,,,,,,,no
-,Matador,SQL,CH0042797206,,,,,,,,,,,,,,,,,,,,,,,,no
-,Mch Group,MCHN,CH0039542854,,,,,,,,,,,,,,,,,,,,,,,,no
-1228282,MEDACTA HOLDING SA,MOVE,CH0468525222,Strada Regina,6874,Castel San Pietro,9.005114,45.853455,"Strada Regina, 6874 Castel San Pietro",,,,,,,,,,,,,,,,,,no
-1200634,Medartis AG,MED,CH0386200239,Hochbergerstr. 60E,4057,Basel,7.597546,47.579208,"Hochbergerstr. 60E, 4057 Basel",,,,,,,,,,,,,,,,,,no
-1472368,medmix Group AG,MEDX,CH1129677105,Neuhofstrasse 20,6340,Baar,8.514062,47.188923,"Neuhofstrasse 20, 6340 Baar",,,,,,,,,,,,,,,,,,no
-116515,Meier Tobler Group AG,MTG,CH0208062627,Bahnstrasse 24,8603,Schwerzenbach,8.656503,47.386765,"Bahnstrasse 24, 8603 Schwerzenbach",,,,,,,,,,,,,,,,,,no
-117838,Metall Zug AG,METN,CH0039821084,Industriestrasse 66,6300,Zug,8.521497,47.181076,"Industriestrasse 66, 6300 Zug",,,,,,,,,,,,,,,,,,no
-119335,Mikron Holding AG,MIKN,CH0003390066,route du Vignoble 17,2017,Boudry,6.845529,46.955048,"route du Vignoble 17, 2017 Boudry",,,,,,,,,,,,,,,,,,no
-866898,MindMaze Therapeutics Holding SA,MMTX,CH1251125998,avenue de Sécheron 15,1202,Genève,6.147401,46.220688,"avenue de Sécheron 15, 1202 Genève",,,,,,,,,,,,,,,,,,no
-310387,mobilezone holding ag,MOZN,CH0276837694,Suurstoffi 22,6343,Rotkreuz,8.439422,47.144669,"Suurstoffi 22, 6343 Rotkreuz",,,,,,,,,,,,,,,,,,no
-411896,Mobimo AG,MOBN,CH0011108872,Seestrasse 59,8700,Küsnacht ZH,8.576447,47.324902,"Seestrasse 59, 8700 Küsnacht ZH",,,,,,,,,,,,,,,,,,no
-774645,Molecular Partners AG,MOLN,CH0256379097,Wagistrasse 14,8952,Schlieren,8.458228,47.398586,"Wagistrasse 14, 8952 Schlieren",,,,,,,,,,,,,,,,,,no
-381797,nebag ag,NBEN,CH0005059438,General Guisan-Quai 36,8002,Zürich,8.535439,47.363968,"General Guisan-Quai 36, 8002 Zürich",,,,,,,,,,,,,,,,,,no
-126288,Nestlé S.A.,NESN,CH0038863350,Avenue Nestlé 55,1800,Vevey,6.83506,46.466457,"Avenue Nestlé 55, 1800 Vevey",,,,,,,,,,,,,,,,,,no
-372098,Novartis AG,NOVN,CH0012005267,Lichtstr. 35,4056,Basel,7.579453,47.572838,"Lichtstr. 35, 4056 Basel",,,,,,,,,,,,,,,,,,no
-1116361,Novavest Real Estate AG,NREN,CH0212186248,Feldeggstrasse 26,8008,Zürich,8.549973,47.35973,"Feldeggstrasse 26, 8008 Zürich",,,,,,,,,,,,,,,,,,no
-,O Fuessli,OFN,CH0003420806,,,,,,,,,,,,,,,,,,,,,,,,no
-,Oc Oerlikon,OERL,CH0000816824,,,,,,,,,,,,,,,,,,,,,,,,no
-,Orior,ORON,CH0111677362,,,,,,,,,,,,,,,,,,,,,,,,no
-,Partners Group,PGHN,CH0024608827,,,,,,,,,,,,,,,,,,,,,,,,no
-,Peach Property,PEAN,CH0118530366,,,,,,,,,,,,,,,,,,,,,,,,no
-134710,Perrot Duval Holding SA,PEDU,CH0252620700,rue De-Candolle 16,1205,Genève,6.144743,46.198204,"rue De-Candolle 16, 1205 Genève",,,,,,,,,,,,,,,,,,no
-136114,Phoenix Mecano AG,PMN,CH1261338102,Hofwisenstrasse 6,8260,Stein am Rhein,8.856368,47.652241,"Hofwisenstrasse 6, 8260 Stein am Rhein",,,,,,,,,,,,,,,,,,no
-1227510,PLAZZA AG,PLAN,CH0284142913,Sieberstrasse 5,8055,Zürich,8.510715,47.365246,"Sieberstrasse 5, 8055 Zürich",,,,,,,,,,,,,,,,,,no
-1481808,PolyPeptide Group AG,PPGN,CH1110760852,Neuhofstrasse 24,6340,Baar,8.513548,47.188595,"Neuhofstrasse 24, 6340 Baar",,,,,,,,,,,,,,,,,,no
-,Private Equity,PEHN,CH0006089921,,,,,,,,,,,,,,,,,,,,,,,,no
-232557,PSP Properties AG,PSPN,CH0018294154,Seestrasse 353,8038,Zürich,8.533407,47.346237,"Seestrasse 353, 8038 Zürich",,,,,,,,,,,,,,,,,,no
-1096368,r&s baumanagement AG,RSGN,CH1107979838,Hölzliwisenstrasse 5,8604,Volketswil,8.679385,47.378246,"Hölzliwisenstrasse 5, 8604 Volketswil",,,,,,,,,,,,,,,,,,no
-1003283,Richemont Securities SA,CFR,CH0210483332,chemin de la Chênaie 50,1293,Bellevue,6.149674,46.257065,"chemin de la Chênaie 50, 1293 Bellevue",,,,,,,,,,,,,,,,,,no
-153459,Rieter AG,RIEN,CH0003671440,Klosterstrasse 20,8406,Winterthur,8.703476,47.488503,"Klosterstrasse 20, 8406 Winterthur",,,,,,,,,,,,,,,,,,no
-1560984,Roche Sapac AG,RO,CH0012032113,Grenzacherstrasse 124,4058,Basel,7.605799,47.558643,"Grenzacherstrasse 124, 4058 Basel",,,,,,,,,,,,,,,,,,no
-1698370,Romande Energie SA,REHN,CH1263676327,Route de Montena 93,1728,Rossens FR,7.093201,46.728588,"Route de Montena 93, 1728 Rossens FR",,,,,,,,,,,,,,,,,,no
-1229182,Sandoz Holding SA,SDZ,CH1243598427,Chemin du Saugy 18,1482,Cugy FR,6.892688,46.816929,"Chemin du Saugy 18, 1482 Cugy FR",,,,,,,,,,,,,,,,,,no
-,Santhera,SANN,CH1276028821,,,,,,,,,,,,,,,,,,,,,,,,no
-162514,Schindler Aufzüge AG,SCHN,CH0024638212,Zugerstrasse 13,6030,Ebikon,8.355948,47.091255,"Zugerstrasse 13, 6030 Ebikon",,,,,,,,,,,,,,,,,,no
-1281825,Schlatter Holding AG,STRN,CH0002277314,Schweizersbildstrasse 51,8200,Schaffhausen,8.641836,47.722744,"Schweizersbildstrasse 51, 8200 Schaffhausen",,,,,,,,,,,,,,,,,,no
-428962,Schweiter Technologies AG,SWTQ,CH1248667003,Hinterbergstrasse 20,6312,Steinhausen,8.479058,47.185574,"Hinterbergstrasse 20, 6312 Steinhausen",,,,,,,,,,,,,,,,,,no
-439436,Sensirion Holding AG,SENS,CH0406705126,Laubisrütistrasse 50,8712,Stäfa,8.747493,47.238083,"Laubisrütistrasse 50, 8712 Stäfa",,,,,,,,,,,,,,,,,,no
-,Sf Urban Properties,SFPN,CH0032816131,,,,,,,,,,,,,,,,,,,,,,,,no
-320475,SFS Group AG,SFSN,CH0239229302,Rosenbergsaustrasse 8,9435,Heerbrugg,9.636239,47.415943,"Rosenbergsaustrasse 8, 9435 Heerbrugg",,,,,,,,,,,,,,,,,,no
-301383,SGS SA,SGSN,CH1256740924,Zugerstrasse 57,6340,Baar,8.52074,47.185184,"Zugerstrasse 57, 6340 Baar",,,,,,,,,,,,,,,,,,no
-,Sig Group,SIGN,CH0435377954,,,,,,,,,,,,,,,,,,,,,,,,no
-177463,Sika AG,SIKA,CH0418792922,Zugerstrasse 50,6340,Baar,8.520823,47.186989,"Zugerstrasse 50, 6340 Baar",,,,,,,,,,,,,,,,,,no
-178372,Skan AG,SKAN,CH0013396012,Kreuzstrasse 5,4123,Allschwil,7.549313,47.560253,"Kreuzstrasse 5, 4123 Allschwil",,,,,,,,,,,,,,,,,,no
-1214368,SMG immobilien ag,SMG,CH1484953687,Werkstrasse 5,8222,Beringen,8.574673,47.694626,"Werkstrasse 5, 8222 Beringen",,,,,,,,,,,,,,,,,,no
-,Snb,SNBN,CH0001319265,,,,,,,,,,,,,,,,,,,,,,,,no
-1145319,SoftwareOne Holding AG,SWON,CH0496451508,Riedenmatt 4,6370,Stans,8.381429,46.96418,"Riedenmatt 4, 6370 Stans",,,,,,,,,,,,,,,,,,no
-136128,Sonova AG,SOON,CH0012549785,Laubisrütistrasse 28,8712,Stäfa,8.744032,47.23893,"Laubisrütistrasse 28, 8712 Stäfa",,,,,,,,,,,,,,,,,,no
-246313,St.Galler Kantonalbank AG,SGKN,CH0011484067,St. Leonhard-Strasse 25,9001,St. Gallen,9.372025,47.422852,"St. Leonhard-Strasse 25, 9001 St. Gallen",,,,,,,,,,,,,,,,,,no
-133615,Stadler Rail AG,SRAIL,CH0002178181,Ernst-Stadler-Strasse 1,9565,Bussnang,9.088122,47.556686,"Ernst-Stadler-Strasse 1, 9565 Bussnang",,,,,,,,,,,,,,,,,,no
-,Starragtornosgr,STGN,CH0002361068,,,,,,,,,,,,,,,,,,,,,,,,no
-,Straumann,STMN,CH1175448666,,,,,,,,,,,,,,,,,,,,,,,,no
-318227,Sulzer AG,SUN,CH0038388911,Neuwiesenstrasse 15,8401,Winterthur,8.718323,47.499737,"Neuwiesenstrasse 15, 8401 Winterthur",,,,,,,,,,,,,,,,,,no
-,Sunrise,SUNN,CH1386220409,,,,,,,,,,,,,,,,,,,,,,,,no
-189146,Swatch AG,UHR,CH0012255151,Nicolas G. Hayek Strasse 1,2502,Biel/Bienne,7.261483,47.143951,"Nicolas G. Hayek Strasse 1, 2502 Biel/Bienne",,,,,,,,,,,,,,,,,,no
-,Swiss Life Holding Ag,SLHN,CH0014852781,,,,,,,,,,,,,,,,,,,,,,,,no
-,Swiss Prime Site,SPSN,CH0008038389,,,,,,,,,,,,,,,,,,,,,,,,no
-1009345,Swiss Re AG,SREN,CH0126881561,Mythenquai 50/60,8002,Zürich,8.535143,47.359821,"Mythenquai 50/60, 8002 Zürich",,,,,,,,,,,,,,,,,,no
-434694,Swisscom AG,SCMN,CH0008742519,Alte Tiefenaustrasse 6,3050,Bern,7.457851,46.98098,"Alte Tiefenaustrasse 6, 3050 Bern",,,,,,,,,,,,,,,,,,no
-464807,Swissquote Group Holding SA,SQN,CH1548235246,Chemin de la Crétaux 33,1196,Gland,6.268011,46.417637,"Chemin de la Crétaux 33, 1196 Gland",,,,,,,,,,,,,,,,,,no
-320265,Tecan Group AG,TECN,CH0012100191,Seestrasse 103,8708,Männedorf,8.684876,47.256416,"Seestrasse 103, 8708 Männedorf",,,,,,,,,,,,,,,,,,no
-624294,TEMENOS AG,TEMN,CH0012453913,Esplanade de Pont-Rouge 9C,1212,Grand-Lancy,6.126098,46.186653,"Esplanade de Pont-Rouge 9C, 1212 Grand-Lancy",,,,,,,,,,,,,,,,,,no
-246913,Thurgauer Kantonalbank,TKBP,CH0231351104,Bankplatz 1,8570,Weinfelden,9.108874,47.565823,"Bankplatz 1, 8570 Weinfelden",,,,,,,,,,,,,,,,,,no
-,Titl Bn Berg,TIBN,CH0527044959,,,,,,,,,,,,,,,,,,,,,,,,no
-,Tx Group,TXGN,CH0011178255,,,,,,,,,,,,,,,,,,,,,,,,no
-1184151,UBS Group AG,UBSG,CH0244767585,Bahnhofstrasse 45,8001,Zürich,8.538318,47.371876,"Bahnhofstrasse 45, 8001 Zürich",,,,,,,,,,,,,,,,,,no
-1416430,V-ZUG Holding AG,VZUG,CH0542483745,Industriestrasse 66,6300,Zug,8.521497,47.181076,"Industriestrasse 66, 6300 Zug",,,,,,,,,,,,,,,,,,no
-,Valartis Group,VLRT,CH0367427686,,,,,,,,,,,,,,,,,,,,,,,,no
-1298517,Valiant Hypotheken AG,VATN,CH0014786500,Bundesplatz 4,3011,Bern,7.444524,46.947392,"Bundesplatz 4, 3011 Bern",,,,,,,,,,,,,,,,,,no
-1237032,Varia US Properties AG,VARN,CH0305285295,Gubelstrasse 19,6300,Zug,8.516375,47.174435,"Gubelstrasse 19, 6300 Zug",,,,,,,,,,,,,,,,,,no
-,Vat Group,VACN,CH0311864901,,,,,,,,,,,,,,,,,,,,,,,,no
-,Vaudoise Assu,VAHN,CH0021545667,,,,,,,,,,,,,,,,,,,,,,,,no
-201512,Vetropack Holding SA,VETN,CH0530235594,Rue de la Verrerie 2 A,1162,St-Prex,6.455276,46.482815,"Rue de la Verrerie 2 A, 1162 St-Prex",,,,,,,,,,,,,,,,,,no
-,Villars,VILN,CH0002609656,,,,,,,,,,,,,,,,,,,,,,,,no
-,Vontobel,VONN,CH0012335540,,,,,,,,,,,,,,,,,,,,,,,,no
-,Vz Holding,VZN,CH0528751586,,,,,,,,,,,,,,,,,,,,,,,,no
-,Walliser Kantonalbank,WKBN,CH0305951201,,,,,,,,,,,,,,,,,,,,,,,,no
-,Warteck,WARN,CH0002619481,,,,,,,,,,,,,,,,,,,,,,,,no
-,Wisekey,WIHN,CH1276062754,,,,,,,,,,,,,,,,,,,,,,,,no
-1143935,Xlife Sciences AG,XLS,CH0461929603,Talacker 35,8001,Zürich,8.535187,47.37159,"Talacker 35, 8001 Zürich",,,,,,,,,,,,,,,,,,no
-,Ypsomed Hldg,YPSN,CH0019396990,,,,,,,,,,,,,,,,,,,,,,,,no
-,Zueblin Imm,ZUBN,CH0312309682,,,,,,,,,,,,,,,,,,,,,,,,no
-1051499,Zug Estates Holding AG,ZUGN,CH0148052126,Baarerstrasse 18,6300,Zug,8.517452,47.17292,"Baarerstrasse 18, 6300 Zug",,,,,,,,,,,,,,,,,,no
-213776,Zuger Kantonalbank,ZUGER,CH0493891243,Bahnhofstrasse 1,6300,Zug,8.515556,47.168312,"Bahnhofstrasse 1, 6300 Zug",,,,,,,,,,,,,,,,,,no
-518982,Zurich Insurance Group AG,ZURN,CH0011075394,Mythenquai 2,8002,Zürich,8.535066,47.362118,"Mythenquai 2, 8002 Zürich",,,,,,,,,,,,,,,,,,no
+uid,name,six_symbol,isin,lei,street,zip,city,lon,lat,geocode_query,seat_basis,noga_group,consolidation_basis,revenue,revenue_currency,revenue_type,revenue_unit,profit,profit_currency,profit_unit,core_products,products_url,founding_year,founding_year_source,employees,fiscal_year,report_url,note,researched
+CHE-102.443.567,Siegfried Holding AG,SFZN,CH1429326825,506700J9QD6IF3937W06,Untere Brühlstrasse 4,4800,Zofingen,7.939111,47.288231,Untere Brühlstrasse 4 4800 Zofingen,hq,industrie,total_group,1327.8,CHF,net_sales,1000000,168.659,CHF,1000000,Pharmazeutische Wirkstoffe (Drug Substances) und Fertigprodukte (Drug Products) im Auftrag der Pharmaindustrie.,,1873,https://www.siegfried.ch/company/history/,3891,2025,https://www.siegfried.ch/app/uploads/2026/02/Siegfried_2025_AR_Financial_Report_EN.pdf,,yes
+CHE-100.707.011,Zehnder Group AG,ZEHN,CH0276534614,8945000LUWFSSFRPU761,Moortalstrasse 1,5722,Gränichen,8.106647,47.353355,Moortalstrasse 1 5722 Gränichen,hq,industrie,total_group,760.7,EUR,net_sales,1000000,46.3,EUR,1000000,"Lüftungs-, Heizkörper- und Heiz-/Kühldeckensysteme für ein gesundes Raumklima.",https://www.zehndergroup.com/en,1895,https://www.zehndergroup.com/en/company/about-us/our-history,3636,2025,https://report.zehndergroup.com/2025/app/uploads/Integrated-Annual-Report-2025.pdf,"Mitarbeitende als Vollzeitäquivalente im Jahresdurchschnitt gemäss Geschäftsbericht. Reingewinn wurde zunächst aus dem HTML-Spiegel des Berichts gelesen (report.zehndergroup.com/2025/consolidated-income-statement), weil das PDF unter report_url beim ersten Abruf die Grössenlimite überschritt; inzwischen direkt im PDF bestätigt (report_url, S. 88, Konsolidierte Erfolgsrechnung, Zeile ""shareholders of Zehnder Group AG"").",yes
+CHE-105.949.219,naturenergie holding AG,NEAG,CH0039651184,529900B5RUD2Z4UYFD31,Baslerstrasse 44,5080,Laufenburg,8.051362,47.555576,Baslerstrasse 44 5080 Laufenburg,hq,industrie,total_group,1557.7,EUR,net_sales,1000000,186.9,EUR,1000000,"Strom aus eigenen Wasserkraftwerken am Hochrhein, im Südschwarzwald und im Wallis, dazu Photovoltaik, Wärme und Netzbetrieb.",https://www.naturenergie-holding.ch/ueber-uns,1894,https://www.naturenergie-holding.ch/ueber-uns,1413,2025,https://www.naturenergie-holding.ch/fileadmin/energiedienst/Dokumente/Unternehmen/Geschaeftsbericht/GB_HJB_2025/naturenergie_Condensed_Report_2025_en_WEB.pdf,"Umsatz = Konzernkennzahl ""Net revenue from goods and services"" aus dem Condensed Report 2025; Mitarbeitende = ""Total number of employees"" (Headcount per 31.12.2025). Reingewinn EUR 186.9 Mio. stammt aus dem vollständigen Geschäftsbericht 2025 (naturenergie_Geschaeftsbericht_2025.pdf, im selben Ordner wie der zitierte Condensed Report), S. 133 (gedruckte Seitenzahl), Konsolidierte Erfolgsrechnung: ""Jahresgewinn"" 188.2, davon ""neh-Aktionärinnen und -Aktionäre"" 186.9, ""Minderheitsanteile"" 1.3 — der zuvor zitierte Condensed Report zeigt nur die ungeteilte Summe. Gründungsjahr 1894 bezieht sich auf die Vorgängergesellschaft Kraftübertragungswerke Rheinfelden AG; die heutige naturenergie holding AG entstand 2002 durch Fusion mit der Kraftwerk Laufenburg AG, aktueller Name seit 2024.",yes
+CHE-112.235.208,Dottikon ES Holding AG,DESN,CH0582581713,50670064H782SV8G2Z44,Hembrunnstrasse 17,5605,Dottikon,8.238302,47.37323,Hembrunnstrasse 17 5605 Dottikon,hq,industrie,total_group,385.2,CHF,net_sales,1000000,105.578,CHF,1000000,"Veredelungschemikalien, Zwischenprodukte und Exklusivwirkstoffe für die chemische, Biotech- und pharmazeutische Industrie.",https://dottikon.com/de/about-us/overview/?switchLang=de,1913,https://dottikon.com/dottikon-es-de/about-us/history/,793,2025,https://dottikon.com/en/documents/investors/financial-reports/en/annual_report_2024_25/,"Geschäftsjahr 2024/25 (April 2024 - März 2025). Mitarbeitende als Vollzeitäquivalente im Jahresdurchschnitt (793); Headcount am Stichtag rund 860 gemäss Bericht. Reingewinn CHF 105.578 Mio. ist der Konzern-Reingewinn; das unkonsolidierte, für die Dividende massgebliche Jahresergebnis der Holding AG allein betrug CHF 8.861 Mio. Gegründet 1913 als Schweizerische Sprengstoff-Fabrik AG, mehrfach umbenannt (1989 Ems-Dottikon AG, 2005 Dottikon Exclusive Synthesis AG).",yes
+CHE-248.340.671,Montana Aerospace AG,AERO,CH1110425654,506700YRG9330Q97U450,Alzbachstrasse 27,5734,Reinach,8.174534,47.257011,Alzbachstrasse 27 5734 Reinach AG,hq,industrie,total_group,1504.981,EUR,net_sales,1000000,-3.071,EUR,1000000,Strukturbauteile für die Luftfahrt (Aerostructures) sowie Präzisionskomponenten für die Stahl- und Automobilindustrie (Alpine Metal Tech).,,2019,https://www.montana-aerospace.com/wp-content/uploads/2026/04/2025_Y_montana_aerospace_vF_signed-1.pdf,6346,2025,https://www.montana-aerospace.com/wp-content/uploads/2026/04/2025_Y_montana_aerospace_vF_signed-1.pdf,"Umsatz und Reingewinn beziehen sich beide auf den Gesamtkonzern (consolidation_basis = total_group), inklusive der per 25.9.2025 verkauften Energiesparte: Umsatz = fortgeführte Geschäfte (Aerostructures, Alpine Metal Tech; EUR 979.331 Mio., Anhang 5.3 Segmentberichterstattung) plus Energiesparte bis Verkaufsdatum (EUR 525.650 Mio., Anhang 23.1.1) = EUR 1'504.981 Mio. — der Bericht selbst weist keine einzelne Zeile mit dieser Summe aus, beide Teilbeträge stehen aber im selben geprüften Anhang. Reingewinn EUR -3.071 Mio. (Verlust) ist bereits die Gesamtkonzernzahl auf die Aktionäre entfallend, S. 134; eine Zahl nur für die fortgeführten Geschäfte weist der Bericht nicht als eigene Zeile aus (Anhang 15.2 nennt dafür nur das Ergebnis je Aktie, EUR 0.18, keinen Reingewinn-Betrag — daraus zurückzurechnen wäre eine Schätzung, keine gemeldete Zahl, deshalb nicht verwendet). Frühere Fassung dieser Zeile kombinierte fälschlich die Umsatzzahl der fortgeführten Geschäfte mit dem Gesamtkonzern-Reingewinn; korrigiert im Sourcing-Review vom 14.8.2026. Montana Aerospace AG wurde 2019 als Holding gegründet; die operativen Geschäftsbereiche Aerostructures und Alpine Metal Tech sind teils älter, die E-Mobility-Sparte wurde bereits 2024 verkauft.",yes
+CHE-270.303.139,Accelleron Industries AG,ACLN,CH1169360919,254900KS0MD2PAARXD14,Bruggerstrasse 71a,5400,Baden,8.302003,47.479832,Bruggerstrasse 71a 5400 Baden,hq,industrie,total_group,1263.1,USD,net_sales,1000000,232.930,USD,1000000,Turbolader und Einspritzsysteme für Grossmotoren in Schifffahrt und Energieerzeugung.,,2021,https://www.zefix.ch,3200,2025,https://accelleron.com/content/dam/accelleronind/documents/investors/accelleron-annual-report-2025.pdf,"Mitarbeitende gemäss Unternehmensangabe ""über 3200"" (Jahresbericht S. 51); keine exakte Stichtagszahl veröffentlicht. Mitarbeitende gemäss Unternehmensangabe ""über 3200"" (Jahresbericht S. 51); keine exakte Stichtagszahl veröffentlicht. Gründungsjahr laut Zefix (CHE-270.303.139): Neueintragung als ""Turbo Systems Holding AG"" am 26.5.2021 (Statutendatum 18.5.2021, SHAB-Publikation 31.5.2021), umbenannt in Accelleron Industries AG am 10.2.2022, vor der Abspaltung von ABB im Oktober 2022 — die Rechtseinheit selbst ist damit älter als der Börsengang.",yes
+CHE-441.853.769,DSM-Firmenich AG,DSFIR,CH1216478797,506700G44V67MPM4BI12,Wurmisweg 576,4303,Kaiseraugst,7.740992,47.539654,Wurmisweg 576 4303 Kaiseraugst,hq,industrie,continuing_operations,9034,EUR,net_sales,1000000,340,EUR,1000000,"Nährstoffe, Aromen und Duftstoffe für Ernährung, Gesundheit und Körperpflege.",,2022,https://www.zefix.ch,28550,2025,https://www.dsm-firmenich.com/content/dam/dsm-firmenich/investors/documents/results-center/2026/press-release-dsm-firmenich-full-year-2025-report.pdf,"Umsatz = ""Net sales"" der fortgeführten Geschäfte (Continuing Operations), FY2025 EUR 9034 Mio. — die Tierernährungssparte Animal Nutrition & Health ist zur Veräusserung klassiert und hier nicht enthalten. Inkl. dieser Sparte (""Sales total Group"") betrug der Konzernumsatz EUR 12521 Mio. Reingewinn folgt demselben Massstab wie der Umsatz: EUR 340 Mio. ist der auf die Aktionäre entfallende Gewinn der fortgeführten Geschäfte (Continuing Operations). Inklusive der zur Veräusserung klassierten Tierernährungssparte verzeichnete der Konzern einen Verlust von EUR -1081 Mio. (auf die Aktionäre entfallend), vor allem wegen einer Wertminderung von rund EUR 1.9 Mrd. im Zusammenhang mit deren angekündigtem Verkauf. Die Rechtseinheit DSM-Firmenich AG (CHE-441.853.769) wurde laut Zefix am 16. Mai 2022 als ""Danube AG"" gegründet und am 18. April 2023 umbenannt — nicht zu verwechseln mit der Unternehmens-geschichte von DSM (gegr. 1902) oder Firmenich (gegr. 1895).",yes
+CHE-105.779.532,Hypothekarbank Lenzburg AG,HBLN,CH0001341608,529900K3915OW75BQR33,Bahnhofstrasse 2,5600,Lenzburg,8.178392,47.387981,Bahnhofstrasse 2 5600 Lenzburg,hq,finanz,total_group,137.058,CHF,operating_income,1000000,20.025,CHF,1000000,"Hypothekar- und Kommerzialkreditgeschäft sowie Spar- und Anlageprodukte für Privat- und Firmenkunden, dazu Banking-as-a-Service für digitale Drittanbieter.",https://www.hbl.ch/de/ueber-uns/,1868,https://www.hbl.ch/de/ueber-uns/,502,2025,https://www.hbl.ch/media/rpnbhmnk/2025_geschaefstbericht.pdf,"Banken weisen keinen Umsatz im klassischen Sinn aus; als Näherung dient der konsolidierte Geschäftsertrag (Konzern; erstmals 2025 inkl. Swiss Bankers Prepaid Services AG). Mitarbeitende: Konzern, teilzeitbereinigt ohne Lernende. Der Reingewinn ist — anders als der Geschäftsertrag — grundsätzlich branchenübergreifend vergleichbar (ein gewöhnlicher Gewinn nach Steuern), enthält aber mit der ""Veränderung von Reserven für allgemeine Bankrisiken"" (FY2025: CHF -2.35 Mio., direkt vor Steuern in der Erfolgsrechnung) ein bankspezifisches, ermessensabhängiges Glättungselement, das ein Industrieunternehmen so nicht kennt — vertretbar vergleichbar, nicht identisch definiert. Konzerngewinn FY2025 praktisch deckungsgleich mit dem Stammhausergebnis von CHF 20.007 Mio., dem ersten Jahr mit Konzernrechnung.",yes
+CHE-101.049.653,ABB Ltd,ABBN,CH0012221716,5493000LKVGOO9PELI61,Affolternstrasse 44,8050,Zurich,8.541531,47.411301,"Affolternstrasse 44, 8050 Zurich",hq,,,,,,,,,,,,,,,,,,no
+CHE-113.514.094,Addex Therapeutics Ltd,ADXN,CH0029850754,89450068Y9KVP2MQGH86,"c/o Addex Pharma SA, Chemin des Aulx 12",1228,Plan-Les-Ouates,6.104361,46.168903,"c/o Addex Pharma SA, Chemin des Aulx 12, 1228 Plan-Les-Ouates",hq,,,,,,,,,,,,,,,,,,no
+CHE107031232,Adecco Group AG,ADEN,CH0012138605,NI14Y5UMU60O7JE9P611,Bellerivestrasse 30,8008,Zürich,8.549711,47.35836,"Bellerivestrasse 30, 8008 Zürich",hq,,,,,,,,,,,,,,,,,,no
+415204,Adval Tech Holding AG,ADVN,CH0008967926,,Freiburgstrasse 556,3172,Niederwangen b. Bern,7.375957,46.924713,"Freiburgstrasse 556, 3172 Niederwangen b. Bern",zefix,,,,,,,,,,,,,,,,,,no
+CHE-100.842.382,AEVIS VICTORIA SA,AEVS,CH0478634105,8945007IU37NXIYRG176,Rue Georges-Jordil 4,1700,Fribourg,7.154,46.799637,"Rue Georges-Jordil 4, 1700 Fribourg",hq,,,,,,,,,,,,,,,,,,no
+CHE-234.781.164,ALCON AG,ALC,CH0432492467,549300LDT5AP8S0NBM78,RUE LOUIS-D'AFFRY 6,1701,FRIBOURG,7.150745,46.804157,"RUE LOUIS-D'AFFRY 6, 1701 FRIBOURG",hq,,,,,,,,,,,,,,,,,,no
+CHE101079312,Allreal Holding AG,ALLN,CH0008837566,5067006XH174LA44H658,Grabenstrasse 25,6340,Baar,8.518147,47.186733,"Grabenstrasse 25, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE103607759,Alpine Select AG,ALPN,CH0019199550,506700VJZ26IVEV9XH10,Gotthardstrasse 31,6300,Zug,8.511987,47.172539,"Gotthardstrasse 31, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE100000259,ALSO Holding AG,ALSN,CH0024590272,529900ACS8A6PTQI6141,Meierhofstrasse 5,6032,Emmen,8.304039,47.082161,"Meierhofstrasse 5, 6032 Emmen",hq,,,,,,,,,,,,,,,,,,no
+CHE-238.689.758,Amrize AG,AMRZ,CH1430134226,529900SLCCO6K43P8146,Grafenauweg 8,6300,Zug,8.512655,47.174156,"Grafenauweg 8, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+454834,APG SGA SA,APGN,CH0019107025,,Avenue Rosemont 8,1208,Genève,6.171688,46.202602,"Avenue Rosemont 8, 1208 Genève",zefix,,,,,,,,,,,,,,,,,,no
+CHE-106.181.952,Arbonia AG,ARBN,CH0110240600,52990053OCTMTW77M139,Amriswilerstrasse 50,9320,Arbon,9.407188,47.521637,"Amriswilerstrasse 50, 9320 Arbon",hq,,,,,,,,,,,,,,,,,,no
+CHE-114.160.610,ARYZTA AG,ARYN,CH1425684714,549300W2PUDQQVRD8W85,TALACKER 41,8001,ZÜRICH,8.535038,47.371902,"TALACKER 41, 8001 ZÜRICH",hq,,,,,,,,,,,,,,,,,,no
+CHE102333654,Ascom Holding AG,ASCN,CH0011339204,506700ZQR2RU51M31817,Zugerstrasse 32,6340,Baar,8.521724,47.189472,"Zugerstrasse 32, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE356811383,ASMALLWORLD AG,ASWN,CH0404880129,506700FU4FBA20IS2771,Seidengasse 20,8001,Zürich,8.537298,47.375473,"Seidengasse 20, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-116.315.303,AUTONEUM HOLDING AG,AUTN,CH0127480363,549300FL07XZC5MNXS47,SCHLOSSTALSTRASSE 43,8406,WINTERTHUR,8.702294,47.495964,"SCHLOSSTALSTRASSE 43, 8406 WINTERTHUR",hq,,,,,,,,,,,,,,,,,,no
+CHE-110.286.241,Avolta AG,AVOL,CH0023405456,549300X53WDBVW7TIF57,Brunngässlein 12,4052,Basel,7.594771,47.552879,"Brunngässlein 12, 4052 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE107906534,BACHEM HOLDING AG,BANB,CH1176493729,506700S81111XI7TG884,Hauptstrasse 144,4416,Bubendorf,7.732505,47.443275,"Hauptstrasse 144, 4416 Bubendorf",hq,,,,,,,,,,,,,,,,,,no
+,Baloise Swiss Property,BALSP1,CH1567469239,,,,,,,,,,,,,,,,,,,,,,,,,,no
+CHE-105.981.074,BANQUE CANTONALE DE GENÈVE,BCGE,CH1485899350,549300ZEFUWWFTP7BA50,QUAI DE L'ILE 17,1211,GENEVA,6.14429,46.205269,"QUAI DE L'ILE 17, 1211 GENEVA",hq,,,,,,,,,,,,,,,,,,no
+CHE-105.905.618,BANQUE CANTONALE DU JURA SA,BCJ,CH0350665672,549300BLETICMY13WN65,RUE DE LA CHAUMONT 10,2900,PORRENTRUY,7.073331,47.417057,"RUE DE LA CHAUMONT 10, 2900 PORRENTRUY",hq,,,,,,,,,,,,,,,,,,no
+CHE105934376,Banque Cantonale Vaudoise,BCVN,CH0531751755,K1MOBB3OPSBBQO554R76,Place Saint-François 14,1003,Lausanne,6.634273,46.519127,"Place Saint-François 14, 1003 Lausanne",hq,,,,,,,,,,,,,,,,,,no
+CHE-106.118.646,BARRY CALLEBAUT AG,BARN,CH0009002962,213800Y5RWKLDPUTT265,HARDTURMSTRASSE 181,8005,ZURICH,8.510482,47.393448,"HARDTURMSTRASSE 181, 8005 ZURICH",hq,,,,,,,,,,,,,,,,,,no
+CHE-108.954.470,Basellandschaftliche Kantonalbank,BLKB,CH0001473559,529900TPRILCY8WVKI23,Rheinstrasse 7,4410,Liestal,7.732167,47.486004,"Rheinstrasse 7, 4410 Liestal",hq,,,,,,,,,,,,,,,,,,no
+CHE101175068,"Basilea Pharmaceutica AG, Allschwil",BSLN,CH0011432447,391200TTZP8EIPSJ5J20,Hegenheimermattweg 167b,4123,Allschwil,7.552541,47.561138,"Hegenheimermattweg 167b, 4123 Allschwil",hq,,,,,,,,,,,,,,,,,,no
+CHE108954493,Basler Kantonalbank,BSKP,CH0009236461,HV5W8PGLJ127N2SFSM23,Aeschenvorstadt 41,4051,Basel,7.593362,47.552692,"Aeschenvorstadt 41, 4051 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.169.627,BB Biotech AG,BION,CH0038389992,391200MBZQNPFHIVKO34,Schwertstrasse 6,8200,Schaffhausen,8.632635,47.697353,"Schwertstrasse 6, 8200 Schaffhausen",hq,,,,,,,,,,,,,,,,,,no
+CHE108955216,Berner Kantonalbank AG,BEKN,CH0009691608,4T0J6O251JXNEB0VEZ08,Bundesplatz 8,3011,Bern,7.443549,46.947147,"Bundesplatz 8, 3011 Bern",hq,,,,,,,,,,,,,,,,,,no
+CHE100925186,BELIMO Holding AG,BEAN,CH1101098163,506700339DLX749VEM23,"Brunnenbachstrasse 1, Group Treasury",8340,Hinwil,8.820086,47.305943,"Brunnenbachstrasse 1, Group Treasury, 8340 Hinwil",hq,,,,,,,,,,,,,,,,,,no
+CHE105805112,Bell Food Group AG,BELL,CH0315966322,50670090YSFJ2732TD58,Elsässerstr. 174,4056,Basel,7.574867,47.574245,"Elsässerstr. 174, 4056 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE-103.354.475,BELLEVUE GROUP AG,BBN,CH0028422100,549300K4OOI7NV0BQ816,Theaterstrasse 12,8001,Zürich,8.546552,47.366432,"Theaterstrasse 12, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-114.512.761,BioVersys AG,BIOV,CH0210362643,894500UFIGC75NPZEZ68,Hochbergerstrasse 60C,4057,Basel,7.597158,47.578415,"Hochbergerstrasse 60C, 4057 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE283101148,BKW AG,BKW,CH0130293662,549300IE30SKTUO98Q38,Viktoriaplatz 2,3013,Bern,7.450731,46.955261,"Viktoriaplatz 2, 3013 Bern",hq,,,,,,,,,,,,,,,,,,no
+CHE102904137,Bossard Holding AG,BOSN,CH0238627142,5067001959OEPG6X8016,Steinhauserstrasse 70,6300,Zug,8.494481,47.186623,"Steinhauserstrasse 70, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE-100.619.832,Bucher Industries AG,BUCN,CH0002432174,52990014AQ91A29HPB27,Murzlenstrasse 80,8166,Niederweningen,8.366672,47.510715,"Murzlenstrasse 80, 8166 Niederweningen",hq,,,,,,,,,,,,,,,,,,no
+CHE109421288,Burckhardt Compression Holding AG,BCHN,CH0025536027,5067004N56DLX7GY3E95,Franz-Burckhardt-Strasse 5,8404,Winterthur,8.760781,47.502769,"Franz-Burckhardt-Strasse 5, 8404 Winterthur",hq,,,,,,,,,,,,,,,,,,no
+CHE101267612,Burkhalter Holding AG,BRKN,CH0212255803,3912002Q7RGEIHPQ0J90,Flurstrasse 55,8048,Zürich,8.494871,47.384094,"Flurstrasse 55, 8048 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE101105659,BVZ Holding AG,BVZN,CH0008207356,506700R7ZF010M400A82,Bahnhofplatz 7,3900,Brig,7.986217,46.319256,"Bahnhofplatz 7, 3900 Brig",hq,,,,,,,,,,,,,,,,,,no
+CHE107433300,Bystronic AG,BYS,CH0244017502,529900OG85OX10GRW920,Giesshübelstrasse 45,8045,Zürich,8.520202,47.357567,"Giesshübelstrasse 45, 8045 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE101017162,C Capital Holdings AG,CCAP,CH0006326851,549300UP4QMIDIT51391,Limmatquai 4,8001,Zurich,8.544892,47.367981,"Limmatquai 4, 8001 Zurich",hq,,,,,,,,,,,,,,,,,,no
+CHE100688224,Calida Holding AG,CALN,CH0126639464,5067000IPI8X0DOOM496,"Bahnstrasse, 40",6208,Oberkirch LU,8.107877,47.163605,"Bahnstrasse, 40, 6208 Oberkirch LU",hq,,,,,,,,,,,,,,,,,,no
+CHE-103.559.824,CASTLE PRIVATE EQUITY AG,CPEN,CH0048854746,549300VE2QDR72P5GI16,SCHUETZENSTRASSE 6,8808,FREIENBACH,8.786922,47.200813,"SCHUETZENSTRASSE 6, 8808 FREIENBACH",hq,,,,,,,,,,,,,,,,,,no
+CHE115295655,Cembra Money Bank AG,CMBN,CH0225173167,549300ZDHOETLAIVTE82,Bändliweg 20,8048,Zürich,8.483872,47.394749,"Bändliweg 20, 8048 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.468.656,HOCHDORF Holding AG,CNTL,CH0024666528,39120041DHBTN0OP5L90,Siedereistrasse 9,6280,Hochdorf,8.287791,47.167114,"Siedereistrasse 9, 6280 Hochdorf",hq,,,,,,,,,,,,,,,,,,no
+CHE208983733,Cham Swiss Properties AG,CHAM,CH0524026959,50670072J8XF8F091F46,Fabrikstrasse 5,6330,Cham,8.458089,47.184811,"Fabrikstrasse 5, 6330 Cham",hq,,,,,,,,,,,,,,,,,,no
+CHE103362109,Cicor Technologies Ltd.,CICN,CH0008702190,529900PIIUEUGLYD8P70,route de l'Europe 8,2017,Boudry,6.828896,46.945522,"route de l'Europe 8, 2017 Boudry",hq,,,,,,,,,,,,,,,,,,no
+CHE107035129,Compagnie Financière Tradition SA,CFT,CH0014345117,213800WCJHNV1PPEAR30,Rue Philippe-François-de-Langallerie 11,1003,Lausanne,6.638771,46.520016,"Rue Philippe-François-de-Langallerie 11, 1003 Lausanne",hq,,,,,,,,,,,,,,,,,,no
+CHE103388563,Clariant AG,CLN,CH0012142631,529900VSEKBY7TMPP349,Rothausstrasse 61,4132,Muttenz,7.663604,47.531681,"Rothausstrasse 61, 4132 Muttenz",hq,,,,,,,,,,,,,,,,,,no
+CHE-112.678.238,COLTENE Holding AG,CLTN,CH0025343259,894500KE52GRSIVJAP50,Feldwiesenstrasse 20,9450,Altstätten,9.555193,47.378788,"Feldwiesenstrasse 20, 9450 Altstätten",hq,,,,,,,,,,,,,,,,,,no
+CHE101348386,Comet Holding AG,COTN,CH0360826991,506700PGOL747J76WC96,Herrengasse 10,3175,Flamatt,7.320684,46.889618,"Herrengasse 10, 3175 Flamatt",hq,,,,,,,,,,,,,,,,,,no
+CHE107912500,CPH Group AG,CPHN,CH0001624714,506700O001G9RW029H49,Perlenring 1,6035,Perlen,8.366359,47.111599,"Perlenring 1, 6035 Perlen",hq,,,,,,,,,,,,,,,,,,no
+CHE103574108,Curatis Holding AG,CURN,CH1330780979,506700VDL70GGMHR5758,Weierweg 7,4410,Liestal,7.73359,47.486397,"Weierweg 7, 4410 Liestal",hq,,,,,,,,,,,,,,,,,,no
+CHE103275686,Dätwyler Holding AG,DAE,CH0030486770,52990096G2IJ89SWI669,Gotthardstrasse 31,6460,Altdorf UR,8.647283,46.877594,"Gotthardstrasse 31, 6460 Altdorf UR",hq,,,,,,,,,,,,,,,,,,no
+CHE-107.828.992,DKSH HOLDING AG,DKSH,CH0126673539,549300HUUUNHO6FJUS42,WIESENSTRASSE 8,8008,ZÜRICH,8.551631,47.362007,"WIESENSTRASSE 8, 8008 ZÜRICH",hq,,,,,,,,,,,,,,,,,,no
+CHE107471275,DocMorris AG,DOCM,CH0042615283,50670038OH136R5Z4663,Walzmühlestrasse 49,8500,Frauenfeld,8.893293,47.547657,"Walzmühlestrasse 49, 8500 Frauenfeld",hq,,,,,,,,,,,,,,,,,,no
+CHE-107.791.082,dormakaba Holding AG,DOKA,CH1486524122,529900QMU5ZH99KMQK13,Hofwisenstrasse 24,8153,Rümlang,8.536817,47.452469,"Hofwisenstrasse 24, 8153 Rümlang",hq,,,,,,,,,,,,,,,,,,no
+CHE112680241,Edisun Power Europe AG,ESUN,CH0024736404,5067008R63E038ZS4D18,Limmatquai 4,8001,Zürich,8.544892,47.367981,"Limmatquai 4, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE103605080,EEII AG,EEII,CH0007162958,506700909QIDX4K4DY42,Alpenstrasse 15,6300,Zug,8.514692,47.173031,"Alpenstrasse 15, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE112512247,EFG International AG,EFGN,CH0022268228,506700PR1R98BSF81139,Bleicherweg 8,8001,Zürich,8.537754,47.368942,"Bleicherweg 8, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE105973206,Elma Electronic AG,ELMN,CH0005319162,5067005GN286J87M7194,Hofstrasse 93,8620,Wetzikon ZH 1,8.79801,47.309334,"Hofstrasse 93, 8620 Wetzikon ZH 1",hq,,,,,,,,,,,,,,,,,,no
+CHE103588843,Emmi AG,EMMN,CH0012829898,529900Q53RBYJIVCMA08,Landenbergstrasse 1,6005,Luzern,8.321581,47.042149,"Landenbergstrasse 1, 6005 Luzern",hq,,,,,,,,,,,,,,,,,,no
+CHE101285490,EMS-CHEMIE HOLDING AG,EMSN,CH0016440353,529900G1XFTGSE0DIX60,"na, EMS-CHEMIE AG",7013,Domat/Ems,8.865636,46.40181,"na, EMS-CHEMIE AG, 7013 Domat/Ems",hq,,,,,,,,,,,,,,,,,,no
+,Epic,EPIC,CH0516131684,,,,,,,,,,,,,,,,,,,,,,,,,,no
+CHE108641858,EvoNext Holdings SA,EVE,CH1262055788,506700IF701J35J34N57,Duggingerstrasse 23,4153,Reinach BL,7.596011,47.485649,"Duggingerstrasse 23, 4153 Reinach BL",hq,,,,,,,,,,,,,,,,,,no
+CHE100251293,Feintool International Holding AG,FTON,CH0009320091,529900AUNJ8C37482692,Industriering 8,3250,Lyss,7.306711,47.085609,"Industriering 8, 3250 Lyss",hq,,,,,,,,,,,,,,,,,,no
+CHE101921104,Flughafen Zürich AG,FHZN,CH0319416936,529900PFO97GCN5SYB55,Kloten,8058,Zürich,7.954939,47.098621,"Kloten, 8058 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE102337497,Forbo Holding AG,FORN,CH0003541510,506700HR073894C16243,Lindenstrasse 8,6340,Baar,8.518039,47.183872,"Lindenstrasse 8, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE113353632,Fundamenta Real Estate AG,FREN,CH0045825517,506700IM97Q6VIX86059,Poststrasse 4a,6300,Zug,8.516384,47.168282,"Poststrasse 4a, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE-404.675.624,Galderma Group AG,GALD,CH1335392721,89450001OK6O8ELQ4584,Zählerweg 10,6300,Zug,8.513452,47.177246,"Zählerweg 10, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE397323951,Galenica AG,GALE,CH0360674466,506700W4772BD8016Z20,Untermattweg 8,3027,Bern,7.400105,46.949223,"Untermattweg 8, 3027 Bern",hq,,,,,,,,,,,,,,,,,,no
+CHE-107.908.786,GAM HOLDING AG,GAM,CH0102659627,549300GGVID7ZGDMX291,Hardstrasse 201,8005,Zürich,8.517371,47.386227,"Hardstrasse 201, 8005 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE103950708,Carlo Gavazzi Holding AG,GAV,CH1278877563,506700OM0D38V36KOE26,Sumpfstrasse 3,6312,Steinhausen,8.490209,47.185966,"Sumpfstrasse 3, 6312 Steinhausen",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.065.474,Geberit AG,GEBN,CH0030170408,52990093Z5OHD6T7BS47,Schachenstrasse 77,8645,Jona,8.843736,47.224285,"Schachenstrasse 77, 8645 Jona",hq,,,,,,,,,,,,,,,,,,no
+CHE-108.778.486,Georg Fischer AG,GF,CH1169151003,529900CMRQYW4U1W2456,Amsler-Laffon-Strasse 9,8200,Schaffhausen,8.643714,47.708454,"Amsler-Laffon-Strasse 9, 8200 Schaffhausen",hq,,,,,,,,,,,,,,,,,,no
+CHE-100.284.341,GIVAUDAN SA,GIVN,CH0010645932,213800SVRMQA1TD91D41,CHEMIN DE LA PARFUMERIE 5,1214,VERNIER,6.078549,46.20657,"CHEMIN DE LA PARFUMERIE 5, 1214 VERNIER",hq,,,,,,,,,,,,,,,,,,no
+CHE-108.954.719,Glarner Kantonalbank,GLKBN,CH0189396655,549300AY225QXN79YF87,Hauptstrasse 21,8750,Glarus,9.068328,47.039173,"Hauptstrasse 21, 8750 Glarus",hq,,,,,,,,,,,,,,,,,,no
+,Gmsa,GMI,CH0012949464,,,,,,,,,,,,,,,,,,,,,,,,,,no
+CHE108954599,Graubündner Kantonalbank,GRKP,CH0001340204,549300SGCEMX4ZIZ0E76,Grabenstrasse,7000,Chur,9.533754,46.851273,"Grabenstrasse, 7000 Chur",hq,,,,,,,,,,,,,,,,,,no
+CHE-100.058.804,Gurit Holding AG,GURN,CH1173567111,529900VOD3V5IBEW8G44,Thurgauerstrasse 54,8050,Zürich,8.552593,47.415657,"Thurgauerstrasse 54, 8050 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.849.760,HBM Healthcare Investments AG,HBMN,CH0012627250,549300IFDFSDRT4D3076,Bundesplatz 1,6300,Zug,8.515593,47.170723,"Bundesplatz 1, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE103479504,Helvetia Baloise Holding AG,HBAN,CH0466642201,529900SUJBXTORH0LT80,Dufourstrasse 40,9000,St. Gallen,9.376379,47.43227,"Dufourstrasse 40, 9000 St. Gallen",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.997.860,HIAG IMMOBILIEN HOLDING AG,HIAG,CH0239518779,549300TU2XXQ3TU4KJ11,AESCHENPLATZ 7,4052,BASEL,7.595575,47.551765,"AESCHENPLATZ 7, 4052 BASEL",hq,,,,,,,,,,,,,,,,,,no
+CHE101287661,Highlight Event and Entertainment AG,HLEE,CH0003583256,8945004QLKQVCN5CHD75,Netzibodenstrasse 23b,4133,Pratteln,7.704688,47.532776,"Netzibodenstrasse 23b, 4133 Pratteln",hq,,,,,,,,,,,,,,,,,,no
+CHE100136893,Holcim AG,HOLN,CH0012214059,529900EHPFPYHV6IQO98,Grafenauweg 10,6300,Zug,8.512133,47.174183,"Grafenauweg 10, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE105815317,Huber+Suhner AG,HUBN,CH0030380734,5067007PRZ9OSX7A6787,Degersheimerstrasse 14,9100,Herisau,9.272346,47.38493,"Degersheimerstrasse 14, 9100 Herisau",hq,,,,,,,,,,,,,,,,,,no
+CHE340129854,Idorsia Ltd,IDIA,CH0363463438,506700XOVZUB107S5720,Hegenheimermattweg 91,4123,Allschwil,7.545484,47.556561,"Hegenheimermattweg 91, 4123 Allschwil",hq,,,,,,,,,,,,,,,,,,no
+CHE-112.626.997,Implenia AG,IMPN,CH0023868554,52990006TKCUQQJ79B11,Thurgauerstrasse 101a,8152,Glattpark (Opfikon),8.555364,47.421013,"Thurgauerstrasse 101a, 8152 Glattpark (Opfikon)",hq,,,,,,,,,,,,,,,,,,no
+CHE101283338,INFICON HOLDING AG,IFCN,CH1431598916,5067008UT6890I0YM937,Hintergasse 15B,7310,Bad Ragaz,9.499408,47.001945,"Hintergasse 15B, 7310 Bad Ragaz",hq,,,,,,,,,,,,,,,,,,no
+CHE-104.440.255,Infracore SA,INFRAC,CH0019867685,894500JIEW5MGPCCXJ36,Rue Georges-Jordil 4,1700,Fribourg,7.154,46.799637,"Rue Georges-Jordil 4, 1700 Fribourg",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.123.424,INTERROLL HOLDING AG,INRN,CH0006372897,529900MU4QAEI94TB543,Via Gorelle 3,6592,S. Antonino,8.969701,46.155598,"Via Gorelle 3, 6592 S. Antonino",hq,,,,,,,,,,,,,,,,,,no
+CHE103878436,Intershop Holding AG,ISN,CH1338987303,506700CGX4K77JX3R725,Giessereistrasse 18,8005,Zürich,8.517569,47.390182,"Giessereistrasse 18, 8005 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE137077813,Investis Holding SA,IREN,CH0325094297,506700GG126O0G9S5W59,Neumühlequai 6,8001,Zürich,8.543403,47.37738,"Neumühlequai 6, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+357403,IVF HARTMANN Holding AG,VBSN,CH0187624256,,Victor von Bruns-Strasse 28,8212,Neuhausen am Rheinfall,8.624772,47.678173,"Victor von Bruns-Strasse 28, 8212 Neuhausen am Rheinfall",zefix,,,,,,,,,,,,,,,,,,no
+CHE114934412,Julius Bär Gruppe AG,BAER,CH0102484968,5299007MF0604ZGJER92,Bahnhofstrasse 36,8001,Zürich,8.538896,47.371189,"Bahnhofstrasse 36, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE102239771,JUNGFRAUBAHN HOLDING AG,JFN,CH0017875789,5067009MCPE99B3E4489,Harderstrasse 14,3800,Interlaken,7.855578,46.686344,"Harderstrasse 14, 3800 Interlaken",hq,,,,,,,,,,,,,,,,,,no
+CHE102425888,Kardex Holding AG,KARN,CH0100837282,529900JKKMQ07D6QZ480,Thurgauerstrasse 40,8050,Zürich,8.551839,47.414726,"Thurgauerstrasse 40, 8050 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-106.075.267,Klingelnberg AG,KLIN,CH0420462266,5299006LD35WX0UCKR92,Binzmühlestrasse 171,8050,Zürich,8.534141,47.41288,"Binzmühlestrasse 171, 8050 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-103.485.290,Komax Holding AG,KOMN,CH0010702154,529900UID9PCQXLG9479,Industriestrasse 6,6036,Dierikon,8.362464,47.095768,"Industriestrasse 6, 6036 Dierikon",hq,,,,,,,,,,,,,,,,,,no
+CHE100125518,Kudelski S.A.,KUD,CH0012268360,549300FKTMFFJ0FCTP58,Route de Genève 22-24,1033,Cheseaux-Lausanne,6.595288,46.580765,"Route de Genève 22-24, 1033 Cheseaux-Lausanne",hq,,,,,,,,,,,,,,,,,,no
+CHE101862298,Kühne + Nagel International AG,KNIN,CH0025238863,529900Q0YED3805QXQ66,Dorfstrasse 50,8834,Schindellegi,8.707649,47.178299,"Dorfstrasse 50, 8834 Schindellegi",hq,,,,,,,,,,,,,,,,,,no
+CHE-104.785.642,Kuros Biosciences AG,KURN,CH0325814116,5299006U5POB2AVTT709,Wagisstraße 25,8952,Schlieren,8.4418,47.392761,"Wagisstraße 25, 8952 Schlieren",hq,,,,,,,,,,,,,,,,,,no
+CHE175843017,Landis+Gyr Group AG,LAND,CH0371153492,529900PZYVAKCYSLFL19,Alte Steinhauserstrasse 18,6330,Cham,8.475693,47.188614,"Alte Steinhauserstrasse 18, 6330 Cham",hq,,,,,,,,,,,,,,,,,,no
+1516125,Leclanché E-Mobility SA,LECN,CH0110303119,,Avenue des Découvertes 14,1400,Yverdon-les-Bains,6.641872,46.767025,"Avenue des Découvertes 14, 1400 Yverdon-les-Bains",zefix,,,,,,,,,,,,,,,,,,no
+CHE103334260,LEM HOLDING SA,LEHN,CH0022427626,5067008AF2B2C5O7TJ43,Route du Nant-d'Avril 152,1217,Meyrin,6.05935,46.227699,"Route du Nant-d'Avril 152, 1217 Meyrin",hq,,,,,,,,,,,,,,,,,,no
+CHE-113.956.233,Leonteq AG,LEON,CH0190891181,254900ZIGEA3M1TF0O96,Europaallee 39,8004,Zurich,8.532084,47.378712,"Europaallee 39, 8004 Zurich",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.232.125,Chocoladefabriken Lindt & Sprüngli AG,LISN,CH0010570759,529900JYJNNOKKAGK736,Seestrasse 204,8802,Kilchberg ZH,8.552197,47.318233,"Seestrasse 204, 8802 Kilchberg ZH",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.502.641,LOGITECH INTERNATIONAL S.A.,LOGN,CH0025751329,549300SN6PRK6IJJC215,"EPFL- QUARTIER DE L'INNOVATION, DANIEL BOREL INNOVATION CENTER",1015,LAUSANNE,6.613971,46.527611,1015 LAUSANNE,hq-ortsgenau,,,,,,,,,,,,,,,,,,no
+CHE-106.841.866,LONZA GROUP AG,LONN,CH0013841017,549300EFW4H2TCZ71055,MÜNCHENSTEINERSTR. 38,4052,BASEL,7.598073,47.54594,"MÜNCHENSTEINERSTR. 38, 4052 BASEL",hq,,,,,,,,,,,,,,,,,,no
+CHE-105.845.092,LUZERNER KANTONALBANK AG,LUKN,CH1252930610,549300C2XKS86VQDGV41,PILATUSSTRASSE 12,6003,LUZERN,8.306769,47.049416,"PILATUSSTRASSE 12, 6003 LUZERN",hq,,,,,,,,,,,,,,,,,,no
+CHE-112.532.155,Matador Secondary Private Equity AG,SQL,CH0042797206,9676007ASJYFQMM4GT15,Grundacher 5,6060,Sarnen,8.248657,46.893337,"Grundacher 5, 6060 Sarnen",hq,,,,,,,,,,,,,,,,,,no
+CHE105825066,MCH Group AG,MCHN,CH0039542854,529900I8ECADX1VM9G14,Messeplatz 1,4058,Basel,7.599919,47.563995,"Messeplatz 1, 4058 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE303576887,Medacta Group SA,MOVE,CH0468525222,506700P2PFU3A3DROC14,Strada Regina 34,6874,Castel San Pietro,9.003052,45.853748,"Strada Regina 34, 6874 Castel San Pietro",hq,,,,,,,,,,,,,,,,,,no
+CHE108689049,Medartis Holding AG,MED,CH0386200239,506700VUSP6HG3F28846,Hochbergerstr. 60E,4057,Basel,7.597546,47.579208,"Hochbergerstr. 60E, 4057 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE179960685,medmix Group AG,MEDX,CH1129677105,529900PL4KLKJVMULW74,Neuhofstrasse 20,6340,Baar,8.514062,47.188923,"Neuhofstrasse 20, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE102374647,Meier Tobler Group AG,MTG,CH0208062627,529900M6NVNCK1HZCC03,Bahnstrasse 24,8603,Schwerzenbach,8.656503,47.386765,"Bahnstrasse 24, 8603 Schwerzenbach",hq,,,,,,,,,,,,,,,,,,no
+CHE101865948,Metall Zug AG,METN,CH0039821084,529900X7CXUI05DN7K64,Industriestrasse 66,6300,Zug,8.521497,47.181076,"Industriestrasse 66, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE103931740,Mikron Holding AG,MIKN,CH0003390066,529900I5GINTJ7V7UW36,Route du Vignoble 17,2017,Boudry,6.845529,46.955048,"Route du Vignoble 17, 2017 Boudry",hq,,,,,,,,,,,,,,,,,,no
+CHE113516874,MindMaze Therapeutics Holding SA,MMTX,CH1251125998,506700IT19260EVD7916,avenue de Sécheron 15,1202,Genève,6.147401,46.220688,"avenue de Sécheron 15, 1202 Genève",hq,,,,,,,,,,,,,,,,,,no
+CHE101782529,mobilezone holding ag,MOZN,CH0276837694,506700P3R89PJL1LM545,Suurstoffi 22,6343,Rotkreuz,8.439422,47.144669,"Suurstoffi 22, 6343 Rotkreuz",hq,,,,,,,,,,,,,,,,,,no
+CHE101185173,Mobimo Holding AG,MOBN,CH0011108872,50670018HN8O1GD3O385,Rütligasse 1,6000,Luzern 7,8.302507,47.050232,"Rütligasse 1, 6000 Luzern 7",hq,,,,,,,,,,,,,,,,,,no
+CHE-112.115.136,Molecular Partners AG,MOLN,CH0256379097,875500AXMLDAZ4D21744,Wagistrasse 14,8952,Schlieren,8.458228,47.398586,"Wagistrasse 14, 8952 Schlieren",hq,,,,,,,,,,,,,,,,,,no
+CHE103510858,nebag ag,NBEN,CH0005059438,967600KUYAC4AZRWLB18,"General Guisan-Quai 36, Baryon AG",8002,Zürich,8.535439,47.363968,"General Guisan-Quai 36, Baryon AG, 8002 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-105.909.036,NESTLÉ S.A.,NESN,CH0038863350,KY37LUS27QQX7BB93L28,AVENUE NESTLE 55,1800,VEVEY,6.83506,46.466457,"AVENUE NESTLE 55, 1800 VEVEY",hq,,,,,,,,,,,,,,,,,,no
+CHE-103.867.266,NOVARTIS AG,NOVN,CH0012005267,5493007HIVTX6SY6XD66,LICHTSTR. 35,4056,Basel,7.579453,47.572838,"LICHTSTR. 35, 4056 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE287294566,Novavest Real Estate AG,NREN,CH0212186248,50670091T3297YN83C32,Feldeggstrasse 26,8008,Zürich,8.549973,47.35973,"Feldeggstrasse 26, 8008 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE105838494,Orell Füssli AG,OFN,CH0003420806,5067005U9Z97T4PWVC13,Dietzingerstrasse 3,8003,Zürich,8.522031,47.369534,"Dietzingerstrasse 3, 8003 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE103488578,"OC Oerlikon Corporation AG, Pfäffikon",OERL,CH0000816824,529900I8VLAZR2FJ0M10,Churerstrasse 120,8808,Pfäffikon SZ,8.787112,47.201492,"Churerstrasse 120, 8808 Pfäffikon SZ",hq,,,,,,,,,,,,,,,,,,no
+CHE113034902,Orior AG,ORON,CH0111677362,50670020I84ZA17K9522,Zollstrasse 62,8005,Zürich,8.532695,47.38105,"Zollstrasse 62, 8005 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-108.562.489,Partners Group Holding AG,PGHN,CH0024608827,549300I3IVVWZWDHI788,Unternehmer-Park 3,6340,Baar,8.515667,47.185486,"Unternehmer-Park 3, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.066.456,Peach Property Group AG,PEAN,CH0118530366,506700A49L5C69NZ5J96,Neptunstrasse 96,8032,Zürich,8.558611,47.364323,"Neptunstrasse 96, 8032 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.440.356,Perrot Duval Holding SA,PEDU,CH0252620700,529900ZII23DTVHP9E90,"c/o John F. Eardley, Rue De-Candolle 16",1205,Genève,6.144743,46.198204,"c/o John F. Eardley, Rue De-Candolle 16, 1205 Genève",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.645.326,Phoenix Mecano AG,PMN,CH1261338102,529900SWF06EKVI1JY11,Hofwisenstrasse 6,8260,Stein am Rhein,8.856368,47.652241,"Hofwisenstrasse 6, 8260 Stein am Rhein",hq,,,,,,,,,,,,,,,,,,no
+CHE450491665,PLAZZA AG,PLAN,CH0284142913,50670040KK2FWN321957,Sieberstr.,8055,Zürich,8.510715,47.365246,"Sieberstr., 8055 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE159266771,PolyPeptide Group AG,PPGN,CH1110760852,5067007JCKTPOX4G9758,Neuhofstrasse 24,6340,Baar,8.513548,47.188595,"Neuhofstrasse 24, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE104406927,Private Equity Holding AG,PEHN,CH0006089921,391200H19VBZIPBJ0N98,Bahnhofstrasse 13,8001,Zürich,8.539423,47.368885,"Bahnhofstrasse 13, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE101126621,PSP Swiss Property AG,PSPN,CH0018294154,50670042Y437P8X44F56,Kolinplatz 2,6300,Zug,8.515422,47.166466,"Kolinplatz 2, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE499708558,R&S Group Holding AG,RSGN,CH1107979838,549300BKHOM0Y2GJZJ41,Zentrum Staldenbach 3,8808,Pfäffikon SZ,8.777397,47.202343,"Zentrum Staldenbach 3, 8808 Pfäffikon SZ",hq,,,,,,,,,,,,,,,,,,no
+CHE-106.325.524,COMPAGNIE FINANCIERE RICHEMONT SA,CFR,CH0210483332,549300YIPGJ6UX2QPS51,CHEMIN DE LA CHÊNAIE 50,1293,BELLEVUE,6.149674,46.257065,"CHEMIN DE LA CHÊNAIE 50, 1293 BELLEVUE",hq,,,,,,,,,,,,,,,,,,no
+CHE100672789,Rieter Holding AG,RIEN,CH0003671440,529900SNR4JQCSACBN29,Klosterstrasse 32,8406,Winterthur,8.706809,47.485378,"Klosterstrasse 32, 8406 Winterthur",hq,,,,,,,,,,,,,,,,,,no
+CHE101602521,Roche Holding AG,RO,CH0012032113,549300U41AUUVOAAOB37,Grenzacherstr. 124,4058,Basel,7.605799,47.558643,"Grenzacherstr. 124, 4058 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE-100.913.036,Romande Energie Holding SA,REHN,CH1263676327,9676008XQ71KDFYUC315,Rue de Lausanne 53,1110,Morges,6.507834,46.517124,"Rue de Lausanne 53, 1110 Morges",hq,,,,,,,,,,,,,,,,,,no
+CHE433164136,Sandoz Group AG,SDZ,CH1243598427,5493000JWK6XWFEUD320,Suurstoffi 14,6343,Rotkreuz,8.436499,47.143967,"Suurstoffi 14, 6343 Rotkreuz",hq,,,,,,,,,,,,,,,,,,no
+CHE-105.388.338,SANTHERA PHARMACEUTICALS HOLDING AG,SANN,CH1276028821,54930035HAOFTTQH0U85,HOHENRAINSTRASSE 24,4133,PRATTELN,7.694591,47.525532,"HOHENRAINSTRASSE 24, 4133 PRATTELN",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.862.654,Schindler Holding AG,SCHN,CH0024638212,5299007DRLI319H7Q933,Seestrasse 55,6052,Hergiswil NW,8.313358,46.988277,"Seestrasse 55, 6052 Hergiswil NW",hq,,,,,,,,,,,,,,,,,,no
+1281825,Schlatter Holding AG,STRN,CH0002277314,,Schweizersbildstrasse 51,8200,Schaffhausen,8.641836,47.722744,"Schweizersbildstrasse 51, 8200 Schaffhausen",zefix,,,,,,,,,,,,,,,,,,no
+CHE100042878,Schweiter Technologies AG,SWTQ,CH1248667003,894500D6OYCP8P8P7317,Hinterbergstrasse 20,6312,Steinhausen,8.479058,47.185574,"Hinterbergstrasse 20, 6312 Steinhausen",hq,,,,,,,,,,,,,,,,,,no
+CHE104836469,Sensirion Holding AG,SENS,CH0406705126,894500ANJ9YNE8YCTT04,Laubisrütistrasse 50,8712,Stäfa,8.747493,47.238083,"Laubisrütistrasse 50, 8712 Stäfa",hq,,,,,,,,,,,,,,,,,,no
+CHE-109.373.270,SF URBAN PROPERTIES AG,SFPN,CH0032816131,2138009LVDKNZ3WF7R21,SEEFELDSTRASSE 275,8008,ZURICH,8.563629,47.348656,"SEEFELDSTRASSE 275, 8008 ZURICH",hq,,,,,,,,,,,,,,,,,,no
+CHE103670002,SFS Group AG,SFSN,CH0239229302,391200RQ38WAM4BJBO16,Rosenbergsaustrasse 8,9435,Heerbrugg,9.636239,47.415943,"Rosenbergsaustrasse 8, 9435 Heerbrugg",hq,,,,,,,,,,,,,,,,,,no
+CHE-105.923.438,SGS SA,SGSN,CH1256740924,2138007JNS19JHNA2336,ZUGERSTRASSE 57,6340,BAAR,8.52074,47.185184,"ZUGERSTRASSE 57, 6340 BAAR",hq,,,,,,,,,,,,,,,,,,no
+CHE-173.759.908,SIG GROUP AG,SIGN,CH0435377954,5493004Z6P7TSVB1L042,Laufengasse 18,8212,Neuhausen am Rheinfall,8.616912,47.679253,"Laufengasse 18, 8212 Neuhausen am Rheinfall",hq,,,,,,,,,,,,,,,,,,no
+CHE106919184,Sika AG,SIKA,CH0418792922,549300R3N69ECGYPU434,Zugerstrasse 50,6340,Baar,8.520823,47.186989,"Zugerstrasse 50, 6340 Baar",hq,,,,,,,,,,,,,,,,,,no
+CHE109404396,SKAN Group AG,SKAN,CH0013396012,506700N25H370ZSEFR11,Kreuzstrasse 5,4123,Allschwil,7.549313,47.560253,"Kreuzstrasse 5, 4123 Allschwil",hq,,,,,,,,,,,,,,,,,,no
+CHE288041890,SMG Swiss Marketplace Group Holding AG,SMG,CH1484953687,506700N2391DVRZ4MZ72,Thurgauerstrasse 36,8050,Zürich,8.551661,47.413849,"Thurgauerstrasse 36, 8050 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE105944570,Schweizerische Nationalbank,SNBN,CH0001319265,LKAJX4ZOK2R6D9THVO59,Börsenstrasse 15,8001,Zürich,8.540598,47.367855,"Börsenstrasse 15, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-384.378.612,SoftwareOne Holding AG,SWON,CH0496451508,529900GBI88JKWXLGI05,Riedenmatt 4,6370,Stans,8.381429,46.96418,"Riedenmatt 4, 6370 Stans",hq,,,,,,,,,,,,,,,,,,no
+CHE100818478,Sonova Holding AG,SOON,CH0012549785,5299004A0QNX7FBNHS61,Laubisrütistrasse 28,8712,Stäfa,8.744032,47.23893,"Laubisrütistrasse 28, 8712 Stäfa",hq,,,,,,,,,,,,,,,,,,no
+CHE105845146,St.Galler Kantonalbank AG,SGKN,CH0011484067,549300GFRG6OK00RG957,St. Leonhard-Strasse 25,9001,St. Gallen,9.372025,47.422852,"St. Leonhard-Strasse 25, 9001 St. Gallen",hq,,,,,,,,,,,,,,,,,,no
+CHE101581089,Stadler Rail AG,SRAIL,CH0002178181,506700781XDET0A89669,Ernst-Stadler-Strasse 1,9565,Bussnang,9.088122,47.556686,"Ernst-Stadler-Strasse 1, 9565 Bussnang",hq,,,,,,,,,,,,,,,,,,no
+CHE100022315,StarragTornos Group AG,STGN,CH0002361068,506700HT4CY9HM064662,Seebleichestrasse 61,9404,Rorschacherberg,9.520497,47.478294,"Seebleichestrasse 61, 9404 Rorschacherberg",hq,,,,,,,,,,,,,,,,,,no
+CHE101673828,Straumann Holding AG,STMN,CH1175448666,50670046ML5FVIM60Z37,Peter Merian-Weg 12,4002,Basel,7.596589,47.545433,"Peter Merian-Weg 12, 4002 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE-102.210.767,Sulzer AG,SUN,CH0038388911,529900NZ6MAST5IJF669,Neuwiesenstrasse 15,8401,Winterthur,8.718323,47.499737,"Neuwiesenstrasse 15, 8401 Winterthur",hq,,,,,,,,,,,,,,,,,,no
+CHE-150.756.750,SUNRISE COMMUNICATIONS AG,SUNN,CH1386220409,213800RS9HRGTWOGCO08,THURGAUERSTRASSE 101B,8152,GLATTPARK (OPFIKON),8.556574,47.422123,"THURGAUERSTRASSE 101B, 8152 GLATTPARK (OPFIKON)",hq,,,,,,,,,,,,,,,,,,no
+CHE101374515,The Swatch Group AG,UHR,CH0012255151,529900NTES2LEON1JZ55,"faubourg de l'Hôpital 3, Caisse de pensions Swatch Group",2000,Neuchâtel,6.932957,46.989925,2000 Neuchâtel,hq-ortsgenau,,,,,,,,,,,,,,,,,,no
+CHE-109.910.989,Swiss Life Holding AG,SLHN,CH0014852781,5493000KUC3Z24U77V93,General-Guisan-Quai 40,8002,Zurich,8.534783,47.362991,"General-Guisan-Quai 40, 8002 Zurich",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.080.841,Swiss Prime Site AG,SPSN,CH0008038389,506700XI9H64OPR34158,Poststrasse 4a,6300,Zug,8.516384,47.168282,"Poststrasse 4a, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE-191.546.434,SWISS RE AG,SREN,CH0126881561,529900PS9YW3YY29F326,MYTHENQUAI 50/60,8002,ZURICH,8.535143,47.359821,"MYTHENQUAI 50/60, 8002 ZURICH",hq,,,,,,,,,,,,,,,,,,no
+CHE102753938,Swisscom AG,SCMN,CH0008742519,5493005SL9HHOXS3B739,Alte Tiefenaustrasse 6,3050,Bern,7.457851,46.98098,"Alte Tiefenaustrasse 6, 3050 Bern",hq,,,,,,,,,,,,,,,,,,no
+CHE-101.092.873,SWISSQUOTE GROUP HOLDING SA,SQN,CH1548235246,549300O3WME82RDPEN66,CHEMIN DE LA CRÉTAUX 33,1196,GLAND,6.268011,46.417637,"CHEMIN DE LA CRÉTAUX 33, 1196 GLAND",hq,,,,,,,,,,,,,,,,,,no
+CHE-107.957.514,Tecan Group AG,TECN,CH0012100191,529900CSN9R3BLETSL26,Seestrasse 103,8708,Männedorf,8.684876,47.256416,"Seestrasse 103, 8708 Männedorf",hq,,,,,,,,,,,,,,,,,,no
+CHE109066419,TEMENOS AG,TEMN,CH0012453913,5067007NW6550481FH64,Esplanade de Pont-Rouge 9C,1212,Grand-Lancy,6.126098,46.186653,"Esplanade de Pont-Rouge 9C, 1212 Grand-Lancy",hq,,,,,,,,,,,,,,,,,,no
+CHE-108.954.458,Thurgauer Kantonalbank,TKBP,CH0231351104,529900F00S0DTFX1D404,Bankplatz 1,8570,Weinfelden,9.108874,47.565823,"Bankplatz 1, 8570 Weinfelden",hq,,,,,,,,,,,,,,,,,,no
+,Titl Bn Berg,TIBN,CH0527044959,,,,,,,,,,,,,,,,,,,,,,,,,,no
+CHE105836696,TX Group AG,TXGN,CH0011178255,506700302V28Y6O14985,Werdstrasse 21,8004,Zürich,8.530968,47.372646,"Werdstrasse 21, 8004 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE-395.345.924,UBS Group AG,UBSG,CH0244767585,549300SZJ9VS8SGXAN81,Bahnhofstrasse 45,8001,Zurich,8.538318,47.371876,"Bahnhofstrasse 45, 8001 Zurich",hq,,,,,,,,,,,,,,,,,,no
+CHE352183990,V-ZUG Holding AG,VZUG,CH0542483745,529900QJR10EHM4DCL65,Industriestrasse 66,6300,Zug,8.521497,47.181076,"Industriestrasse 66, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE101833144,Valartis Group AG,VLRT,CH0367427686,50670085K974R32G1406,rue de Romont 29/31,1700,Fribourg,7.154326,46.8046,"rue de Romont 29/31, 1700 Fribourg",hq,,,,,,,,,,,,,,,,,,no
+CHE-106.834.240,Valiant Holding AG,VATN,CH0014786500,529900R30EKFHO09CN42,c/o Valiant Bank Pilatusstrasse 39,6003,Luzern,8.304648,47.047882,"c/o Valiant Bank Pilatusstrasse 39, 6003 Luzern",hq,,,,,,,,,,,,,,,,,,no
+CHE-320.748.468,Varia US Properties AG,VARN,CH0305285295,529900S3JDM7SWNEWW59,Gubelstrasse 19,6300,Zug,8.516375,47.174435,"Gubelstrasse 19, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE202223983,VAT Group AG,VACN,CH0311864901,529900MVFK7NVALR7Y83,Rütistrasse 4,9469,Haag (Rheintal),9.492374,47.206242,"Rütistrasse 4, 9469 Haag (Rheintal)",hq,,,,,,,,,,,,,,,,,,no
+CHE101675359,VAUDOISE ASSURANCES HOLDING SA,VAHN,CH0021545667,506700F7C0WFE08FR858,Avenue de Cour 41,1007,Lausanne,6.619573,46.514206,"Avenue de Cour 41, 1007 Lausanne",hq,,,,,,,,,,,,,,,,,,no
+CHE100369552,Vetropack Holding AG,VETN,CH0530235594,894500HGD08C8B6GS128,Schützenmattstreasse 48,8180,Bülach,8.53207,47.528629,"Schützenmattstreasse 48, 8180 Bülach",hq,,,,,,,,,,,,,,,,,,no
+,Villars,VILN,CH0002609656,,,,,,,,,,,,,,,,,,,,,,,,,,no
+CHE-107.908.496,Vontobel Holding AG,VONN,CH0012335540,529900G69W5VR3DDPW23,Gotthardstrasse 43,8002,Zürich,8.534537,47.365086,"Gotthardstrasse 43, 8002 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE102060456,VZ Holding AG,VZN,CH0528751586,529900JMJUZCFUVQ0Q82,Innere Güterstrasse 2,6300,Zug,8.517004,47.176754,"Innere Güterstrasse 2, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE-105.845.241,BANQUE CANTONALE DU VALAIS,WKBN,CH0305951201,549300YI34DX51LRGS71,RUE DES CÈDRES 8,1950,SION,7.360261,46.230141,"RUE DES CÈDRES 8, 1950 SION",hq,,,,,,,,,,,,,,,,,,no
+CHE106403101,Warteck Invest AG,WARN,CH0002619481,50670096DRU8U0S8H007,Münchensteinerstrasse 117,4053,Basel,7.608504,47.537449,"Münchensteinerstrasse 117, 4053 Basel",hq,,,,,,,,,,,,,,,,,,no
+CHE-143.782.707,WISeKey International Holding AG,WIHN,CH1276062754,529900Y5PNKBOZG3YE28,General-Guisan-Strasse 6,6300,Zug,8.507047,47.176102,"General-Guisan-Strasse 6, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE-330.279.788,Xlife Sciences AG,XLS,CH0461929603,984500AH590BE88BB517,Talacker 35,8001,Zürich,8.535187,47.37159,"Talacker 35, 8001 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE110368235,Ypsomed Holding AG,YPSN,CH0019396990,391200QLIOTTBNPNSI14,Brunnmattstrasse 6,3400,Burgdorf,7.627292,47.057617,"Brunnmattstrasse 6, 3400 Burgdorf",hq,,,,,,,,,,,,,,,,,,no
+CHE102646768,Züblin Immobilien Holding AG,ZUBN,CH0312309682,5067003F58PWF33I8580,Hardturmstrasse 76,8005,Zürich,8.517769,47.392281,"Hardturmstrasse 76, 8005 Zürich",hq,,,,,,,,,,,,,,,,,,no
+CHE302337802,Zug Estates Holding AG,ZUGN,CH0148052126,506700683S928H292L02,Baarerstrasse 18,6300,Zug,8.517452,47.17292,"Baarerstrasse 18, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE105744410,Zuger Kantonalbank,ZUGER,CH0493891243,529900PVNQ0FQUKJQ049,Bahnhofstrasse 1,6300,Zug,8.515556,47.168312,"Bahnhofstrasse 1, 6300 Zug",hq,,,,,,,,,,,,,,,,,,no
+CHE101236480,Zurich Insurance Group AG,ZURN,CH0011075394,529900QVNRBND50TXP03,"Mythenquai 2, c/o Zürich Versicherungs-Gesellschaft AG",8002,Zürich,8.529004,47.359573,"Mythenquai 2, c/o Zürich Versicherungs-Gesellschaft AG, 8002 Zürich",hq,,,,,,,,,,,,,,,,,,no

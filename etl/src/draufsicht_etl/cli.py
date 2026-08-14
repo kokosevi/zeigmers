@@ -399,9 +399,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             rows, on_failure=lambda row, exc: geocode_failures.append((row, exc))
         )
         for row, exc in geocode_failures:
+            # Adresse NICHT löschen: sie kommt aus GLEIF und ist echt, nur
+            # der Geokodierungsdienst kam damit nicht zurecht. Ein späterer
+            # Lauf (besserer Rückfall, behobener Dienst) kann sie erneut
+            # versuchen — die frühere Löschung nahm ihm die Grundlage.
+            # Die Zeile bleibt bis dahin ohne Marker.
             print(f"[companies] Geokodierung fehlgeschlagen für {row['name']!r} "
-                  f"({row.get('geocode_query')!r}): {exc} — Zeile bleibt ohne Sitz/Marker.")
-            row["street"] = row["zip"] = row["city"] = row["geocode_query"] = ""
+                  f"({row.get('geocode_query')!r}): {exc} — Zeile behält die "
+                  f"Adresse, bleibt aber ohne Marker.")
         if filled or geocode_failures:
             companies.write_csv(path, rows)
             print(f"[companies] {filled} Zeilen neu geokodiert und persistiert"

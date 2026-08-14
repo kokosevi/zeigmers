@@ -328,9 +328,21 @@ def test_validate_allows_unresearched_row_without_any_seat():
     )])
 
 
-def test_validate_requires_lon_lat_only_when_a_seat_is_known():
+def test_validate_lets_an_unresearched_row_keep_a_seat_without_coordinates():
+    # Bis zum 14. August 2026 war das ein Fehler — mit der Folge, dass der
+    # Geokodierungs-Schritt eine gescheiterte Adresse löschen MUSSTE, um die
+    # Datei gültig zu halten. Damit vernichtete ein Dienstfehler echte
+    # GLEIF-Daten (The Swatch Group, Logitech: Adresszeilen mit Zusatz), und
+    # ein späterer Lauf hatte nichts mehr zum Wiederholen. Die Zeile bleibt
+    # ohne Marker, aber die Adresse bleibt stehen.
+    companies.validate([_unresearched_row(lon="", lat="")])
+
+
+def test_validate_still_requires_coordinates_for_a_researched_seat():
+    # Für die von Hand geprüften Zeilen gilt die Pflicht unverändert: dort
+    # ist der Sitz Teil des Profils, nicht ein maschineller Nebenbefund.
     with pytest.raises(ValueError, match="lon"):
-        companies.validate([_unresearched_row(lon="", lat="")])
+        companies.validate([_row(lon="", lat="")])
 
 
 def test_validate_rejects_missing_isin():
@@ -790,7 +802,14 @@ def test_fetch_six_titles_raises_a_clear_error_when_unreachable():
         companies.fetch_six_titles(fetcher=fail)
 
 
-def test_sync_national_csv_appends_only_new_titles_and_leaves_existing_rows_untouched(tmp_path):
+def test_sync_national_csv_appends_only_new_titles_and_leaves_existing_rows_untouched(
+    tmp_path, monkeypatch
+):
+    # GLEIFs Antwort-Cache liegt unter DATA_RAW; ohne Umleitung schriebe
+    # dieser Test in das echte Datenverzeichnis des Repos.
+    from draufsicht_etl import gleif as _gleif
+
+    monkeypatch.setattr(_gleif.config, "DATA_RAW", tmp_path)
     path = tmp_path / "listed_companies.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=companies.CSV_COLUMNS)
@@ -821,8 +840,16 @@ def test_sync_national_csv_appends_only_new_titles_and_leaves_existing_rows_unto
             },
         ]}}).encode()
 
+    # Explizit ein GLEIF-Fetcher, der nichts kennt: dieser Test prüft den
+    # LINDAS-Rückfall. Ohne ihn zöge `sync_national_csv` die Antwort aus dem
+    # echten Cache oder — schlimmer — aus dem Netz, und der Test wäre von
+    # beidem abhängig statt von seinen eigenen Fixtures.
+    def gleif_fetcher(_url: str) -> bytes:
+        return json.dumps({"data": []}).encode()
+
     report = companies.sync_national_csv(
         path, six_fetcher=six_fetcher, lindas_fetcher=lindas_fetcher,
+        gleif_fetcher=gleif_fetcher,
     )
 
     assert report["alreadyKnown"] == 1

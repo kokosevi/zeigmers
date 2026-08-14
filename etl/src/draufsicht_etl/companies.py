@@ -41,8 +41,8 @@ from . import config
 from .noga import NogaTable
 
 CSV_COLUMNS = (
-    "uid", "name", "six_symbol", "isin",
-    "street", "zip", "city", "lon", "lat", "geocode_query",
+    "uid", "name", "six_symbol", "isin", "lei",
+    "street", "zip", "city", "lon", "lat", "geocode_query", "seat_basis",
     "noga_group",
     "consolidation_basis",
     "revenue", "revenue_currency", "revenue_type", "revenue_unit",
@@ -181,7 +181,18 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
         # noch von Hand einem Sitz zuordnen liess, bleibt absichtlich ohne
         # Koordinaten (siehe `sync_national_csv`) und damit ohne Marker,
         # statt an einer erfundenen Position zu erscheinen.
-        if row.get("city", "").strip():
+        #
+        # Ausnahme für `researched=no`: dort darf ein Sitz ohne Koordinaten
+        # stehen. Vorher erzwang die Regel, dass der Geokodierungs-Schritt
+        # eine gescheiterte Adresse LÖSCHT, um gültig zu bleiben — und
+        # vernichtete damit echte GLEIF-Daten wegen eines Dienstfehlers, so
+        # dass ein späterer, besserer Versuch nichts mehr zum Wiederholen
+        # hatte (beobachtet an The Swatch Group und Logitech, deren
+        # Adresszeilen einen Zusatz tragen). Die Zeile bleibt ohne Marker
+        # (`build_artifact` überspringt sie), die Adresse bleibt erhalten.
+        # Für recherchierte Zeilen gilt die Pflicht unverändert: dort ist der
+        # Sitz Teil des von Hand geprüften Profils.
+        if row.get("city", "").strip() and researched == "yes":
             for field in ("lon", "lat"):
                 if not row.get(field, "").strip():
                     problems.append(f"{label}: {field} fehlt — zuerst geokodieren")
@@ -1010,14 +1021,21 @@ def sync_national_csv(
     *,
     six_fetcher: Fetcher | None = None,
     lindas_fetcher: Fetcher | None = None,
+    gleif_fetcher: Fetcher | None = None,
     on_progress: Callable[[str], None] | None = None,
 ) -> dict:
     """Ergänzt `listed_companies.csv` um SIX-Titel, die noch keine Zeile
     haben — bestehende Zeilen (insbesondere die acht recherchierten) bleiben
     unangetastet, es wird ausschliesslich angehängt, nie überschrieben.
 
-    Neue Zeilen: `researched=no`; wo `match_company_seat()` einen Sitz
-    eindeutig bestimmt, sind `uid`/`name`/`street`/`zip`/`city` gesetzt
+    Der Sitz kommt seit dem 14. August 2026 **zuerst aus GLEIF** (ISIN →
+    Rechtsträger, siehe `gleif.py`), und nur für Titel ohne GLEIF-Eintrag
+    aus dem Namensabgleich `find_seat()`. Der Grund steht in `gleif.py`s
+    Moduldokumentation: der Namensabgleich lag bei 28 von 130 Firmen auf der
+    falschen Rechtseinheit.
+
+    Neue Zeilen: `researched=no`; wo ein Sitz bestimmt werden konnte, sind
+    `uid`/`lei`/`name`/`street`/`zip`/`city`/`seat_basis` gesetzt
     (Koordinaten holt danach der reguläre `geocode.fill_missing()`-Schritt),
     sonst bleiben Adresse und Koordinaten leer — der Titel existiert dann nur
     als Zeile ohne Marker (siehe `build_artifact`), nicht als Rateposition.
@@ -1025,7 +1043,12 @@ def sync_national_csv(
     Gibt einen Bericht zurück (für CLI-Ausgabe und den Phase-Bericht):
     Zähler und Listen für matched/ambiguous/unmatched, dazu doppelt
     vergebene Sitzadressen unter den neu geschriebenen Zeilen (mehrere
-    Gesellschaften am selben Sitz — kein Fehler, aber meldenswert)."""
+    Gesellschaften am selben Sitz — kein Fehler, aber meldenswert), und
+    `nameMismatch`: Titel, bei denen SIX-Kurzname und GLEIF-Firmenname
+    erkennbar auseinanderfallen (Regressionsfall CH0024666528: SIX «Centiel
+    N», GLEIF noch «HOCHDORF Holding AG») — gemeldet statt aufgelöst, weil
+    keine der beiden Quellen hier für sich entscheiden kann."""
+    from . import gleif as gleif_module
     six = fetch_six_titles(six_fetcher)
     existing = load_csv(path) if path.exists() else []
     known_isins = {r["isin"].strip() for r in existing if r.get("isin", "").strip()}
@@ -1038,6 +1061,7 @@ def sync_national_csv(
         "totalCompanies": len(groups),
         "alreadyKnown": 0,
         "matched": [], "ambiguous": [], "unmatched": [], "errors": [],
+        "fromGleif": [], "fromLindas": [], "nameMismatch": [], "abroad": [],
     }
 
     for group in groups:
@@ -1045,6 +1069,60 @@ def sync_national_csv(
         if primary["isin"] in known_isins:
             report["alreadyKnown"] += 1
             continue
+
+        # Erster Versuch: GLEIF über die ISIN. Nur wenn GLEIF die ISIN nicht
+        # kennt, greift der Namensabgleich als Rückfall — nie umgekehrt, und
+        # nie beide vermischt: eine ISIN ist eindeutig, ein Kurzname nicht.
+        gleif_record = None
+        try:
+            gleif_record = gleif_module.resolve(primary["isin"], gleif_fetcher)
+        except Exception as exc:  # noqa: BLE001 — wie beim LINDAS-Zweig unten
+            report["errors"].append({"key": group["key"], "error": f"GLEIF: {exc}"})
+            if on_progress:
+                on_progress(f"ERROR (GLEIF) {group['key']}: {exc}")
+            continue
+
+        if gleif_record is not None:
+            try:
+                place = gleif_module.seat(gleif_record)
+            except ValueError as exc:
+                report["abroad"].append({"key": group["key"], "isin": primary["isin"],
+                                         "name": gleif_record["name"], "error": str(exc)})
+                if on_progress:
+                    on_progress(f"AUSLAND {group['key']}: {exc}")
+                place = None
+
+            if place is not None:
+                row = {c: "" for c in CSV_COLUMNS}
+                row.update({
+                    "uid": gleif_record["uid"], "lei": gleif_record["lei"],
+                    "name": gleif_record["name"], "six_symbol": primary["sixSymbol"],
+                    "isin": primary["isin"], "researched": "no",
+                    "street": place["street"], "zip": place["zip"],
+                    "city": place["city"], "seat_basis": place["basis"],
+                    "geocode_query": f"{place['street']}, {place['zip']} {place['city']}",
+                })
+                new_rows.append(row)
+                report["fromGleif"].append({
+                    "key": group["key"], "isin": primary["isin"],
+                    "name": gleif_record["name"], "city": place["city"],
+                    "basis": place["basis"],
+                })
+                # SIX-Kurzname gegen GLEIF-Firmenname: fällt der Kern
+                # auseinander, hinkt eine der beiden Quellen einer
+                # Umbenennung nach. Melden, nicht auflösen.
+                if not set(canonicalize(group["key"]).split()) & \
+                        set(canonicalize(gleif_record["name"]).split()):
+                    report["nameMismatch"].append({
+                        "key": group["key"], "isin": primary["isin"],
+                        "gleif": gleif_record["name"],
+                    })
+                    if on_progress:
+                        on_progress(f"NAME? {group['key']} vs GLEIF {gleif_record['name']!r}")
+                if on_progress:
+                    on_progress(f"GLEIF ({place['basis']}) {group['key']} -> "
+                                f"{gleif_record['name']} ({place['city']})")
+                continue
 
         try:
             outcome = find_seat(group["key"], lindas_fetcher)
@@ -1079,10 +1157,16 @@ def sync_national_csv(
             # Postfach-/Sammel-PLZ ist statt der geografischen (siehe
             # `geocode.fill_missing`, Kommentar zu Swisscom/"3050 Bern").
             row["geocode_query"] = f"{street}, {m['zip']} {m['city']}"
+            # Rechtssitz aus dem Handelsregister — anders als bei GLEIF gibt
+            # es hier keinen operativen Hauptsitz zur Auswahl, und die
+            # Herkunft der Adresse steht in der Zeile, statt geraten werden
+            # zu müssen.
+            row["seat_basis"] = "zefix"
             report["matched"].append({
                 "key": group["key"], "isin": primary["isin"], "name": m["name"],
                 "city": m["city"], "confidence": outcome["confidence"],
             })
+            report["fromLindas"].append({"key": group["key"], "name": m["name"]})
             if on_progress:
                 on_progress(f"MATCHED ({outcome['confidence']}) {group['key']} -> "
                             f"{m['name']} ({m['city']})")

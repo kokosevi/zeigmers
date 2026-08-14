@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from collections.abc import Callable
@@ -89,7 +90,40 @@ def fill_missing(
             continue
         try:
             lon, lat = geocode(query, fetcher)
-        except LookupError as exc:
+        except (LookupError, urllib.error.URLError) as first_error:
+            # Zweiter Versuch nur mit PLZ und Ort. GLEIF-Adresszeilen tragen
+            # gelegentlich Zusätze, an denen die Gebäudesuche scheitert,
+            # obwohl der Ort zweifelsfrei ist ("Caisse de pensions Swatch
+            # Group", "EPFL — Quartier de l'Innovation"). Ohne diesen
+            # Rückfall verlören The Swatch Group und Logitech ihre Säule
+            # ganz. Der Treffer ist dann ortsgenau statt hausgenau — auf
+            # einer Karte, die Gemeinden zeigt, ist das brauchbar, aber es
+            # steht in der Zeile (`seat_basis` bekommt "-ortsgenau"), statt
+            # sich als exakte Adresse auszugeben.
+            coarse = " ".join(filter(None, [row.get("zip"), row.get("city")]))
+            if coarse and coarse != query:
+                try:
+                    lon, lat = geocode(coarse, fetcher)
+                except (LookupError, urllib.error.URLError):
+                    pass
+                else:
+                    row["lon"] = _format_coord(lon)
+                    row["lat"] = _format_coord(lat)
+                    row["geocode_query"] = coarse
+                    basis = row.get("seat_basis") or "unbekannt"
+                    if not basis.endswith("-ortsgenau"):
+                        row["seat_basis"] = f"{basis}-ortsgenau"
+                    filled += 1
+                    if delay:
+                        time.sleep(delay)
+                    continue
+            exc = first_error
+            # `URLError` (und damit auch `HTTPError`) zählt hier wie "kein
+            # Treffer": ein Dienstfehler für EINE Adresse lässt diese Zeile
+            # ohne Sitz, bricht aber nicht den Lauf ab — sonst verwirft ein
+            # einzelner HTTP 400 die ~190 bereits geokodierten Zeilen davor,
+            # weil erst am Ende persistiert wird (beobachtet am 14. August
+            # 2026 nach der Umstellung auf GLEIF-Sitze).
             if on_failure:
                 on_failure(row, exc)
             continue
