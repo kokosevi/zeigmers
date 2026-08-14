@@ -1,0 +1,20 @@
+{
+ "noga_group": "verkehr",
+ "consolidation_basis": "total_group",
+ "revenue": "24476",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "882",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Logistikdienstleistungen als Spediteur: See-, Luft- und Landfracht sowie Lager- und Distributionslogistik (Contract Logistics) für internationale Warenströme, inkl. Zollabwicklung und digitaler Sendungsverfolgung.",
+ "products_url": "https://www.kuehne-nagel.com/company/about/our-values",
+ "founding_year": "1890",
+ "founding_year_source": "https://newsroom.kuehne-nagel.com/about-kuehne--nagel/",
+ "employees": "85407",
+ "fiscal_year": "2025",
+ "report_url": "https://a.storyblok.com/f/331466/x/2fa31c0666/kn_2025_ar_consolidated_financial_statement.pdf",
+ "note": "Konzernergebnis ('Earnings') insgesamt CHF 925 Mio., davon CHF 43 Mio. Minderheitsanteile ('Non-controlling interests'); eingetragen ist der Aktionärsanteil ('Equity holders of the parent company') CHF 882 Mio. Beschäftigte: Kopfzahl ('Total employees', Personen mit gültigem Arbeitsvertrag per 31.12.) 85'407; der Bericht weist daneben 80'336 Vollzeitäquivalente ('Full-time equivalents of employees') bzw. 105'444 Vollzeitäquivalente inkl. Temporärpersonal aus.",
+ "_verification": "Umsatz: Konsolidierte Erfolgsrechnung ('Income statement'), S. 47 der 'Consolidated Financial Statements 2025', erste Zeile 'Net turnover' = CHF 24'476 Mio. (2025; Vorjahr 24'802). In Anhang 7 (Segmentberichterstattung, S. 59) wird zusätzlich die Bruttozeile 'Turnover (external customers)' CHF 28'118 Mio. gezeigt, von der 'Customs duties and taxes' (-3'642) abgezogen werden, um auf dieselbe 'Net turnover' 24'476 zu kommen; eingetragen wurde die im primären Income Statement stehende und für Gross profit/EBIT/EBT verwendete Zeile 'Net turnover'. Gewinn: 'Earnings attributable to: Equity holders of the parent company' = CHF 882 Mio. (S. 47 und S. 59). Beschäftigte: Tabelle 'Number of employees', S. 62, Zeile 'Total employees' 85'407, gegengeprüft mit der Kuehne+Nagel Key-financial-data-Seite (85'407 employees worldwide). Gründungsjahr und Kerngeschäft aus der offiziellen 'About Kuehne+Nagel'-Seite des Newsrooms sowie der Unternehmens-Werte-Seite."
+}

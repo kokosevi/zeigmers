@@ -333,6 +333,16 @@ def apply_seat_overrides(rows: list[dict], overrides: dict[str, dict]) -> list[s
     applied: list[str] = []
     for symbol, override in sorted(overrides.items()):
         row = by_symbol[symbol]
+        # Nichts tun, wenn die Zeile die Ausnahme bereits trägt. Ohne diese
+        # Prüfung leert jeder Lauf die Koordinaten neu und schickt für jede
+        # Ausnahme eine überflüssige Anfrage an einen fremden, kostenlos
+        # angebotenen Geokodierungsdienst — und der Bericht meldete jedes Mal
+        # Änderungen, die keine waren.
+        if all(
+            not override.get(field) or row.get(field, "") == str(override[field]).strip()
+            for field in ("name", "uid", "lei", "street", "zip", "city")
+        ):
+            continue
         for field in ("name", "uid", "lei", "street", "zip", "city"):
             if override.get(field):
                 row[field] = str(override[field]).strip()

@@ -16,5 +16,16 @@
  "fiscal_year": 2025,
  "report_url": "https://www.barry-callebaut.com/system/files/2025-11/Full-Year-Results-Fiscal-Year%202024-25-EN-Barry-Callebaut-Group.pdf",
  "note": "Geschaeftsjahr 2024/25, endet Ende August. Quelle ist die Ad-hoc-Mitteilung zum Gesamtjahresergebnis (Art. 53 KR) — ein separates Geschaeftsbericht-PDF war auf der Investor-Relations-Seite nicht abrufbar (403/404). Zahlen daraus: 'Sales revenue' 14'788.6 Mio. CHF, 'Net profit for the year' 188.4 Mio. CHF.",
- "_verification": "Umsatz ('Sales revenue CHF m 14,788.6') und Gewinn ('Net profit for the year CHF m 188.4') sowie Mitarbeitendenzahl ('Employees ... 13,138') stammen aus der Full-Year-Results-Medienmitteilung zum Geschaeftsjahr 2024/25 (PDF, publiziert 05.11.2025) auf barry-callebaut.com/system/files. Geprueft wurde, dass Umsatz- und Gewinnzahl aus derselben Mitteilung und demselben Berichtsumfang (Konzern gesamt, kein Hinweis auf fortgefuehrtes/aufgegebenes Geschaeft) stammen; Gruendungsjahr 1996 wurde separat auf der offiziellen Unternehmensgeschichte-Seite verifiziert."
+ "_verification": "Umsatz ('Sales revenue CHF m 14,788.6') und Gewinn ('Net profit for the year CHF m 188.4') sowie Mitarbeitendenzahl ('Employees ... 13,138') stammen aus der Full-Year-Results-Medienmitteilung zum Geschaeftsjahr 2024/25 (PDF, publiziert 05.11.2025) auf barry-callebaut.com/system/files. Geprueft wurde, dass Umsatz- und Gewinnzahl aus derselben Mitteilung und demselben Berichtsumfang (Konzern gesamt, kein Hinweis auf fortgefuehrtes/aufgegebenes Geschaeft) stammen; Gruendungsjahr 1996 wurde separat auf der offiziellen Unternehmensgeschichte-Seite verifiziert.",
+ "_pruefung": {
+  "verdict": "abweichung",
+  "legal_name_im_bericht": "Barry Callebaut Group (konsolidierte Berichtseinheit der Barry Callebaut AG, Zürich)",
+  "revenue_zeile": "Sales revenue (FY 2024/25, +42.4% in CHF ggü. Vorjahr)",
+  "profit_zeile": "Net profit for the year",
+  "abweichungen": [
+   "report_url verweist nicht auf den Geschäftsbericht, sondern auf eine Medienmitteilung: Das PDF trägt den Kopf 'NEWS RELEASE – Ad hoc announcement pursuant to Art. 53 LR', ist also eine Ad-hoc-Pressemitteilung zu den Full-Year-Ergebnissen, kein Jahres-/Geschäftsbericht mit testierten Konzernabschlüssen.",
+   "Auf der Investor-Relations-Publikationsseite von Barry Callebaut liess sich kein separates Geschäftsbericht-PDF für 2024/25 auffinden (Seite lieferte 403/404); die eigentliche Primärquelle (Annual Report bzw. testierter Konzernabschluss) müsste stattdessen verlinkt werden."
+  ],
+  "begruendung": "Ich habe die genannte report_url per Volltext-Abruf geöffnet: Kopfzeile 'NEWS RELEASE Ad hoc announcement pursuant to Art. 53 LR' identifiziert das Dokument eindeutig als Medienmitteilung. Die Zahlen selbst stimmen (Sales revenue CHF 14'788.6 Mio., Net profit for the year CHF 188.4 Mio., 13'138 Mitarbeitende, FY 2024/25, Gesamtkonzern, CHF, in Mio.) und Umsatz/Gewinn beziehen sich auf denselben Konsolidierungskreis und dasselbe Geschäftsjahr — der einzige Fund betrifft die Quellenart (Medienmitteilung statt Geschäftsbericht), nicht die Zahlen."
+ }
 }

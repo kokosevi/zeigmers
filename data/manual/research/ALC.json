@@ -16,5 +16,15 @@
  "fiscal_year": 2025,
  "report_url": "https://www.sec.gov/Archives/edgar/data/1167379/000116737926000014/alc-20251231.htm",
  "note": "Vollzeitaequivalente ('Total full-time equivalent associates', Item 6.D des Form 20-F); der Bericht weist keine separate Kopfzahl aus. Zuvor stand hier die gerundete Angabe 25'000.",
- "_verification": "Nettoumsatz (10'319 Mio. USD) und Konzerngewinn (980 Mio. USD, 'Net income attributable to: Shareholders of Alcon Inc.') stammen beide aus derselben Consolidated Income Statement für das Geschäftsjahr 2025 im Form 20-F (Tabelle 'Key figures' S.59 sowie Consolidated Financial Statements S. F-2), Gesamtkonzern-Basis, keine Veräusserungen/fortgeführtes Geschäft ausgewiesen. Geprüft: Zahlen sind im Volltext des SEC-Dokuments alc-20251231.htm identisch an mehreren Stellen (MD&A-Tabelle und geprüfter Jahresabschluss) wiedergegeben."
+ "_verification": "Nettoumsatz (10'319 Mio. USD) und Konzerngewinn (980 Mio. USD, 'Net income attributable to: Shareholders of Alcon Inc.') stammen beide aus derselben Consolidated Income Statement für das Geschäftsjahr 2025 im Form 20-F (Tabelle 'Key figures' S.59 sowie Consolidated Financial Statements S. F-2), Gesamtkonzern-Basis, keine Veräusserungen/fortgeführtes Geschäft ausgewiesen. Geprüft: Zahlen sind im Volltext des SEC-Dokuments alc-20251231.htm identisch an mehreren Stellen (MD&A-Tabelle und geprüfter Jahresabschluss) wiedergegeben.",
+ "_pruefung": {
+  "verdict": "abweichung",
+  "legal_name_im_bericht": "Alcon Inc.",
+  "revenue_zeile": "Net sales (Consolidated Income Statement / MD&A, year ended December 31, 2025)",
+  "profit_zeile": "Net income (Consolidated Income Statement / MD&A: \"Net income was $980 million\")",
+  "abweichungen": [
+   "employees=25000 stimmt nicht mit dem Bericht überein: Item 6.D. Employees weist für FY2025 'Total full-time equivalent associates' von 25,942 aus, nicht 25,000."
+  ],
+  "begruendung": "Ich habe das Form 20-F von Alcon Inc. (SEC-Filing alc-20251231.htm, CIK 1167379) direkt von sec.gov geladen (Fribourg-Adresse auf dem Deckblatt bestätigt) und die Zahlen im Fliesstext/den Tabellen gegengeprüft: Net sales USD 10,319 Mio. und Net income USD 980 Mio. für das am 31.12.2025 endende Geschäftsjahr stimmen exakt mit revenue und profit der vorgelegten Zeile überein, inkl. Konsolidierungskreis (Gesamtkonzern), revenue_type (net_sales passt zu einem Medizintechnik-/Konsumgüterunternehmen), Währung USD und Einheit Millionen. Die einzige Abweichung ist die Mitarbeiterzahl: der Bericht nennt 25,942 Vollzeitäquivalente (Item 6.D.), die Zeile aber 25,000 – eine gerundete, aber nicht exakte Zahl."
+ }
 }

@@ -1012,3 +1012,22 @@ def test_seat_override_clears_stale_coordinates_so_they_get_geocoded_again():
 def test_seat_override_for_an_unknown_symbol_is_reported_not_ignored():
     with pytest.raises(ValueError, match="WEG"):
         companies.apply_seat_overrides([], {"WEG": {"city": "Nirgendwo"}})
+
+
+def test_seat_override_is_a_no_op_when_the_row_already_matches():
+    # Sonst leert jeder Lauf die Koordinaten der Ausnahmen neu und schickt
+    # fuenf ueberfluessige Anfragen an einen fremden, kostenlos angebotenen
+    # Geokodierungsdienst — und `companies-merge` meldete jedes Mal
+    # "5 Ausnahmen angewendet", obwohl sich nichts geaendert hat.
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    row.update({"six_symbol": "CNTL", "name": "Centiel AG", "uid": "CHE-102.468.656",
+                "street": "Via alla Stampa 15", "zip": "6965", "city": "Cadro",
+                "seat_basis": "manuell", "lon": "8.98", "lat": "46.05",
+                "geocode_query": "Via alla Stampa 15, 6965 Cadro"})
+    override = {"CNTL": {"name": "Centiel AG", "uid": "CHE-102.468.656",
+                         "street": "Via alla Stampa 15", "zip": "6965", "city": "Cadro"}}
+
+    applied = companies.apply_seat_overrides([row], override)
+
+    assert applied == [], "unveraenderte Zeile darf nicht erneut angefasst werden"
+    assert row["lon"] == "8.98", "Koordinaten bleiben erhalten"

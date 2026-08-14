@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 6945,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 668,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Prüfung, Inspektion, Zertifizierung und Verifizierung von Produkten, Rohstoffen, Anlagen und Managementsystemen für Industrie- und Handelsunternehmen.",
+ "products_url": "https://www.sgs.com/en/our-company/about-sgs",
+ "founding_year": 1878,
+ "founding_year_source": "https://www.sgs.com/en/our-company/about-sgs/our-history",
+ "employees": 102804,
+ "fiscal_year": 2025,
+ "report_url": "https://www.sgs.com/-/media/sgscorp/documents/corporate/reports-and-presentations/2020s/2026/sgs-financial-statements-en.cdn.en.pdf",
+ "note": "Die Konzernerfolgsrechnung weist die Zeile schlicht als «Sales» aus (nicht «Net sales»); es gibt keine separate Nettoumsatz-Zeile, daher als net_sales eingetragen. Profit (668) ist der auf die Aktionäre von SGS SA entfallende Anteil; zusätzlich weist der Bericht CHF 49 Mio. Anteile nicht beherrschender Gesellschafter aus (Konzerngewinn total CHF 717 Mio.). employees = 102'804 Vollzeitäquivalente (FTE) zum Jahresende 2025 gemäss Personal-Anhang; der Bericht weist keine separate Kopfzahl (Headcount) aus, nur FTE.",
+ "_verification": "Umsatz («Sales», CHF 6'945 Mio.) und Gewinn («Profit attributable to: Equity holders of SGS SA», CHF 668 Mio.) stammen beide aus der Konzernerfolgsrechnung (Consolidated income statement) auf S. 96 des SGS 2025 Integrated Report – Financial statements (Geschäftsjahr 2025, Zahlen für 2024 zum Vergleich danebenstehend). Die Beschäftigtenzahl (102'804 FTE zum Jahresende) wurde in der Tabelle «Average number of Full Time Equivalents (FTEs) by geographical area» auf S. 106 desselben Dokuments geprüft; Rechtssitz Genf/Sitz Baar sowie SIX-Symbol SGSN wurden im Dokument selbst (Impressum «SGS SA, Zugerstrasse 57, 6340 Baar» und Handelsdaten-Box im Full-Year-Results-Communiqué) bestätigt, das Gründungsjahr 1878 auf der offiziellen SGS-Firmengeschichte-Seite."
+}
