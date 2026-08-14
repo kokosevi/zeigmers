@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "52.568",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "1.886",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Vermögensverwaltung (Asset Management) und Anlagefonds, spezialisiert auf Healthcare-Investments, Small-/Mid-Cap-Unternehmerbeteiligungen und Multi-Asset-Strategien.",
+ "products_url": "https://report.bellevue.ch/2025/en/business-model-and-strategy",
+ "founding_year": "1993",
+ "founding_year_source": "https://www.bellevue.ch/all-en/all/about-us/what-makes-us-different",
+ "employees": "73",
+ "fiscal_year": "2025",
+ "report_url": "https://report.bellevue.ch/2025/en/consolidated-income-statement",
+ "note": "Bank/Vermögensverwalter, daher kein Umsatz im engeren Sinn; Geschäftsertrag (\"Total operating income\"/\"Income\") als Gegenstück verwendet, Zeile ist im Bericht ausdrücklich so benannt und deckt sich mit der Summe aus Revenues from asset management services (52.596), Income from financial investments (0.560) und Net other income (-0.588). Mitarbeitende laut Bericht 72.8 FTE (Stichtag 31.12.2025), auf 73 gerundet. Group net profit ist bereits der volle den Aktionären zurechenbare Gewinn, keine Minderheitsanteile ausgewiesen.",
+ "_verification": "Umsatz (Geschäftsertrag) und Gewinn stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 (report.bellevue.ch/2025/en/consolidated-income-statement): Zeile \"Income\"/\"Total operating income\" CHF 52'568 Tsd. und \"Group net profit\" CHF 1'886 Tsd., beide für Geschäftsjahr 2025 im Vergleich zu 2024. Geprüft, dass die Teilkomponenten (Asset-Management-Erträge, Finanzanlagenerträge, sonstige Nettoerträge) sich zur Gesamtsumme addieren und dass es sich um die vom Unternehmen selbst so benannte Ertragszeile handelt (kein Fall wie Partners Group, da keine gesondert abgegrenzten Nicht-Ertragskomponenten enthalten sind)."
+}

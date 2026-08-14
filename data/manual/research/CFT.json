@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 1115.768,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 134.177,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Interdealer-Broker für ausserbörsliche (OTC) Finanz- und Rohstoffprodukte: Vermittlung von Geldmarkt-, Anleihen-, Zins-, Währungs- und Kreditderivat-Geschäften sowie von Aktien, Energie-/Umweltprodukten und Edelmetallen zwischen professionellen Marktteilnehmern, gegen Provision.",
+ "products_url": "https://www.tradition.com/about-us/role-as-a-broker.aspx",
+ "founding_year": 1959,
+ "founding_year_source": "https://www.tradition.com/media/366169/Annual_report_ang_final.pdf",
+ "employees": 2605,
+ "fiscal_year": 2025,
+ "report_url": "https://www.tradition.com/media/366169/Annual_report_ang_final.pdf",
+ "note": "CFT ist Finanzdienstleister (Interdealer-Broker) ohne Nettoumsatz im industriellen Sinn; als revenue_type daher operating_income gewählt. Eingetragen ist die Zeile 'Revenue' der konsolidierten Erfolgsrechnung (CHF 1'115.768 Mio., reine Maklerprovisionen), NICHT der Kennzahlen-Headline-Wert 'inkl. Anteil an Joint Ventures' von CHF 1'203.6 Mio. (der zusätzlich Erfolgsanteile aus assoziierten Gesellschaften enthält, die im Income Statement separat unter 'Share of profit of associates and joint ventures' stehen). Gewinn = den Aktionären der Muttergesellschaft zurechenbarer Anteil (CHF 134.177 Mio.); der Gesamtkonzerngewinn inkl. Minderheitsanteilen betrug CHF 142.689 Mio. Beschäftigte = Headcount (Köpfe) laut Kennzahlenseite 'Headcount at 31 December 2025', nicht FTE.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated income statement' (S. 78 des Annual Report 2025): Zeile 'Revenue' CHF 1'115'768 Tsd. sowie 'Attributable to: shareholders of the parent' CHF 134'177 Tsd. Geprüft: die Kennzahlenseite (S. 6f.) weist dieselbe Zahl 1'115.8 Mio. explizit getrennt von der aggregierten 1'203.6-Mio.-Zahl 'including share of joint ventures' aus; Headcount 2'605 (Grafik 'Headcount at 31 December 2025') stimmt mit dem Bilanzstichtag 31.12.2025 überein; Gründungsjahr 1959 laut Vorwort des Chairman im selben Bericht ('Founded in 1959 in Lausanne')."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 155.921,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -6.933,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Industriepartner fuer technologisch anspruchsvolle Bauteile und Baugruppen aus Metall, Leichtmetall und Kunststoff (Stanz-/Umformtechnik und Spritzguss) fuer die Automobilindustrie und MedTech, von Produktentwicklung ueber Werkzeugbau bis zur Serienfertigung.",
+ "products_url": "https://mailing-ircockpit.eqs.com/crm-mailing/5c25e3e4-ea7c-11e8-902f-2c44fd856d8c/c0626732-d5cb-4f0e-8964-1da859f23973/d087d818-5cf9-4fb5-b745-12cd7d8e4e10/Ad_hoc_Mitteilung_EN.pdf",
+ "founding_year": "",
+ "founding_year_source": "",
+ "employees": 1003,
+ "fiscal_year": 2025,
+ "report_url": "https://mailing-ircockpit.eqs.com/crm-mailing/5c25e3e4-ea7c-11e8-902f-2c44fd856d8c/c0626732-d5cb-4f0e-8964-1da859f23973/d087d818-5cf9-4fb5-b745-12cd7d8e4e10/Ad_hoc_Mitteilung_EN.pdf",
+ "note": "Die eigentliche Investor-Relations-Website von Adval Tech (advaltech.com) ist eine vollstaendig clientseitig gerenderte Angular-Anwendung ohne Server-Side-Rendering; das direkte Geschaeftsbericht-2025-PDF (Storyblok/EQS-Cockpit-Hosting) liess sich damit nicht per URL verifizieren. Stattdessen wurde die offizielle Ad-hoc-Mitteilung vom 31. Maerz 2026 (\"Adval Tech Group's Annual Report 2025\" / \"Forward strategy shows initial progress in 2025\") verwendet, die von Adval Tech selbst ueber die im eigenen Webseiten-Javascript referenzierte EQS-Cockpit-Distribution veroeffentlicht wurde und deren Kennzahlentabelle sich per Fussnote explizit auf den \"Annual Report 2025, page 92\" bezieht. revenue = 'Net turnover' (CHF 155.921 Mio.), separat ausgewiesen von der groesseren Zeile 'Total income' (CHF 163.243 Mio., inkl. sonstiger Ertraege) - gemaess Regel 4 wurde die Zeile genommen, die tatsaechlich 'Net turnover' heisst. Kein Hinweis auf nicht beherrschende Anteile (Minderheitsanteile) im Konzern gefunden (auch nicht im Geschaeftsbericht 2022), Nettoergebnis daher als vollstaendig aktionaersbezogen behandelt. Beschaeftigte (1'003) sind laut Fussnote 2 der Kennzahlentabelle Vollzeitaequivalente (FTE) mit direktem Anstellungsvertrag bei der Adval Tech Gruppe per 31.12.2025 (Vorjahreszahl 2024 wurde entsprechend anpasst). Gruendungsjahr konnte nicht anhand einer eigenen Firmenquelle (Geschichte-Seite) verifiziert werden - die JS-Seite liess sich nicht auslesen und im Geschaeftsbericht 2022 fand sich keine Gruendungsangabe; Drittquellen (u.a. Handelsregister-Aggregatoren) nennen widerspruechliche Jahre (1924/1929/1930) fuer die Vorgaengerfirma 'Styner + Bienz', die erst 1997 in 'Adval Tech Holding AG' umbenannt wurde - deshalb bleibt founding_year leer statt eine ungeprueft uebernommene Zahl einzutragen.",
+ "_verification": "Umsatz (Net turnover CHF 155.921 Mio.) und Konzernergebnis (Net result CHF -6.933 Mio.) stammen aus der Kennzahlentabelle ('Key figures') der offiziellen Ad-hoc-Mitteilung vom 31. Maerz 2026 zum Geschaeftsjahr 2025, PDF direkt von Adval Tech's eigener EQS-IR-Cockpit-Distribution heruntergeladen (Link im main.js-Bundle von advaltech.com als offizielle News-Feed-Quelle referenziert) und mit pdftotext gelesen; die Tabelle verweist per Fussnote explizit auf die Seite 92 des Annual Report 2025. Geprueft wurde zusaetzlich der Fliesstext des Berichts (Net turnover / Total income / EBITDA / EBIT / Net result / Cashflow / Eigenkapitalquote / FTE-Mitarbeitende), um sicherzustellen, dass die eingetragene Umsatzzeile ('Net turnover', nicht 'Total income') und das Konzernergebnis aus derselben Mitteilung und demselben Geschaeftsjahr stammen. Keine Hinweise auf aufgegebene Geschaeftsbereiche oder Minderheitsanteile gefunden."
+}

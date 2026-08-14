@@ -1,0 +1,20 @@
+{
+ "noga_group": "bau",
+ "consolidation_basis": "total_group",
+ "revenue": 436.7,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 219.3,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Schweizer Immobiliengesellschaft: haelt und bewirtschaftet ein Portfolio von Renditeliegenschaften (Rental income) und entwickelt/realisiert eigene und im Auftrag Dritter Bauprojekte (Segment Development & Realisation).",
+ "products_url": "https://allreal.ch/en/about-us",
+ "founding_year": 1999,
+ "founding_year_source": "https://allreal-prod.fra1.cdn.digitaloceanspaces.com/Berichterstattung/2025-gb/EN/Annual-Report-2025.pdf (Notes to the Statutory Financial Statements: \"Allreal Holding AG, domiciled in Opfikon ZH, was founded on 17 May 1999.\")",
+ "employees": 211,
+ "fiscal_year": 2025,
+ "report_url": "https://allreal-prod.fra1.cdn.digitaloceanspaces.com/Berichterstattung/2025-gb/EN/Annual-Report-2025.pdf",
+ "note": "Als Immobiliengesellschaft weist Allreal keine Zeile 'Umsatz'/'Net sales' aus; in der Consolidated Income Statement (Swiss GAAP FER) heisst die Summenzeile 'Operating income' (CHF 436.7 Mio.), zusammengesetzt aus Rental income from investment properties (204.0), Income from Realisation (160.2), Income from sales Development (68.9) und Other income (3.6) - deshalb revenue_type operating_income statt net_sales. Net profit (CHF 219.3 Mio.) ist ohne Minderheitsanteile ausgewiesen (kein Hinweis auf non-controlling interests im Bericht gefunden), somit vollstaendig den Aktionaeren der Allreal Holding AG zurechenbar. Beschaeftigte (211) sind laut Kennzahlenuebersicht explizit 'Employees on balance sheet date, full-time equivalents' (Vollzeitaequivalente), nicht Koepfe - die geringe Zahl erklaert sich durch das asset-light Geschaeftsmodell einer Immobilien-Holding.",
+ "_verification": "Operating income (CHF 436.7 Mio.) und Net profit (CHF 219.3 Mio.) stammen aus der Consolidated Income Statement (Swiss GAAP FER) im Allreal Annual Report 2025, S. 142 (PDF direkt von allreal-prod.fra1.cdn.digitaloceanspaces.com heruntergeladen, offizieller Allreal-CDN-Host, und mit pdftotext gelesen). Geprueft wurde die vollstaendige Ertragszeile (Rental income + Income from Realisation + Income from sales Development + Other income = Operating income) sowie die Abwesenheit einer Non-controlling-interests-Zeile in der Erfolgsrechnung. Gruendungsdatum (17. Mai 1999) und FTE-Mitarbeitendenzahl (211) stammen aus demselben Bericht (Notes to the Statutory Financial Statements bzw. Kennzahlenuebersicht 'Employees on balance sheet date')."
+}

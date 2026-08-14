@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "1057.089",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "110.108",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung von Kolbenkompressoren und Kompressorsystemen für Industriegase, Prozessgase, Erdgastransport und -speicherung, inklusive zugehöriger Serviceleistungen und Ersatzteile.",
+ "products_url": "https://www.burckhardtcompression.com/about/company/",
+ "founding_year": "1844",
+ "founding_year_source": "https://www.burckhardtcompression.com/fileadmin/uploads/burckhardt/documents/reports/archive/annual-report-2025-burckhardt-compression-260624-en.pdf",
+ "employees": "3305",
+ "fiscal_year": "2026",
+ "report_url": "https://www.burckhardtcompression.com/fileadmin/uploads/burckhardt/documents/reports/archive/annual-report-2025-burckhardt-compression-260624-en.pdf",
+ "note": "Geschäftsjahr (vom Unternehmen intern \"fiscal year 2025\" genannt) läuft laut Bericht wörtlich vom 1. April 2025 bis 31. März 2026; da abweichendes Geschäftsjahr, wurde gemäss Vorgabe das Endjahr 2026 eingetragen. Gewinn ist der Aktionärsanteil \"Share of net income attributable to shareholders of Burckhardt Compression Holding AG\" CHF 110.108 Mio.; der volle Konzerngewinn (Net income) betrug CHF 110.144 Mio., davon CHF 0.036 Mio. Minderheitsanteile. Mitarbeitende: 3'305 FTE per Ende Geschäftsjahr (Bericht weist nur FTE, keine Kopfzahl, aus).",
+ "_verification": "Umsatz und Gewinn stammen aus der \"Consolidated income statement\" im Geschäftsbericht 2025/26 (Finance-Report-Seite, Zeilen \"Sales\" CHF 1'057'089 Tsd. und \"Share of net income attributable to shareholders of Burckhardt Compression Holding AG\" CHF 110'108 Tsd., beide für das am 31. März 2026 endende Geschäftsjahr, im Vergleich zum Vorjahr). Geprüft: der Bericht stellt explizit klar \"When referring to sales in the Annual Report, we specifically refer to net sales\" (Segmentnote 5), daher revenue_type net_sales korrekt und keine Verwechslung mit einer Summenzeile wie bei Avolta/Partners Group; ausserdem wurde die separat ausgewiesene Position \"Share of net income attributable to non-controlling interests\" (CHF 36 Tsd.) vom Gesamtkonzerngewinn abgegrenzt, um den reinen Aktionärsanteil einzutragen."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 457.044,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 12.208,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Entwicklung, Herstellung und Vermarktung von Vakuum- und Röntgentechnologie: Vakuumkondensatoren und HF-Generatoren zur Plasmasteuerung (Halbleiterfertigung), industrielle Röntgensysteme für zerstörungsfreie Prüfung sowie kompakte Röntgenquellen/-module für Prüf- und Sicherheitsanwendungen.",
+ "products_url": "https://comet.tech/en/",
+ "founding_year": 1948,
+ "founding_year_source": "https://reports.comet-group.com/22/en/history-timeline/",
+ "employees": 1832,
+ "fiscal_year": 2025,
+ "report_url": "https://reports.comet-group.com/25/app/uploads/Comet_Annual-Report-2025-en.pdf",
+ "note": "",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated statement of income' im Annual Report 2025: Zeile 'Net sales' CHF 457'044 Tsd. und 'Net income' CHF 12'208 Tsd.; ein separater Minderheitenanteil wird nicht ausgewiesen (die Eigenkapitalveränderungsrechnung zeigt 'Net income' vollständig als 'Equity attributable to shareholders of Comet Holding AG'). Geprüft: dieselben Zahlen erscheinen konsistent in der Fünfjahresübersicht 'Comet Group key consolidated financial results'; Beschäftigte = 'Number of employees (year-end)' Total 1'832 zum 31.12.2025 (Köpfe, nach Schweiz/International aufgeschlüsselt)."
+}

@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.givaudan.com/files/giv-2025-gcfr.pdf",
  "note": "Beschäftigtenzahl laut Bericht (S. 2, Infografik) 'Our full-time employees 17,580' — es handelt sich um Vollzeitäquivalente (FTE); eine gesonderte Kopfzahl weist der Bericht nicht aus. 'Income attributable to non-controlling interests' ist Nil, daher entspricht der eingetragene Gewinn sowohl dem Konzerngewinn als auch dem Aktionärsanteil.",
- "_verification": "Konsolidierte Erfolgsrechnung im '2025 Governance, Compensation and Financial Report' (PDF), Seite 63: Zeile 'Sales' CHF 7'472 Mio. (2025) und Zeile 'Income attributable to equity holders of the parent' CHF 1'071 Mio.; geprüft, dass 'Income attributable to non-controlling interests' mit '–' (Nil) ausgewiesen ist, sodass keine Verzerrung durch Minderheitsanteile vorliegt. Beschäftigtenzahl 17'580 aus der Kennzahlen-Infografik auf Seite 2 desselben Berichts; Gründungsjahr 1895 auf der offiziellen Timeline-Seite von Givaudan verifiziert ('Léon and Xavier Givaudan embark on a rich journey with the founding of Givaudan in Zürich, Switzerland' — nicht zu verwechseln mit 1768, dem Datum einer Vorläuferfirma, die erst später mit Givaudan fusionierte)."
+ "_verification": "Konsolidierte Erfolgsrechnung im '2025 Governance, Compensation and Financial Report' (PDF), Seite 63: Zeile 'Sales' CHF 7'472 Mio. (2025) und Zeile 'Income attributable to equity holders of the parent' CHF 1'071 Mio.; geprüft, dass 'Income attributable to non-controlling interests' mit '–' (Nil) ausgewiesen ist, sodass keine Verzerrung durch Minderheitsanteile vorliegt. Beschäftigtenzahl 17'580 aus der Kennzahlen-Infografik auf Seite 2 desselben Berichts; Gründungsjahr 1895 auf der offiziellen Timeline-Seite von Givaudan verifiziert ('Léon and Xavier Givaudan embark on a rich journey with the founding of Givaudan in Zürich, Switzerland' — nicht zu verwechseln mit 1768, dem Datum einer Vorläuferfirma, die erst später mit Givaudan fusionierte).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Givaudan SA",
+  "revenue_zeile": "Sales",
+  "profit_zeile": "Income attributable to equity holders of the parent",
+  "abweichungen": [],
+  "begruendung": "PDF des Givaudan '2025 Governance, Compensation and Financial Report' (giv-2025-gcfr.pdf) selbst per pdftotext extrahiert: Zeile 'Sales' CHF 7'472 Mio. und 'Income attributable to equity holders of the parent' CHF 1'071 Mio., mit 'Income attributable to non-controlling interests' = '–' bestätigt. Legal name 'Givaudan SA' und Mitarbeiterzahl 17'580 ('it employs 17,580 people') stimmen exakt mit der vorgelegten Zeile überein."
+ }
 }

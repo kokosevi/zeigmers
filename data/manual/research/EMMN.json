@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://report.emmi.com/2025/en/income-statement",
  "note": "Beschäftigte als Vollzeitäquivalente (FTE) zum Jahresende ausgewiesen; eine separate Kopfzahl wird im Bericht nicht genannt. Konzerngewinn inkl. Minderheitsanteile lag 2025 bei CHF 247.5 Mio.; die eingetragenen CHF 227.1 Mio. sind der auf die Aktionäre der Emmi AG entfallende Anteil ('Net profit', nach Abzug von Minderheitsanteilen CHF 20.5 Mio.).",
- "_verification": "Umsatz (Zeile 'Sales', CHF 4'745.7 Mio.) und Gewinn (Zeile 'Net profit', CHF 227.1 Mio., nach Minderheitsanteilen) stammen beide aus der konsolidierten Erfolgsrechnung 2025 auf report.emmi.com/2025/en/income-statement, identisches Geschäftsjahr und Konsolidierungskreis (Gesamtkonzern, keine Hinweise auf zum Verkauf gehaltene Bereiche). Gründungsjahr und Kerngeschäft wurden auf den offiziellen Emmi-Group-Seiten geprüft."
+ "_verification": "Umsatz (Zeile 'Sales', CHF 4'745.7 Mio.) und Gewinn (Zeile 'Net profit', CHF 227.1 Mio., nach Minderheitsanteilen) stammen beide aus der konsolidierten Erfolgsrechnung 2025 auf report.emmi.com/2025/en/income-statement, identisches Geschäftsjahr und Konsolidierungskreis (Gesamtkonzern, keine Hinweise auf zum Verkauf gehaltene Bereiche). Gründungsjahr und Kerngeschäft wurden auf den offiziellen Emmi-Group-Seiten geprüft.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Emmi AG",
+  "revenue_zeile": "Sales (Income statement, Emmi Group)",
+  "profit_zeile": "Net profit (Profit including minority interests 247.5, davon Minderheiten 20.5)",
+  "abweichungen": [],
+  "begruendung": "report.emmi.com/2025/en/income-statement direkt abgerufen (unabhängig von der vorgelegten Zeile): Text bestätigt wortwörtlich 'Emmi Group increased its sales ... to CHF 4,745.7 million' sowie 'Profit including minority interests was CHF 247.5 million ... minority interests ... CHF 20.5 million ... resulting net profit of CHF 227.1 million'. Keine Hinweise auf aufgegebene Geschäftsbereiche gefunden; konsolidierter Abschluss trägt den Namen 'Emmi Group', die rechtliche Muttergesellschaft ist 'Emmi AG'."
+ }
 }

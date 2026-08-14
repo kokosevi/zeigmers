@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 240.047,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 14.943,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Entwicklung, Herstellung und Vertrieb von zahnmedizinischen Verbrauchsmaterialien und Kleingeräten in den Bereichen Dental Preservation (Restauration, Endodontie), Treatment Auxiliaries (Prothetik, rotierende Instrumente) und Infection Control (Instrumentenaufbereitung, Flächendesinfektion).",
+ "products_url": "https://www.coltene.com/company/",
+ "founding_year": 2005,
+ "founding_year_source": "https://files.schedulr.ch/news-files/8096/3037088f-4df5-4840-b548-85a1115d562b.pdf",
+ "employees": 1180,
+ "fiscal_year": 2025,
+ "report_url": "https://files.schedulr.ch/news-files/8096/3037088f-4df5-4840-b548-85a1115d562b.pdf",
+ "note": "Beschäftigtenzahl (1'180) ist im Bericht ausdrücklich als 'Number of employees (full-time positions)' zum 31.12.2025 ausgewiesen, also Vollzeitstellen (FTE), nicht Köpfe – eine Kopfzahl wird im Bericht nicht separat genannt. Gründungsjahr 2005 bezieht sich auf die rechtliche Gründung der COLTENE Holding AG laut Notes zum Konzernabschluss ('COLTENE Holding AG was founded on 15 December 2005'); die operative Coltène-Gruppe hat ältere Wurzeln (u.a. Fusion mit Whaledent 1990), die der Geschäftsbericht selbst aber nicht mit einem Gründungsjahr belegt. 'Net profit for the period' wird ohne separat ausgewiesenen Minderheitenanteil berichtet und daher als Aktionärsanteil übernommen.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated income statement' im Annual Report 2025 (Abschnitt Financials): Zeile 'Net sales' CHF 240'047 Tsd. und 'Net profit for the period' CHF 14'943 Tsd. Geprüft: dieselbe Umsatzzahl (240.0 Mio.) erscheint konsistent im Abschnitt 'COLTENE at a glance' und in Note 1 'Net sales by geographical regions' / 'by products and services'; die Beschäftigtenzahl 1'180 wird sowohl im Kennzahlenblock als auch in Note 2 (Personnel expenses/average FTE) bestätigt."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": "-21.8",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Klinische Entwicklung neuartiger Antibiotika gegen multiresistente Bakterien (u.a. BV100, Alpibectir); noch keine zugelassenen, verkauften Produkte.",
+ "products_url": "https://www.bioversys.com/about-us/",
+ "founding_year": "2008",
+ "founding_year_source": "https://bsse.ethz.ch/department/spin-offs.html",
+ "employees": "33",
+ "fiscal_year": "2025",
+ "report_url": "https://ir.bioversys.com/news/bioversys-reports-corporate-highlights-and-financial-results-for-the-full-year-2025/9a2f1da9-c2c0-438d-a0cb-f9069853a44c",
+ "note": "BioVersys ist ein klinisches Biotech-Unternehmen ohne zugelassenes Produkt und daher ohne Produktumsatz im eigentlichen Sinn (geprüft: kein net_sales vorhanden). 2025 wies das Unternehmen CHF 0.8 Mio. \"revenues\" aus einer Forschungskollaboration mit Shionogi sowie CHF 2.5 Mio. \"other operating income\" (Forschungsförderung/Steuergutschriften/Subventionen) aus, zusammen CHF 3.3 Mio. \"Total operating income\" – das ist Kollaborations- und Fördergeld, kein Verkaufsumsatz, daher revenue-Feld leer gelassen statt mit einer nicht vergleichbaren Zahl gefüllt. Mitarbeitende laut Bericht 33 FTE per 31.12.2025 (Vorjahr 27 FTE).",
+ "_verification": "Zahlen stammen aus der Medienmitteilung \"BioVersys Reports Corporate Highlights and Financial Results for the Full Year 2025\" auf der eigenen IR-Seite ir.bioversys.com (datiert 18.03.2026), die die konsolidierten Ergebnisse des Geschäftsjahres 2025 zusammenfasst: Zeilen \"Revenue\" (Shionogi-Kollaboration, CHF 0.8 Mio.), \"Other operating income\" (CHF 2.5 Mio.), \"Total operating income\" (CHF 3.3 Mio.), \"Operating loss\" (CHF 20.0 Mio.) und \"Net loss for the year\" (CHF 21.8 Mio.). Geprüft, dass keine gesonderte Position für Minderheitsanteile besteht (Einzelkonzern, Net loss = den Aktionären zurechenbarer Verlust) und dass die \"Revenue\"-Zeile ausschliesslich Kollaborationserträge, nicht Produktverkäufe, umfasst."
+}

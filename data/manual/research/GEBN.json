@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://reports.geberit.com/annual-report/2025/financials/consolidated-financial-statements-geberit-group/income-statements.html",
  "note": "Mitarbeiterzahl ist Vollzeitäquivalente (FTE) zum Jahresende 2025; der Bericht weist keine separate Kopfzahl aus. Die konsolidierte Erfolgsrechnung 2025 zeigt keine gesonderte Minderheitsanteile-Zeile, der ausgewiesene Net income (CHF 597.8 Mio.) ist damit vollständig den Aktionären der Geberit AG zurechenbar.",
- "_verification": "Nettoumsatz (CHF 3'162.9 Mio., Zeile 'Net sales') und Net income (CHF 597.8 Mio.) stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 auf reports.geberit.com; die Mitarbeiterzahl (11'278 FTE) stammt aus der Employees-Seite desselben Geschäftsberichts. Geprüft wurde, dass Umsatz- und Gewinnzahl aus derselben konsolidierten Rechnung für dasselbe Geschäftsjahr 2025 (Gesamtkonzern, keine Veräusserungen/fortgeführtes Geschäft ausgewiesen) stammen; das Gründungsjahr 1874 wurde separat über die offizielle Unternehmensseite geberit.ch bestätigt."
+ "_verification": "Nettoumsatz (CHF 3'162.9 Mio., Zeile 'Net sales') und Net income (CHF 597.8 Mio.) stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 auf reports.geberit.com; die Mitarbeiterzahl (11'278 FTE) stammt aus der Employees-Seite desselben Geschäftsberichts. Geprüft wurde, dass Umsatz- und Gewinnzahl aus derselben konsolidierten Rechnung für dasselbe Geschäftsjahr 2025 (Gesamtkonzern, keine Veräusserungen/fortgeführtes Geschäft ausgewiesen) stammen; das Gründungsjahr 1874 wurde separat über die offizielle Unternehmensseite geberit.ch bestätigt.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Geberit AG",
+  "revenue_zeile": "Net sales (Consolidated Income Statement)",
+  "profit_zeile": "Net income (Consolidated Income Statement)",
+  "abweichungen": [],
+  "begruendung": "reports.geberit.com/annual-report/2025 (Income-Statement-Unterseite sowie Startseite) direkt abgerufen: Tabelle 'Consolidated Income Statement' zeigt 'Net sales' 3'162.9 MCHF und 'Net income' 597.8 MCHF für 2025, keine separate Minderheitenzeile vorhanden. Report-Startseite trägt den Titel 'Geberit AG - Home', bestätigt den Rechtsnamen 'Geberit AG'."
+ }
 }

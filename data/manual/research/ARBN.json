@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": 624.517,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -9.766,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Europaeischer Hersteller von Tueren, Zargen sowie Dusch- und Raumloesungen fuer Wohn- und Objektbau, mit Produktionsstandorten von Portugal bis Polen.",
+ "products_url": "https://www.arbonia.com/en/about-us/",
+ "founding_year": 1874,
+ "founding_year_source": "https://www.arbonia.com/en/about-us/history/ (\"Franz Josef Forster opens a coppersmith's shop where bedpans, pans and other containers are produced\", 1874 - Vorlaeuferunternehmen Hermann Forster AG, aus dem die heutige Arbonia AG hervorging)",
+ "employees": 3878,
+ "fiscal_year": 2025,
+ "report_url": "https://www.arbonia.com/fileadmin/content_arbonia/05_Investoren/Gesch%C3%A4fts-_und_Halbjahresberichte/Arbonia_Annual_Report_2025.pdf",
+ "note": "Arbonia hat die Climate Division im Februar 2025 verkauft; diese wird im Geschaeftsbericht 2025 durchgaengig als 'discontinued operations' separat ausgewiesen. Um die Umsatz-Gewinn-Falle (Regel 3) zu vermeiden, wurden sowohl revenue als auch profit konsistent auf Basis 'continuing operations' (ohne Climate Division) eingetragen: Net revenues CHF 624.517 Mio. und Group result from continuing operations CHF -9.766 Mio. Der Gesamtkonzerngewinn inkl. discontinued operations betrug CHF 131.867 Mio. (getrieben durch einen einmaligen Buchgewinn von CHF 141.633 Mio. aus dem Verkauf der Climate Division) - dieser waere nicht mit dem nur auf continuing operations bezogenen Umsatz vergleichbar und wurde deshalb nicht verwendet. Keine Minderheitsanteile: 'Group result' ist vollstaendig den Aktionaeren der Arbonia AG zurechenbar (keine separate NCI-Zeile in der Erfolgsrechnung). Mitarbeitende (3'878) sind laut Kennzahlenuebersicht 'Average headcount in FTE' (durchschnittliche Vollzeitaequivalente 2025, continuing operations), keine Kopfzahl.",
+ "_verification": "Net revenues (CHF 624.517 Mio., 'Continuing operations') und Group result from continuing operations (CHF -9.766 Mio.) stammen aus der Consolidated Income Statement im Arbonia Annual Report 2025 (Financial report-Abschnitt, PDF direkt von arbonia.com heruntergeladen und mit pdftotext gelesen); dort separat ausgewiesen von 'Group result from discontinued operations after taxes' (CHF 141.633 Mio.) und 'Group result' gesamt (CHF 131.867 Mio.), das im Bericht vollstaendig als 'Attributable to: Shareholders of Arbonia AG' gekennzeichnet ist. FTE-Mitarbeitendenzahl (3'878, continuing operations) stammt aus der 5-Jahres-Kennzahlenuebersicht im selben Bericht (Zeile 'Average headcount in FTE'). Gruendungsjahr (1874) wurde direkt auf der offiziellen Unternehmensgeschichte-Seite arbonia.com/en/about-us/history/ verifiziert."
+}
