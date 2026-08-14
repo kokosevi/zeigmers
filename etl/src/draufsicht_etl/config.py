@@ -58,7 +58,22 @@ MAX_PUBLIC_DATA_BYTES = 2 * 1024 * 1024
 # im Rendering noch sichtbar facettiert (oder umgekehrt: unnötig fein)
 # wirken, ist dies die eine Stelle, an der zu drehen ist.
 MUNICIPALITY_SIMPLIFY_PERCENT = 30.0
-MAX_BOUNDARIES_BYTES = 600 * 1024
+
+# Radius der Eckenrundung (`boundaries.round_municipality_corners`), in Metern
+# auf der LV95-Geometrie. Klein relativ zu den Gemeindeflächen (1–26 km²)
+# gewählt: bei 100 m verliert die kleinste betroffene Gemeinde ~6 % Fläche,
+# im Schnitt ~1 %, und alle vier Exklaven-Gemeinden (Baden, Würenlos,
+# Olsberg, Zurzach) behalten ihre Teile (siehe `_round_polygon`-Fallback für
+# Teile, die schmaler als der Radius sind). Nur für Gemeinden, nicht Kantone.
+MUNICIPALITY_ROUND_RADIUS_M = 100.0
+
+# 600 KB (vor der Eckenrundung) -> 900 KB: die gerundete Geometrie braucht
+# mehr Stützpunkte (jede Ecke wird durch einen kleinen Bogen ersetzt statt
+# eines einzelnen Punkts). Gemessen bei `MUNICIPALITY_ROUND_RADIUS_M=100`:
+# ~778 KB nach Simplify+Rundung — 900 KB lässt für künftige Jahrgänge noch
+# Luft, ohne das 2-MB-Gesamtbudget (`MAX_PUBLIC_DATA_BYTES`) zu gefährden
+# (aktuell ~1.05 MB über alle Artefakte, siehe ETL-Report).
+MAX_BOUNDARIES_BYTES = 900 * 1024
 
 # Kantone bleiben flach (nur Basiskarten-Orientierung, keine Extrusion) — eine
 # gröbere Vereinfachung fällt dort nicht als Facette auf. 7 % Toleranz ergibt

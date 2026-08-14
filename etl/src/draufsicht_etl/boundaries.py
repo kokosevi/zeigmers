@@ -10,6 +10,7 @@ from pathlib import Path
 
 import geopandas as gpd
 import pyogrio
+from shapely.geometry import MultiPolygon, Polygon
 from shapely.geometry.base import BaseGeometry
 
 from . import config
@@ -171,6 +172,78 @@ def build_cantons(gpkg_zip: Path) -> gpd.GeoDataFrame:
             "erwartet 26 — Layer oder Feldauflösung prüfen."
         )
     return cantons
+
+
+def _round_polygon(poly: Polygon, radius_m: float) -> Polygon:
+    """Rundet die Ecken eines einzelnen `Polygon` morphologisch: erodieren,
+    doppelt dilatieren, erodieren (`join_style=1` = rund) — die Standard-
+    Konstruktion, die sowohl konvexe als auch konkave Ecken abrundet.
+
+    Fällt auf die unveränderte Eingabe zurück, sobald das Ergebnis nicht mehr
+    vertrauenswürdig ist: leer (die Fläche war schmaler als `radius_m` und
+    verschwindet beim ersten Erodieren vollständig — siehe Exklaven-Test unten),
+    ungültig, kein einzelnes `Polygon` mehr (Erosion kann eine Fläche in mehrere
+    Teile spalten), oder mehr als die Hälfte ihrer Fläche verloren. Diese
+    Rückfallschwelle ist bewusst grosszügig (normale Rundung verliert bei
+    `radius_m=100` höchstens ~6 %, siehe ETL-Report) — sie fängt nur wirklich
+    fragile Formen ab, nicht die erwartete Rundung selbst.
+    """
+    shrunk = poly.buffer(-radius_m, join_style=1, quad_segs=8)
+    if shrunk.is_empty:
+        return poly
+    grown = shrunk.buffer(2 * radius_m, join_style=1, quad_segs=8)
+    result = grown.buffer(-radius_m, join_style=1, quad_segs=8)
+    if (
+        result.is_empty
+        or not result.is_valid
+        or result.geom_type != "Polygon"
+        or result.area < poly.area * 0.5
+    ):
+        return poly
+    return result
+
+
+def _round_geometry(geom: BaseGeometry, radius_m: float) -> BaseGeometry:
+    """Wendet `_round_polygon` auf jedes Teilpolygon an — bei `MultiPolygon`
+    (Exklaven: Baden, Würenlos, Olsberg, Zurzach) einzeln je Teil, damit ein
+    kleiner Exklaven-Teil, der für sich zu schmal fürs Runden ist, seinen
+    eigenen Fallback bekommt statt die ganze Gemeinde unrund zu lassen."""
+    if isinstance(geom, Polygon):
+        return _round_polygon(geom, radius_m)
+    if isinstance(geom, MultiPolygon):
+        return MultiPolygon([_round_polygon(part, radius_m) for part in geom.geoms])
+    return geom
+
+
+def round_municipality_corners(
+    gdf: gpd.GeoDataFrame, radius_m: float = config.MUNICIPALITY_ROUND_RADIUS_M
+) -> gpd.GeoDataFrame:
+    """Rundet die Gemeindeecken ab (visuelle Vorgabe: leicht abgerundete Kanten
+    wie im Referenzbild), auf der metrischen LV95-Geometrie aus `build()` —
+    **vor** `write_geojson()`/der Reprojektion nach WGS84, damit `radius_m`
+    tatsächlich Meter bedeutet.
+
+    Nur für Gemeinden aufgerufen (`cli.py`), nicht für Kantone: die Kantonsfläche
+    ist als durchgehende Platte gedacht, aus der die Gemeinden wachsen
+    (`layers/cantons.ts`) — das widerspricht dem Effekt unabhängiger Rundung
+    unten.
+
+    **Bewusster Kompromiss:** `build()` liefert Gemeinden mit exakt geteilten
+    Nachbargrenzen (aus `dissolve()`); jedes Polygon hier für sich zu runden
+    öffnet an praktisch jeder gemeinsamen Ecke einen schmalen Spalt (bei
+    `radius_m=100` im Schnitt ~1 % Flächenverlust je Gemeinde, siehe
+    ETL-Report) — die Gemeinden lesen sich danach als einzelne Platten mit
+    dunklen Fugen dazwischen statt als nahtlose Fläche. Das passt zum
+    Referenzbild (dort lesen sich auch die Länder als separate Blöcke), ist
+    aber ein sichtbarer Charakterwechsel, kein Nebeneffekt. Vereinzelt
+    (getestet: 101 von ~380 gemeinsamen Ecken bei `radius_m=100`) übersteht
+    die konkave Rundung eines Nachbarn die konvexe Rundung des anderen
+    minimal — die gemessene Überlappung bleibt aber im Bereich weniger m²
+    (max. 9 m² je Fall), weit unter jeder sichtbaren Grössenordnung.
+    """
+    out = gdf.copy()
+    out["geometry"] = gdf.geometry.apply(lambda geom: _round_geometry(geom, radius_m))
+    return out
 
 
 def write_geojson(

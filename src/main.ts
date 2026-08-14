@@ -1,6 +1,8 @@
 import './style.css'
 import { loadCantons, loadMunicipalityBoundaries, joinMunicipalityGeometry } from './data/boundaries'
 import { loadLevel, loadMeta } from './data/loader'
+import { presentGroupsFromIndices } from './domain/legendGroups'
+import { NOGA_UNKNOWN_INDEX } from './domain/noga.generated'
 import { municipalityOverstatementStats } from './domain/overstatement'
 import type { ScaleMode } from './domain/scale'
 import { buildCantonBorderLayer, buildCantonsLayer } from './layers/cantons'
@@ -82,6 +84,20 @@ async function start() {
   const companyYear =
     Math.max(0, ...companies.companies.map((c) => c.fiscalYear ?? 0)) || statentYear
 
+  // Welche Branchengruppen die Legende je Ansicht zeigt (Finding 2c): aus den
+  // tatsächlichen Rohdaten abgeleitet, nicht den elf gemessenen Gruppen
+  // unbesehen gefolgt — die meisten kommen als dominante Gemeinde- bzw.
+  // Firmenfarbe nie vor (siehe `domain/legendGroups.ts`). Beide Ansichten
+  // ändern sich nicht mit `mode`/`vmax`, deshalb einmalig hier statt in
+  // `render()`. Firmen ohne Umsatz (`placeholder: true`) färbt
+  // `layers/visible.ts` grau statt mit ihrer NOGA-Gruppe — dieselbe Regel gilt
+  // hier für die Legende, sonst könnte eine Platzhalterfirma eine Gruppe
+  // "vorführen", die auf der Karte gar nicht in ihrer Farbe erscheint.
+  const gemeindePresentGroups = presentGroupsFromIndices(gemeinde.arrays.noga)
+  const companyPresentGroups = presentGroupsFromIndices(
+    companies.companies.map((c) => (c.placeholder ? NOGA_UNKNOWN_INDEX : c.nogaGroupIndex)),
+  )
+
   let view: ViewName = 'beschaeftigte'
   let mode: ScaleMode = DEFAULT_MODE[view]
 
@@ -145,6 +161,7 @@ async function start() {
       vmax: view === 'beschaeftigte' ? vmax : companies.stats.max,
       ambiguousCells: view === 'beschaeftigte' ? gemeinde.meta.stats.ambiguousCells : 0,
       overstatementPct: view === 'beschaeftigte' ? overstatementPct : { medianPct: 0, maxPct: 0 },
+      presentGroups: view === 'beschaeftigte' ? gemeindePresentGroups : companyPresentGroups,
     })
     renderNotices(view)
   }

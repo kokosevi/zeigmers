@@ -3,7 +3,7 @@ import zipfile
 
 import geopandas as gpd
 import pytest
-from shapely.geometry import Polygon
+from shapely.geometry import MultiPolygon, Polygon
 
 from draufsicht_etl import boundaries, config
 
@@ -140,3 +140,111 @@ def test_write_geojson_cantons_is_wgs84_and_small(cantons_real, tmp_path):
     assert len(data["features"]) == 26
     for feature in data["features"]:
         assert set(feature["properties"]) >= {"bfs_nr", "name"}
+
+
+# --- round_municipality_corners (Task 1: leicht abgerundete Ecken) --------
+#
+# Koordinaten unten sind absichtlich in "Metern" grösser als die Testradien
+# gewählt (Quadrate/Sechsecke mit ~100-1000 m Kantenlänge), damit `buffer()`
+# dieselbe Grössenordnung wie die echten LV95-Koordinaten aus `build()` sieht
+# — bei viel zu kleinen Testgeometrien (z.B. den 1x1-Dreiecken weiter oben,
+# die nur bfs_nr/name prüfen) würde jede Rundung sofort den
+# "zu-schmal"-Fallback treffen und nichts über die eigentliche Rundung sagen.
+
+
+def test_round_municipality_corners_smooths_a_sharp_corner():
+    # Quadrat mit einer weit auskragenden Spitze an einer Ecke — die Spitze
+    # ist der schärfste Punkt und muss nach dem Runden verschwinden (das
+    # Ergebnis darf die Originalkoordinate der Spitze nicht mehr enthalten).
+    spike = Polygon([(0, 0), (1000, 0), (1000, 1000), (500, 1000), (500, 1300), (0, 1000)])
+    gdf = gpd.GeoDataFrame({"bfs_nr": [1], "name": ["Spitzhausen"]}, geometry=[spike], crs="EPSG:2056")
+
+    rounded = boundaries.round_municipality_corners(gdf, radius_m=50)
+    result = rounded.geometry.iloc[0]
+
+    assert result.is_valid
+    assert result.geom_type == "Polygon"
+    coords = list(result.exterior.coords)
+    assert (500, 1300) not in coords, "Spitze sollte weggerundet sein"
+    # Rundung fügt Bogenpunkte hinzu statt sie zu entfernen.
+    assert len(coords) > len(list(spike.exterior.coords))
+    # Fläche schrumpft durch die Rundung, aber nur leicht.
+    assert 0.9 * spike.area < result.area < spike.area
+
+
+def test_round_municipality_corners_keeps_a_too_small_polygon_unchanged():
+    # Ein Polygon deutlich schmaler als der Rundungsradius (100x100m bei
+    # radius_m=100) verschwindet beim ersten Erodieren vollständig — der
+    # Fallback muss die Originalgeometrie unverändert zurückgeben, nicht eine
+    # leere oder verstümmelte Fläche (siehe Exklaven-Anforderung).
+    tiny = Polygon([(0, 0), (100, 0), (100, 100), (0, 100)])
+    gdf = gpd.GeoDataFrame({"bfs_nr": [1], "name": ["Winzlingen"]}, geometry=[tiny], crs="EPSG:2056")
+
+    rounded = boundaries.round_municipality_corners(gdf, radius_m=100)
+    result = rounded.geometry.iloc[0]
+
+    assert not result.is_empty
+    assert result.equals_exact(tiny, tolerance=1e-9)
+
+
+def test_round_municipality_corners_rounds_multipolygon_parts_independently():
+    # Exklaven-Fall (Baden/Würenlos/Olsberg/Zurzach): ein grosser Hauptteil
+    # und ein winziger Exklaven-Teil, kleiner als der Radius. Der grosse Teil
+    # wird gerundet, der winzige bleibt unverändert erhalten statt zu
+    # verschwinden — beide Teile müssen im Ergebnis-`MultiPolygon` überleben.
+    main_part = Polygon([(0, 0), (1000, 0), (1000, 1000), (500, 1000), (500, 1300), (0, 1000)])
+    exclave = Polygon([(5000, 5000), (5080, 5000), (5080, 5080), (5000, 5080)])
+    multi = MultiPolygon([main_part, exclave])
+    gdf = gpd.GeoDataFrame({"bfs_nr": [1], "name": ["Exklaventikon"]}, geometry=[multi], crs="EPSG:2056")
+
+    rounded = boundaries.round_municipality_corners(gdf, radius_m=50)
+    result = rounded.geometry.iloc[0]
+
+    assert result.geom_type == "MultiPolygon"
+    assert len(result.geoms) == 2
+    assert all(part.is_valid and not part.is_empty for part in result.geoms)
+    areas = sorted((part.area for part in result.geoms))
+    # Der winzige Exklaven-Teil (6'400 m^2) bleibt praktisch unverändert...
+    assert areas[0] == pytest.approx(exclave.area, rel=1e-6)
+    # ...der grosse Teil verliert durch die Rundung sichtbar, aber wenig Fläche.
+    assert 0.9 * main_part.area < areas[1] < main_part.area
+
+
+@pytest.mark.integration
+def test_round_municipality_corners_preserves_all_gemeinden_and_exclaves(boundaries_real):
+    # Regressionstest gegen echte Daten (Task 1): keine Gemeinde darf durch
+    # die Rundung verschwinden oder ungültig werden, und alle vier bekannten
+    # Exklaven-Gemeinden müssen ihre Teilanzahl behalten.
+    gdf = boundaries_real.municipalities
+    rounded = boundaries.round_municipality_corners(gdf)
+
+    assert len(rounded) == len(gdf)
+    assert rounded.geometry.is_valid.all()
+    assert not rounded.geometry.is_empty.any()
+
+    for name in ("Baden", "Würenlos", "Olsberg", "Zurzach"):
+        before = gdf.loc[gdf["name"] == name, "geometry"].iloc[0]
+        after = rounded.loc[rounded["name"] == name, "geometry"].iloc[0]
+        assert len(after.geoms) == len(before.geoms), name
+
+    # Flächenverlust bleibt moderat — keine Gemeinde schrumpft dramatisch.
+    before_area = gdf.geometry.area
+    after_area = rounded.geometry.area
+    pct_change = (after_area - before_area) / before_area * 100
+    assert pct_change.min() > -10.0, pct_change.min()
+    assert pct_change.max() < 1.0, pct_change.max()
+
+
+@pytest.mark.integration
+def test_write_geojson_of_rounded_municipalities_stays_within_budget(boundaries_real, tmp_path):
+    # Die Rundung fügt Bogenpunkte hinzu (siehe `config.MAX_BOUNDARIES_BYTES`-
+    # Kommentar) — dieser Test ist der direkte Wächter gegen eine stille
+    # Budget-Überschreitung, falls ein künftiger Jahrgang mehr/komplexere
+    # Gemeinden liefert.
+    rounded = boundaries.round_municipality_corners(boundaries_real.municipalities)
+    out = boundaries.write_geojson(rounded, tmp_path / "b.geojson")
+    size = out.stat().st_size
+    assert size < config.MAX_BOUNDARIES_BYTES, f"{size} Bytes"
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert len(data["features"]) == len(boundaries_real.municipalities)

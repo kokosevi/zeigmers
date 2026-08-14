@@ -1,6 +1,8 @@
+import type { PresentGroups } from '../domain/legendGroups'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import type { OverstatementStats } from '../domain/overstatement'
 import { referenceTicks, type ScaleMode } from '../domain/scale'
+import { litTopFaceColor } from '../layers/litColor'
 import { OUTLINE_COLOR } from '../layers/visible'
 import { formatNumber, formatRevenue } from './format'
 import type { ViewName } from './toggle'
@@ -38,6 +40,12 @@ export interface LegendOptions {
    *  Pflichthinweis (`ui/notices.ts`), hier aber live berechnet statt als
    *  AG-2023-Literal, damit ein Kantonswechsel die richtigen Zahlen zeigt. */
   overstatementPct: OverstatementStats
+  /** Welche Branchengruppen (und ob "nicht bestimmbar") in der aktuellen
+   *  Ansicht überhaupt vorkommen (Finding 2c) — von `main.ts` aus den
+   *  tatsächlichen Rohdaten abgeleitet (`domain/legendGroups.ts`), nicht
+   *  hartcodiert, damit ein Kantons- oder Jahreswechsel automatisch die
+   *  richtige Teilmenge zeigt. */
+  presentGroups: PresentGroups
 }
 
 function box(): HTMLElement {
@@ -78,7 +86,7 @@ function outlineSwatch(): HTMLLIElement {
  *  Wird bei jedem Wechsel von Ansicht oder Skala neu aufgerufen — die
  *  Legende ist ohne Interaktion sichtbar und aktualisiert sich mit. */
 export function renderLegend(options: LegendOptions): void {
-  const { view, mode, year, vmax, ambiguousCells, overstatementPct } = options
+  const { view, mode, year, vmax, ambiguousCells, overstatementPct, presentGroups } = options
   const el = box()
 
   const title = document.createElement('div')
@@ -88,8 +96,18 @@ export function renderLegend(options: LegendOptions): void {
 
   const branchen = document.createElement('ul')
   branchen.className = 'legende-branchen'
-  for (const group of NOGA_GROUPS) branchen.appendChild(swatch(group.color, group.label))
-  branchen.appendChild(swatch(UNKNOWN_COLOR, 'nicht eindeutig bestimmbar'))
+  // Nur Gruppen, die in der aktuellen Ansicht tatsächlich eine Fläche/einen
+  // Balken einfärben (Finding 2c) — nicht mehr alle elf gemessenen Gruppen
+  // unabhängig davon, ob sie je vorkommen. Farbe kommt aus `litTopFaceColor`
+  // (Finding 2a): derselbe Ton, den die beleuchtete Deckfläche tatsächlich
+  // zeigt, nicht der rohe, ungeshadete Messwert.
+  for (const [index, group] of NOGA_GROUPS.entries()) {
+    if (!presentGroups.indices.includes(index)) continue
+    branchen.appendChild(swatch(litTopFaceColor(group.color), group.label))
+  }
+  if (presentGroups.hasUnknown) {
+    branchen.appendChild(swatch(litTopFaceColor(UNKNOWN_COLOR), 'nicht eindeutig bestimmbar'))
+  }
   if (view === 'sichtbare') branchen.appendChild(outlineSwatch())
   el.appendChild(branchen)
 

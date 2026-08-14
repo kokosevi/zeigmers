@@ -35,7 +35,11 @@ def _run_statent(force: bool) -> dict:
         force=force,
     )
     bounds = boundaries.build(zip_path, config.CANTON["bfs_nr"])
-    boundaries_out = boundaries.write_geojson(bounds.municipalities, boundaries.geojson_path())
+    # Eckenrundung nur für Gemeinden, auf der LV95-Geometrie vor der
+    # Reprojektion nach WGS84 (siehe `round_municipality_corners`) — Kantone
+    # bleiben unten unverändert, sie sind die durchgehende Basisplatte.
+    rounded_municipalities = boundaries.round_municipality_corners(bounds.municipalities)
+    boundaries_out = boundaries.write_geojson(rounded_municipalities, boundaries.geojson_path())
     print(f"[boundaries] {len(bounds.municipalities)} Gemeinden -> {boundaries_out} "
           f"({boundaries_out.stat().st_size / 1024:.0f} KB)")
 
@@ -209,7 +213,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             url, config.DATA_RAW / "swissboundaries3d.gpkg.zip", force=args.force
         )
         b = boundaries.build(zip_path, config.CANTON["bfs_nr"])
-        out = boundaries.write_geojson(b.municipalities, boundaries.geojson_path())
+        rounded_municipalities = boundaries.round_municipality_corners(b.municipalities)
+        out = boundaries.write_geojson(rounded_municipalities, boundaries.geojson_path())
         print(f"[boundaries] {len(b.municipalities)} Gemeinden, "
               f"{b.canton_lv95.area / 1e6:.0f} km2 -> {out} "
               f"({out.stat().st_size / 1024:.0f} KB)")
