@@ -18,17 +18,28 @@ export type ViewName = 'sichtbare' | 'beschaeftigte'
 
 /** Je Ansicht ein eigener Default. Ansicht B (Gemeinden) ist extrem schief
  *  verteilt und braucht die gedämpfte Skala (Exponent 0.4, siehe
- *  `domain/scale.ts`, ersetzt seit Change 6 die frühere logarithmische
- *  Skala). Ansicht A behält ihren Default `linear` (Auftrag, unverändert) —
- *  acht Firmen, deren Umsätze linear zwischen 1.5 % und 100 % der Höhe lägen.
- *  Schaltet man dort manuell auf `gedaempft`, verhält sich die Skala trotzdem
- *  sinnvoll: dieselben acht Balken liegen dann zwischen rund 19 % und 100 %
- *  (Faktor 5.3) — spürbar milder als es die frühere logarithmische Skala dort
- *  gewesen wäre (82 %–100 %, Faktor 66 im Umsatz auf nur 22 % im Bild). Die
- *  zuletzt gewaehlte Skala bleibt je Ansicht erhalten. */
+ *  `domain/scale.ts`) — seit Change 6 eine Potenzskala, nicht mehr die
+ *  ursprüngliche echte Logarithmusskala.
+ *
+ *  Namensstand (Redesign Change 5, 2026-08-14): Schlüssel und Button-Label
+ *  heissen wieder `'logarithmisch'` — der vertraute Name aus jeder anderen
+ *  Kartenanwendung, an der Stelle, an der Nutzende navigieren. Das ist eine
+ *  reine Umbenennung, keine Rückkehr zur echten `log10`-Skala: die Formel
+ *  bleibt `(v/vmax)**0.4` (siehe `domain/scale.ts` für die ausführliche
+ *  Begründung inkl. Gegenprobe mit einem gefitteten Logarithmus). Die
+ *  ehrliche Herkunft der Formel steht seither in der Eckbox
+ *  (`ui/notices.ts`), nicht mehr im Button oder in der Legende.
+ *
+ *  Ansicht A behält ihren Default `linear` (Auftrag, unverändert) — acht
+ *  Firmen, deren Umsätze linear zwischen 1.5 % und 100 % der Höhe lägen.
+ *  Schaltet man dort manuell auf `logarithmisch`, verhält sich die Skala
+ *  trotzdem sinnvoll: dieselben acht Balken liegen dann zwischen rund 19 %
+ *  und 100 % (Faktor 5.3) — spürbar milder als es die ursprüngliche echte
+ *  Logarithmusskala dort gewesen wäre (82 %–100 %, Faktor 66 im Umsatz auf
+ *  nur 22 % im Bild). Die zuletzt gewählte Skala bleibt je Ansicht erhalten. */
 export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
   sichtbare: 'linear',
-  beschaeftigte: 'gedaempft',
+  beschaeftigte: 'logarithmisch',
 }
 
 export function createToggle(
@@ -45,7 +56,7 @@ export function createToggle(
       <button data-view="beschaeftigte">Beschäftigte</button>
     </div>
     <div class="gruppe" role="radiogroup" aria-label="Höhenskala">
-      <button data-mode="gedaempft">gedämpft</button>
+      <button data-mode="logarithmisch">logarithmisch</button>
       <button data-mode="linear">linear</button>
     </div>`
 

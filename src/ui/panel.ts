@@ -1,6 +1,6 @@
 import type { Level } from '../data/loader'
 import type { Company } from '../layers/visible'
-import { formatNumber, formatRevenue } from './format'
+import { formatNumber, formatRatio, formatRevenue } from './format'
 
 export interface PanelField {
   label: string
@@ -26,6 +26,17 @@ export interface PanelContent {
   notes: string[]
   list?: PanelList
   links?: PanelLink[]
+  /** Redesign Change 1 (2026-08-14): die Obergrenzen-Notiz in
+   *  `aggregateCellContent` stand bisher gleich hoch gewichtet und weit oben
+   *  im Panel wie die Beschäftigtenzahl selbst — sie ist aber ein Vorbehalt,
+   *  keine Schlagzeile. Ein eigenes Feld statt ein weiterer Eintrag in
+   *  `notes`, weil `notes` unverändert direkt nach den Feldern erscheinen
+   *  soll (dort stehen z. B. companyContent()'s Vergleichbarkeits-Hinweise,
+   *  die an ihrer bisherigen, prominenteren Stelle bleiben). `footnote` wird
+   *  von `renderContent` zuunterst gerendert, unterhalb der Branchen-Liste,
+   *  in kleinerer Schrift (`.panel-fussnote`, siehe `style.css`) — Wortlaut
+   *  unverändert, nur Gewicht und Position. */
+  footnote?: string
 }
 
 // Titel der Kantonszelle (Ansicht B, Kantonstufe). Default nur ein Fallback
@@ -57,6 +68,16 @@ export function municipalityName(level: Level, index: number): string | null {
   return gemeinde?.name ?? null
 }
 
+// Change 2 (2026-08-14): `einwohnerzahl` aus swissBOUNDARIES3D
+// (`tlm_hoheitsgebiet`, Attribut EINWOHNERZAHL) bezieht sich laut
+// Nachführungsinformationen swissBOUNDARIES3D Ausgabe 2026 auf den
+// 31.12.2024 — ein anderes Jahr als die STATENT-Beschäftigten (2023). Beide
+// Zahlen trotzdem zu einer Kennzahl zu verrechnen ist informativ (siehe
+// Kommentar bei der Feldzeile unten), aber nur ehrlich, wenn der
+// Jahresunterschied direkt daneben steht statt stillschweigend verschwiegen
+// zu werden.
+const POPULATION_YEAR_NOTE = 'Bevölkerung 2024, Beschäftigte 2023'
+
 /** Gemeinde- oder Kantonszelle: Summe (als Obergrenze ausgewiesen), volle
  *  Verteilung über alle Branchengruppen aus `dist`. */
 export function aggregateCellContent(level: Level, index: number): PanelContent {
@@ -65,6 +86,11 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
 
   let title = `Kanton ${cantonName}`
   let ambiguousHere: number | null = null
+  // Bevölkerung für die Beschäftigte-je-Einwohner-Zeile unten: bei einer
+  // konkreten Gemeinde deren eigene `einwohnerzahl`, sonst (Kantonszelle,
+  // heute nicht verdrahtet, aber der Vollständigkeit halber unterstützt) die
+  // über `aggregate.stats()` aufsummierte Kantonsbevölkerung.
+  let einwohnerzahl: number | undefined
   if (level.meta.level === 'gemeinde' && gemeindeIdx && level.meta.gemeinden) {
     const gemeindeNr = gemeindeIdx[index] ?? -1
     const gemeinde = level.meta.gemeinden[gemeindeNr]
@@ -74,7 +100,10 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
       // keine Neuberechnung im Browser durch Scan aller Hektarzellen mehr
       // nötig (siehe Abschluss-Review, deferred finding zu aggregate.py).
       ambiguousHere = gemeinde.ambiguousCells
+      einwohnerzahl = gemeinde.einwohnerzahl
     }
+  } else {
+    einwohnerzahl = level.meta.stats.population
   }
 
   const overstatement =
@@ -99,15 +128,30 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
     for (const entry of entries) items.push(`${entry.label}: ${formatNumber(entry.value)}`)
   }
 
+  const fields: PanelField[] = [{ label: 'Beschäftigte (Summe)', value: formatNumber(value) }]
+  // Weder fehlende (`undefined`, ältere Artefakte/Exklaven-Teilpolygone ohne
+  // Wert) noch exakt 0 Einwohner:innen dürfen eine Division durch 0 oder eine
+  // Scheinzahl ergeben — die Zeile erscheint dann schlicht nicht, statt einen
+  // erfundenen oder unendlichen Wert zu zeigen. Ein Wert über 1 heisst mehr
+  // Arbeitsplätze als Einwohner:innen — ein Arbeitsplatz- statt ein
+  // Wohnort-Schwerpunkt, die Information, die die reine Beschäftigtenzahl
+  // allein nicht zeigt.
+  if (einwohnerzahl !== undefined && einwohnerzahl > 0) {
+    fields.push({
+      label: 'Beschäftigte je Einwohner',
+      value: `${formatRatio(value / einwohnerzahl)} (${POPULATION_YEAR_NOTE})`,
+    })
+  }
+
   return {
     title,
-    fields: [{ label: 'Beschäftigte (Summe)', value: formatNumber(value) }],
-    notes: [
-      `Diese Summe ist eine Obergrenze, keine exakte Zahl: bis zu ` +
-        `${formatNumber(overstatement)} Beschäftigte zu viel, weil Hektaren mit ` +
-        `dem Wert 4 ${scope} auf 4 aufgerundet wurden.`,
-    ],
+    fields,
+    notes: [],
     list: { caption: 'Verteilung nach Branchengruppe', items },
+    footnote:
+      `Diese Summe ist eine Obergrenze, keine exakte Zahl: bis zu ` +
+      `${formatNumber(overstatement)} Beschäftigte zu viel, weil Hektaren mit ` +
+      `dem Wert 4 ${scope} auf 4 aufgerundet wurden.`,
   }
 }
 
@@ -207,6 +251,15 @@ function renderContent(box: HTMLElement, content: PanelContent): void {
     a.target = '_blank'
     a.rel = 'noopener noreferrer'
     p.appendChild(a)
+    box.appendChild(p)
+  }
+
+  // Change 1 (2026-08-14): ganz unten, kleiner als alles andere im Panel —
+  // ein Vorbehalt, keine Schlagzeile (siehe `PanelContent.footnote`).
+  if (content.footnote) {
+    const p = document.createElement('p')
+    p.className = 'panel-fussnote'
+    p.textContent = content.footnote
     box.appendChild(p)
   }
 

@@ -81,9 +81,32 @@ def top3(dist: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return groups, values
 
 
+def _clean_population(value: object) -> int:
+    """Normalisiert `einwohnerzahl` zu einem sauberen `int` — nie zu einem
+    erfundenen Wert oder einem `NaN`, das später in `ui/panel.ts` eine
+    Division durch 0 oder eine NaN-Kennzahl ergäbe (Change 2: Beschäftigte je
+    Einwohner). `boundaries.build()` normalisiert NaN bereits zu 0, das hier
+    ist die zweite, unabhängige Verteidigungslinie für Aufrufer, die
+    `municipalities` an `_municipality_lookup` vorbeischleusen (z. B. Tests
+    ohne `einwohnerzahl`-Spalte)."""
+    if value is None:
+        return 0
+    try:
+        if math.isnan(value):  # type: ignore[arg-type]
+            return 0
+    except TypeError:
+        pass
+    return int(value)  # type: ignore[arg-type]
+
+
 def _municipality_lookup(municipalities: gpd.GeoDataFrame) -> tuple[dict[int, int], list[dict]]:
+    has_population = "einwohnerzahl" in municipalities.columns
     entries = [
-        {"bfsNr": int(row.bfs_nr), "name": str(row.name)}
+        {
+            "bfsNr": int(row.bfs_nr),
+            "name": str(row.name),
+            "einwohnerzahl": _clean_population(row.einwohnerzahl) if has_population else 0,
+        }
         for row in municipalities.sort_values("bfs_nr").itertuples()
     ]
     return {e["bfsNr"]: i for i, e in enumerate(entries)}, entries
@@ -184,6 +207,16 @@ def stats(level: LevelData, *, source: LevelData | None = None) -> dict:
     basis = source if source is not None else level
     ambiguous = int(((basis.flags & config.FLAG_AMBIGUOUS) > 0).sum())
     values = level.value
+    # Change 2 (Beschäftigte je Einwohner, kantonsweit): `level.gemeinden`
+    # trägt immer die vollständige, ungefilterte 196-Gemeinden-Tabelle (auch
+    # auf der Gemeindestufe, deren `value`-Array durch `keep = value > 0`
+    # gefiltert sein kann, siehe `build_municipality`) — die Summe hier ist
+    # deshalb unabhängig von Stufe/Filter dieselbe Kantonsbevölkerung.
+    population = (
+        sum(_clean_population(e.get("einwohnerzahl", 0)) for e in level.gemeinden)
+        if level.gemeinden is not None
+        else 0
+    )
     return {
         "min": float(values.min()) if values.size else 0.0,
         "max": float(values.max()) if values.size else 0.0,
@@ -191,6 +224,7 @@ def stats(level: LevelData, *, source: LevelData | None = None) -> dict:
         "p99": float(np.percentile(values, 99)) if values.size else 0.0,
         "ambiguousCells": ambiguous,
         "overstatementMax": 3 * ambiguous,
+        "population": population,
     }
 
 

@@ -37,10 +37,23 @@ function aggregateLevel(
     dist?: number[]
     gemeinden?: LevelMeta['gemeinden']
     gemeindeIdx?: number
+    population?: number
   },
 ): Level {
   return {
-    meta: baseMeta({ level: opts.level, gemeinden: opts.gemeinden }),
+    meta: baseMeta({
+      level: opts.level,
+      gemeinden: opts.gemeinden,
+      stats: {
+        min: 4,
+        max: 100,
+        sum: 104,
+        p99: 100,
+        ambiguousCells: 1,
+        overstatementMax: 3,
+        population: opts.population,
+      },
+    }),
     arrays: {
       positions: new Float32Array([8.0, 47.4]),
       values: new Float32Array([opts.value ?? 1000]),
@@ -80,8 +93,16 @@ describe('aggregateCellContent', () => {
       aggregateLevel({ level: 'kanton', value: 383203 }),
       0,
     )
-    expect(content.notes[0]).toMatch(/Obergrenze/)
-    expect(content.notes[0]).toMatch(/keine exakte Zahl/)
+    expect(content.footnote).toMatch(/Obergrenze/)
+    expect(content.footnote).toMatch(/keine exakte Zahl/)
+  })
+
+  // Change 1 (2026-08-14): die Obergrenzen-Notiz ist jetzt `footnote`, nicht
+  // mehr Teil von `notes` — sie soll unten im Panel erscheinen, kleiner
+  // gewichtet, `notes` bleibt für Hinweise auf Feld-Ebene reserviert.
+  it('no longer places the upper-bound note in notes', () => {
+    const content = aggregateCellContent(aggregateLevel({ level: 'kanton' }), 0)
+    expect(content.notes).toEqual([])
   })
 
   it('scopes the overstatement figure to the municipality, using its own ambiguous count', () => {
@@ -94,18 +115,18 @@ describe('aggregateCellContent', () => {
       0,
     )
     expect(content.title).toBe('Baden')
-    expect(content.notes[0]).toContain('in dieser Gemeinde')
+    expect(content.footnote).toContain('in dieser Gemeinde')
     // 3 * ambiguousCells (12) = 36, nicht die kantonsweite overstatementMax (3).
-    expect(content.notes[0]).toContain('36')
-    expect(content.notes[0]).not.toContain('im ganzen Kanton')
+    expect(content.footnote).toContain('36')
+    expect(content.footnote).not.toContain('im ganzen Kanton')
   })
 
   it('falls back to the canton-wide overstatement figure when there is no municipality', () => {
     const content = aggregateCellContent(aggregateLevel({ level: 'kanton' }), 0)
-    expect(content.notes[0]).toContain('im ganzen Kanton')
+    expect(content.footnote).toContain('im ganzen Kanton')
     // overstatementMax aus stats (3) statt einer Gemeindezahl.
-    expect(content.notes[0]).toContain('3')
-    expect(content.notes[0]).not.toContain('in dieser Gemeinde')
+    expect(content.footnote).toContain('3')
+    expect(content.footnote).not.toContain('in dieser Gemeinde')
   })
 
   it('uses the configured canton name for the canton-level title', () => {
@@ -113,6 +134,59 @@ describe('aggregateCellContent', () => {
     const content = aggregateCellContent(aggregateLevel({ level: 'kanton' }), 0)
     expect(content.title).toBe('Kanton Zürich')
     configureCanton('Aargau') // andere Tests nicht beeinflussen
+  })
+
+  // Change 2 (2026-08-14): Beschäftigte je Einwohner, direkt nach der Summe.
+  describe('employees per inhabitant', () => {
+    it('adds the ratio directly after the employee count, noting the differing years', () => {
+      const gemeinden: LevelMeta['gemeinden'] = [
+        { bfsNr: 4001, name: 'Islisberg', ambiguousCells: 0, einwohnerzahl: 692 },
+      ]
+      const content = aggregateCellContent(
+        aggregateLevel({ level: 'gemeinde', gemeinden, gemeindeIdx: 0, value: 99 }),
+        0,
+      )
+      expect(content.fields[0]?.label).toBe('Beschäftigte (Summe)')
+      expect(content.fields[1]?.label).toBe('Beschäftigte je Einwohner')
+      expect(content.fields[1]?.value).toMatch(/^0[.,]14\b/) // 99 / 692 ≈ 0.1431
+      expect(content.fields[1]?.value).toContain('2024')
+      expect(content.fields[1]?.value).toContain('2023')
+    })
+
+    it('omits the ratio when einwohnerzahl is missing (no crash, no fabricated ratio)', () => {
+      const gemeinden: LevelMeta['gemeinden'] = [
+        { bfsNr: 4001, name: 'Ohne Bevölkerungszahl', ambiguousCells: 0 },
+      ]
+      const content = aggregateCellContent(
+        aggregateLevel({ level: 'gemeinde', gemeinden, gemeindeIdx: 0, value: 99 }),
+        0,
+      )
+      expect(content.fields).toHaveLength(1)
+      expect(content.fields.find((f) => f.label.includes('Einwohner'))).toBeUndefined()
+    })
+
+    it('omits the ratio when einwohnerzahl is exactly zero (no division by zero)', () => {
+      const gemeinden: LevelMeta['gemeinden'] = [
+        { bfsNr: 4001, name: 'Nullgemeinde', ambiguousCells: 0, einwohnerzahl: 0 },
+      ]
+      const content = aggregateCellContent(
+        aggregateLevel({ level: 'gemeinde', gemeinden, gemeindeIdx: 0, value: 99 }),
+        0,
+      )
+      expect(content.fields).toHaveLength(1)
+      expect(
+        content.fields.some((f) => f.value.includes('Infinity') || f.value.includes('NaN')),
+      ).toBe(false)
+    })
+
+    it('falls back to the canton-wide population for a canton-level cell', () => {
+      const content = aggregateCellContent(
+        aggregateLevel({ level: 'kanton', value: 383203, population: 735808 }),
+        0,
+      )
+      expect(content.fields[1]?.label).toBe('Beschäftigte je Einwohner')
+      expect(content.fields[1]?.value).toMatch(/^0[.,]52\b/) // 383203 / 735808 ≈ 0.5208
+    })
   })
 })
 

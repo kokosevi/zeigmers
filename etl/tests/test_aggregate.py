@@ -110,6 +110,73 @@ def _municipalities():
     )
 
 
+def _municipalities_with_population(einwohnerzahl=(22710, 23853)):
+    import geopandas as gpd
+    from shapely.geometry import box
+
+    return gpd.GeoDataFrame(
+        {"bfs_nr": [4001, 4002], "name": ["Aarau", "Baden"], "einwohnerzahl": list(einwohnerzahl)},
+        geometry=[box(2600000, 1200000, 2601000, 1201000),
+                  box(2601000, 1200000, 2602000, 1201000)],
+        crs=config.SRC_LV95,
+    )
+
+
+# --- Change 2: Beschäftigte je Einwohner — einwohnerzahl in `gemeinden` und
+# `stats()["population"]` ------------------------------------------------
+
+
+def test_hectare_entries_carry_einwohnerzahl_when_present(table):
+    cells = _cells([10.0, 6.0], [[10.0], [6.0]], [28], gmde=[4001, 4002])
+    level = aggregate.build_hectare(cells, table, _municipalities_with_population())
+    by_bfs = {e["bfsNr"]: e["einwohnerzahl"] for e in level.gemeinden}
+    assert by_bfs == {4001: 22710, 4002: 23853}
+
+
+def test_hectare_entries_default_einwohnerzahl_to_zero_when_column_missing(table):
+    # Ältere/synthetische `municipalities`-Tabellen ohne `einwohnerzahl`-Spalte
+    # (wie `_municipalities()` oben) dürfen nicht crashen — 0 statt Absturz.
+    cells = _cells([10.0, 6.0], [[10.0], [6.0]], [28], gmde=[4001, 4002])
+    level = aggregate.build_hectare(cells, table, _municipalities())
+    assert all(e["einwohnerzahl"] == 0 for e in level.gemeinden)
+
+
+def test_hectare_entries_normalise_nan_population_to_zero(table):
+    # swissBOUNDARIES3D führt laut Objektkatalog keinen Wert für
+    # Exklaven-Teilpolygone — muss zu 0 werden, nie zu NaN durchgereicht.
+    cells = _cells([10.0], [[10.0]], [28], gmde=[4001])
+    munis = _municipalities_with_population((float("nan"), 23853))
+    level = aggregate.build_hectare(cells, table, munis)
+    assert level.gemeinden[0]["einwohnerzahl"] == 0
+
+
+def test_stats_sums_population_across_all_gemeinden(table):
+    # Die Summe zaehlt immer die volle 196(hier: 2)-Gemeinden-Tabelle, nicht
+    # nur die im aktuellen `value`-Array ueberlebenden Zeilen (siehe
+    # `build_municipality`s `keep`-Filter) — sonst waere die Kantonssumme von
+    # der zufaelligen Reihenfolge/Filterung der Aufrufstufe abhaengig.
+    cells = _cells([10.0, 6.0], [[10.0], [6.0]], [28], gmde=[4001, 4002])
+    munis = _municipalities_with_population()
+    hectare = aggregate.build_hectare(cells, table, munis)
+    municipality = aggregate.build_municipality(hectare, munis)
+
+    assert aggregate.stats(hectare)["population"] == 22710 + 23853
+    assert aggregate.stats(municipality, source=hectare)["population"] == 22710 + 23853
+
+
+def test_stats_population_is_zero_when_gemeinden_is_absent(table):
+    # Kantonsstufe (`build_canton`) traegt kein `gemeinden` — `stats()` darf
+    # daran nicht scheitern.
+    cells = _cells([10.0], [[10.0]], [28])
+    munis = _municipalities_with_population()
+    hectare = aggregate.build_hectare(cells, table, munis)
+    from shapely.geometry import box
+
+    canton = aggregate.build_canton(hectare, box(2600000, 1200000, 2602000, 1201000))
+    assert canton.gemeinden is None
+    assert aggregate.stats(canton)["population"] == 0
+
+
 def test_build_municipality_sums_totals(table):
     cells = _cells([10.0, 4.0, 6.0], [[10.0], [4.0], [6.0]], [28],
                    gmde=[4001, 4001, 4002])

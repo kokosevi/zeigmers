@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatNumber, formatRevenue } from './format'
+import { formatNumber, formatRatio, formatRevenue } from './format'
 
 describe('formatNumber', () => {
   it('uses a thousands separator', () => {
@@ -27,5 +27,20 @@ describe('formatRevenue', () => {
 
   it('falls back to a plain number below a million', () => {
     expect(formatRevenue(820_000, 'CHF')).toMatch(/820/)
+  })
+})
+
+describe('formatRatio', () => {
+  it('always shows exactly two decimal digits', () => {
+    expect(formatRatio(0.1431)).toMatch(/^0[.,]14$/)
+    expect(formatRatio(1.6150)).toMatch(/^1[.,]6[12]$/) // 1.615 rounds to 1.61 or 1.62 depending on banker's rounding
+  })
+
+  it('pads a whole number with trailing zeros', () => {
+    expect(formatRatio(2)).toMatch(/^2[.,]00$/)
+  })
+
+  it('handles zero', () => {
+    expect(formatRatio(0)).toMatch(/^0[.,]00$/)
   })
 })

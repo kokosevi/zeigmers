@@ -22,6 +22,13 @@ _CANTON_LAYER_NEEDLES = ["kantonsgebiet"]
 _BFS_FIELD_NEEDLES = ["bfs_nummer", "bfs_nr", "gemeindenummer"]
 _NAME_FIELD_NEEDLES = ["name", "gemeindename"]
 _CANTON_FIELD_NEEDLES = ["kantonsnummer", "kanton_nr", "kantonsnr"]
+# Change 2 (2026-08-14): `einwohnerzahl` trägt laut swissBOUNDARIES3D-
+# Objektkatalog (Attribut EINWOHNERZAHL, TLM_HOHEITSGEBIET) die Einwohnerzahl
+# der Gemeinde, Stand 31.12.2024 laut den Nachführungsinformationen der
+# Ausgabe 2026 — ein anderes Jahr als die STATENT-Beschäftigten (2023). Siehe
+# `aggregate._municipality_lookup` bzw. `ui/panel.ts` für die Weiterverarbeitung
+# und den Jahreshinweis.
+_POPULATION_FIELD_NEEDLES = ["einwohnerzahl"]
 
 
 @dataclass
@@ -99,6 +106,7 @@ def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
     canton_col = _find_column(list(gdf.columns), _CANTON_FIELD_NEEDLES)
     bfs_col = _find_column(list(gdf.columns), _BFS_FIELD_NEEDLES)
     name_col = _find_column(list(gdf.columns), _NAME_FIELD_NEEDLES)
+    population_col = _find_column(list(gdf.columns), _POPULATION_FIELD_NEEDLES)
 
     # Der Layer enthält auch Enklaven ohne Schweizer Kanton (FL-Gemeinden,
     # Büsingen am Hochrhein, Campione d'Italia) mit leerer Kantonsnummer.
@@ -125,10 +133,16 @@ def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
     gdf = gdf.set_crs(config.SRC_LV95, allow_override=True)
 
     municipalities = (
-        gdf[[bfs_col, name_col, "geometry"]]
-        .rename(columns={bfs_col: "bfs_nr", name_col: "name"})
+        gdf[[bfs_col, name_col, population_col, "geometry"]]
+        .rename(columns={bfs_col: "bfs_nr", name_col: "name", population_col: "einwohnerzahl"})
+        # Laut Objektkatalog führen Exklaven-Teilpolygone keinen Wert für
+        # EINWOHNERZAHL (siehe swissBOUNDARIES3D-Produktinformation, Abschnitt
+        # 2.3) — NaN wird hier zu 0 normalisiert, bevor `dissolve()` mehrere
+        # Zeilen desselben `bfs_nr` zu einer zusammenführt (aggfunc "first"
+        # unten würde ein NaN sonst unverändert durchreichen).
+        .assign(einwohnerzahl=lambda d: d["einwohnerzahl"].fillna(0))
         .dissolve(by=["bfs_nr", "name"], as_index=False)  # Exklaven zusammenführen
-        .astype({"bfs_nr": "int32"})
+        .astype({"bfs_nr": "int32", "einwohnerzahl": "int64"})
         .sort_values("bfs_nr")
         .reset_index(drop=True)
     )

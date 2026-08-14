@@ -9,19 +9,36 @@ import type { ViewName } from './toggle'
  *  Verweis aufs Klick-Panel für den exakten Betrag je Gemeinde, und der
  *  Flächenverzerrungs-Hinweis (Höhe vs. Grundfläche). Vorheriger, längerer
  *  Wortlaut: siehe Git-Historie bzw. Redesign-Report (`.superpowers/
- *  redesign-report.md`), Abschnitt „Pflichthinweis vorher/nachher". */
+ *  redesign-report.md`), Abschnitt „Pflichthinweis vorher/nachher". Der erste
+ *  Satz von `beschaeftigte` wurde am selben Tag (Change 4) noch einmal
+ *  umformuliert — Statistik-Jargon durch Alltagssprache ersetzt, siehe
+ *  Kommentar direkt darüber; die drei übrigen Sätze sind seit Change 1
+ *  unverändert. */
 const HAUPT: Record<ViewName, string> = {
-  // Wörtlich aus den Global Constraints des Umsetzungsplans — nicht
-  // umformulieren. Der frühere zweite Satz zur Währungsvermischung ist
-  // entfallen: dieselbe Aussage steht jetzt, wortgleich mit der Legende
-  // zuvor, in `CURRENCY_NOTE` direkt darunter — zwei Sätze für dieselbe
-  // Tatsache in derselben Box wären in einer bewusst ruhigen Ecke Redundanz,
-  // keine zusätzliche Information.
+  // Der frühere zweite Satz zur Währungsvermischung ist entfallen: dieselbe
+  // Aussage steht jetzt, wortgleich mit der Legende zuvor, in `CURRENCY_NOTE`
+  // direkt darunter — zwei Sätze für dieselbe Tatsache in derselben Box
+  // wären in einer bewusst ruhigen Ecke Redundanz, keine zusätzliche
+  // Information.
   sichtbare:
     'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.',
+  // Redesign Change 4 (2026-08-14): der erste Satz stand vorher als
+  // «BFS rundet Werte unter 4 auf 4 auf — Gemeindesummen sind Obergrenzen
+  // (Median +16 %, einzelne Gemeinden bis +54 %)» — korrekt, aber in
+  // Statistik-Jargon («rundet auf», «Obergrenzen», zwei nackte
+  // Prozentzahlen), der erklärt, was passiert, aber nicht, was es für die
+  // Leserin bedeutet. Der neue Satz sagt dieselbe Sache in Alltagssprache:
+  // das BFS veröffentlicht für sehr kleine Betriebe keine genauen Zahlen
+  // (der eigentliche Grund für die Rundung), und die beiden Zahlen bleiben
+  // erhalten — nur als Bruchteil statt als Prozentzahl, näher an der
+  // Grössenordnung, die eine Leserin sich vorstellen kann. Die übrigen drei
+  // Sätze (Verweis aufs Klick-Panel, Höhe/Fläche-Verzerrung) sind wörtlich
+  // unverändert.
   beschaeftigte:
-    'BFS rundet Werte unter 4 auf 4 auf — Gemeindesummen sind Obergrenzen ' +
-    '(Median +16 %, einzelne Gemeinden bis +54 %). Genauer Betrag je Gemeinde: ' +
+    'Für sehr kleine Betriebe veröffentlicht das BFS keine genauen Zahlen — ' +
+    'alles unter 4 Beschäftigten wird als 4 ausgewiesen. Die Gemeindesummen ' +
+    'hier sind deshalb etwas zu hoch: im Schnitt um rund ein Sechstel, in ' +
+    'kleinen Gemeinden bis zur Hälfte. Genauer Betrag je Gemeinde: ' +
     'Klick-Panel. Höhe = Beschäftigte, Grundfläche = Gemeindefläche — grosse ' +
     'Gemeinden wirken dadurch gewichtiger, als sie sind.',
 }
@@ -40,6 +57,19 @@ const CURRENCY_NOTE =
 const FOOTER =
   'Quelle: Bundesamt für Statistik (BFS), Statistik der Unternehmensstruktur (STATENT) 2023 · ' +
   'Gemeindegrenzen: swisstopo, swissBOUNDARIES3D · Basiskarte: swisstopo'
+
+// Redesign Change 5 (2026-08-14): der Skalenschalter (`ui/toggle.ts`) und die
+// Legende nennen den Modus wieder «logarithmisch» — der vertraute Name aus
+// jeder anderen Kartenanwendung, an der Stelle, an der Nutzende navigieren,
+// nicht behaupten. Die Formel dahinter ist unverändert eine Potenzskala
+// (`(v/vmax)**0,4`, siehe `domain/scale.ts`), keine echte Logarithmusfunktion
+// — eine an dieselbe Kurve gefittete echte Logarithmusskala drückt die
+// kleinste Gemeinde auf rund 81 statt 256 Meter, praktisch flach. Diese Box
+// trägt bereits Quelle, Lizenz und Vorbehalte; sie ist die Stelle, an der
+// eine Behauptung nachprüfbar sein muss, nicht der Button selbst.
+const SCALE_NOTE =
+  'Höhenskala «logarithmisch»: rechnerisch eine Potenzfunktion mit Exponent ' +
+  '0,4, keine echte Logarithmusfunktion.'
 
 // Zweite Quellenzeile, nur in Ansicht A: die Fixzeile oben nennt STATENT und
 // swisstopo, aber jede Zahl in Ansicht A stammt aus keiner dieser Quellen,
@@ -73,5 +103,9 @@ export function renderNotices(view: ViewName): void {
   box.appendChild(paragraph(HAUPT[view], 'hinweis-haupt'))
   if (view === 'sichtbare') box.appendChild(paragraph(CURRENCY_NOTE, 'hinweis-haupt'))
   box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
+  // Unabhängig von der Ansicht: der Skalenschalter (und damit die Formel, um
+  // die es hier geht) ist in beiden Ansichten sichtbar und bedienbar, nicht
+  // nur in Ansicht B.
+  box.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
   if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
 }

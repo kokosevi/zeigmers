@@ -13,6 +13,13 @@ export interface LevelStats {
   p99: number
   ambiguousCells: number
   overstatementMax: number
+  /** Summe `einwohnerzahl` über alle Gemeinden (Change 2, 2026-08-14) —
+   *  Bevölkerungsstand 31.12.2024 (swissBOUNDARIES3D, siehe
+   *  `ui/panel.ts`), nicht dasselbe Jahr wie die STATENT-Beschäftigten
+   *  (2023). Optional statt Pflichtfeld: ältere Artefakte/Test-Fixtures ohne
+   *  dieses Feld sollen nicht am Typ scheitern, `ui/panel.ts` behandelt ein
+   *  fehlendes Feld wie eine unbekannte Bevölkerung, nicht wie 0-durch-0. */
+  population?: number
 }
 
 export interface LevelMeta {
@@ -25,7 +32,18 @@ export interface LevelMeta {
   unknownColor: string
   unknownIndex: number
   stats: LevelStats
-  gemeinden?: { bfsNr: number; name: string; ambiguousCells: number }[]
+  gemeinden?: {
+    bfsNr: number
+    name: string
+    ambiguousCells: number
+    /** Einwohnerzahl, Stand 31.12.2024 (swissBOUNDARIES3D-Objektkatalog,
+     *  Attribut `EINWOHNERZAHL`; siehe `etl/src/draufsicht_etl/boundaries.py`).
+     *  Optional: das Feld fehlt in älteren Artefakten/Test-Fixtures, und der
+     *  swisstopo-Objektkatalog garantiert ohnehin keinen Wert für jede Zeile
+     *  (Exklaven-Teilpolygone führen keinen) — `ui/panel.ts` behandelt beides
+     *  gleich, nie als Grundlage einer Division durch 0. */
+    einwohnerzahl?: number
+  }[]
 }
 
 export interface LevelArrays {

@@ -47,6 +47,7 @@ def test_build_drops_rows_without_kantonsnummer(tmp_path, capsys):
             "bfs_nummer": [4001, 7001],
             "name": ["Aarau", "Vaduz"],
             "kantonsnummer": [19.0, float("nan")],
+            "einwohnerzahl": [22710, 40000],
             "geometry": [
                 Polygon([(0, 0), (1, 0), (1, 1)]),
                 Polygon([(10, 10), (11, 10), (11, 11)]),
@@ -63,7 +64,40 @@ def test_build_drops_rows_without_kantonsnummer(tmp_path, capsys):
 
     assert list(b.municipalities["bfs_nr"]) == [4001]
     assert list(b.municipalities["name"]) == ["Aarau"]
+    assert list(b.municipalities["einwohnerzahl"]) == [22710]
     assert "1 Zeilen ohne Kantonsnummer verworfen" in capsys.readouterr().out
+
+
+def test_build_normalises_a_missing_einwohnerzahl_to_zero(tmp_path):
+    # Change 2 (Beschäftigte je Einwohner): der Objektkatalog garantiert
+    # EINWOHNERZAHL nicht für jede Zeile (Exklaven-Teilpolygone führen laut
+    # Produktinformation keinen Wert). build() darf daran nicht scheitern und
+    # darf auch keinen NaN durchreichen, der später in `aggregate.py`/
+    # `ui/panel.ts` eine Division-durch-0 oder eine NaN-Kennzahl ergäbe.
+    #
+    # Eigener Dateiname (nicht "boundaries.gpkg" wie oben): `boundaries._extract`
+    # cached das entpackte .gpkg unter seinem Namen in `data/interim/
+    # swissboundaries/` — real, nicht pro Test isoliert. Ein wiederverwendeter
+    # Name würde hier den Inhalt des vorigen Tests laden statt den eigenen.
+    gpkg_path = tmp_path / "boundaries_nan_population.gpkg"
+    gpd.GeoDataFrame(
+        {
+            "bfs_nummer": [4001],
+            "name": ["Ohnebevölkerung"],
+            "kantonsnummer": [19.0],
+            "einwohnerzahl": [float("nan")],
+            "geometry": [Polygon([(0, 0), (1, 0), (1, 1)])],
+        },
+        crs="EPSG:2056",
+    ).to_file(gpkg_path, layer="tlm_hoheitsgebiet", driver="GPKG")
+
+    zip_path = tmp_path / "boundaries_nan_population.gpkg.zip"
+    with zipfile.ZipFile(zip_path, "w") as zf:
+        zf.write(gpkg_path, arcname=gpkg_path.name)
+
+    b = boundaries.build(zip_path, 19)
+
+    assert list(b.municipalities["einwohnerzahl"]) == [0]
 
 
 @pytest.mark.integration

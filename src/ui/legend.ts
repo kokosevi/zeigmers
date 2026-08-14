@@ -1,10 +1,7 @@
 import type { PresentGroups } from '../domain/legendGroups'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
-import type { OverstatementStats } from '../domain/overstatement'
-import { referenceTicks, type ScaleMode } from '../domain/scale'
 import { litTopFaceColor } from '../layers/litColor'
 import { OUTLINE_COLOR } from '../layers/visible'
-import { formatNumber, formatRevenue } from './format'
 import type { ViewName } from './toggle'
 
 const OUTLINE_LEGEND_TEXT =
@@ -19,27 +16,17 @@ const UNIT_LABEL: Record<ViewName, string> = {
   sichtbare: 'Jahresumsatz',
 }
 
-// «gedämpft» nennt den Exponenten mit, nicht nur den Modusnamen (Change 6) —
-// «logarithmisch» wäre für eine Potenzskala (`h = (v/vmax)**0.4 * maxHeight`,
-// siehe `domain/scale.ts`) schlicht falsch, und dieses Projekt behauptet in
-// der Oberfläche nichts, was sich nicht nachprüfen lässt. Der Exponent selbst
-// steht deshalb direkt im Label, nicht nur im Code.
-const MODE_LABEL: Record<ScaleMode, string> = {
-  gedaempft: 'gedämpft (Exponent 0,4)',
-  linear: 'linear',
-}
-
+// Redesign Change 3 (2026-08-14): weder die Höhen-/Stützwerte-Zeile noch die
+// Mehrdeutigkeits-Zeile stehen hier noch — beide sind entfallen (siehe
+// `renderLegend` unten). `mode`, `vmax`, `ambiguousCells`, `overstatementPct`
+// wurden darum aus `LegendOptions` entfernt statt sie unbenutzt mitzuführen;
+// `main.ts` reicht sie entsprechend nicht mehr durch. Die Skala heisst im
+// Button (`ui/toggle.ts`) und in der Eckbox (`ui/notices.ts`, mit der
+// ehrlichen Formel) weiterhin «logarithmisch» — die Legende selbst nennt gar
+// keinen Skalenmodus mehr, es gibt hier nichts mehr, das ihn bräuchte.
 export interface LegendOptions {
   view: ViewName
-  mode: ScaleMode
   year: number
-  vmax: number
-  ambiguousCells: number
-  /** Median/Maximum der Überschätzung je Gemeinde in Prozent (siehe
-   *  `domain/overstatement.ts`) — dieselbe Grösse und Formulierung wie im
-   *  Pflichthinweis (`ui/notices.ts`), hier aber live berechnet statt als
-   *  AG-2023-Literal, damit ein Kantonswechsel die richtigen Zahlen zeigt. */
-  overstatementPct: OverstatementStats
   /** Welche Branchengruppen (und ob "nicht bestimmbar") in der aktuellen
    *  Ansicht überhaupt vorkommen (Finding 2c) — von `main.ts` aus den
    *  tatsächlichen Rohdaten abgeleitet (`domain/legendGroups.ts`), nicht
@@ -81,12 +68,12 @@ function outlineSwatch(): HTMLLIElement {
   return li
 }
 
-/** Zeigt fix: Branchenfarben, graue Restkategorie, aktive Skala mit drei
- *  Stützwerten, Datenjahr, Quellenzeile und die Einheit der aktuellen Ansicht.
- *  Wird bei jedem Wechsel von Ansicht oder Skala neu aufgerufen — die
- *  Legende ist ohne Interaktion sichtbar und aktualisiert sich mit. */
+/** Zeigt fix: Branchenfarben, graue Restkategorie, Datenjahr und die Einheit
+ *  der aktuellen Ansicht. Wird bei jedem Wechsel von Ansicht oder Skala neu
+ *  aufgerufen — die Legende ist ohne Interaktion sichtbar und aktualisiert
+ *  sich mit. */
 export function renderLegend(options: LegendOptions): void {
-  const { view, mode, year, vmax, ambiguousCells, overstatementPct, presentGroups } = options
+  const { view, year, presentGroups } = options
   const el = box()
 
   const title = document.createElement('div')
@@ -111,35 +98,29 @@ export function renderLegend(options: LegendOptions): void {
   if (view === 'sichtbare') branchen.appendChild(outlineSwatch())
   el.appendChild(branchen)
 
-  const ticks = referenceTicks(vmax, mode)
-  const formatTick = view === 'beschaeftigte' ? formatNumber : (v: number) => formatRevenue(v, null)
-  const scale = document.createElement('div')
-  scale.className = 'legende-skala'
-  scale.textContent = `Höhe (${MODE_LABEL[mode]}): ${ticks.map(formatTick).join(' · ')}`
-  el.appendChild(scale)
-
-  // Obergrenzen-Hinweis, in derselben Prozent-Framing wie der Pflichthinweis
-  // (`ui/notices.ts`) — bis 2026-08-13 stand hier eine Kantonssumme in
-  // Beschäftigten absolut («Kantonssumme dadurch bis zu Y zu hoch»), obwohl
-  // gar keine Kantonssumme mehr gezeichnet wird. Zwei verschiedene Framings
-  // derselben Tatsache (Absolutwert hier, Median-Prozent im Pflichthinweis)
-  // liessen den Betrachter zwei verschiedene Tatsachen vermuten.
-  // `ambiguousCells` (Rohzahl Hektaren) und `overstatementPct` (Median/Max je
-  // Gemeinde, siehe `domain/overstatement.ts`) sind unabhängige, zueinander
-  // passende Fakten, keine zwei Versionen derselben Zahl.
-  if (view === 'beschaeftigte' && ambiguousCells > 0) {
-    const hint = document.createElement('div')
-    hint.className = 'legende-hinweis'
-    hint.textContent =
-      `${formatNumber(ambiguousCells)} Hektaren zeigen den aufgerundeten Wert 4 — ` +
-      `die Gemeindesummen sind dadurch im Median ${Math.round(overstatementPct.medianPct)} %, ` +
-      `maximal ${Math.round(overstatementPct.maxPct)} % zu hoch.`
-    el.appendChild(hint)
-  }
-
-  // Währungshinweis und Quellenangabe standen bis zum Redesign (2026-08-14)
-  // hier — Change 2/3 verschiebt beide in die Eckbox (`ui/notices.ts`):
-  // „die Legende trägt, was man zum Lesen braucht, die Eckbox, was man zum
-  // Vertrauen braucht". Die Legende endet deshalb jetzt mit der Skala bzw.
-  // dem Obergrenzen-Hinweis oben.
+  // Redesign Change 3 (2026-08-14): zwei Zeilen sind hier entfallen —
+  //
+  // 1. Die Höhen-/Stützwerte-Zeile («Höhe (gedämpft …): 1'146 · 10'228 ·
+  //    36'677»). Sie erklärte die Skala mit drei Beispielwerten; das kostete
+  //    Platz für eine Information, die niemand zum Lesen der Karte braucht
+  //    (die Balkenhöhen selbst sind schon die Antwort). `referenceTicks`
+  //    wurde deshalb aus `domain/scale.ts` entfernt (samt Tests) statt als
+  //    tote Funktion liegen zu bleiben.
+  //
+  // 2. Die Mehrdeutigkeits-Zeile («X Hektaren zeigen den aufgerundeten Wert
+  //    4 — die Gemeindesummen sind dadurch im Median Y %, maximal Z % zu
+  //    hoch.»). Ihre Substanz ist keine verlorene Information: derselbe
+  //    Fakt (Median/Maximum der Überschätzung) steht wortgleich im
+  //    Pflichthinweis (`ui/notices.ts`, `HAUPT.beschaeftigte`) und der
+  //    exakte Betrag je Gemeinde im Klick-Panel (`ui/panel.ts`,
+  //    `aggregateCellContent`, `footnote`). Die Legende war die dritte,
+  //    redundante Stelle für dieselbe Zahl — mit `municipalityOverstatement-
+  //    Stats` als einzigem verbleibenden Aufrufer ist `domain/overstatement.
+  //    ts` seither ebenfalls entfernt (samt Tests), statt unbenutzt liegen
+  //    zu bleiben.
+  //
+  // Quellenangabe und Währungshinweis stehen seit demselben Redesign
+  // ohnehin in der Eckbox (`ui/notices.ts`) — „die Legende trägt, was man
+  // zum Lesen braucht, die Eckbox, was man zum Vertrauen braucht". Die
+  // Legende endet deshalb jetzt mit den Branchenfarben oben.
 }

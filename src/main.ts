@@ -3,7 +3,6 @@ import { loadCantons, loadMunicipalityBoundaries, joinMunicipalityGeometry } fro
 import { loadLevel, loadMeta } from './data/loader'
 import { presentGroupsFromIndices } from './domain/legendGroups'
 import { NOGA_UNKNOWN_INDEX } from './domain/noga.generated'
-import { municipalityOverstatementStats } from './domain/overstatement'
 import type { ScaleMode } from './domain/scale'
 import { buildCantonBorderLayer, buildCantonsLayer } from './layers/cantons'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './layers/many'
@@ -74,10 +73,6 @@ async function start() {
   // Balken, der die volle Höhe je erreicht — ein Fünftel des Höhenbudgets wäre
   // für einen nie gezeichneten Kantonsturm reserviert.
   const vmax = gemeinde.meta.stats.max
-  // Median/Maximum der Überschätzung je Gemeinde für die Legende — dieselbe
-  // Grösse wie im Pflichthinweis (`ui/notices.ts`), hier aber live berechnet
-  // statt als AG-2023-Literal (siehe `domain/overstatement.ts`).
-  const overstatementPct = municipalityOverstatementStats(gemeinde)
   const statentYear = gemeinde.meta.year
   // Firmen können unterschiedliche Geschäftsjahre ausweisen; die Legende zeigt
   // eine einzelne Zahl, deshalb das jüngste erfasste Jahr.
@@ -156,11 +151,7 @@ async function start() {
 
     renderLegend({
       view,
-      mode,
       year: view === 'beschaeftigte' ? statentYear : companyYear,
-      vmax: view === 'beschaeftigte' ? vmax : companies.stats.max,
-      ambiguousCells: view === 'beschaeftigte' ? gemeinde.meta.stats.ambiguousCells : 0,
-      overstatementPct: view === 'beschaeftigte' ? overstatementPct : { medianPct: 0, maxPct: 0 },
       presentGroups: view === 'beschaeftigte' ? gemeindePresentGroups : companyPresentGroups,
     })
     renderNotices(view)
