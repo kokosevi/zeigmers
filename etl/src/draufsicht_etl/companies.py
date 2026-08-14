@@ -197,6 +197,20 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
                 if not row.get(field, "").strip():
                     problems.append(f"{label}: {field} fehlt — zuerst geokodieren")
 
+        # `build_artifact` liest diese Spalten mit `int(...)`. Ohne Prüfung
+        # hier stürzt der Artefaktbau ab — und zwar erst, nachdem der Wert
+        # schon in der CSV steht, obwohl `validate()` genau davor läuft.
+        # Beobachtet an einer Kantonalbank, die Vollzeitstellen mit
+        # Dezimalstelle ausweist ("1206.2"): Beschäftigte sind Personen, eine
+        # gebrochene Zahl gehört gerundet und in `note` erklärt.
+        for field in ("employees", "founding_year", "fiscal_year"):
+            value = row.get(field, "").strip()
+            if value and not value.lstrip("-").isdigit():
+                problems.append(
+                    f"{label}: {field} {value!r} ist keine ganze Zahl — "
+                    f"gerundeter Wert eintragen und die Rundung in note erklären"
+                )
+
         group = row.get("noga_group", "").strip()
         if group and group not in valid_groups:
             problems.append(

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "690.972",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "295.497",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank im Kanton Luzern mit Retail- und Firmenkundengeschäft, Hypotheken, Anlage- und Vorsorgeberatung sowie Private Banking.",
+ "products_url": "https://www.lukb.ch/ueber-uns/portraet",
+ "founding_year": "1850",
+ "founding_year_source": "https://www.lukb.ch/ueber-uns/portraet/geschichte",
+ "employees": "1206",
+ "fiscal_year": "2025",
+ "report_url": "https://lukb.ch/.dam/98099d6c-507b-4681-927d-b2140a88ba51/LUKB-Geschaeftsbericht-2025.pdf",
+ "note": "Beschaeftigte: 1206.2 Vollzeitstellen laut Bericht, hier auf 1'206 gerundet — die Karte zaehlt Personen, und eine Zehntelstelle waere eine Genauigkeit, die die Groesse nicht hat. Der Bericht weist keine Kopfzahl aus. Mitarbeitendenzahl ist die Vollzeitstellen (Personalbestand per Periodenende) gemäss Geschäftsbericht; eine separate Kopfzahl wird nicht ausgewiesen. Kein Minderheitsanteil am Konzerngewinn ausgewiesen.",
+ "_verification": "Erfolgsrechnung Konzern, S. 35 des LUKB-Geschäftsbericht 2025: Zeile 'Geschäftsertrag' 690'972 Tausend Franken (2025) und Zeile 'Konzerngewinn' 295'497 Tausend Franken (2025); Personalbestand 'Total Vollzeitstellen (per Periodenende)' 1'206.2 aus Kennzahlentabelle im Bericht. Geprüft gegen die Medienmitteilung 'Jahresergebnis 2025' der LUKB, die dieselben gerundeten Werte (691.0 / 295.5 Mio.) bestätigt."
+}

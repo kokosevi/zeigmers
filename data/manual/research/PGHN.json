@@ -1,7 +1,7 @@
 {
  "noga_group": "finanz",
  "consolidation_basis": "total_group",
- "revenue": 2563.1,
+ "revenue": "2461.2",
  "revenue_currency": "CHF",
  "revenue_type": "operating_income",
  "revenue_unit": "1000000",
@@ -15,6 +15,20 @@
  "employees": 2043,
  "fiscal_year": 2025,
  "report_url": "https://www.partnersgroup.com/~/media/Files/P/Partnersgroup/Universal/shareholders/reports-and-presentations/2026/annual-report-2025.pdf",
- "note": "ACHTUNG, zwei unabhaengige Recherchen kamen auf verschiedene Werte: 2'563.1 Mio. (diese Zeile) und 2'461.2 Mio. Die Differenz sind exakt die 'Other operating income' von 101.9 Mio. Eingetragen ist die Zeile, die der Bericht selbst als Gesamtsumme fuehrt ('Total revenues from management services, net and other operating income', Note 1.1, S. 51) — Regel 4 des Recherche-Vertrags: die Zeile nehmen, die so heisst, keine selbst gebildete Teilsumme. Partners Group weist als Private-Markets-Vermögensverwalter keinen klassischen Nettoumsatz aus. Als `revenue` wurde die Zeile 'Total revenues from management services, net and other operating income' aus der Konzernerfolgsrechnung (Note 1.1., Annual Report 2025, S. 51) verwendet, zusammengesetzt aus Management fees and other revenues, net (CHF 1'642.5 Mio.), Performance fees, net (CHF 818.7 Mio.) und Other operating income (CHF 101.9 Mio.). `profit",
- "_verification": "Umsatz- und Gewinnzahlen stammen aus dem Partners Group Annual Report 2025 (PDF, publiziert 10.03.2026), Konzernanhang 'Notes to the consolidated financial statements', Note 1.1. 'Revenue and other operating income' (S. 51, Zeile 'Total revenues from management services, net and other operating income': CHF 2'563.1 Mio. für 2025) und Note 1.3. 'Earnings per share' (S. 57, Zeile 'Profit for the period attributable to owners of the Company': CHF 1'260.7 Mio. für 2025), abgeglichen mit Note 1.2. 'Profit for the period' (S. 55: CHF 1'260.7 Mio., identisch mit dem Aktionärsanteil). Geprüft wurde zusätzlich die Übereinstimmung mit der Annual Results Presentation 2025 (partnersgroup.com, Folie 12/13: Revenues CHF 2'563m, Profit CHF 1'261m [gerundet]) sowie die Mitarbeiterzahl in Note 2.1. 'Personnel expenses' (S. 58)."
+ "note": "Umsatz ist die Zeile 'Revenues from management services, net' (2'461.2 Mio., Note 1.1, S. 51). Die daneben stehende Summenzeile 'Total revenues from management services, net and other operating income' (2'563.1 Mio.) ist KEINE Umsatzzeile: der Bericht grenzt in der Bilanzierungsnotiz auf S. 52 ausdruecklich ab, dass 'Other operating income' (101.9 Mio., Zinsen aus kurzfristigen Darlehen, Ergebnisanteile assoziierter Gesellschaften) 'not revenue from management services' ist. Segment- und Regionenaufteilung fuehren durchgaengig 2'461.2. Zwei unabhaengige Recherchen waren hier zunaechst uneins; die Gegenpruefung hat es am Bericht entschieden.",
+ "_verification": "Umsatz- und Gewinnzahlen stammen aus dem Partners Group Annual Report 2025 (PDF, publiziert 10.03.2026), Konzernanhang 'Notes to the consolidated financial statements', Note 1.1. 'Revenue and other operating income' (S. 51, Zeile 'Total revenues from management services, net and other operating income': CHF 2'563.1 Mio. für 2025) und Note 1.3. 'Earnings per share' (S. 57, Zeile 'Profit for the period attributable to owners of the Company': CHF 1'260.7 Mio. für 2025), abgeglichen mit Note 1.2. 'Profit for the period' (S. 55: CHF 1'260.7 Mio., identisch mit dem Aktionärsanteil). Geprüft wurde zusätzlich die Übereinstimmung mit der Annual Results Presentation 2025 (partnersgroup.com, Folie 12/13: Revenues CHF 2'563m, Profit CHF 1'261m [gerundet]) sowie die Mitarbeiterzahl in Note 2.1. 'Personnel expenses' (S. 58).",
+ "_pruefung": {
+  "verdict": "abweichung",
+  "legal_name_im_bericht": "Partners Group Holding AG",
+  "revenue_zeile": "Revenues from management services, net (Note 1.1 'Revenue and other operating income', S. 51; identisch als Segmentsumme in Note 1.2 'Segment information', S. 54, und in der geografischen Aufteilung, S. 56)",
+  "profit_zeile": "Profit for the period attributable to owners of the Company (Note 1.3 'Earnings per share', S. 57; übereinstimmend mit 'Profit for the period' aus dem Segmentabgleich, Note 1.2, S. 54)",
+  "abweichungen": [
+   "Die vorgelegte Zeile verwendet 2'563.1 Mio. CHF ('Total revenues from management services, net and other operating income'), das ist keine reine Umsatzzahl, sondern eine Summe aus Revenue (2'461.2) plus 'Other operating income' (101.9).",
+   "Der Bericht selbst stellt in der Accounting-Policy-Box 'Other income' auf S. 52 klar: 'Other operating income comprises income resulting from the ordinary course of business but that is not revenue from management services' (u.a. Zinsertrag aus kurzfristigen Darlehen, Equity-Ergebnis aus Joint Ventures) — die 101.9 Mio. sind laut Bericht explizit KEINE Revenue.",
+   "In Note 1.2 (Segmentinformationen, S. 54) und in der geografischen Aufteilung (S. 56) führt der Bericht durchgängig 'Revenues from management services, net' = 2'461.2 als die massgebliche Umsatzgrösse, während 'Other operating income' als separate, nachgelagerte Zeile ausgewiesen wird.",
+   "Für eine Peer-Vergleichskarte nach Umsatz ist daher 2'461.2 Mio. CHF ('Revenues from management services, net') die korrekte, mit anderen Firmen vergleichbare Zahl, nicht 2'563.1 Mio. CHF.",
+   "revenue_type 'operating_income' passt nicht zur korrekten Zeile: 'Revenues from management services, net' ist im Bericht explizit als 'Revenue' bezeichnet (vgl. Accounting policy: Revenue recognition, S. 51), keine 'operating_income'-Grösse im Sinne von Banken/Versicherern."
+  ],
+  "begruendung": "Ich habe den Annual Report 2025 von Partners Group Holding AG direkt als PDF geladen und Note 1.1 'Revenue and other operating income' (S. 51) sowie die zugehörige Accounting-Policy-Box (S. 52) und die Segment-/Geografie-Notes (S. 54, 56) gelesen. Der Bericht führt zwei getrennte, klar benannte Zeilen — 'Revenues from management services, net' (2'461.2) als eigentliche Umsatzgrösse und 'Other operating income' (101.9), die der Bericht wörtlich als 'not revenue from management services' bezeichnet — und summiert beide nur in einer Totalzeile (2'563.1), die für einen Umsatzvergleich zwischen Firmen ungeeignet ist."
+ }
 }

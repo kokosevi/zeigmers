@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "95.798",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "21.825",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank mit Fokus auf Hypothekar- und Spargeschäft sowie Vermögensverwaltungs-, Anlage-, Vorsorge- und Firmenkundengeschäft im Kanton Glarus.",
+ "products_url": "https://glkb.ch/die-glkb/portrait",
+ "founding_year": "1884",
+ "founding_year_source": "https://glkb.ch/die-glkb/portrait/geschichte",
+ "employees": "330",
+ "fiscal_year": "2025",
+ "report_url": "http://glkb.ch/.dam/0743960e-3270-4bea-afac-3a861387b384/berichterstattung-geschaeftsbericht-2025-glkb.pdf?C350FA",
+ "note": "GLKB hat keine konsolidierungspflichtigen Tochtergesellschaften; der Bericht weist eine einzige 'Erfolgsrechnung' (nicht 'Konzernerfolgsrechnung') aus, die Gewinnzeile heisst schlicht 'Gewinn'. Mitarbeitendenzahl 330 ist die Kopfzahl ('Ende 2025 beschäftigte die Bank 330 Personen'); das entspricht 274 Vollzeitstellen laut Bericht.",
+ "_verification": "Erfolgsrechnung, S. 44/45 des GLKB-Geschäftsbericht 2025: Zeile 'Betriebsertrag' 95'798 Tausend CHF (2025) und Zeile 'Gewinn' 21'825 Tausend CHF (2025). Mitarbeitendenzahl aus Lagebericht: 'Ende 2025 beschäftigte die Bank 330 Personen (Vorjahr: 320)'. Werte gegen die Ad-hoc-Mitteilung 'Gutes Ergebnis der Glarner Kantonalbank im ESAF-Jahr 2025' abgeglichen (Betriebsertrag 95.8 Mio., Reingewinn 21.8 Mio., übereinstimmend)."
+}

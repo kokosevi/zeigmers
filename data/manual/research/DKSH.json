@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "total_group",
+ "revenue": 11070.6,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 202.9,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Marktexpansionsdienstleistungen (Sourcing, Marketing, Vertrieb, Distribution/Logistik und Kundendienst) für Marken und Hersteller in Asien und darüber hinaus, in den Geschäftsbereichen Consumer Goods, Healthcare, Performance Materials und Technology.",
+ "products_url": "https://www.dksh.com/global-en/home/about-us/what-we-do/market-expansion-services",
+ "founding_year": 1865,
+ "founding_year_source": "https://www.dksh.com/global-en/home/dksh-group/our-history",
+ "employees": 26838,
+ "fiscal_year": 2025,
+ "report_url": "https://www.dksh.com/content/download/146276/file/DKSH_Annual_Report_2025.pdf",
+ "note": "Der Geschäftsbericht 2025 weist keine 'Gross profit'-Zeile aus - weder in der Konzern-Erfolgsrechnung (S. 59) noch in der Segmentberichterstattung (Note 3). Diverse Finanzportale nennen einen abgeleiteten/berechneten Bruttogewinn (~CHF 1.6 Mrd.), der aber in der Primärquelle nicht als eigene Zeile belegt ist - daher hier nicht übernommen. Gewinn = Aktionärsanteil 'Attributable to Shareholders of DKSH Holding Ltd.' (CHF 202.9 Mio.); davon abweichend Gesamtkonzerngewinn nach Steuern CHF 210.9 Mio. (inkl. Minderheitsanteile CHF 8.0 Mio.). Beschäftigte: Headcount 26'838 (vs. 24'799 FTE) gemäss Kennzahlenseite.",
+ "_verification": "Konzern-Erfolgsrechnung 'Consolidated Income Statement' (DKSH Annual Report 2025, S. 59): Zeile 'Net sales' CHF 11'070.6 Mio., darunter 'Attributable to Shareholders of DKSH Holding Ltd.' CHF 202.9 Mio. als Aktionärsanteil am 'Profit after tax'. Geprüft per pdftotext-Volltextsuche über das gesamte PDF: 'Gross profit' kommt im gesamten Bericht nur in einer unverbundenen Fussnote zur Goodwill-Werthaltigkeitsprüfung vor, nicht als Zeile der Erfolgsrechnung oder Segmentberichterstattung - deshalb revenue_type net_sales korrekt zugeordnet und kein Gross-profit-Feld befüllt (Schema sieht dafür ohnehin kein separates Feld vor). Headcount/FTE Zeilen auf der Kennzahlenseite (S. 5) geprüft."
+}

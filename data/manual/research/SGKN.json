@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "604.676",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "226.978",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank mit Fokus auf Kreditgeschäft (v.a. Hypotheken) und Anlagegeschäft in den Kernmärkten Ostschweiz, übrige Deutschschweiz und Deutschland.",
+ "products_url": "https://www.sgkb.ch/de/ueber-uns/unternehmen/portrait",
+ "founding_year": "1868",
+ "founding_year_source": "https://www.sgkb.ch/de/ueber-uns/unternehmen/portrait",
+ "employees": "1219",
+ "fiscal_year": "2025",
+ "report_url": "https://sgkb.ch/.dam/814f346b-7f11-49a0-af0c-b0f05eafeca5/SGKB-Geschaeftsbericht-2025.pdf",
+ "note": "Mitarbeitendenzahl ist der 'durchschnittliche Personalbestand' des SGKB-Konzerns in teilzeitbereinigten Personaleinheiten (FTE, Lehrstellen zu 50 % angerechnet); eine Kopfzahl wird im Bericht nicht ausgewiesen. Kein separater Minderheitsanteil am Konzerngewinn erkennbar.",
+ "_verification": "Konzernerfolgsrechnung, S. 45 des SGKB-Geschäftsbericht 2025: Zeile 'Geschäftsertrag' 604'676 Tausend CHF (2025) und Zeile 'Konzerngewinn' 226'978 Tausend CHF (2025). Personalbestand aus Lagebericht S. 6 'Der durchschnittliche Personalbestand des SGKB-Konzerns betrug im Jahr 2025 teilzeitbereinigt 1219 Personaleinheiten'. Werte gegen die separate Stammhaus-Erfolgsrechnung (Geschäftsertrag 579'821, Gewinn 226'619) abgegrenzt — Konzernwerte übernommen, nicht Stammhaus."
+}

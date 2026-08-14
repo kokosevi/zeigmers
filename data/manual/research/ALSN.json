@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "total_group",
+ "revenue": 13501.2,
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 109.3,
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Distribution und Vermarktung von IT-Hardware, Software und IT-Services sowie Cloud-, IoT- und weiteren digitalen Plattform-Angeboten für ein europaweites Netzwerk von Fachhändlern (Reseller).",
+ "products_url": "https://www.also.com/ec/cms5/en_6000/6000/index.jsp",
+ "founding_year": 1984,
+ "founding_year_source": "https://www.also.com/ec/cms5/media/img/6000_holding/reports_and_presentations/2025_125/fy25_also_annual_report_en.pdf (Note 1, Corporate information: 'ALSO was founded in 1984')",
+ "employees": 5678,
+ "fiscal_year": 2025,
+ "report_url": "https://www.also.com/ec/cms5/media/img/6000_holding/reports_and_presentations/2025_125/fy25_also_annual_report_en.pdf",
+ "note": "Vorsicht Falle: Der 5-Jahres-Überblick und die Investor-Kommunikation nennen 'Net sales before PvA' von EUR 15'243.9 Mio. - das ist eine alternative Kennzahl (Bruttosicht vor Anpassung der Umsatzerfassung bestimmter Software-Geschäfte), keine Zeile der Erfolgsrechnung. Die Konzern-Erfolgsrechnung selbst weist 'Total net sales' EUR 13'501.226 Mio. aus; diese Zeile wurde eingetragen. Gewinn = Aktionärsanteil 'Attributable to shareholders of ALSO Holding AG' EUR 109.331 Mio.; Gesamtkonzerngewinn 'Net profit Group' EUR 109.629 Mio. (inkl. Minderheitsanteile EUR 0.298 Mio.). Beschäftigte: Firma weist in der Segment-/Finanzberichterstattung 'Headcount at year-end' 5'157 aus, aber das ist laut eigener Definition eine Vollzeitstellen-Grösse ('number of full-time equivalent positions excluding temporary employees'); die echte Kopfzahl steht im Sustainability-Teil ('the employee count is by head') bei 5'678 (Summe Central Europe 3'565 + Northern/Eastern Europe 2'113 für 2025) - diese wurde eingetragen.",
+ "_verification": "Konzern-Erfolgsrechnung 'Consolidated income statement' (ALSO Annual Report 2025, S. 115): Zeile 'Total net sales' EUR 13'501'226 Tsd. (2025), darunter 'Gross profit' EUR 898'644 Tsd. und 'Net profit Group' EUR 109'629 Tsd., davon 'Attributable to shareholders of ALSO Holding AG' EUR 109'331 Tsd. Geprüft per pdftotext-Volltextsuche: Unterschied zwischen der Erfolgsrechnungs-Zeile 'Total net sales' und der im 5-Jahres-Überblick zusätzlich gezeigten Nicht-GAAP-Grösse 'Net sales before PvA' bestätigt (Definition im Abschnitt 'Alternative performance measures': 'Net revenue before PvA describes the gross view of the net sales without the adjustment due to the change in the recognition of revenue from software'). Beschäftigtenzahlen aus Note zur Segmentberichterstattung (S. 139, FTE) und Sustainability-Report Tabelle 'Number of employees by region and gender' (S. 282, Kopfzahl) verglichen."
+}

@@ -1056,3 +1056,17 @@ def test_seat_override_is_a_no_op_when_the_row_already_matches():
 
     assert applied == [], "unveraenderte Zeile darf nicht erneut angefasst werden"
     assert row["lon"] == "8.98", "Koordinaten bleiben erhalten"
+
+
+def test_validate_rejects_a_non_integer_employee_count():
+    # `build_artifact` liest die Spalte mit `int(...)`. Eine Bank, die
+    # Vollzeitstellen mit Dezimalstelle ausweist ("1206.2"), brachte damit den
+    # gesamten Artefaktbau zum Absturz — und zwar erst NACH dem Uebernehmen in
+    # die CSV, obwohl `validate()` genau davor laufen soll. Beschaeftigte sind
+    # Personen; eine gebrochene Zahl gehoert gerundet und in `note` erklaert.
+    with pytest.raises(ValueError, match="employees"):
+        companies.validate([_row(employees="1206.2")])
+
+
+def test_validate_accepts_a_plain_integer_employee_count():
+    companies.validate([_row(employees="1206")])
