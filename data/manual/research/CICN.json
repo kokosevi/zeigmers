@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "616.499",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "16.911",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Auftragsfertigung elektronischer Baugruppen und Systeme (Electronic Manufacturing Services), Leiterplatten und Substrate sowie Präzisionskunststoffteile für Medizintechnik-, Industrie- und Luft-/Raumfahrt-Kunden.",
+ "products_url": "https://www.cicor.com/en/company/about-us/",
+ "founding_year": "1966",
+ "founding_year_source": "https://www.cicor.com/en/news/article/the-cicor-group-the-future-has-a-past/",
+ "employees": "4524",
+ "fiscal_year": "2025",
+ "report_url": "https://report.cicor.com/ar25/app/uploads/Annual-Report-2025.pdf",
+ "note": "Mitarbeitende: 4'524 FTE per 31. Dezember 2025 (Bericht weist in der Kennzahlentabelle explizit 'Number of employees (FTEs as per 31 December)' aus, keine separate Kopfzahl gefunden). Gewinn ist bereits im Bericht selbst als 'Net profit attributable to Cicor shareholders' ausgewiesen (identisch mit der Zeile 'Net profit' in der konsolidierten Erfolgsrechnung); eine gesonderte Minderheitsanteils-Zeile wird im Konzernabschluss nicht ausgewiesen.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' im Geschäftsbericht 2025 (S. 128): Zeile 'Net Sales' CHF 616'499 Tsd. und Zeile 'Net profit' CHF 16'911 Tsd., beide für Geschäftsjahr 2025 im Vergleich zu 2024. Geprüft: an anderer Stelle im Bericht (Anhang zu Ergebnis je Aktie) wird dieselbe Zahl explizit als 'Net profit attributable to Cicor shareholders in CHF 16'911' bezeichnet, damit ist der Aktionärsanteil bestätigt (Regel 5 erfüllt, keine gesonderten Minderheitsanteile im Konzernabschluss ausgewiesen). Die Kennzahlentabelle im Vorspann bestätigt dieselben Werte ('Net profit (reported)' 16'911) und dient als Gegenprobe."
+}

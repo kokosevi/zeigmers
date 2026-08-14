@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 19067.8,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000,
+ "profit": -221.9,
+ "profit_currency": "CHF",
+ "profit_unit": 1000,
+ "core_products": "Betreibt das ASMALLWORLD-Reise- und Lifestyle-Mitgliedernetzwerk (Community-Plattform, App und Events) und ist als Full-Service-Reisebüro für massgeschneiderte Luxusreiseplanung und Hospitality-Buchungen tätig",
+ "products_url": "https://www.asmallworldag.com/files/reports/1775103559626-en-260402_ASW%20Annual%20Report%202025.pdf",
+ "founding_year": 2004,
+ "founding_year_source": "https://www.asmallworldag.com/files/reports/1775103559626-en-260402_ASW%20Annual%20Report%202025.pdf",
+ "employees": 10,
+ "fiscal_year": 2025,
+ "report_url": "https://www.asmallworldag.com/files/reports/1775103559626-en-260402_ASW%20Annual%20Report%202025.pdf",
+ "note": "Konzernergebnis 2025 ist ein Verlust von TCHF -221.9; im Income Statement gibt es keine separate Minderheitsanteil-Zeile (EPS wird direkt aus dem 'Net result' berechnet), der Betrag ist also vollständig den Aktionären der ASMALLWORLD AG zurechenbar. Mitarbeitende: Geschäftsbericht nennt 10 Vollzeitäquivalente (FTE) im Berichtsjahr (Vorjahr 12); eine separate Statutory-Note nennt nur die Bandbreite 'did not exceed 50 FTE'.",
+ "_verification": "Umsatz ('Net sales', Konsolidierte Erfolgsrechnung S.42) 2025: TCHF 19'067.8 (2024: TCHF 20'869.8); Konzernergebnis ('Net result', gleiche Tabelle) 2025: TCHF -221.9. Beide Zahlen stammen aus derselben 'Consolidated Income Statement' fuer das Geschaeftsjahr 2025. Geprueft: Zeilenbezeichnung 'Net sales' (nicht 'Total operating income', das zusaetzlich 'Other operating income' TCHF 2'476.7 enthaelt) sowie Gruendungsjahr 2004 direkt aus 'ASMALLWORLD at a Glance' (S.3) desselben Berichts."
+}

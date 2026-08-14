@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 10.8,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -1.416,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Vertrieb und Vermarktung von Arzneimitteln für seltene und spezielle Erkrankungen (Orphan Drugs) in der Schweiz mit exklusiven Vertriebsrechten für über 40 Produkte, sowie eigene Entwicklung von Spezialmedikamenten (u. a. Corticorelin gegen peritumorales Hirnödem).",
+ "products_url": "https://curatis.com/home/",
+ "founding_year": 2002,
+ "founding_year_source": "https://curatis.com/home/",
+ "employees": 9,
+ "fiscal_year": 2025,
+ "report_url": "https://www.eqs-news.com/media/document/f0f62cfa-6875-4ca1-9485-07941bcac0a0/assets/Curatis_Holding_AG_Annual_Report_2025_.pdf",
+ "note": "Umsatz setzt sich aus den zwei Zeilen der Konzern-Erfolgsrechnung 'Net sales from goods' (kCHF 10'293) und 'Net sales from services' (kCHF 507) zusammen, die die Notes zum Abschluss selbst unter einer gemeinsamen Anmerkung 'Net sales from goods and services' zusammenfassen; die Summe (kCHF 10'800) entspricht den im Aktionärsbrief genannten CHF 10.8 Mio. Umsatz 2025. Verlust ('Result for the year') vollständig den Aktionären zurechenbar ('Loss attributable to: Owners of the parent company'), keine Minderheitsanteile. Beschäftigte: Bericht nennt sowohl Kopfzahl ('Number of employees' 9) als auch Vollzeitäquivalente ('Number of full-time equivalents on an annual average' 7) — Kopfzahl eingetragen. Firma entstand 2024 durch Reverse-Merger der vormaligen Kinarus Therapeutics Holding AG (Basel) mit der operativen Curatis AG (Liestal); Gründungsjahr 2002 bezieht sich auf die eigentliche operative Gesellschaft Curatis AG laut deren eigener Unternehmensdarstellung, nicht auf die Holding-Mantelgesellschaft.",
+ "_verification": "Umsatz und Verlust stammen aus der 'Consolidated income statement' (S. 26 des Annual Report 2025) der Curatis Holding AG: Zeilen 'Net sales from goods' (10'293), 'Net sales from services' (507) und 'Result for the year' (-1'416), letzteres vollständig 'Owners of the parent company' zugeordnet. Geprüft: Note 5 'Net sales from goods and services' bestätigt dieselben Teilbeträge und die Segmentberichterstattung (Note 3, ein Segment 'Distribution of specialty pharmaceutical products in Switzerland') weist keine abweichende Umsatzgrösse aus; Mitarbeiterzahl aus Note 7 'Personnel expenses' (S. 36) geprüft gegen die im Brief an die Aktionäre genannte gestiegene Mitarbeiterzahl."
+}

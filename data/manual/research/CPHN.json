@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 334.062,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 23.36,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Herstellung und Vertrieb von Spezialchemikalien (Molekularsiebe, Chromatographie-Gele, deuterierte Produkte für Industrie, Pharma und Analytik unter der Marke Zeochem) und pharmazeutischer Verpackung (beschichtete Kunststofffolien für Blisterverpackungen von Medikamenten unter der Marke Perlen Packaging).",
+ "products_url": "https://cph.ch/",
+ "founding_year": 1818,
+ "founding_year_source": "https://cph.ch/cph-group/history/",
+ "employees": 1244,
+ "fiscal_year": 2025,
+ "report_url": "https://cph.ch/wp-content/uploads/2026/02/Geschaeftsbericht_gesamt_2025_en.pdf",
+ "note": "CPH Group hat die Papiersparte per 25. Juni 2024 abgespalten; die volle Konzernerfolgsrechnung 2025 auf S. 72 des Berichts umfasst nur noch die verbleibenden Divisionen Zeochem und Perlen Packaging und ist identisch mit der separat ausgewiesenen Zahlenreihe 'für die fortgeführten Divisionen' auf S. 67 – für das Berichtsjahr 2025 sind total_group und continuing_operations somit dieselbe Zahl. Beschäftigte (1'244) sind laut Bericht als 'Headcount (FTE)' in Vollzeitstellen ausgewiesen, eine separate Kopfzahl wird nicht genannt. Gründungsjahr 1818 bezieht sich auf die Ursprünge der Firma in Uetikon am See (Schwefelsäureproduktion der Gebrüder Schnorf); die heutige Divisionsstruktur (Zeochem/Perlen Packaging) entstand erst 1954/1973.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated income statement' (S. 72) des CPH Annual Report 2025: Zeile 'Net sales' CHF 334'062 Tsd. und 'Net result – Thereof: Shareholders of the company' CHF 23'360 Tsd. (Gesamt-Nettoergebnis CHF 23'424 Tsd. inkl. CHF 64 Tsd. Minderheitsanteile). Geprüft: dieselbe Umsatzzahl 334.1 Mio. erscheint in der Kennzahlenübersicht 'At a glance' (S. 3) sowie in der separaten Aufstellung 'Financial information for the continued divisions' (S. 67), die für 2025 wortgleich mit der vollen Konzernrechnung ist; Headcount 1'244 laut Kennzahlentabelle S. 3."
+}

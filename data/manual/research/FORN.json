@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 1085.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 68.9,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Bodenbeläge (Linoleum, Vinyl, Teppich), Klebstoffe sowie Förder- und Transmissionsbänder (Movement Systems).",
+ "products_url": "https://www.forbo.com/corporate/en-gl/about/forbo-group/forbo-group/pfrvos",
+ "founding_year": 1928,
+ "founding_year_source": "https://www.forbo.com/corporate/en-gl/about/forbo-group/company-history/pez2n4",
+ "employees": 5100,
+ "fiscal_year": 2025,
+ "report_url": "https://forbo.blob.core.windows.net/forbodocuments/b0ece9c1-2a2b-4a88-a4b1-6493bf48d0ce/Forbo_Annual%20Report%202025_Web-PDF_FINAL.pdf",
+ "note": "employees = 5'100 Vollzeitäquivalente (Total full-time equivalents) per 31.12.2025; der Bericht weist an dieser Stelle keine separate Kopfzahl aus, daher FTE übernommen.",
+ "_verification": "Umsatz (Net sales 1'085.4 Mio. CHF) und Gewinn (Profit attributable to shareholders of Forbo Holding Ltd, 68.9 Mio. CHF) stammen beide aus der Consolidated income statement, Annual Report 2025 (Financial Report), S. 163/164 — Profit for the year ist vollständig den Aktionären zurechenbar, keine Minderheitsanteile. Geprüft: Zeilenbezeichnung 'Net sales' vs. Summenzeilen in der Segmentnote, Employees-Tabelle im Gesamtbericht (S. mit 'Total full-time equivalents 5,100'), Gründungsjahr auf der offiziellen Forbo-Firmengeschichte-Seite."
+}

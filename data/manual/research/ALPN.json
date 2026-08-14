@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": 10318,
+ "profit_currency": "CHF",
+ "profit_unit": 1000,
+ "core_products": "Reine Beteiligungs-/Investmentgesellschaft, die für institutionelle und private Anleger in ein diversifiziertes alternatives Anlageportfolio investiert (u. a. Discount- und Risk-Arbitrage-Strategien, wenig beachtete Situationen, kurzfristige Opportunitäten, liquide Hedge Funds und digitale Vermögenswerte)",
+ "products_url": "https://www.alpine-select.ch/en/alpine",
+ "founding_year": 1997,
+ "founding_year_source": "https://www.alpine-select.ch/en/component/edocman/annual-report-2025/viewdocument/79",
+ "employees": 3,
+ "fiscal_year": 2025,
+ "report_url": "https://www.alpine-select.ch/en/component/edocman/annual-report-2025/viewdocument/79",
+ "note": "Kein Umsatz eingetragen: Alpine Select ist eine reine Beteiligungs-/Investmentgesellschaft ohne operatives Geschäft. Die konsolidierte Erfolgsrechnung (Swiss GAAP FER) weist keinen Umsatz aus, sondern nur 'Operating income' aus Anlageergebnis (Net investment gains 11'896 TCHF, Dividendenertrag 134 TCHF, Zinsertrag 377 TCHF, übriger Ertrag 163 TCHF = 12'570 TCHF) - das ist kein Umsatz im Sinne des Vertrags. Profit ist der konsolidierte Jahresgewinn den Aktionären von Alpine Select zurechenbar (10'318 TCHF von total 10'318 TCHF Konzerngewinn; 2025 keine Fremdanteile, Vorjahr 51 TCHF Fremdanteile). Mitarbeitende: 3 FTE im Jahresdurchschnitt (identisch mit Kopfzahl laut Bericht).",
+ "_verification": "Konsolidierte Erfolgsrechnung ('Income statement', S.36) zeigt 'Operating income' 12'570 TCHF (kein Umsatz) und 'PROFIT FOR THE YEAR ... of which attributable to shareholders of Alpine Select' 10'318 TCHF fuer 2025. Geprueft gegen die separate 'Statutory financial statements' (S.62, Stammhaus nach OR: Jahresgewinn CHF 2'122'174) - bewusst nicht verwendet, da Konzernbasis vorzuziehen ist. Mitarbeiterzahl (3 FTE) aus Notiz 13 der Statutory Financial Statements (S.69) sowie Textstelle 'As of 31 December 2025, Alpine Select has three employees' bestaetigt."
+}

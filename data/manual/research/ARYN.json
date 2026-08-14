@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "2223.3",
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "112.3",
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "International tätiges Bäckereiunternehmen: Brot, Backwaren und Feingebäck, die im Bake-off-Verfahren am Verkaufsort fertig gebacken werden (Convenience-Bakery für den Detailhandel).",
+ "products_url": "https://www.aryzta.com/company/company-profile",
+ "founding_year": "2008",
+ "founding_year_source": "https://www.aryzta.com/media/document/44946849-a990-4716-9be2-2aadae39d6c2/assets/aryzta-ar-2010.pdf",
+ "employees": "8138",
+ "fiscal_year": "2025",
+ "report_url": "https://www.aryzta.com/media/document/7be11c9f-2070-4f15-8781-7064d7396981/assets/ARYZTA_AG_2025_Annual_Report.pdf",
+ "note": "Mitarbeiterzahl als Kopfzahl ausgewiesen ('Headcount of Total Employees': 8'138 für 2025) im Sustainability-Statement-Teil des Geschäftsberichts, nicht als FTE. ARYZTA berichtet in EUR und mit Geschäftsjahr per 31. Dezember. Kein Minderheitsanteil ausgewiesen: 'Profit for the year attributable to equity shareholders' (EUR 112.3 Mio.) ist die einzige Ergebniszeile.",
+ "_verification": "Zeilen 'Revenue' (EUR 2'223.3 Mio.) und 'Profit for the year attributable to equity shareholders' (EUR 112.3 Mio.) stammen aus der 'Group Consolidated Income Statement for the year ended 31 December 2025' im Annual Report 2025 (S. 190). Geprüft: keine separate Minderheitsanteilszeile in der Erfolgsrechnung. Mitarbeiterzahl aus der ESRS-Kennzahlentabelle 'People and Talent' (S. ca. 9331 im Volltext) desselben Berichts entnommen. Gründungsjahr 2008 (Fusion IAWS Group plc und Hiestand) aus dem ARYZTA-Geschäftsbericht 2010 bestätigt, da der Bericht 2025 selbst keine Gründungsangabe enthält."
+}

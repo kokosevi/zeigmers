@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 513.204,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": 216.321,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank-Dienstleistungen für Privat- und Firmenkunden im Kanton Graubünden: Kredit- und Hypothekargeschäft, Anlagen und Vermögensverwaltung, Zahlungsverkehr.",
+ "products_url": "https://www.gkb.ch/de/ueber-uns/wer-wir-sind",
+ "founding_year": 1870,
+ "founding_year_source": "https://www.gkb.ch/de/ueber-uns/wer-wir-sind/geschichte",
+ "employees": 926,
+ "fiscal_year": 2025,
+ "report_url": "https://report.gkb.ch/2025/app/uploads/GKB_2025_Geschaeftsbericht-DE.pdf",
+ "note": "Bank: revenue_type = operating_income (Geschäftsertrag 513.204 Mio. CHF), kein Nettoumsatz. Konzerngewinn (Total inkl. Minderheiten) betrug 224.632 Mio. CHF; davon Minderheitsanteile 8.311 Mio. CHF, sodass der den Aktionären der GKB zurechenbare Gewinn 216.321 Mio. CHF beträgt (= Zeile 'Gewinn vor Reservenbildung ohne Minderheitsanteile' in der Mehrjahresübersicht, arithmetisch identisch mit Konzerngewinn minus Minderheitsanteile). employees: Personalbestand 'Personaleinheiten (teilzeitbereinigt; Lehrstellen zu 50%)' der GKB-Finanzgruppe betrug per Ende 2025 925.72 FTE, auf 926 gerundet — Vollzeitäquivalente, keine Kopfzahl im Bericht ausgewiesen. Enthält Bellerive AG, Albin Kistler AG und (zu 50%) BZ Bank AG.",
+ "_verification": "Umsatz (Geschäftsertrag 513'204 Tsd. CHF) und Konzerngewinn (224'632 Tsd. CHF, davon Minderheitsanteile 8'311 Tsd. CHF) stammen beide aus der Konsolidierten Erfolgsrechnung im GKB Geschäftsbericht 2025. Geprüft: dass es sich bei 'Geschäftsertrag' um die für Banken übliche Ersatzgrösse für Umsatz handelt (kein 'Nettoumsatz' vorhanden), dass Umsatz- und Gewinnzahl aus derselben konsolidierten Rechnung und demselben Geschäftsjahr stammen, und dass der eingetragene Gewinn der Aktionärsanteil (Konzerngewinn abzüglich Minderheitsanteile) ist, nicht der Konzerngewinn total."
+}

@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://report.bekb.ch/2025/app/uploads/BEKB_Geschaeftsbericht_2025_de.pdf",
  "note": "Die BEKB hielt per 31.12.2025 keine wesentlichen konsolidierungspflichtigen Tochtergesellschaften ('Konzernstruktur und Aktionariat', S. 53); die ausgewiesene Erfolgsrechnung ist somit bereits die für den gesamten Betrieb geltende Rechnung, es gibt keinen separaten Minderheitsanteil. Mitarbeitendenzahl 1264 ist die Kopfzahl 'Anzahl Mitarbeitende' ohne die 9 Verwaltungsräte (inkl. VR: 1273 Köpfe); teilzeitbereinigt sind es 1056 (Mitarbeitende) bzw. 1058 (inkl. VR).",
- "_verification": "Erfolgsrechnung (BEKB Geschäftsbericht 2025, S. 105): Zeile 'Geschäftsertrag' 547'297 Tausend CHF (2025) und – über die Bilanz (Passiven, S. 104) – Zeile 'Gewinn' 175'355 Tausend CHF (2025). Geprüft: 'Geschäftsertrag' ist die Summe der vier FINMA-Teilergebnisse (Netto-Zinsengeschäft, Kommissions-/Dienstleistungsgeschäft, Handelsgeschäft, übriger ordentlicher Erfolg) unmittelbar vor dem Geschäftsaufwand, keine abweichende 'Total'-Zeile. Personalbestand aus 'Angabe des Personalbestandes' (S. 47): 'Anzahl Mitarbeitende' 1264 (Köpfe, exkl. Verwaltungsrat) per 31.12.2025."
+ "_verification": "Erfolgsrechnung (BEKB Geschäftsbericht 2025, S. 105): Zeile 'Geschäftsertrag' 547'297 Tausend CHF (2025) und – über die Bilanz (Passiven, S. 104) – Zeile 'Gewinn' 175'355 Tausend CHF (2025). Geprüft: 'Geschäftsertrag' ist die Summe der vier FINMA-Teilergebnisse (Netto-Zinsengeschäft, Kommissions-/Dienstleistungsgeschäft, Handelsgeschäft, übriger ordentlicher Erfolg) unmittelbar vor dem Geschäftsaufwand, keine abweichende 'Total'-Zeile. Personalbestand aus 'Angabe des Personalbestandes' (S. 47): 'Anzahl Mitarbeitende' 1264 (Köpfe, exkl. Verwaltungsrat) per 31.12.2025.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Berner Kantonalbank AG (BEKB)",
+  "revenue_zeile": "Geschäftsertrag (Erfolgsrechnung, 547'297 TCHF, 2025 vs. 553'141 TCHF 2024)",
+  "profit_zeile": "Gewinn (Erfolgsrechnung, 175'355 TCHF, 2025 vs. 180'666 TCHF 2024)",
+  "abweichungen": [],
+  "begruendung": "PDF von report.bekb.ch heruntergeladen und mit pdftotext durchsucht: 'Geschäftsertrag' (547'297) ist die Summe aus Netto-Zinsengeschäft, Kommissions-/Dienstleistungsgeschäft, Handelsgeschäft und übrigem ordentlichem Erfolg, unmittelbar vor dem Geschäftsaufwand — nicht mit einer anderen 'Total'-Zeile verwechselt. 'Gewinn' (175'355) am Ende der Erfolgsrechnung nach Steuern bestätigt; Rechtseinheit 'Berner Kantonalbank AG' und Mitarbeitendenzahl 1'264 im Bericht gefunden."
+ }
 }

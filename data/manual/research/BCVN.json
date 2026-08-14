@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://mobile.bcv.ch/content/dam/bcv/fichiers/publications/publications-institutionnelles/rapports/ra-et-rse/rapports-annuels-et-intermediaires/2025/2025_rapport-annuel-bcv_en_web.pdf",
  "note": "Effektivbestand 2'083 ist in Vollzeitäquivalenten ausgewiesen ('full-time-equivalent employees'); eine separate Kopfzahl nennt der Bericht nicht. Minderheitsanteile am Konzerngewinn sind mit '-0.0' Mio. CHF verschwindend gering; 'Net profit attributable to BCV shareholders' entspricht praktisch dem gesamten 'Net profit'.",
- "_verification": "Consolidated income statement (2025 Annual Report, S. 123): Zeile 'Total income from ordinary banking operations' CHF 1'149.9 Mio. (2025) und Zeile 'Net profit attributable to BCV shareholders' CHF 429.7 Mio. (2025). Geprüft: 'Total income from ordinary banking operations' ist die Summe der vier FINMA-Teilergebnisse (u.a. 'Net interest income after loan impairment charges/reversals' 526.2, 'Net fee and commission income' 394.3, 'Net trading income' 194.8, 'Other ordinary income' 34.6) und steht unmittelbar vor den Betriebsaufwendungen - keine andere, unpassende 'Total'-Zeile. Wert stimmt mit der 5-Jahresübersicht (S. 227) und dem 'BCV Group posts stable revenues of CHF 1.15bn'-Communiqué überein."
+ "_verification": "Consolidated income statement (2025 Annual Report, S. 123): Zeile 'Total income from ordinary banking operations' CHF 1'149.9 Mio. (2025) und Zeile 'Net profit attributable to BCV shareholders' CHF 429.7 Mio. (2025). Geprüft: 'Total income from ordinary banking operations' ist die Summe der vier FINMA-Teilergebnisse (u.a. 'Net interest income after loan impairment charges/reversals' 526.2, 'Net fee and commission income' 394.3, 'Net trading income' 194.8, 'Other ordinary income' 34.6) und steht unmittelbar vor den Betriebsaufwendungen - keine andere, unpassende 'Total'-Zeile. Wert stimmt mit der 5-Jahresübersicht (S. 227) und dem 'BCV Group posts stable revenues of CHF 1.15bn'-Communiqué überein.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Banque Cantonale Vaudoise",
+  "revenue_zeile": "Total income from ordinary banking operations (Consolidated income statement, CHF 1'149.9m, 2025 vs. 1'155.5m 2024)",
+  "profit_zeile": "Net profit attributable to BCV shareholders (Consolidated income statement, CHF 429.7m, 2025 vs. 440.6m 2024)",
+  "abweichungen": [],
+  "begruendung": "PDF von mobile.bcv.ch heruntergeladen und mit pdftotext durchsucht: Zeile 'Total income from ordinary banking operations' (1'149.9) folgt unmittelbar auf die Summe aus NII, Fee-, Trading- und Other-ordinary-income und steht direkt vor den Operating expenses — die einzige plausible Ertragssumme, keine andere irreführende 'Total'-Zeile. 'Net profit attributable to BCV shareholders' (429.7) mit Minderheitsanteil von –0.0 fast identisch zu 'Net profit' bestätigt."
+ }
 }

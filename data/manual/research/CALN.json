@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": "215.894",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "7.076",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung und Verkauf von Tag-, Nacht- und Loungewear sowie Dessous unter den Marken CALIDA, AUBADE und COSABELLA.",
+ "products_url": "https://www.calidagroup.com/de/gruppe/",
+ "founding_year": "1941",
+ "founding_year_source": "https://www.calidagroup.com/de/gruppe/",
+ "employees": "1883",
+ "fiscal_year": "2025",
+ "report_url": "https://www.calidagroup.com/media/filer_public/45/65/4565c824-bd8a-4478-a517-1cef725c98ee/calida_group_annual-report_2025.pdf",
+ "note": "LAFUMA MOBILIER wurde per 31.07.2024 verkauft und wird 2025 als 'discontinued operation' geführt (Falle 2); die Erfolgsrechnung ist bereits durchgängig auf 'continuing operations' aufgebaut (Nettoumsatz 215.894 Mio. enthält kein Lafuma-Mobilier-Geschäft mehr). Um Umsatz und Gewinn im selben Konsolidierungskreis zu halten (Falle 3), wurde der Aktionärsanteil am fortgeführten Geschäft berechnet: 'shareholders of CALIDA Holding AG' gesamt CHF 10.429 Mio. abzüglich des laut Bericht 'in full' den Aktionären zurechenbaren Ergebnisses aus aufgegebenem Geschäft (Lafuma-Verkaufsgewinn CHF 3.353 Mio.) = CHF 7.076 Mio. Aktionärsanteil aus fortgeführtem Geschäft. Mitarbeitende: 'Headcount as of 31 December' 1'883 (Kopfzahl, keine Rundung nötig).",
+ "_verification": "Umsatz stammt aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 (S. 27), Zeile 'Net sales from contracts with customers' CHF 215'894 Tsd. für 2025 (bereits als fortgeführtes Geschäft dargestellt, da LAFUMA MOBILIER als discontinued operation separat ausgewiesen wird). Gewinn wurde aus zwei Zeilen derselben Erfolgsrechnung abgeleitet: 'attributable to: shareholders of CALIDA Holding AG' CHF 10'429 Tsd. (Summe aus fortgeführtem und aufgegebenem Geschäft) minus dem in Anhang 18 explizit als vollständig aktionärszurechenbar bezeichneten Ergebnis aus aufgegebenem Geschäft CHF 3'353 Tsd. = CHF 7'076 Tsd. Geprüft: die Rechnung wurde gegengeprüft mit 'Net result from continuing operations' (7'635 Tsd., inkl. Minderheiten) abzüglich Minderheitsanteil am Gesamtergebnis (559 Tsd., der laut Anhang vollständig aus fortgeführtem Geschäft stammt, da Lafuma-Ergebnis 'in full' den Aktionären zusteht) = 7'076 Tsd., stimmt überein."
+}

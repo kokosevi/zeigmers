@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://sgkb.ch/.dam/814f346b-7f11-49a0-af0c-b0f05eafeca5/SGKB-Geschaeftsbericht-2025.pdf",
  "note": "Mitarbeitendenzahl ist der 'durchschnittliche Personalbestand' des SGKB-Konzerns in teilzeitbereinigten Personaleinheiten (FTE, Lehrstellen zu 50 % angerechnet); eine Kopfzahl wird im Bericht nicht ausgewiesen. Kein separater Minderheitsanteil am Konzerngewinn erkennbar.",
- "_verification": "Konzernerfolgsrechnung, S. 45 des SGKB-Geschäftsbericht 2025: Zeile 'Geschäftsertrag' 604'676 Tausend CHF (2025) und Zeile 'Konzerngewinn' 226'978 Tausend CHF (2025). Personalbestand aus Lagebericht S. 6 'Der durchschnittliche Personalbestand des SGKB-Konzerns betrug im Jahr 2025 teilzeitbereinigt 1219 Personaleinheiten'. Werte gegen die separate Stammhaus-Erfolgsrechnung (Geschäftsertrag 579'821, Gewinn 226'619) abgegrenzt — Konzernwerte übernommen, nicht Stammhaus."
+ "_verification": "Konzernerfolgsrechnung, S. 45 des SGKB-Geschäftsbericht 2025: Zeile 'Geschäftsertrag' 604'676 Tausend CHF (2025) und Zeile 'Konzerngewinn' 226'978 Tausend CHF (2025). Personalbestand aus Lagebericht S. 6 'Der durchschnittliche Personalbestand des SGKB-Konzerns betrug im Jahr 2025 teilzeitbereinigt 1219 Personaleinheiten'. Werte gegen die separate Stammhaus-Erfolgsrechnung (Geschäftsertrag 579'821, Gewinn 226'619) abgegrenzt — Konzernwerte übernommen, nicht Stammhaus.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "St. Galler Kantonalbank AG",
+  "revenue_zeile": "Geschäftsertrag (Konzernerfolgsrechnung, 604'676 TCHF, 2025 vs. 561'697 TCHF 2024)",
+  "profit_zeile": "Konzerngewinn (Konzernerfolgsrechnung, 226'978 TCHF, 2025 vs. 215'084 TCHF 2024)",
+  "abweichungen": [],
+  "begruendung": "PDF von sgkb.ch heruntergeladen und mit pdftotext durchsucht: Konzernwerte 'Geschäftsertrag' 604'676 und 'Konzerngewinn' 226'978 bestätigt; explizit gegen die separat ausgewiesene Stammhaus-Erfolgsrechnung abgegrenzt (dort Geschäftsertrag 579'821, Gewinn 226'619 — nicht verwendet). Rechtseinheit 'St. Galler Kantonalbank AG' und Personalbestand 1'219 Personaleinheiten im Bericht bestätigt."
+ }
 }

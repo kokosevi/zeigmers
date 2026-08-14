@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 1100.5,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 80.8,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Entwicklung und Herstellung von systemkritischen Elastomerkomponenten: im Bereich Healthcare Dichtungs- und Verschlusskomponenten (z. B. Stopfen, Kappen) für Spritzen, Vials und Injektionssysteme in der Pharmaindustrie, sowie technische Elastomer- und Kunststoffkomponenten für Industrie- und Mobilitätsanwendungen.",
+ "products_url": "https://datwyler.com/",
+ "founding_year": 1902,
+ "founding_year_source": "https://datwyler.com/company/about-us/history/",
+ "employees": 7823,
+ "fiscal_year": 2025,
+ "report_url": "https://reports.datwyler.com/files/pages/data/downloads/financial-report-2025/ffa8993701-1770997952/datwyler.com_financial-report_2025.en.pdf",
+ "note": "Der Konzern weist keine Minderheitsanteile aus ('There are no minority interests', Notes zum Konzernabschluss), daher entspricht 'Net result' CHF 80.8 Mio. vollständig dem Aktionärsanteil. Beschäftigte laut Fünfjahresübersicht 'Number of employees (at year-end)' 2025 = 7'823; der Bericht spezifiziert nicht, ob Köpfe oder FTE gezählt werden.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. F05) des Datwyler Financial Report 2025: Zeile 'Net revenue' CHF 1'100.5 Mio. und 'Net result' CHF 80.8 Mio. Geprüft: dieselben Werte erscheinen in der Fünfjahresübersicht (Key Figures) zusammen mit 'Number of employees (at year-end)' 7'823 für 2025; laut Notes bestehen keine Minderheitsanteile, sodass der Nettogewinn vollständig den Aktionären zuzurechnen ist."
+}
