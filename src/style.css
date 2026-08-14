@@ -163,9 +163,15 @@ a:focus-visible, button:focus-visible {
   color: var(--tinte-leise); font-style: italic; font-size: .625rem;
   margin-top: .6rem;
 }
+/* Redesign Change 3 (2026-08-15): vorher klein, grau, in Grossbuchstaben —
+   damit wirkte «Verteilung nach Branchengruppe» wie eine beiläufige
+   Bildunterschrift, nicht wie eine gleichrangige zweite Überschrift neben
+   dem obersten Feld-Label («Beschäftigte»). Jetzt exakt dieselbe Typografie
+   wie ein Feld-Label (`#panel p strong`: fett, Grundschriftgrösse, normale
+   Textfarbe) — das Panel liest sich dadurch als zwei benannte Abschnitte
+   («Beschäftigte», «Branche») statt als Titel und Bildunterschrift. */
 .panel-untertitel {
-  font-weight: 600; margin-top: .5rem; font-size: .6875rem;
-  text-transform: uppercase; letter-spacing: .06em; color: var(--tinte-leise);
+  font-weight: 700; margin-top: .5rem; color: var(--tinte);
 }
 #panel ul { margin: .2rem 0 .5rem; padding-left: 1.1rem; }
 #panel a { color: var(--tinte); }

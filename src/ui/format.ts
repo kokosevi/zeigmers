@@ -23,3 +23,10 @@ export function formatRevenue(value: number, currency: string | null): string {
 export function formatRatio(value: number): string {
   return RATIO.format(value)
 }
+
+// Ein Verlust ist ein legitimer Wert (siehe `ui/panel.ts`, `companyContent`),
+// aber ein Minuszeichen vor einer grossen Zahl übersieht man leicht — «Verlust»
+// als Wort davor lässt sich nicht überlesen.
+export function formatProfit(value: number, currency: string | null): string {
+  return value < 0 ? `Verlust ${formatRevenue(-value, currency)}` : formatRevenue(value, currency)
+}

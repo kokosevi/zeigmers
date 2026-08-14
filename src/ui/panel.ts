@@ -1,6 +1,7 @@
 import type { Level } from '../data/loader'
+import { NOGA_GROUPS } from '../domain/noga.generated'
 import type { Company } from '../layers/visible'
-import { formatNumber, formatRatio, formatRevenue } from './format'
+import { formatNumber, formatProfit, formatRatio, formatRevenue } from './format'
 
 export interface PanelField {
   label: string
@@ -72,11 +73,16 @@ export function municipalityName(level: Level, index: number): string | null {
 // (`tlm_hoheitsgebiet`, Attribut EINWOHNERZAHL) bezieht sich laut
 // Nachführungsinformationen swissBOUNDARIES3D Ausgabe 2026 auf den
 // 31.12.2024 — ein anderes Jahr als die STATENT-Beschäftigten (2023). Beide
-// Zahlen trotzdem zu einer Kennzahl zu verrechnen ist informativ (siehe
-// Kommentar bei der Feldzeile unten), aber nur ehrlich, wenn der
-// Jahresunterschied direkt daneben steht statt stillschweigend verschwiegen
-// zu werden.
-const POPULATION_YEAR_NOTE = 'Bevölkerung 2024, Beschäftigte 2023'
+// Zahlen trotzdem zu einer Kennzahl zu verrechnen ist informativ, aber nur
+// ehrlich, wenn der Jahresunterschied irgendwo festgehalten ist statt
+// stillschweigend verschwiegen zu werden. Redesign Change 2 (2026-08-15): der
+// Hinweis stand bis dahin direkt neben der Ratio im Klick-Panel
+// (`"${formatRatio(...)} (Bevölkerung 2024, Beschäftigte 2023)"`) — das
+// wiederholte den Jahrgangsunterschied bei jedem Klick auf eine Gemeinde,
+// obwohl er panelweit konstant ist. Er steht jetzt einmalig in der Eckbox
+// (`ui/notices.ts`, `POPULATION_YEAR_NOTE`), zusammen mit Quelle und den
+// übrigen Vorbehalten — wörtlich derselbe Fakt, nur an der Stelle, an der
+// dieses Projekt sonst auch Vorbehalte sammelt, statt an der Kennzahl selbst.
 
 /** Gemeinde- oder Kantonszelle: Summe (als Obergrenze ausgewiesen), volle
  *  Verteilung über alle Branchengruppen aus `dist`. */
@@ -128,18 +134,20 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
     for (const entry of entries) items.push(`${entry.label}: ${formatNumber(entry.value)}`)
   }
 
-  const fields: PanelField[] = [{ label: 'Beschäftigte (Summe)', value: formatNumber(value) }]
+  const fields: PanelField[] = [{ label: 'Beschäftigte', value: formatNumber(value) }]
   // Weder fehlende (`undefined`, ältere Artefakte/Exklaven-Teilpolygone ohne
   // Wert) noch exakt 0 Einwohner:innen dürfen eine Division durch 0 oder eine
   // Scheinzahl ergeben — die Zeile erscheint dann schlicht nicht, statt einen
   // erfundenen oder unendlichen Wert zu zeigen. Ein Wert über 1 heisst mehr
   // Arbeitsplätze als Einwohner:innen — ein Arbeitsplatz- statt ein
   // Wohnort-Schwerpunkt, die Information, die die reine Beschäftigtenzahl
-  // allein nicht zeigt.
+  // allein nicht zeigt. Der Jahrgangs-Vorbehalt (Bevölkerung 2024,
+  // Beschäftigte 2023) steht seit Redesign Change 2 (2026-08-15) in der
+  // Eckbox, nicht mehr hier neben der Zahl (siehe Kommentar oben).
   if (einwohnerzahl !== undefined && einwohnerzahl > 0) {
     fields.push({
       label: 'Beschäftigte je Einwohner',
-      value: `${formatRatio(value / einwohnerzahl)} (${POPULATION_YEAR_NOTE})`,
+      value: formatRatio(value / einwohnerzahl),
     })
   }
 
@@ -147,7 +155,7 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
     title,
     fields,
     notes: [],
-    list: { caption: 'Verteilung nach Branchengruppe', items },
+    list: { caption: 'Branche', items },
     footnote:
       `Diese Summe ist eine Obergrenze, keine exakte Zahl: bis zu ` +
       `${formatNumber(overstatement)} Beschäftigte zu viel, weil Hektaren mit ` +
@@ -155,17 +163,37 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
   }
 }
 
-/** Firma: nennt die gemeldete Kennzahl beim Namen — sieben Firmen weisen
- *  Nettoumsatz aus, die Hypothekarbank Lenzburg Geschäftsertrag (nicht mit
- *  Nettoumsatz vergleichbar). Ohne Umsatz: expliziter Hinweis statt einer
- *  erfundenen Zahl. */
+function nogaGroupLabel(nogaGroupIndex: number): string {
+  return NOGA_GROUPS[nogaGroupIndex]?.label ?? 'unbekannt'
+}
+
+/** Firma: ein Steckbrief zum Anklicken — Sitz, Branche und Kerngeschäft
+ *  zuerst, dann die Kennzahlen mit Geschäftsjahr, dann Mitarbeitende, dann
+ *  der Link zum Geschäftsbericht. Nennt die gemeldete Umsatz-Kennzahl beim
+ *  Namen — sieben Firmen weisen Nettoumsatz aus, die Hypothekarbank Lenzburg
+ *  Geschäftsertrag (nicht mit Nettoumsatz vergleichbar); der Reingewinn
+ *  braucht diese Unterscheidung nicht (siehe `companies.py`, Kommentar bei
+ *  `REVENUE_TYPES` — anders als Umsatz ist er branchenübergreifend
+ *  vergleichbar). Für jede fehlende Zahl: ein expliziter Hinweis statt einer
+ *  erfundenen. */
 export function companyContent(company: Company): PanelContent {
   const fields: PanelField[] = []
   const notes: string[] = []
 
+  if (company.city) fields.push({ label: 'Sitz', value: company.city })
+  if (company.foundingYear !== null) {
+    fields.push({ label: 'Gegründet', value: String(company.foundingYear) })
+  }
+  fields.push({ label: 'Branche', value: nogaGroupLabel(company.nogaGroupIndex) })
+
+  if (company.coreProducts) {
+    fields.push({ label: 'Kerngeschäft', value: company.coreProducts })
+  } else {
+    notes.push('Kerngeschäft nicht aus einer Primärquelle auffindbar.')
+  }
+
   if (company.placeholder) {
     notes.push('Umsatz nicht öffentlich verfügbar.')
-    if (company.note) notes.push(company.note)
   } else {
     const label =
       company.revenueType === 'operating_income'
@@ -175,14 +203,24 @@ export function companyContent(company: Company): PanelContent {
       label,
       value: company.revenue !== null ? formatRevenue(company.revenue, company.currency) : '–',
     })
-    if (company.note) notes.push(company.note)
   }
 
-  if (company.employees !== null) {
-    fields.push({ label: 'Mitarbeitende', value: formatNumber(company.employees) })
+  if (company.profit !== null) {
+    fields.push({
+      label: 'Reingewinn (auf die Aktionäre entfallend)',
+      value: formatProfit(company.profit, company.profitCurrency ?? company.currency),
+    })
+  } else {
+    notes.push('Reingewinn nicht öffentlich verfügbar.')
   }
+
+  if (company.note) notes.push(company.note)
+
   if (company.fiscalYear !== null) {
     fields.push({ label: 'Geschäftsjahr', value: String(company.fiscalYear) })
+  }
+  if (company.employees !== null) {
+    fields.push({ label: 'Mitarbeitende', value: formatNumber(company.employees) })
   }
 
   return {

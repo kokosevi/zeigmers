@@ -11,6 +11,8 @@ function company(overrides: Partial<Company> = {}): Company {
   return {
     uid: 'CHE-1', name: 'Test AG', sixSymbol: null, lon: 8, lat: 47.4,
     nogaGroupIndex: 1, revenue: 1e9, currency: 'CHF', revenueType: 'net_sales',
+    profit: null, profitCurrency: null, coreProducts: null, productsUrl: null,
+    foundingYear: null,
     employees: null, fiscalYear: 2024, reportUrl: null, note: null,
     placeholder: false, city: 'Aarau',
     ...overrides,
@@ -23,7 +25,10 @@ function data(revenues: (number | null)[]): CompanyData {
     companies: revenues.map((revenue, i) => ({
       uid: `CHE-${i}`, name: `F${i}`, sixSymbol: null, lon: 8, lat: 47.4,
       nogaGroupIndex: 1, revenue, currency: 'CHF',
-      revenueType: revenue === null ? null : 'net_sales', employees: null,
+      revenueType: revenue === null ? null : 'net_sales',
+      profit: null, profitCurrency: null, coreProducts: null, productsUrl: null,
+      foundingYear: null,
+      employees: null,
       fiscalYear: 2024, reportUrl: null, note: null,
       placeholder: revenue === null, city: 'Aarau',
     })),

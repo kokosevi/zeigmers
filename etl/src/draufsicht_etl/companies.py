@@ -17,6 +17,9 @@ CSV_COLUMNS = (
     "street", "zip", "city", "lon", "lat", "geocode_query",
     "noga_group",
     "revenue", "revenue_currency", "revenue_type", "revenue_unit",
+    "profit", "profit_currency", "profit_unit",
+    "core_products", "products_url",
+    "founding_year", "founding_year_source",
     "employees", "fiscal_year", "report_url", "note",
 )
 
@@ -24,6 +27,12 @@ CSV_COLUMNS = (
 # ordinary net sales vs. a bank's operating income (no true "Umsatz" equivalent exists
 # for banks). Closed set for now; Task 16 draws non-net_sales bars distinctly.
 REVENUE_TYPES = {"net_sales", "operating_income"}
+
+# Unlike `revenue`, net profit attributable to shareholders (Reingewinn) is broadly
+# comparable across an ordinary industrial company and a bank — both report a single,
+# similarly-defined bottom line under Swiss GAAP FER/IFRS. `profit` therefore carries no
+# `revenue_type`-style tag, only its own currency/unit (mirroring `revenue_currency`/
+# `revenue_unit`) and the shared `report_url`/`fiscal_year` of the row.
 
 Fetcher = Callable[[str], bytes]
 
@@ -109,6 +118,30 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
                 f"{label}: revenue leer, dann muss note erklären warum"
             )
 
+        # `profit` (Reingewinn) trägt keinen `revenue_type`-Tag (siehe Kommentar bei
+        # REVENUE_TYPES oben — im Gegensatz zu Umsatz ist die Kennzahl branchenübergreifend
+        # vergleichbar), braucht aber dieselbe Herkunftspflicht wie `revenue`: jede Zahl muss
+        # auf eine Quelle zurückführbar sein, sonst liesse sich ein Gewinn ebenso unbemerkt
+        # falsch skalieren oder einer falschen Periode zuordnen wie ein Umsatz ohne
+        # `revenue_unit` (siehe Kommentar bei `test_validate_rejects_revenue_without_revenue_unit`).
+        if row.get("profit", "").strip():
+            for field in ("report_url", "fiscal_year", "profit_currency", "profit_unit"):
+                if not row.get(field, "").strip():
+                    problems.append(
+                        f"{label}: profit gesetzt, aber {field} fehlt — "
+                        "jede Zahl muss auf eine Quelle zurückführbar sein"
+                    )
+
+        # `founding_year` stammt entweder aus eigenen Unternehmensunterlagen oder aus dem
+        # Zefix-Eintrag (siehe README, "Was revenue bedeutet" — derselbe Grundsatz gilt für
+        # jede Zahl in dieser CSV) — ohne eine Quell-URL wäre die Jahreszahl nicht anders zu
+        # unterscheiden von einer erfundenen.
+        if row.get("founding_year", "").strip() and not row.get("founding_year_source", "").strip():
+            problems.append(
+                f"{label}: founding_year gesetzt, aber founding_year_source fehlt — "
+                "jede Zahl muss auf eine Quelle zurückführbar sein"
+            )
+
     if problems:
         raise ValueError("CSV-Validierung fehlgeschlagen:\n  " + "\n  ".join(problems))
 
@@ -119,6 +152,8 @@ def build_artifact(rows: list[dict], table: NogaTable) -> dict:
     for row in rows:
         revenue = row.get("revenue", "").strip()
         unit = float(row.get("revenue_unit") or 1)
+        profit = row.get("profit", "").strip()
+        profit_unit = float(row.get("profit_unit") or 1)
         entries.append(
             {
                 "uid": row["uid"],
@@ -130,6 +165,11 @@ def build_artifact(rows: list[dict], table: NogaTable) -> dict:
                 "revenue": float(revenue) * unit if revenue else None,
                 "currency": row.get("revenue_currency") or None,
                 "revenueType": row.get("revenue_type") or None,
+                "profit": float(profit) * profit_unit if profit else None,
+                "profitCurrency": row.get("profit_currency") or None,
+                "coreProducts": row.get("core_products") or None,
+                "productsUrl": row.get("products_url") or None,
+                "foundingYear": int(row["founding_year"]) if row.get("founding_year") else None,
                 "employees": int(row["employees"]) if row.get("employees") else None,
                 "fiscalYear": int(row["fiscal_year"]) if row.get("fiscal_year") else None,
                 "reportUrl": row.get("report_url") or None,

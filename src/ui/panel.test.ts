@@ -77,6 +77,11 @@ function company(overrides: Partial<Company> = {}): Company {
     revenue: 1_250_000_000,
     currency: 'CHF',
     revenueType: 'net_sales',
+    profit: 45_000_000,
+    profitCurrency: 'CHF',
+    coreProducts: 'Pharmazeutische Wirkstoffe im Auftrag.',
+    productsUrl: null,
+    foundingYear: 1873,
     employees: 3400,
     fiscalYear: 2024,
     reportUrl: 'https://example.test/gb.pdf',
@@ -146,11 +151,9 @@ describe('aggregateCellContent', () => {
         aggregateLevel({ level: 'gemeinde', gemeinden, gemeindeIdx: 0, value: 99 }),
         0,
       )
-      expect(content.fields[0]?.label).toBe('Beschäftigte (Summe)')
+      expect(content.fields[0]?.label).toBe('Beschäftigte')
       expect(content.fields[1]?.label).toBe('Beschäftigte je Einwohner')
       expect(content.fields[1]?.value).toMatch(/^0[.,]14\b/) // 99 / 692 ≈ 0.1431
-      expect(content.fields[1]?.value).toContain('2024')
-      expect(content.fields[1]?.value).toContain('2023')
     })
 
     it('omits the ratio when einwohnerzahl is missing (no crash, no fabricated ratio)', () => {
@@ -193,13 +196,15 @@ describe('aggregateCellContent', () => {
 describe('companyContent', () => {
   it('labels net_sales as ordinary Nettoumsatz', () => {
     const content = companyContent(company({ revenueType: 'net_sales' }))
-    expect(content.fields[0]?.label).toBe('Jahresumsatz (Nettoumsatz)')
+    const revenue = content.fields.find((f) => f.label.includes('Jahresumsatz'))
+    expect(revenue?.label).toBe('Jahresumsatz (Nettoumsatz)')
   })
 
   it('names operating_income explicitly as not comparable to net sales', () => {
     const content = companyContent(company({ revenueType: 'operating_income' }))
-    expect(content.fields[0]?.label).toMatch(/Geschäftsertrag/)
-    expect(content.fields[0]?.label).toMatch(/nicht mit Nettoumsatz vergleichbar/)
+    const revenue = content.fields.find((f) => f.label.includes('Geschäftsertrag'))
+    expect(revenue?.label).toMatch(/Geschäftsertrag/)
+    expect(revenue?.label).toMatch(/nicht mit Nettoumsatz vergleichbar/)
   })
 
   it('shows an explicit hint instead of a fabricated number when revenue is absent', () => {
@@ -208,5 +213,60 @@ describe('companyContent', () => {
     )
     expect(content.notes).toContain('Umsatz nicht öffentlich verfügbar.')
     expect(content.fields.find((f) => f.label.includes('Umsatz'))).toBeUndefined()
+  })
+
+  it('leads with Sitz, Gegründet and Branche, ahead of the figures', () => {
+    const content = companyContent(company({ city: 'Zofingen', foundingYear: 1873 }))
+    expect(content.fields[0]).toEqual({ label: 'Sitz', value: 'Zofingen' })
+    expect(content.fields[1]).toEqual({ label: 'Gegründet', value: '1873' })
+    expect(content.fields[2]?.label).toBe('Branche')
+  })
+
+  it('omits Gegründet when the founding year could not be sourced', () => {
+    const content = companyContent(company({ foundingYear: null }))
+    expect(content.fields.find((f) => f.label === 'Gegründet')).toBeUndefined()
+  })
+
+  it('shows the core products line when sourced', () => {
+    const content = companyContent(
+      company({ coreProducts: 'Pharmazeutische Wirkstoffe im Auftrag.' }),
+    )
+    const products = content.fields.find((f) => f.label === 'Kerngeschäft')
+    expect(products?.value).toBe('Pharmazeutische Wirkstoffe im Auftrag.')
+  })
+
+  it('notes instead of fabricating when core products could not be sourced', () => {
+    const content = companyContent(company({ coreProducts: null }))
+    expect(content.fields.find((f) => f.label === 'Kerngeschäft')).toBeUndefined()
+    expect(content.notes).toContain('Kerngeschäft nicht aus einer Primärquelle auffindbar.')
+  })
+
+  it('shows net profit under a label that needs no revenue_type-style caveat', () => {
+    const content = companyContent(company({ profit: 45_000_000, profitCurrency: 'CHF' }))
+    const profit = content.fields.find((f) => f.label.startsWith('Reingewinn'))
+    expect(profit?.value).toMatch(/45\s*Mio\.?\s*CHF/)
+  })
+
+  it('renders a loss as the word «Verlust», never a bare minus sign', () => {
+    const content = companyContent(company({ profit: -3_071_000, profitCurrency: 'EUR' }))
+    const profit = content.fields.find((f) => f.label.startsWith('Reingewinn'))
+    expect(profit?.value).toMatch(/^Verlust\s+3[.,]07\s*Mio\.?\s*EUR$/)
+    expect(profit?.value).not.toContain('-')
+  })
+
+  it('notes instead of fabricating when profit could not be sourced', () => {
+    const content = companyContent(company({ profit: null }))
+    expect(content.fields.find((f) => f.label.startsWith('Reingewinn'))).toBeUndefined()
+    expect(content.notes).toContain('Reingewinn nicht öffentlich verfügbar.')
+  })
+
+  it('keeps fiscal year and employees after the figures, in that order', () => {
+    const content = companyContent(company({ fiscalYear: 2025, employees: 3891 }))
+    const fiscalYearIndex = content.fields.findIndex((f) => f.label === 'Geschäftsjahr')
+    const employeesIndex = content.fields.findIndex((f) => f.label === 'Mitarbeitende')
+    const profitIndex = content.fields.findIndex((f) => f.label.startsWith('Reingewinn'))
+    expect(fiscalYearIndex).toBeGreaterThan(-1)
+    expect(employeesIndex).toBeGreaterThan(fiscalYearIndex)
+    expect(fiscalYearIndex).toBeGreaterThan(profitIndex)
   })
 })

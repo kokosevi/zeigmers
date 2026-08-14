@@ -80,6 +80,18 @@ const FOOTER_COMPANIES =
   'Ansicht A: Umsatz, Mitarbeitende und Geschäftsjahr aus den Geschäftsberichten der ' +
   'acht Unternehmen selbst (Quelle je Firma im Panel, «Geschäftsbericht öffnen»).'
 
+// Redesign Change 2 (2026-08-15): vorher stand dieser Jahrgangs-Hinweis direkt
+// neben der «Beschäftigte je Einwohner»-Zeile im Klick-Panel
+// (`ui/panel.ts`), wortgleich bei jeder angeklickten Gemeinde wiederholt.
+// Er gehört inhaltlich zu denselben Vorbehalten, die sonst schon hier stehen
+// (Quelle, Lizenz, Rundung) — deshalb einmalig hierher verschoben statt
+// gelöscht: ohne ihn irgendwo läse sich die Kennzahl als Verhältnis zweier
+// Zahlen desselben Jahres, was sie nicht ist (Bevölkerung 31.12.2024,
+// Beschäftigte 2023).
+const POPULATION_YEAR_NOTE =
+  'Die Kennzahl «Beschäftigte je Einwohner» im Klick-Panel vergleicht zwei ' +
+  'Jahrgänge: Bevölkerung 31.12.2024, Beschäftigte 2023.'
+
 function paragraph(text: string, className: string): HTMLParagraphElement {
   const p = document.createElement('p')
   p.className = className
@@ -108,4 +120,5 @@ export function renderNotices(view: ViewName): void {
   // nur in Ansicht B.
   box.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
   if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
+  if (view === 'beschaeftigte') box.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
 }

@@ -30,6 +30,11 @@ export interface Company {
   revenue: number | null
   currency: string | null
   revenueType: RevenueType | null
+  profit: number | null
+  profitCurrency: string | null
+  coreProducts: string | null
+  productsUrl: string | null
+  foundingYear: number | null
   employees: number | null
   fiscalYear: number | null
   reportUrl: string | null

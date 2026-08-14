@@ -128,6 +128,100 @@ def test_build_artifact_marks_rows_without_revenue():
     assert artifact["companies"][0]["placeholder"] is True
 
 
+def test_validate_accepts_a_complete_row_with_profit_and_founding_year():
+    companies.validate([_row(
+        profit="45000000", profit_currency="CHF", profit_unit="1",
+        core_products="Beispielprodukte", founding_year="1950",
+        founding_year_source="https://example.test/history",
+    )])
+
+
+def test_validate_rejects_profit_without_report_url():
+    with pytest.raises(ValueError, match="profit gesetzt, aber report_url"):
+        companies.validate([_row(
+            profit="45000000", profit_currency="CHF", profit_unit="1", report_url="",
+            # revenue leer machen, damit nicht die revenue-Regel denselben Fehler meldet
+            revenue="", revenue_currency="", revenue_type="", revenue_unit="",
+            fiscal_year="", note="Umsatz nicht öffentlich",
+        )])
+
+
+def test_validate_rejects_profit_without_fiscal_year():
+    with pytest.raises(ValueError, match="profit gesetzt, aber fiscal_year"):
+        companies.validate([_row(
+            profit="45000000", profit_currency="CHF", profit_unit="1",
+            revenue="", revenue_currency="", revenue_type="", revenue_unit="",
+            report_url="https://example.test/gb2024.pdf", fiscal_year="",
+            note="Umsatz nicht öffentlich",
+        )])
+
+
+def test_validate_rejects_profit_without_profit_currency():
+    with pytest.raises(ValueError, match="profit gesetzt, aber profit_currency"):
+        companies.validate([_row(profit="45000000", profit_unit="1", profit_currency="")])
+
+
+def test_validate_rejects_profit_without_profit_unit():
+    # Dieselbe Begründung wie bei revenue_unit: ohne Pflicht liest build_artifact() ein
+    # leeres profit_unit als Faktor 1 und verschiebt eine in Millionen gemeldete Zahl
+    # unbemerkt um den Faktor 10**6.
+    with pytest.raises(ValueError, match="profit gesetzt, aber profit_unit"):
+        companies.validate([_row(profit="45000000", profit_currency="CHF", profit_unit="")])
+
+
+def test_validate_allows_empty_profit_without_extra_provenance():
+    # profit ist optional (nicht jede Firma weist einen Reingewinn öffentlich aus) —
+    # anders als revenue erzwingt ein leeres profit keine note.
+    companies.validate([_row(profit="")])
+
+
+def test_validate_rejects_founding_year_without_source():
+    with pytest.raises(ValueError, match="founding_year gesetzt, aber founding_year_source"):
+        companies.validate([_row(founding_year="1950", founding_year_source="")])
+
+
+def test_validate_allows_empty_founding_year():
+    companies.validate([_row(founding_year="", founding_year_source="")])
+
+
+def test_build_artifact_carries_profit_products_and_founding_year():
+    table = noga.load_table()
+    artifact = companies.build_artifact(
+        [_row(
+            profit="45000000", profit_currency="CHF", profit_unit="1",
+            core_products="Pharmazeutische Wirkstoffe im Auftrag",
+            products_url="https://example.test/about",
+            founding_year="1950", founding_year_source="https://example.test/history",
+        )],
+        table,
+    )
+    entry = artifact["companies"][0]
+    assert entry["profit"] == 45_000_000
+    assert entry["profitCurrency"] == "CHF"
+    assert entry["coreProducts"] == "Pharmazeutische Wirkstoffe im Auftrag"
+    assert entry["productsUrl"] == "https://example.test/about"
+    assert entry["foundingYear"] == 1950
+
+
+def test_build_artifact_handles_a_loss_as_a_negative_profit():
+    table = noga.load_table()
+    artifact = companies.build_artifact(
+        [_row(profit="-3071000", profit_currency="EUR", profit_unit="1")],
+        table,
+    )
+    assert artifact["companies"][0]["profit"] == -3_071_000
+
+
+def test_build_artifact_marks_missing_profit_as_none():
+    table = noga.load_table()
+    artifact = companies.build_artifact([_row(profit="")], table)
+    entry = artifact["companies"][0]
+    assert entry["profit"] is None
+    assert entry["profitCurrency"] is None
+    assert entry["coreProducts"] is None
+    assert entry["foundingYear"] is None
+
+
 def test_load_csv_roundtrip(tmp_path):
     path = tmp_path / "c.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
