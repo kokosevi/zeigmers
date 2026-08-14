@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "5207",
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "613",
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Herstellung und Vertrieb dermatologischer Produkte in den Bereichen injizierbare Ästhetik (u. a. Botulinumtoxin- und Filler-Marken Dysport, Restylane, Sculptra), Hautpflege (u. a. Cetaphil) und verschreibungspflichtige Dermatologie (u. a. Differin, Soolantra, Oracea).",
+ "products_url": "https://www.galderma.com/our-brands",
+ "founding_year": "1981",
+ "founding_year_source": "https://www.galderma.com/sites/default/files/2026-03/galderma_ar_2025_consolidated-doc_8b_260304_-_full.pdf",
+ "employees": "7676",
+ "fiscal_year": "2025",
+ "report_url": "https://www.galderma.com/sites/default/files/2026-03/galderma_ar_2025_consolidated-doc_8b_260304_-_full.pdf",
+ "note": "Galderma Group AG (Sitz Zug) wurde am 7. Februar 2022 als neue Holdinggesellschaft der bestehenden Galderma-Gruppe (zuvor unter Sunshine Luxembourg VII SARL, EQT-Konsortium) errichtet und am 22. März 2024 an der SIX kotiert (IPO); operativ geht die Marke auf die 1981 als Nestlé/L'Oréal-Gemeinschaftsunternehmen gegründete Galderma zurück ('Committed to the science of skin since 1981', Annual Report 2025). Net income (USD 613 Mio.) ist laut Konzern-Eigenkapitalveränderungsrechnung vollständig den Aktionären zurechenbar, es werden keine nicht beherrschenden Anteile ausgewiesen. Beschäftigtenzahl (7'676) stammt aus der Tabelle 'Employee indicators, headcount' (Kopfzahl, nicht Vollzeitäquivalente) im Nachhaltigkeitsteil des Berichts, Stand 2025 (Vorjahr 2024: 7'082).",
+ "_verification": "Nettoumsatz (Net sales, USD 5'207 Mio.) und Konzerngewinn (Net income, USD 613 Mio.) stammen aus der 'Consolidated income statement' im Finance Report (Teil 5) des Galderma Annual Report 2025, Seite ~208/209; dieselbe Zahl (613 Mio.) erscheint auch in der Eigenkapitalveränderungsrechnung als vollständig eigenkapitalgeberzurechenbar (keine Minderheitsanteile). Beschäftigtenzahl (7'676, als 'headcount' bezeichnet) stammt aus der Tabelle 'Employee indicators' im nichtfinanziellen Bericht (Teil 3, Kapitel 'Labor practices') desselben Dokuments; Gründungsjahr 1981 aus dem Geschäftsbericht selbst (Strategie-/Überblickskapitel: '45-year heritage' seit 1981). Geprüft per pdftotext-Extraktion aus dem offiziellen PDF (galderma.com), Zahlen stehen wortgleich im Dokument, keine Umrechnung, kein Hinweis auf aufgegebene Geschäftsbereiche im Berichtsjahr."
+}

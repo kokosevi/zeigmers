@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 4745.7,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 227.1,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Milchprodukte und Desserts: Käse (u.a. Kaltbach, Sbrinz), Joghurt und fermentierte Milchprodukte, Trinkmilchgetränke (Emmi Caffè Latte), Eiscreme, pflanzliche Alternativen und Ernährungsprodukte.",
+ "products_url": "https://group.emmi.com/che/de/marken-produkte",
+ "founding_year": 1907,
+ "founding_year_source": "https://group.emmi.com/che/de/ueber-emmi/geschichte",
+ "employees": 12778,
+ "fiscal_year": 2025,
+ "report_url": "https://report.emmi.com/2025/en/income-statement",
+ "note": "Beschäftigte als Vollzeitäquivalente (FTE) zum Jahresende ausgewiesen; eine separate Kopfzahl wird im Bericht nicht genannt. Konzerngewinn inkl. Minderheitsanteile lag 2025 bei CHF 247.5 Mio.; die eingetragenen CHF 227.1 Mio. sind der auf die Aktionäre der Emmi AG entfallende Anteil ('Net profit', nach Abzug von Minderheitsanteilen CHF 20.5 Mio.).",
+ "_verification": "Umsatz (Zeile 'Sales', CHF 4'745.7 Mio.) und Gewinn (Zeile 'Net profit', CHF 227.1 Mio., nach Minderheitsanteilen) stammen beide aus der konsolidierten Erfolgsrechnung 2025 auf report.emmi.com/2025/en/income-statement, identisches Geschäftsjahr und Konsolidierungskreis (Gesamtkonzern, keine Hinweise auf zum Verkauf gehaltene Bereiche). Gründungsjahr und Kerngeschäft wurden auf den offiziellen Emmi-Group-Seiten geprüft."
+}

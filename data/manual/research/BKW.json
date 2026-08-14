@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 4201.2,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 356.8,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Energie- und Infrastrukturdienstleistungen: Stromproduktion und -handel, Betrieb von Stromnetzen (BKW Power Grid), Engineering- und Gebäudetechnikprojekte sowie Infrastrukturbau über die Marken BKW Energy, BKW Building Solutions, BKW Engineering und BKW Infra Services.",
+ "products_url": "https://www.bkw.com/en/about-us/the-bkw-group",
+ "founding_year": 1898,
+ "founding_year_source": "https://www.bkw.ch/de/ueber-uns/die-bkw-gruppe/125-jahre-125-fragen/die-pionierin/wie-entstand-die-bkw",
+ "employees": 12390,
+ "fiscal_year": 2025,
+ "report_url": "https://www.bkw.ch/fileadmin/GB25/GB_2025/Geschaeftsbericht_2025_Deutsch.pdf",
+ "note": "Es gibt in der Kategorienliste keine eigene Energieversorgungs-Kategorie; BKW als Energie-/Infrastrukturkonzern wurde daher 'industrie' zugeordnet. In der Erfolgsrechnung steht neben 'Nettoumsatz' (eingetragen, CHF 4'201.2 Mio.) auch 'Gesamtleistung' (CHF 4'543.6 Mio., inkl. aktivierter Eigenleistungen und sonstiger betrieblicher Erträge) — das ist eine Summe und wurde bewusst NICHT verwendet. Reingewinn der Gruppe inkl. Minderheitsanteile betrug CHF 387.9 Mio.; eingetragen ist der den BKW-Aktionären zurechenbare Anteil von CHF 356.8 Mio. (nicht beherrschende Anteile: CHF 31.0 Mio.). Mitarbeitende ist die im Bericht ausgewiesene Kopfzahl ('Anzahl Mitarbeitende' per 31.12.2025); eine FTE-Zahl wird im Bericht nicht separat genannt.",
+ "_verification": "Umsatz (Zeile 'Nettoumsatz', S. 28 'Konsolidierte Erfolgsrechnung') und Gewinn (Zeile 'Reingewinn', davon zuzurechnen 'den BKW Aktionären', gleiche Tabelle) stammen aus der konsolidierten Erfolgsrechnung 2025 im offiziellen Geschäftsbericht 2025 (PDF, bkw.ch), identisches Geschäftsjahr und Konsolidierungskreis. Geprüft wurde insbesondere, dass 'Nettoumsatz' (4'201.2) nicht mit der Summe 'Gesamtleistung' (4'543.6) verwechselt wird, und dass der Gewinn der Aktionäre (356.8) statt des Gesamtkonzerngewinns inkl. Minderheiten (387.9) verwendet wird. Mitarbeiterzahl (12'390) stammt aus der Kennzahlenübersicht 'Zahlen & Fakten' desselben Berichts."
+}
