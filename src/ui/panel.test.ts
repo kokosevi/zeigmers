@@ -79,6 +79,7 @@ function company(overrides: Partial<Company> = {}): Company {
     revenueType: 'net_sales',
     profit: 45_000_000,
     profitCurrency: 'CHF',
+    consolidationBasis: 'total_group',
     coreProducts: 'Pharmazeutische Wirkstoffe im Auftrag.',
     productsUrl: null,
     foundingYear: 1873,
@@ -258,6 +259,46 @@ describe('companyContent', () => {
     const content = companyContent(company({ profit: null }))
     expect(content.fields.find((f) => f.label.startsWith('Reingewinn'))).toBeUndefined()
     expect(content.notes).toContain('Reingewinn nicht öffentlich verfügbar.')
+  })
+
+  // Diese vier Tests prüfen dieselbe Art Regression wie die revenueType-Tests
+  // oben (siehe Kommentar am Dateianfang): `consolidationBasis` steht seit
+  // kurzem in `companies.json`, muss aber im Panel in Klartext erscheinen —
+  // nicht nur bei DSM-Firmenich (`continuing_operations`), sondern immer,
+  // damit ein Leser den Normalfall nicht stillschweigend annehmen muss.
+  describe('consolidation basis', () => {
+    it('names the total_group basis in plain German, not the raw enum value', () => {
+      const content = companyContent(company({ consolidationBasis: 'total_group' }))
+      expect(content.notes).toContain('Umsatz und Reingewinn: Zahlen für den Gesamtkonzern.')
+      expect(content.notes.join(' ')).not.toContain('total_group')
+    })
+
+    it('names the continuing_operations basis in plain German, not the raw enum value', () => {
+      const content = companyContent(company({ consolidationBasis: 'continuing_operations' }))
+      expect(content.notes).toContain(
+        'Umsatz und Reingewinn: Zahlen für die fortgeführten Geschäfte.',
+      )
+      expect(content.notes.join(' ')).not.toContain('continuing_operations')
+    })
+
+    it('omits the basis note entirely when no basis is recorded', () => {
+      const content = companyContent(company({ consolidationBasis: null }))
+      expect(content.notes.some((n) => n.includes('Gesamtkonzern'))).toBe(false)
+      expect(content.notes.some((n) => n.includes('fortgeführ'))).toBe(false)
+    })
+
+    it('places the basis note ahead of the row’s own explanatory note, not after', () => {
+      const content = companyContent(
+        company({
+          consolidationBasis: 'continuing_operations',
+          note: 'Ausführliche Erklärung zur Tierernährungssparte.',
+        }),
+      )
+      const basisIndex = content.notes.findIndex((n) => n.includes('fortgeführten Geschäfte'))
+      const ownNoteIndex = content.notes.indexOf('Ausführliche Erklärung zur Tierernährungssparte.')
+      expect(basisIndex).toBeGreaterThan(-1)
+      expect(ownNoteIndex).toBeGreaterThan(basisIndex)
+    })
   })
 
   it('keeps fiscal year and employees after the figures, in that order', () => {

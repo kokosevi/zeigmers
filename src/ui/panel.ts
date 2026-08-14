@@ -175,7 +175,11 @@ function nogaGroupLabel(nogaGroupIndex: number): string {
  *  braucht diese Unterscheidung nicht (siehe `companies.py`, Kommentar bei
  *  `REVENUE_TYPES` — anders als Umsatz ist er branchenübergreifend
  *  vergleichbar). Für jede fehlende Zahl: ein expliziter Hinweis statt einer
- *  erfundenen. */
+ *  erfundenen. Nennt ausserdem, für welchen Unternehmensumfang Umsatz und
+ *  Reingewinn gelten (`consolidationBasis` — Gesamtkonzern oder fortgeführte
+ *  Geschäfte, siehe Kommentar direkt unten bei ihrer Verwendung): die Angabe
+ *  landet bislang nur in `companies.json`, nirgends im Interface — derselbe
+ *  Fehler, den `revenueType` schon einmal gemacht hat. */
 export function companyContent(company: Company): PanelContent {
   const fields: PanelField[] = []
   const notes: string[] = []
@@ -212,6 +216,25 @@ export function companyContent(company: Company): PanelContent {
     })
   } else {
     notes.push('Reingewinn nicht öffentlich verfügbar.')
+  }
+
+  // `consolidationBasis` bindet Umsatz und Reingewinn derselben Zeile an
+  // denselben Unternehmensumfang (siehe `ConsolidationBasis` in
+  // `layers/visible.ts`) — ohne diese Zeile stünde die Unterscheidung nur in
+  // `companies.json`, nie im Panel. Beide Werte werden explizit benannt,
+  // nicht nur der abweichende Fall (`continuing_operations`), nach demselben
+  // Muster wie der Umsatz-Feldname oben: auch der Normalfall
+  // (`total_group`, sieben der acht Firmen) bekommt Klartext statt
+  // Schweigen. Wortwahl bewusst knapp gehalten und ohne die Details
+  // (welche Sparte, welcher Betrag), die bei DSM-Firmenich und Montana
+  // Aerospace bereits im eigenen `note`-Text stehen — diese Zeile ordnet nur
+  // ein, sie ersetzt die Begründung nicht.
+  if (company.consolidationBasis) {
+    const basisText =
+      company.consolidationBasis === 'continuing_operations'
+        ? 'Umsatz und Reingewinn: Zahlen für die fortgeführten Geschäfte.'
+        : 'Umsatz und Reingewinn: Zahlen für den Gesamtkonzern.'
+    notes.push(basisText)
   }
 
   if (company.note) notes.push(company.note)
