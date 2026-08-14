@@ -1,12 +1,15 @@
 # Draufsicht
 
-Eine statische 3D-Wirtschaftskarte des Kantons Aargau (196 Gemeinden,
-1'404 km²): zwei Ansichten derselben Fläche, nebeneinander gehalten, damit
-der Unterschied sichtbar wird.
+Eine statische 3D-Wirtschaftskarte der Schweiz: zwei Ansichten derselben
+Fläche, nebeneinander gehalten, damit der Unterschied sichtbar wird.
 
-**Ansicht A** zeigt die acht börsenkotierten Unternehmen mit Sitz im Kanton als
-Säulen nach Umsatz — Zahlen, die öffentlich und geprüft sind, weil ein
-kotiertes Unternehmen sie veröffentlichen muss.
+**Ansicht A** zeigt die börsenkotierten Unternehmen — seit dem 14. August 2026
+gesamtschweizerisch: 135 der 224 an der SIX kotierten Titel stehen an ihrem
+Sitz auf der Karte, acht davon als Säule nach Umsatz (Zahlen, die öffentlich
+und geprüft sind, weil ein kotiertes Unternehmen sie veröffentlichen muss),
+die übrigen als schlichter Marker ohne Höhenaussage. Beide Zahlen nennt die
+Legende selbst — wie viele gezeigt werden und wie viele davon recherchiert
+sind (siehe „Die Abdeckungsangabe ist Teil der Oberfläche").
 
 **Ansicht B** zeigt dieselbe Fläche als 196 extrudierte Gemeindeflächen nach
 Beschäftigten am Arbeitsort, kanton­weit 383'203 Beschäftigte — seit dem
@@ -220,9 +223,11 @@ prüfen sollte" weiter unten.
 
 Ansicht A zeigt eine Säule pro Unternehmen, alle nach derselben Zahl `revenue`
 skaliert. Diese Zahl ist **nicht überall dasselbe**. Die Spalte `revenue_type`
-in `data/manual/ag_listed_companies.csv` hält den gröbsten Unterschied fest —
+in `data/manual/listed_companies.csv` (bis Phase 3: `ag_listed_companies.csv`,
+siehe „Phase 3" unten) hält den gröbsten Unterschied fest —
 Netto-Umsatz gegen die Näherung einer Bank; die feineren Fälle stehen im
-freien `note`-Feld derselben Zeile:
+freien `note`-Feld derselben Zeile. Dieser Abschnitt gilt unverändert für die
+acht recherchierten Firmen — die einzigen mit einem `revenue`-Wert:
 
 - Sieben der acht Unternehmen weisen `revenue_type = net_sales` aus — den
   branchenüblichen Netto-Umsatz aus dem Geschäftsbericht.
@@ -271,7 +276,8 @@ App ist mit dieser Unschärfe zu lesen, nicht als amtlich verbindliche Zahl.
 | STATENT (Hektarraster Beschäftigte) 2023 | Bundesamt für Statistik (BFS) | Ansicht B (Gemeindestufe, intern über das Hektarraster aggregiert) |
 | swissBOUNDARIES3D, Vintage 2026-01 | swisstopo | Kantons- und Gemeindegrenzen, Gemeindeflächen in Ansicht B, Basiskarte |
 | Basiskarte (`ch_kantone.geojson`, selbst gezeichnet) | swisstopo (aus swissBOUNDARIES3D, `tlm_kantonsgebiet`) | Kantonsflächen als deck.gl-Layer, `src/layers/cantons.ts` — seit dem 13. August 2026 keine externen Vektorkacheln mehr, siehe „Warum die Karte keine externe Basiskarte mehr lädt" |
-| Firmen-Stammdaten (LINDAS/Zefix, Geokodierung) | LINDAS SPARQL-Endpunkt, swisstopo SearchServer | Kandidatensuche und Adress→Koordinate für Ansicht A |
+| Liste kotierter Titel (seit Phase 3, national) | SIX Group, `six-group.com/fqs/ref.json` (`ProductLine=BC`+`DS`) | Ansicht A: Nenner der Abdeckungsangabe, Kandidatenliste für `companies-sync` |
+| Firmen-Stammdaten (LINDAS/Zefix, Geokodierung) | LINDAS SPARQL-Endpunkt, swisstopo SearchServer | Sitz je Titel (wo eindeutig auffindbar) und Adresse→Koordinate für Ansicht A |
 | Umsatz, Mitarbeitende, Geschäftsjahr je Firma | Geschäftsberichte der acht Unternehmen selbst | Ansicht A (siehe `report_url` je Zeile) |
 
 Abgerufen: 13. August 2026 (Datum, an dem die zugrundeliegenden Rohdaten
@@ -503,15 +509,294 @@ zusätzliches Feld in einem JSON-Objekt bricht kein `as Meta`-Cast). Die
 Karte fragt weiterhin nur `ag_*`-Dateien an (aus `meta.canton.code`), die
 jetzt einfach eines von 26 gleichwertigen Kanton-Paketen sind.
 
+## Phase 3: Ansicht «Börsennotierte Firmen» wird national
+
+Seit dem 14. August 2026 zeigt Ansicht «Börsennotierte Firmen» nicht mehr nur
+die acht kotierten Unternehmen mit Sitz im Kanton Aargau, sondern **alle** an
+der SIX kotierten Titel — die acht behalten ihr vollständiges, von Hand
+recherchiertes Profil (Umsatz, Gewinn, Kerngeschäft, je mit Quelle), der Rest
+erscheint als **schlichte, positionsgetreue Marker**, nicht als Balken:
+diesen Standard auf 224 Titel auszuweiten ist nicht leistbar (acht Firmen
+allein trugen 187 recherchierte Werte; die vier davon mit einer Falle beim
+Sourcing, siehe „Was revenue bedeutet" oben, geben eine Ahnung vom Aufwand
+pro Firma). Statt so zu tun, als wären alle recherchiert, oder die Ansicht
+auf acht zu beschränken: **wachsen und offenlegen, wie weit die Abdeckung
+reicht.**
+
+### Drei Zustände statt zwei
+
+`data/manual/listed_companies.csv` (national, siehe unten) unterscheidet seit
+dieser Phase drei Zustände je Zeile, nicht mehr zwei — die Spalte
+`researched` (`yes`/`no`) macht den Unterschied explizit, statt ihn aus
+`revenue is None` zu erraten:
+
+1. **recherchiert, Zahlen vorhanden** (`researched=yes`, `revenue` gesetzt) —
+   die ursprünglichen acht, unverändert.
+2. **recherchiert, Zahlen nicht öffentlich verfügbar** (`researched=yes`,
+   `revenue` leer, `note` erklärt warum) — der bisherige „placeholder"-Pfad,
+   bislang der einzige Weg, ein leeres `revenue` zu haben.
+3. **noch nicht recherchiert** (`researched=no`) — neu. Das ist **nicht**
+   dieselbe Aussage wie Zustand 2: „wir haben nachgesehen und nichts
+   Öffentliches gefunden" ist etwas anderes als „wir haben noch nicht
+   nachgesehen". `companies.validate()` (`etl/src/draufsicht_etl/
+   companies.py`) erzwingt den Unterschied maschinell: eine `researched=no`-
+   Zeile darf **keine einzige** Kennzahl tragen (`RESEARCH_ONLY_FIELDS`) —
+   nicht nur „wenn `revenue` gesetzt ist, dann auch `report_url`" wie bisher,
+   sondern strenger: eine unrecherchierte Zeile kann sich gar keine Zahl
+   aneignen, mit oder ohne Quelle.
+
+Im Frontend zeichnen sich die drei Zustände unterschiedlich (`src/layers/
+visible.ts`): Zustand 1 und 2 als Säule (Zustand 2 auf der bestehenden
+Mindesthöhe, `UNKNOWN_BAR_FRACTION`), Zustand 3 als **kleiner, neutraler,
+flacher Marker** (`buildUnresearchedCompanyLayer`, `ScatterplotLayer`, feste
+Farbe, keine Höhe) — die Karte zeigt so, **wo** Schweizer Börsenfirmen sitzen,
+ohne eine Grösse zu behaupten, die niemand recherchiert hat, und ohne 216
+graue Türme, die die acht echten Säulen ertränken. Hovern nennt den Namen,
+Klick öffnet ein kurzes Panel mit Sitz und dem Hinweis „Noch nicht
+recherchiert" (`src/ui/panel.ts`, `companyContent`) — bewusst nicht derselbe
+Text wie bei Zustand 2.
+
+### Die Abdeckungsangabe ist Teil der Oberfläche
+
+Die Legende (`src/ui/legend.ts`, `LegendOptions.scopeLabel`) zeigt in Ansicht
+«Börsennotierte Firmen» statt eines Kantonsnamens jetzt:
+
+```
+135 von 224 kotierten Titeln auf der Karte gezeigt, davon 8 recherchiert · SIX-Stand 14. August 2026
+```
+
+**Zwei Zahlen, nicht eine.** Eine frühere Fassung nannte nur die Recherche-
+Abdeckung („8 von 224 recherchiert"). Die ist wahr, aber allein irreführend:
+wer die Marker auf der Karte zählt, kommt auf 135, nicht auf 224 — die
+übrigen 89 Titel erscheinen **gar nicht**, weil `companies-sync` ihnen keinen
+eindeutigen Zefix-Sitz zuordnen konnte (39 mehrdeutig, 27 ohne Treffer, dazu
+die Titel, die als zweite Handelslinie derselben Gesellschaft zusammengefasst
+wurden, und eine Adresse ohne Geokodierungstreffer; siehe „Sitz je Titel").
+Ohne die erste Zahl liesse sich aus der Karte selbst nicht
+ablesen, dass ein Achtel der kotierten Titel fehlt. Beide Zahlen stehen
+deshalb nebeneinander: wie viele überhaupt gezeigt werden, und wie viele
+davon Zahlen tragen.
+
+Alle Zahlen kommen zur Laufzeit aus `companies.json`s `stats`-Objekt
+(`count`, `researched`, `totalListed`, `sixRetrievedDate`), nicht hartcodiert —
+ein künftiger `companies-sync`-Lauf mit mehr recherchierten Firmen oder einem
+neuen SIX-Stand zieht sie automatisch nach. `224` ist die Zahl der
+kotierten **Titel** (siehe unten — nicht identisch mit der Zahl der
+Gesellschaften, weil einzelne Firmen mehr als einen Titel stellen), live von
+SIX abgefragt (`companies.fetch_six_titles()`) bei jedem `draufsicht-etl
+companies`/`all`-Lauf — kein Rückfall auf eine veraltete Zahl, falls der
+Endpunkt nicht erreichbar ist: der Build bricht dann mit einer klaren Meldung
+ab (`ConnectionError`).
+
+### Woher die 224 kommen — und wie sie zu 202 Gesellschaften werden
+
+SIX veröffentlicht seine Referenzdaten über einen öffentlichen, nicht
+dokumentierten Endpunkt (`https://www.six-group.com/fqs/ref.json`) — die
+Herleitung der Abfrage (zwei `ProductLine`-Codes, `BC` für die 30 SMI-Blue-
+Chip-Titel und `DS` für die übrigen 194, Paginierung über `page=N`,
+`pageSize` wird ignoriert) steht bereits in `data/manual/six_issuers_ag.md`
+(dort für die AG-Kandidatensuche verwendet); Phase 3 nutzt denselben Endpunkt
+jetzt für **alle** 224 Titel, nicht nur die AG-Teilmenge.
+
+Mehrere SIX-Titel können zur selben Gesellschaft gehören — Namen- und
+Partizipationsschein-Aktien derselben Firma (z. B. Lindt: `LISN`/`LISP`) oder
+eine zweite Handelslinie derselben Aktie (`… 2. LINIE`, z. B. `ABBNE` neben
+`ABBN`). Zwei Marker für dieselbe Firma am selben Ort wären irreführend
+(Duplikat, kein zusätzliches Unternehmen) — `companies.group_six_titles()`
+fasst sie deshalb vor dem Sitzabgleich zusammen: **224 Titel → 202
+Gesellschaften.** Die Abdeckungsangabe in der Legende zählt bewusst trotzdem
+gegen 224 (Titel, nicht Gesellschaften) — das ist die Zahl, die SIX selbst
+als „kotiert" ausweist und die in der Aufgabenstellung genannt wurde; der
+Unterschied zu 202 ist hier dokumentiert, nicht verschwiegen.
+
+### Sitz je Titel: Zefix/LINDAS, mit offen gelegten Grenzen
+
+Für jede der 202 Gesellschaften (ausser den acht bereits bekannten) sucht
+`companies.find_seat()` einen eindeutigen Sitz im Zefix-Handelsregister über
+denselben LINDAS-SPARQL-Endpunkt, der schon die AG-Kandidatensuche nutzte —
+nicht durch Rückgriff auf eine ISIN (Zefix führt keine ISINs), sondern über
+einen Namensabgleich:
+
+- **Kern des Vergleichs (`companies.canonicalize()`):** Rechtsform- und
+  Sammelwörter (`AG`, `Holding`, `Group`/`Gruppe`, …) werden von beiden Namen
+  iterativ entfernt, bis nur der eigentliche Firmenkern bleibt — „Siegfried
+  Holding AG" (Zefix) und „SIEGFRIED" (SIX-Kurzname) reduzieren so auf
+  denselben Kern, ohne dass für jede Rechtsform ein Sonderfall nötig wäre.
+  Deutsche Umlaute werden dabei wie SIX selbst nach `ae`/`oe`/`ue`
+  transliteriert (nicht einfach entfernt) — sonst wären „Julius Bär" (SIX:
+  `JULIUS BAER`), „Kühne+Nagel" und „Flughafen Zürich" beim ersten Lauf
+  fälschlich als nicht auffindbar durchgefallen (ein tatsächlich
+  aufgetretener Fehler, hier korrigiert). Kantonalbanken bekommen zusätzlich
+  eine kleine, geschlossene Abkürzungsauflösung (`KB` → `Kantonalbank`, `BC`
+  → `Banque Cantonale`) — ohne sie wären alle neun kotierten Kantonalbanken
+  unmatched geblieben, obwohl jede zweifelsfrei in Zefix registriert ist.
+- **Drei Konfidenzstufen, keine geraten:** ein Kandidat gilt nur als Treffer,
+  wenn sein kanonischer Name exakt dem Schlüssel entspricht, ihn um höchstens
+  ein Wort erweitert (z. B. „Aevis Victoria SA" für `AEVIS`), oder wenn
+  mehrere Rechtseinheiten (Holding-, Betriebs-, Verwaltungsgesellschaft) an
+  **derselben** Adresse übereinstimmen (welche UID genau die kotierte ist,
+  bleibt dann unsicher — der Sitz selbst nicht). Konkurrieren ein exakter und
+  ein erweiterter Treffer an **unterschiedlichen** Adressen, gilt das als
+  mehrdeutig, nicht als Treffer der „besseren" Stufe (Regressionsfall
+  „MONTANA": „Montana Holding AG", Solothurn, ist ein exakter, aber
+  falscher Treffer — die gesuchte „Montana Aerospace AG", Reinach AG, liegt
+  nur in der erweiterten Stufe, weil SIX „Aerospace" im Kurznamen wegliess;
+  ein früherer, stufenweiser Abgleich mit frühem Abbruch bei der ersten
+  Stufe mit genau einem Treffer hätte den falschen Treffer unbemerkt
+  ausgegeben).
+- **Mehrere Suchwörter statt nur des längsten:** ein generisches Suchwort wie
+  „SWISS" liefert mehr Treffer, als die Abfrage zurückgibt (Limit 300),
+  ohne die gesuchte Firma zu enthalten — „Swiss Prime Site AG" wurde beim
+  ersten Lauf deshalb verfehlt. `companies.find_seat()` erkennt ein
+  ausgeschöpftes Limit als unzuverlässig und probiert bei Bedarf ein
+  selteneres Wort derselben Firma («PRIME» statt «SWISS»).
+
+- **Ein abgeschnittenes Suchergebnis trägt keinen Vergleich.** Läuft eine
+  Abfrage ins Limit, gilt seither nur noch ein **exakter** Namenstreffer als
+  Sitz. Die abgeleiteten Stufen (ein Wort mehr, Adress-Mehrheit) sind
+  Vergleichsurteile — „der einzige Kandidat", „die grösste Gruppe" — und nur
+  so gut wie das Feld, über das sie vergleichen; aus einer unvollständigen
+  Liste sind sie wertlos. Belegt an zwei Fällen desselben Laufs:
+  „ZURICH INSURANCE" → „Zurich Insurance Group AG" ist exakt und richtig,
+  „SIG GROUP" → „SIG Services AG" (Konzern-Schwester) wäre falsch gewesen.
+  Zuvor stand die Limit-Prüfung **hinter** dem frühen Abbruch bei einem
+  Treffer und griff für Treffer nie — „GEORG FISCHER" landete so auf der
+  Tochter „Georg Fischer Rohrleitungssysteme AG", während die kotierte
+  „Georg Fischer AG" hinter dem Schnitt lag.
+- **Der Konzern-Schwester-Filter braucht einen exakten Treffer als Anker.**
+  Er darf Geschwister neben einem exakten Treffer wegräumen, aber nicht
+  zwischen lauter gleichrangigen Kandidaten entscheiden — er kennt nur
+  „generisches Zusatzwort" als Kriterium. „WARTECK" zeigte, wie das
+  umschlägt: die gesuchte „Warteck Invest AG" trägt mit „Invest" ausgerechnet
+  ein Wort von der Generik-Liste, bei der fremden „Warteck Sport Holding AG"
+  fällt „Holding" schon als Rechtsform weg und das verbleibende „Sport" gilt
+  als identitätsstiftend. Der Filter warf den richtigen Kandidaten weg und
+  machte den falschen dadurch zum eindeutigen Treffer.
+
+Beide Fälle haben dieselbe Form und sind die eigentliche Gefahr dieses
+Schritts: **kein Absturz, keine Fehlermeldung — eine Firma steht am falschen
+Ort und sieht dabei genauso richtig aus wie die 128 anderen.**
+
+Ergebnis (Stand 14. August 2026, 194 neue Gesellschaften):
+- **128 eindeutig einem Zefix-Sitz zugeordnet** — davon 42 über einen exakten
+  Namenstreffer, 78 über eine Adress-Mehrheit, 8 über die Erweiterung um ein
+  Wort.
+- **39 blieben mehrdeutig** (mehrere ernsthaft in Frage kommende Adressen,
+  keine Mehrheit) — u. a. Firmen, deren Namensvettern (gleicher Nachname,
+  andere Stadt) es in Zefix ebenfalls gibt, sowie die oben genannten Fälle,
+  die vorher fälschlich als Treffer durchgingen.
+- **27 blieben ganz ohne Kandidaten** — überwiegend stark verkürzte
+  SIX-Handelsnamen, die kein Suchwort mehr hergeben, das im Handelsregister
+  trägt (`TITL BN BERG` für die Titlis Bergbahnen, `CIE FIN TR`,
+  `STARRAGTORNOSGR`, `O FUESSLI`).
+
+Zusammen mit den acht recherchierten Zeilen ergibt das **135 Firmen auf der
+Karte von 224 kotierten Titeln** — die Zahl, die die Legende als erste nennt.
+
+Für Titel ohne eindeutigen Sitz bleibt die Zeile in der CSV (Identität,
+Namen, ISIN) — sie zählt zur Abdeckungsangabe als „noch nicht recherchiert",
+erscheint aber **nicht** auf der Karte: keine Koordinaten heisst kein Marker
+(`companies.build_artifact()` überspringt Zeilen ohne `lon`/`lat`), statt an
+einer erfundenen Position zu erscheinen.
+
+### Domizil im Ausland trotz CH-ISIN
+
+Eine CH-ISIN sagt, über welche Nummernstelle ein Titel begeben wurde, nicht,
+wo die Gesellschaft ihren Sitz hat. Ein im Ausland domiziliertes Unternehmen
+mit CH-ISIN hätte gar keinen Zefix-Eintrag und könnte deshalb prinzipiell
+keinen Sitz bekommen — es fiele stillschweigend unter „kein Treffer", ohne
+dass die Ursache eine andere wäre als bei einem missglückten Namensabgleich.
+
+**In diesem Lauf trat der Fall nicht auf:** alle 202 Gesellschaften tragen
+eine CH-ISIN, und jede der 135 gefundenen Adressen hat eine vierstellige
+Schweizer PLZ (geprüft, nicht angenommen). Der Abschnitt bleibt trotzdem
+stehen, weil die 27 „kein Treffer" diese Ursache nicht ausschliessen: die
+Pipeline unterscheidet nicht zwischen „nicht gefunden" und „gibt es hier
+nicht zu finden". Wer die Abdeckung weiter erhöhen will, muss diese 27 von
+Hand ansehen — automatisch auseinanderhalten lassen sie sich nicht.
+
+### Geteilte Sitzadressen
+
+Mehrere kotierte Gesellschaften am selben Sitz sind real (Konzern-
+Geschwister, Fiduziaradressen) und kein Fehler — aber meldenswert, weil
+zwei Marker an identischen Koordinaten übereinander liegen und wie einer
+aussehen. `companies-sync` gibt sie deshalb am Ende jedes Laufs aus, statt
+sie stillschweigend zu übernehmen. Im Lauf vom 14. August 2026 waren es zwei:
+
+```
+Rue Georges-Jordil 4, 1700 Fribourg: AEVIS VICTORIA SA, Infracore SA
+Industriestrasse 66, 6300 Zug:       Metall Zug AG, V-ZUG Holding AG
+```
+
+Beide Paare sind sachlich korrekt (Infracore ist die Immobiliengesellschaft
+der AEVIS-Gruppe, V-ZUG wurde 2020 von Metall Zug abgespalten und teilt den
+Sitz weiterhin).
+
+### Geokodierung: gecacht, aber nicht ohne Fallstrick
+
+Die 202-8=194 neu gefundenen Adressen wurden über denselben swisstopo-
+`SearchServer` geokodiert wie die ursprünglichen acht (`geocode.py`) —
+gecacht in der CSV (`lon`/`lat`), ein erneuter `draufsicht-etl
+companies`/`all`-Lauf geokodiert nichts doppelt. Ein Fehlschlag entdeckt
+dabei einen echten Fallstrick: Swisscoms Zefix-Adresse trägt die postalische
+PLZ **3050 Bern** (eine reine Postfach-Sammel-PLZ), swisstopos
+Gebäudeadressverzeichnis kennt das Gebäude nur unter der geografischen PLZ
+**3048 Worblaufen** — dieselbe Anfrage mit einem Komma zwischen Strasse und
+PLZ/Ort findet es trotzdem (fuzzy match), ohne Komma nicht. `geocode_query`
+trägt seither ein Komma; `geocode.fill_missing()` bricht ausserdem nicht mehr
+beim ersten Fehlschlag den gesamten Lauf ab (sonst hätte eine einzelne
+unauffindbare Adresse alle zuvor erfolgreich geokodierten Zeilen eines Laufs
+verworfen, da nichts zwischendurch persistiert wird) — eine Zeile, die auch
+nach Wiederholung nicht geokodierbar ist, verliert nur ihren eigenen
+Sitz/Marker, nicht der ganze Build.
+
+### Die CSV wird national
+
+`data/manual/ag_listed_companies.csv` ist `data/manual/listed_companies.csv`
+gewichen — eine einzige, kantonsunabhängige Datei (`companies.csv_path()`
+hängt nicht mehr an `config.CANTON`). Die acht ursprünglichen Zeilen sind
+**byte- bzw. werttreu** übernommen, geprüft per Feld-für-Feld-Vergleich gegen
+die vorherige `ag_listed_companies.csv` (0 Abweichungen) — die einzige
+Änderung an ihnen ist die neue Spalte `researched=yes` am Ende jeder Zeile,
+die es vorher nicht gab. Die CSV wird nie von Hand neu geschrieben: `uv run
+--project etl draufsicht-etl companies-sync` gleicht die aktuelle SIX-Liste
+gegen die CSV ab, hängt fehlende Titel an (nach demselben Zefix/LINDAS-
+Verfahren wie oben) und lässt bestehende Zeilen unangetastet.
+
+### Reproduzierbarkeit
+
+Zwei vollständige, aufeinanderfolgende `draufsicht-etl all`-Läufe (bzw.
+`npm run build:data`) erzeugen `companies.json` byte-identisch (`cmp`
+geprüft) — jede der 194 neuen Zeilen trägt bereits gecachte Koordinaten,
+kein Geokodierungs-Request wiederholt sich.
+
+Der Sitzabgleich (`companies-sync`) war das dagegen zunächst **nicht**, und
+zwar unbemerkt: `_SEAT_QUERY` begrenzte auf 300 Treffer, **ohne** zu
+sortieren. Welche 300 der Treffer zurückkommen, ist bei einem `LIMIT` ohne
+`ORDER BY` offen — zwei identische Läufe konnten verschiedene Teilmengen
+erhalten und damit verschiedene Sitze in die CSV schreiben. Beobachtet an
+„SWISS PRIME SITE": in einem Lauf zugeordnet, im nächsten nicht, ohne dass
+sich am Code etwas geändert hatte. Das erklärte zugleich, warum ein blosser
+Wiederholungslauf manchmal neue Sitze „fand" — er würfelte einen anderen
+Ausschnitt, kein besseres Ergebnis. Mit `ORDER BY ?company` vor dem `LIMIT`
+ist der Schnitt bestimmt (nicht vollständig — dagegen hilft nur ein
+selteneres Suchwort), also derselbe Lauf wiederholbar; nachgemessen an drei
+ins Limit laufenden Suchwörtern, deren Trefferlisten über zwei Abfragen
+byte-identisch bleiben. **Kein anderes Artefakt in
+`public/data/` ändert sich** (`git status --short public/data/` zeigt nur
+`companies.json`) — Phase 3 rührt an keiner Zeile Grenzen- oder
+STATENT-Verarbeitung.
+
 ## Kantonswechsel
 
 Mit Phase 1 baut das ETL immer alle 26 Kantone — ein Kantonswechsel ändert
 nicht mehr, **was** gebaut wird, sondern nur noch, welchen der bereits
 gebauten 26 Kantone die Karte beim Start zeigt. `CANTON` in
 `etl/src/draufsicht_etl/config.py` bedeutet seither: der Startkanton der
-Karte (`meta.canton`, gelesen in `src/main.ts`) und der Pfad der (bislang
-einzigen) Firmen-CSV (`companies.csv_path()`) — nicht mehr, welche Gemeinden
-und Grenzen das ETL berechnet.
+Karte (`meta.canton`, gelesen in `src/main.ts`) — nicht mehr, welche Gemeinden
+und Grenzen das ETL berechnet. Bis Phase 3 hing auch der Pfad der Firmen-CSV
+(`companies.csv_path()`) an `CANTON`; seit die CSV national ist (siehe „Phase
+3" unten), ist `companies.csv_path()` von `CANTON` unabhängig.
 
 Ein Kantonswechsel ist als Zweischritt gedacht:
 
@@ -520,21 +805,12 @@ Ein Kantonswechsel ist als Zweischritt gedacht:
    existieren bereits in `public/data/<code>_gemeinde.*`/
    `<code>_boundaries.geojson` — das ETL baut sie bei jedem Lauf für alle 26
    Kantone, unabhängig von `CANTON` (siehe oben).
-2. Die Firmen-CSV unter dem daraus abgeleiteten Namen anlegen:
-   `data/manual/<code>_listed_companies.csv` (kleingeschrieben, z. B.
-   `data/manual/zh_listed_companies.csv` für `code = "ZH"`) —
-   `companies.csv_path()` löst diesen Pfad automatisch aus `CANTON["code"]`
-   auf, keine weitere Änderung am Code nötig. Spalten wie in
-   `data/manual/ag_listed_companies.csv`, ein Unternehmen pro Zeile, jede
-   `revenue`-Zeile mit `report_url`, `fiscal_year`, `revenue_currency` und
-   `revenue_type` belegt (`companies.validate()` erzwingt das beim Build).
-   `companies.candidates_from_lindas(canton_code)` kann beim Auffinden von
-   Firmenkandidaten mit Sitz im neuen Kanton helfen; welche davon
-   SIX-kotiert sind und welche Kennzahlen sie ausweisen, bleibt Recherche in
-   den jeweiligen Geschäftsberichten. Fehlt die Datei für den konfigurierten
-   Kanton, bricht `npm run build:data` mit einer klaren deutschen
-   Fehlermeldung ab, die den erwarteten Pfad nennt, statt mit einem rohen
-   `FileNotFoundError`.
+2. Die Firmen-CSV entfällt als eigener Schritt: `data/manual/listed_companies.csv`
+   ist seit Phase 3 national (eine Datei für alle 26 Kantone, siehe „Phase 3"
+   unten) und ändert sich mit einem Startkantonwechsel nicht mehr. Ein neuer
+   Startkanton zeigt seine dort bereits vorhandenen kotierten Firmen (falls
+   welche recherchiert sind) automatisch; `draufsicht-etl companies-sync`
+   ergänzt neu an der SIX gelistete Titel unabhängig vom Startkanton.
 
 Danach `npm run build:data` laufen lassen (schreibt vor allem ein neues
 `meta.json` und `companies.json` — die 26 Gemeinde-/Grenzen-Pakete ändern
@@ -559,10 +835,8 @@ aus `CANTON` allein ableiten lässt:
 Überblendung. Die Datei ist mit der Hektar- und Kantonsstufe entfallen, siehe
 oben.)
 
-Zusammen mit dem Inhalt der Firmen-CSV (siehe Schritt 2 oben — welche
-Unternehmen im neuen Kanton kotiert sind, lässt sich nicht automatisiert
-recherchieren) sind das die einzigen zwei Schritte, die ein Kantonswechsel
-nicht automatisiert.
+Das ist seit Phase 3 der einzige Schritt, den ein Kantonswechsel nicht
+automatisiert — die Firmen-CSV betrifft ihn nicht mehr (siehe Schritt 2 oben).
 
 ## Was am 13. August 2026 nicht im Browser geprüft wurde
 
@@ -601,6 +875,8 @@ Verfügung. Was ein Mensch vor dem nächsten Deploy ansehen sollte:
 | Befehl | Wirkung |
 |---|---|
 | `npm run build:data` | Vollständiger ETL-Lauf (`draufsicht-etl all`): Grenzen, Hektarraster, Firmen — schreibt `public/data/` |
+| `uv run --project etl draufsicht-etl companies-sync` | Neue SIX-Titel gegen Zefix/LINDAS abgleichen, CSV ergänzen (~15 Min., bestehende Zeilen bleiben unangetastet) |
+| `uv run --project etl draufsicht-etl companies-retry` | Nur die bisher sitzlosen Zeilen erneut abgleichen (~3 Min.) — sinnvoll **nach** einer Verbesserung am Namensabgleich; ohne Codeänderung folgenlos, siehe „Reproduzierbarkeit" |
 | `npm run build` | Typprüfung + Produktions-Build (`dist/`) |
 | `npm run dev` | Lokaler Entwicklungsserver mit Hot Reload |
 | `npm test` | Frontend-Tests (Vitest) |

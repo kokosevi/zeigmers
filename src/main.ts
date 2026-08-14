@@ -19,6 +19,7 @@ import { renderBackControl } from './ui/backControl'
 import { showError } from './ui/error'
 import { hideHoverLabel } from './ui/hoverLabel'
 import { renderLegend } from './ui/legend'
+import { formatGermanDate } from './ui/format'
 import { renderNotices, type NoticeLevel } from './ui/notices'
 import { configureCanton, hidePanel, showCompanyPanel, showMunicipalityPanel } from './ui/panel'
 import { createToggle, DEFAULT_MODE, type ViewName } from './ui/toggle'
@@ -56,9 +57,10 @@ async function start() {
   // Level-Artefakt wie jede `<code>_gemeinde`-Datei, nur mit 26 Zeilen (eine
   // je Kanton) statt einer je Gemeinde — dieselbe `loadLevel()` liest beide.
   // Keine einzelne Kantons-Gemeindedatei (`<code>_gemeinde`/`_boundaries`)
-  // wird hier geladen; die folgen erst, wenn ein Kanton tatsächlich betreten
-  // wird (`loadCantonEntry` unten) oder Ansicht «Börsennotierte Firmen» zum
-  // ersten Mal aktiv wird (`ensureCompaniesReady`).
+  // wird hier geladen; die folgt erst, wenn ein Kanton tatsächlich betreten
+  // wird (`loadCantonEntry` unten). `companies.json` (Ansicht «Börsennotierte
+  // Firmen», seit Phase 3 national) lädt bereits hier vollständig mit — die
+  // Ansicht braucht anders als «Beschäftigte» keinen Kanton mehr nachzuladen.
   const [meta, kantone, cantonsGeo, companies] = await Promise.all([
     loadMeta(),
     loadLevel('ch_kantone'),
@@ -83,9 +85,31 @@ async function start() {
   const kantonePresentGroups = presentGroupsFromIndices(kantone.arrays.noga)
   const companyYear =
     Math.max(0, ...companies.companies.map((c) => c.fiscalYear ?? 0)) || nationalYear
+  // Nur die recherchierten Firmen tragen eine Branchenfarbe (eine Säule) —
+  // die übrigen kotierten Titel erscheinen als neutrale Marker ohne
+  // Branchenbezug (siehe `layers/visible.ts`) und sollen die Legende nicht
+  // um Branchen erweitern, die keine Säule tatsächlich zeigt.
   const companyPresentGroups = presentGroupsFromIndices(
-    companies.companies.map((c) => (c.placeholder ? NOGA_UNKNOWN_INDEX : c.nogaGroupIndex)),
+    companies.companies
+      .filter((c) => c.researched)
+      .map((c) => (c.placeholder ? NOGA_UNKNOWN_INDEX : c.nogaGroupIndex)),
   )
+  // Phase 3: die Abdeckungsangabe der Karte selbst — zwei Zahlen, nicht nur
+  // eine. "8 von 224 recherchiert" allein wäre unvollständig: wer die Marker
+  // zählt, sieht `stats.count` (platziert, inkl. der unrecherchierten
+  // Marker), nicht 224 — ein SIX-Titel ohne eindeutigen Zefix-Sitz erscheint
+  // gar nicht auf der Karte (siehe `companies.build_artifact`). Beide Zahlen
+  // stehen deshalb nebeneinander: wie viele der kotierten Titel überhaupt
+  // gezeigt werden, und wie viele davon recherchiert sind. Aus den
+  // Artefaktdaten zur Laufzeit berechnet, nicht hartkodiert — ein künftiger
+  // Sync-/Recherche-Lauf zieht beide Zahlen automatisch nach. Erscheint als
+  // `scopeLabel` in der Legende (`ui/legend.ts`).
+  const coverageLabel =
+    `${companies.stats.count} von ${companies.stats.totalListed} kotierten Titeln ` +
+    `auf der Karte gezeigt, davon ${companies.stats.researched} recherchiert` +
+    (companies.stats.sixRetrievedDate
+      ? ` · SIX-Stand ${formatGermanDate(companies.stats.sixRetrievedDate)}`
+      : '')
 
   // Kantonsgrenzen (Basiskarte, siehe `layers/cantons.ts`) — in beiden
   // Ansichten und auf beiden Stufen von «Beschäftigte» sichtbar (Auftrag),
@@ -158,13 +182,16 @@ async function start() {
   let navToken = 0
 
   function activeHighlightBfsNr(): number | null {
-    if (view === 'sichtbare') return meta.canton.bfs_nr
+    // Phase 3: Ansicht «Börsennotierte Firmen» ist national — kein
+    // einzelner Kanton mehr hervorzuheben (bis Phase 2 war das immer
+    // Aargau, unabhängig davon, wo die Firmen tatsächlich lagen).
+    if (view === 'sichtbare') return null
     if (level === 'kanton' && activeCanton) return activeCanton.bfsNr
     return null
   }
 
   function documentTitle(): string {
-    if (view === 'sichtbare') return `Draufsicht — Wirtschaftskarte Kanton ${meta.canton.name}`
+    if (view === 'sichtbare') return 'Draufsicht — Börsennotierte Firmen Schweiz'
     if (level === 'kanton' && activeCanton) {
       return `Draufsicht — Wirtschaftskarte Kanton ${activeCanton.name}`
     }
@@ -177,9 +204,9 @@ async function start() {
   // ausschliesslich über `handle.frameBounds()` in `enterCanton`/
   // `exitToSwitzerland`, nie in `render()` selbst. Das ist, was Ansicht
   // «Börsennotierte Firmen» ihre unveränderte Kamera beim Umschalten
-  // garantiert (Auftrag) — auch wenn diese Ansicht weiterhin nur Aargau zeigt,
-  // während die Kamera gerade irgendwo anders in der Schweiz stehen kann
-  // (siehe `scopeLabel` unten).
+  // garantiert (Auftrag): die Karte bleibt exakt dort stehen, wo sie beim
+  // Umschalten gerade war — seit Phase 3 ohnehin konsistent, weil auch diese
+  // Ansicht national ist, keine Aargau-Sonderrolle mehr.
   const render = () => {
     // Verteidigung gegen einen Zustand, der laut obigem Kommentar nie
     // entstehen sollte (Kantonsstufe ohne geladenen Kanton) — fällt statt
@@ -206,7 +233,6 @@ async function start() {
         cantonGeometries,
         kantoneVmax,
         activeCanton,
-        companiesEntry: cantonCache.get(meta.canton.code),
         companies,
         onEnterCanton: (index) => {
           enterCanton(index).catch(reportNavigationError('Kanton konnte nicht geladen werden'))
@@ -232,7 +258,7 @@ async function start() {
             : kantonePresentGroups,
       scopeLabel:
         view === 'sichtbare'
-          ? `Kanton ${meta.canton.name}`
+          ? coverageLabel
           : level === 'kanton' && activeCanton
             ? `Kanton ${activeCanton.name}`
             : undefined,
@@ -274,19 +300,12 @@ async function start() {
     render()
   }
 
-  /** Ansicht «Börsennotierte Firmen» braucht die Gemeindegrenzen des in
-   *  `meta.canton` konfigurierten Kantons (heute Aargau) — über denselben
-   *  Cache wie ein Kantonsbesuch in Ansicht «Beschäftigte» (Auftrag: „nothing
-   *  may be fetched that is not needed" gilt auch hier, kein zweiter,
-   *  separater Fetchpfad nur für diese Ansicht). No-op, wenn bereits
-   *  geladen (z. B. weil zuvor in Ansicht «Beschäftigte» derselbe Kanton
-   *  betreten wurde) oder wenn eine andere Ansicht aktiv ist. */
-  async function ensureCompaniesReady() {
-    if (view !== 'sichtbare') return
-    if (cantonCache.has(meta.canton.code)) return
-    await loadCantonEntry(meta.canton.bfs_nr, meta.canton.code, meta.canton.name)
-    if (view === 'sichtbare') render()
-  }
+  // Phase 3: Ansicht «Börsennotierte Firmen» ist national und braucht keinen
+  // Kanton mehr nachzuladen — `companies` (aus `loadCompanies()`, oben beim
+  // Start bereits vollständig geladen) reicht allein. Bis Phase 2 lud ein
+  // Umschalten hierher zusätzlich die Aargauer Gemeindegrenzen nach
+  // (`ensureCompaniesReady`); das entfällt ersatzlos, kein Fetch beim
+  // Umschalten mehr nötig.
 
   // `createToggle` ruft `onChange` schon bei der Konstruktion einmal auf
   // (siehe toggle.ts, `sync()`) — das übernimmt den ersten Render, ein
@@ -295,9 +314,6 @@ async function start() {
     view = newView
     mode = newMode
     render()
-    ensureCompaniesReady().catch(
-      reportNavigationError('Gemeindegrenzen für «Börsennotierte Firmen» konnten nicht geladen werden'),
-    )
   })
   ui?.appendChild(toggle)
 

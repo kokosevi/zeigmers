@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatNumber, formatRatio, formatRevenue } from './format'
+import { formatGermanDate, formatNumber, formatRatio, formatRevenue } from './format'
 
 describe('formatNumber', () => {
   it('uses a thousands separator', () => {
@@ -42,5 +42,19 @@ describe('formatRatio', () => {
 
   it('handles zero', () => {
     expect(formatRatio(0)).toMatch(/^0[.,]00$/)
+  })
+})
+
+describe('formatGermanDate', () => {
+  it('spells out the month in German, day without leading zero', () => {
+    expect(formatGermanDate('2026-08-14')).toBe('14. August 2026')
+  })
+
+  it('does not pad a single-digit day', () => {
+    expect(formatGermanDate('2026-01-05')).toBe('5. Januar 2026')
+  })
+
+  it('falls back to the raw string when it cannot parse', () => {
+    expect(formatGermanDate('not-a-date')).toBe('not-a-date')
   })
 })

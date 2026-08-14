@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import {
   buildCompanyLayer,
+  buildUnresearchedCompanyLayer,
   companyElevations,
   UNKNOWN_BAR_FRACTION,
+  UNRESEARCHED_MARKER_COLOR,
   type Company,
   type CompanyData,
 } from './visible'
@@ -15,59 +17,104 @@ function company(overrides: Partial<Company> = {}): Company {
     coreProducts: null, productsUrl: null,
     foundingYear: null,
     employees: null, fiscalYear: 2024, reportUrl: null, note: null,
-    placeholder: false, city: 'Aarau',
+    placeholder: false, researched: true, city: 'Aarau',
     ...overrides,
   }
 }
 
-function data(revenues: (number | null)[]): CompanyData {
-  return {
-    canton: 'AG',
-    companies: revenues.map((revenue, i) => ({
-      uid: `CHE-${i}`, name: `F${i}`, sixSymbol: null, lon: 8, lat: 47.4,
-      nogaGroupIndex: 1, revenue, currency: 'CHF',
-      revenueType: revenue === null ? null : 'net_sales',
-      profit: null, profitCurrency: null, consolidationBasis: null,
-      coreProducts: null, productsUrl: null,
-      foundingYear: null,
-      employees: null,
-      fiscalYear: 2024, reportUrl: null, note: null,
-      placeholder: revenue === null, city: 'Aarau',
-    })),
-    stats: {
-      count: revenues.length,
-      withRevenue: revenues.filter((r) => r !== null).length,
-      max: Math.max(...revenues.map((r) => r ?? 0)),
-    },
-  }
+function companiesOf(revenues: (number | null)[]): Company[] {
+  return revenues.map((revenue, i) => ({
+    uid: `CHE-${i}`, name: `F${i}`, sixSymbol: null, lon: 8, lat: 47.4,
+    nogaGroupIndex: 1, revenue, currency: 'CHF',
+    revenueType: revenue === null ? null : 'net_sales',
+    profit: null, profitCurrency: null, consolidationBasis: null,
+    coreProducts: null, productsUrl: null,
+    foundingYear: null,
+    employees: null,
+    fiscalYear: 2024, reportUrl: null, note: null,
+    placeholder: revenue === null, researched: true, city: 'Aarau',
+  }))
 }
+
 
 describe('companyElevations', () => {
   it('gives the largest revenue the full height', () => {
-    const h = companyElevations(data([1e9, 1e10]), 5000, 'logarithmisch')
+    const c = companiesOf([1e9, 1e10])
+    const h = companyElevations(c, 1e10, 5000, 'logarithmisch')
     expect(h[1]).toBeCloseTo(5000, 3)
   })
 
   it('gives companies without revenue a fixed fraction of the smallest bar', () => {
-    const h = companyElevations(data([1e9, 1e10, null]), 5000, 'logarithmisch')
+    const c = companiesOf([1e9, 1e10, null])
+    const h = companyElevations(c, 1e10, 5000, 'logarithmisch')
     const smallest = Math.min(h[0]!, h[1]!)
     expect(h[2]).toBeCloseTo(smallest * UNKNOWN_BAR_FRACTION, 3)
   })
 
   it('never gives a placeholder a height of zero', () => {
-    const h = companyElevations(data([null]), 5000, 'logarithmisch')
+    const c = companiesOf([null])
+    const h = companyElevations(c, 0, 5000, 'logarithmisch')
     expect(h[0]!).toBeGreaterThan(0)
   })
 
   it('keeps placeholders below every real bar', () => {
-    const h = companyElevations(data([1e6, 1e12, null]), 5000, 'logarithmisch')
+    const c = companiesOf([1e6, 1e12, null])
+    const h = companyElevations(c, 1e12, 5000, 'logarithmisch')
     expect(h[2]!).toBeLessThan(Math.min(h[0]!, h[1]!))
   })
 
   it('handles a dataset where no company has revenue', () => {
-    const h = companyElevations(data([null, null]), 5000, 'logarithmisch')
+    const c = companiesOf([null, null])
+    const h = companyElevations(c, 0, 5000, 'logarithmisch')
     expect(h[0]!).toBeGreaterThan(0)
     expect(Number.isFinite(h[0]!)).toBe(true)
+  })
+})
+
+describe('buildCompanyLayer researched filter', () => {
+  it('only includes researched companies as bars', () => {
+    const d: CompanyData = {
+      companies: [
+        company({ uid: 'A', researched: true }),
+        company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
+      ],
+      stats: { count: 2, withRevenue: 1, max: 1e9, researched: 1, totalListed: 2, sixRetrievedDate: null },
+    }
+    const layer = buildCompanyLayer(d, 'logarithmisch', () => {})
+    expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['A'])
+  })
+})
+
+describe('buildUnresearchedCompanyLayer', () => {
+  it('only includes unresearched companies as markers, with the documented neutral color', () => {
+    const d: CompanyData = {
+      companies: [
+        company({ uid: 'A', researched: true }),
+        company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
+      ],
+      stats: { count: 2, withRevenue: 1, max: 1e9, researched: 1, totalListed: 2, sixRetrievedDate: null },
+    }
+    const layer = buildUnresearchedCompanyLayer(d, () => {}, () => {})
+    expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['B'])
+    expect(layer.props.getFillColor).toEqual(UNRESEARCHED_MARKER_COLOR)
+  })
+
+  it('reports hover by name, not just index', () => {
+    const d: CompanyData = {
+      companies: [company({ uid: 'B', researched: false, revenue: null, revenueType: null })],
+      stats: { count: 1, withRevenue: 0, max: 0, researched: 0, totalListed: 1, sixRetrievedDate: null },
+    }
+    let hovered: Company | null = null
+    const layer = buildUnresearchedCompanyLayer(d, () => {}, (c) => {
+      hovered = c
+    })
+    const onHover = layer.props.onHover as unknown as (info: {
+      object: Company | null
+      x: number
+      y: number
+    }) => void
+    onHover({ object: d.companies[0]!, x: 1, y: 2 })
+    expect(hovered).toBe(d.companies[0])
   })
 })
 
@@ -77,7 +124,13 @@ describe('companyElevations', () => {
 describe('buildCompanyLayer outline predicate', () => {
   function accessors(revenueType: Company['revenueType']) {
     const layer = buildCompanyLayer(
-      { canton: 'AG', companies: [company({ revenueType })], stats: { count: 1, withRevenue: 1, max: 1e9 } },
+      {
+        companies: [company({ revenueType })],
+        stats: {
+          count: 1, withRevenue: 1, max: 1e9,
+          researched: 1, totalListed: 1, sixRetrievedDate: null,
+        },
+      },
       'logarithmisch',
       () => {},
     )

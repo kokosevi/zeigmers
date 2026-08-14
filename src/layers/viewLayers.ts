@@ -11,7 +11,12 @@ import { municipalityName } from '../ui/panel'
 import type { ViewName } from '../ui/toggle'
 import { buildCantonBorderLayer, buildCantonsLayer } from './cantons'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
-import { buildCompanyLayer, type Company, type CompanyData } from './visible'
+import {
+  buildCompanyLayer,
+  buildUnresearchedCompanyLayer,
+  type Company,
+  type CompanyData,
+} from './visible'
 
 // Regressionsgrund (2026-08-14, Nachtrag zu Phase 2): die Schweiz-Stufe von
 // Ansicht «Beschäftigte» und die Kantonsflächen-Basiskarte
@@ -73,7 +78,6 @@ export interface ViewLayersInput {
   cantonGeometries: Geometry[]
   kantoneVmax: number
   activeCanton: CantonEntry | null
-  companiesEntry: CantonEntry | undefined
   companies: CompanyData
   onEnterCanton: (index: number) => void
   onShowMunicipalityPanel: (level: Level, index: number) => void
@@ -99,7 +103,6 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     cantonGeometries,
     kantoneVmax,
     activeCanton,
-    companiesEntry,
     companies,
     onEnterCanton,
     onShowMunicipalityPanel,
@@ -156,14 +159,18 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     ]
   }
 
-  // Ansicht «Börsennotierte Firmen»: `companiesEntry` ist beim allerersten
-  // Umschalten auf diese Ansicht noch nicht geladen (siehe `main.ts`,
-  // `ensureCompaniesReady`) — `undefined` ist ein gültiges `LayersList`-
-  // Element (deck.gl überspringt es), kein Filtern nötig.
+  // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
+  // auf einen einzelnen, vorher geladenen Kanton) — zwei Layer, nicht eine:
+  // Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
+  // flache neutrale Marker für alle übrigen kotierten Titel
+  // (`buildUnresearchedCompanyLayer`, Kontext — siehe `layers/visible.ts`).
   return [
     cantonsLayer,
     cantonBorderLayer,
-    companiesEntry?.borderLayer,
     buildCompanyLayer(companies, mode, onShowCompanyPanel),
+    buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, (company, x, y) => {
+      if (!company) return hideHoverLabel()
+      showHoverLabel(company.name, x, y)
+    }),
   ]
 }

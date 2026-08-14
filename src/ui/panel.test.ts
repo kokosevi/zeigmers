@@ -88,6 +88,7 @@ function company(overrides: Partial<Company> = {}): Company {
     reportUrl: 'https://example.test/gb.pdf',
     note: null,
     placeholder: false,
+    researched: true,
     city: 'Aarau',
     ...overrides,
   }
@@ -191,6 +192,35 @@ describe('aggregateCellContent', () => {
       expect(content.fields[1]?.label).toBe('Beschäftigte je Einwohner')
       expect(content.fields[1]?.value).toMatch(/^0[.,]52\b/) // 383203 / 735808 ≈ 0.5208
     })
+  })
+})
+
+describe('companyContent — unresearched (Phase 3)', () => {
+  it('shows only name and seat, with a distinct "not yet researched" note', () => {
+    const content = companyContent(company({
+      researched: false, city: 'St. Gallen',
+      revenue: null, revenueType: null, profit: null, consolidationBasis: null,
+      coreProducts: null, foundingYear: null, employees: null, fiscalYear: null,
+      reportUrl: null,
+    }))
+    expect(content.title).toBe('Beispiel AG')
+    expect(content.fields).toEqual([{ label: 'Sitz', value: 'St. Gallen' }])
+    expect(content.notes).toHaveLength(1)
+    expect(content.notes[0]).toMatch(/noch nicht recherchiert/i)
+    // Nicht dieselbe Formulierung wie "Umsatz nicht öffentlich verfügbar" —
+    // das wäre eine andere Aussage (siehe Kommentar bei companyContent()).
+    expect(content.notes[0]).not.toMatch(/öffentlich verfügbar/i)
+  })
+
+  it('omits the Sitz field when no seat is known at all', () => {
+    const content = companyContent(company({ researched: false, city: null }))
+    expect(content.fields).toEqual([])
+  })
+
+  it('has no links or footnote for an unresearched company', () => {
+    const content = companyContent(company({ researched: false }))
+    expect(content.links ?? []).toEqual([])
+    expect(content.footnote).toBeUndefined()
   })
 })
 

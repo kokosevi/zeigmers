@@ -1,4 +1,4 @@
-import { ColumnLayer } from '@deck.gl/layers'
+import { ColumnLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import { computeElevations, type ScaleMode } from '../domain/scale'
 import { MAP_MATERIAL } from './material'
@@ -29,7 +29,11 @@ export type RevenueType = 'net_sales' | 'operating_income'
 export type ConsolidationBasis = 'total_group' | 'continuing_operations'
 
 export interface Company {
-  uid: string
+  // `null`: der Titel liess sich keiner eindeutigen Zefix-Rechtseinheit
+  // zuordnen (siehe `etl/src/draufsicht_etl/companies.py`,
+  // `match_company_seat`) — Name, ISIN und SIX-Symbol kommen trotzdem direkt
+  // von SIX, nur die Zefix-UID fehlt.
+  uid: string | null
   name: string
   sixSymbol: string | null
   lon: number
@@ -49,33 +53,61 @@ export interface Company {
   reportUrl: string | null
   note: string | null
   placeholder: boolean
+  // Phase 3: unterscheidet "recherchiert, aber keine Zahl öffentlich"
+  // (`placeholder=true`, `researched=true` — bekommt weiterhin eine Säule
+  // auf Mindesthöhe) von "noch nicht recherchiert" (`researched=false` —
+  // bekommt gar keine Säule, sondern einen flachen, neutralen Marker, siehe
+  // `buildUnresearchedCompanyLayer`). Dieselbe Unterscheidung wie in
+  // `etl/src/draufsicht_etl/companies.py`s Moduldokumentation.
+  researched: boolean
   city: string | null
 }
 
 export interface CompanyData {
-  canton: string
   companies: Company[]
-  stats: { count: number; withRevenue: number; max: number }
+  stats: {
+    count: number
+    withRevenue: number
+    max: number
+    /** Anzahl Zeilen mit `researched=yes` — der Zähler der Abdeckungsangabe
+     *  ("8 von 224 kotierten Gesellschaften recherchiert"). */
+    researched: number
+    /** Nenner derselben Angabe: live von SIX abgefragte Gesamtzahl kotierter
+     *  Titel (`companies.fetch_six_titles()`), nicht die Zeilenzahl der CSV —
+     *  siehe `companies.py`-Moduldokumentation. */
+    totalListed: number
+    /** Abrufdatum der SIX-Titelliste (ISO, z.B. "2026-08-14") — `null` nur
+     *  in Tests/Fixtures ohne `six_meta`. */
+    sixRetrievedDate: string | null
+  }
+}
+
+/** Nur die recherchierten Firmen tragen eine Säule — `researched=false`
+ *  bekommt einen flachen Marker (`buildUnresearchedCompanyLayer`), keine
+ *  Höhenaussage, die es nicht einlösen könnte. */
+function researchedCompanies(data: CompanyData): Company[] {
+  return data.companies.filter((c) => c.researched)
 }
 
 export function companyElevations(
-  data: CompanyData,
+  companies: Company[],
+  vmax: number,
   maxHeight: number,
   mode: ScaleMode,
 ): Float32Array {
-  const values = new Float32Array(data.companies.map((c) => c.revenue ?? 0))
-  const heights = computeElevations(values, data.stats.max, maxHeight, mode)
+  const values = new Float32Array(companies.map((c) => c.revenue ?? 0))
+  const heights = computeElevations(values, vmax, maxHeight, mode)
 
   let smallest = Infinity
   for (let i = 0; i < heights.length; i++) {
-    if (data.companies[i]!.revenue !== null) smallest = Math.min(smallest, heights[i]!)
+    if (companies[i]!.revenue !== null) smallest = Math.min(smallest, heights[i]!)
   }
   const placeholder = Number.isFinite(smallest)
     ? smallest * UNKNOWN_BAR_FRACTION
     : PLACEHOLDER_BASE_HEIGHT
 
   for (let i = 0; i < heights.length; i++) {
-    if (data.companies[i]!.revenue === null) heights[i] = placeholder
+    if (companies[i]!.revenue === null) heights[i] = placeholder
   }
   return heights
 }
@@ -85,11 +117,12 @@ export function buildCompanyLayer(
   mode: ScaleMode,
   onClick: (company: Company) => void,
 ): ColumnLayer<Company> {
-  const heights = companyElevations(data, 12000, mode)
+  const bars = researchedCompanies(data)
+  const heights = companyElevations(bars, data.stats.max, 12000, mode)
 
   return new ColumnLayer<Company>({
     id: 'firmen',
-    data: data.companies,
+    data: bars,
     // Firmen mit abweichender Kennzahl (Banken weisen Geschaeftsertrag statt
     // Nettoumsatz aus) bekommen einen sichtbaren Rand. Ohne diese Markierung
     // vergleicht der Betrachter Balkenhoehen, die Verschiedenes messen.
@@ -137,6 +170,44 @@ export function buildCompanyLayer(
     onClick: (info) => {
       if (info.object) onClick(info.object)
     },
+  })
+}
+
+// Klein, neutral, flach — bewusst kein Bezug zu irgendeiner Höhe oder
+// Branchenfarbe: eine unrecherchierte Firma zeigt nur, DASS sie kotiert ist
+// und WO ihr Sitz liegt, nicht WIE gross sie ist (das wüssten wir nicht,
+// ohne es zu behaupten). Ein einzelner grauer Ton für alle ~216 Titel, klar
+// unterscheidbar von den Branchenfarben der acht recherchierten Balken.
+export const UNRESEARCHED_MARKER_RADIUS_M = 350
+export const UNRESEARCHED_MARKER_COLOR: readonly [number, number, number, number] =
+  [130, 130, 130, 190]
+
+/** Zweite, unabhängige Layer für Firmen ohne Recherche (`researched=false`)
+ *  — ein `ScatterplotLayer` statt der `ColumnLayer` von `buildCompanyLayer`,
+ *  weil hier keine Höhe zu zeichnen ist. Getrennte Layer statt eines Sonder-
+ *  falls in `buildCompanyLayer`: unterschiedliche deck.gl-Layertypen lassen
+ *  sich nicht in einer Instanz mischen, und die visuelle Trennung (Balken =
+ *  Inhalt, Marker = Kontext) ist genau die Aussage, die dieser zweite Layer
+ *  treffen soll. */
+export function buildUnresearchedCompanyLayer(
+  data: CompanyData,
+  onClick: (company: Company) => void,
+  onHover: (company: Company | null, x: number, y: number) => void,
+): ScatterplotLayer<Company> {
+  const markers = data.companies.filter((c) => !c.researched)
+  return new ScatterplotLayer<Company>({
+    id: 'firmen-unerforscht',
+    data: markers,
+    pickable: true,
+    stroked: false,
+    getPosition: (c) => [c.lon, c.lat],
+    getRadius: UNRESEARCHED_MARKER_RADIUS_M,
+    radiusUnits: 'meters',
+    getFillColor: UNRESEARCHED_MARKER_COLOR,
+    onClick: (info) => {
+      if (info.object) onClick(info.object)
+    },
+    onHover: (info) => onHover(info.object ?? null, info.x, info.y),
   })
 }
 

@@ -1,4 +1,6 @@
 import csv
+import json
+import urllib.parse
 
 import pytest
 
@@ -27,6 +29,7 @@ def _row(**overrides):
             "employees": "3400",
             "fiscal_year": "2024",
             "report_url": "https://example.test/gb2024.pdf",
+            "researched": "yes",
         }
     )
     row.update(overrides)
@@ -272,3 +275,566 @@ def test_load_csv_rejects_unexpected_header(tmp_path):
     path.write_text("uid,name\nX,Y\n", encoding="utf-8")
     with pytest.raises(ValueError, match="Spalten"):
         companies.load_csv(path)
+
+
+# --- Phase 3: drei Zustände (researched=yes+Zahlen / yes+leer / no) --------
+
+
+def _unresearched_row(**overrides):
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    row.update({
+        "uid": "404575", "name": "Beispiel Unbekannt AG", "six_symbol": "BSPX",
+        "isin": "CH0000000099", "street": "Teststrasse 1", "zip": "8000",
+        "city": "Zürich", "lon": "8.54", "lat": "47.37",
+        "geocode_query": "Teststrasse 1 8000 Zürich",
+        "researched": "no",
+    })
+    row.update(overrides)
+    return row
+
+
+def test_validate_accepts_an_unresearched_row_with_only_identity_and_seat():
+    companies.validate([_unresearched_row()])
+
+
+def test_validate_rejects_unknown_researched_value():
+    with pytest.raises(ValueError, match="researched"):
+        companies.validate([_row(researched="vielleicht")])
+
+
+def test_validate_rejects_researched_no_row_carrying_a_figure():
+    # Der Kernpunkt von Zustand 3: eine unrecherchierte Zeile darf unter
+    # keinen Umständen eine Kennzahl tragen, auch nicht mit vollständiger
+    # Quellenangabe — die Herkunftspflicht (report_url etc.) allein hätte das
+    # nicht verhindert.
+    with pytest.raises(ValueError, match="researched=no, aber revenue gesetzt"):
+        companies.validate([_unresearched_row(
+            revenue="100", revenue_currency="CHF", revenue_type="net_sales",
+            revenue_unit="1", report_url="https://example.test", fiscal_year="2024",
+        )])
+
+
+def test_validate_rejects_researched_yes_without_noga_group():
+    with pytest.raises(ValueError, match="researched=yes, aber noga_group fehlt"):
+        companies.validate([_row(noga_group="")])
+
+
+def test_validate_allows_unresearched_row_without_any_seat():
+    # Ein SIX-Titel ohne eindeutigen Zefix-Treffer (siehe `match_company_seat`)
+    # bleibt ohne Adresse und ohne Koordinaten — kein Fehler, nur kein Marker
+    # (siehe `build_artifact`).
+    companies.validate([_unresearched_row(
+        street="", zip="", city="", lon="", lat="", geocode_query="",
+    )])
+
+
+def test_validate_requires_lon_lat_only_when_a_seat_is_known():
+    with pytest.raises(ValueError, match="lon"):
+        companies.validate([_unresearched_row(lon="", lat="")])
+
+
+def test_validate_rejects_missing_isin():
+    with pytest.raises(ValueError, match="isin fehlt"):
+        companies.validate([_row(isin="")])
+
+
+def test_validate_rejects_duplicate_isin():
+    with pytest.raises(ValueError, match="isin .* doppelt"):
+        companies.validate([_row(), _row(uid="CHE-999", name="Andere AG")])
+
+
+def test_build_artifact_marks_researched_flag_per_entry():
+    table = noga.load_table()
+    artifact = companies.build_artifact([_row(), _unresearched_row()], table)
+    by_name = {e["name"]: e for e in artifact["companies"]}
+    assert by_name["Beispiel AG"]["researched"] is True
+    assert by_name["Beispiel Unbekannt AG"]["researched"] is False
+
+
+def test_build_artifact_skips_rows_without_coordinates():
+    table = noga.load_table()
+    artifact = companies.build_artifact(
+        [_row(), _unresearched_row(street="", zip="", city="", lon="", lat="")], table,
+    )
+    assert artifact["stats"]["count"] == 1
+    assert [e["name"] for e in artifact["companies"]] == ["Beispiel AG"]
+
+
+def test_build_artifact_falls_back_to_unknown_noga_group_when_blank():
+    table = noga.load_table()
+    artifact = companies.build_artifact([_unresearched_row(noga_group="")], table)
+    from draufsicht_etl import config
+    assert artifact["companies"][0]["nogaGroupIndex"] == config.NOGA_UNKNOWN_INDEX
+
+
+def test_build_artifact_counts_researched_separately_from_total_listed():
+    table = noga.load_table()
+    artifact = companies.build_artifact(
+        [_row(), _unresearched_row()], table,
+        six_meta={"totalListed": 224, "retrievedAt": "2026-08-14"},
+    )
+    assert artifact["stats"]["researched"] == 1
+    assert artifact["stats"]["totalListed"] == 224
+    assert artifact["stats"]["sixRetrievedDate"] == "2026-08-14"
+
+
+def test_build_artifact_total_listed_defaults_to_row_count_without_six_meta():
+    table = noga.load_table()
+    artifact = companies.build_artifact([_row(), _unresearched_row()], table)
+    assert artifact["stats"]["totalListed"] == 2
+    assert artifact["stats"]["sixRetrievedDate"] is None
+
+
+# --- Phase 3: Namensabgleich SIX <-> Zefix (rein, kein Netzwerk) -----------
+
+
+def test_company_key_strips_share_class_suffix():
+    assert companies.company_key("SIEGFRIED N") == "SIEGFRIED"
+    assert companies.company_key("LINDT PS") == "LINDT"
+
+
+def test_company_key_strips_second_line_marker():
+    assert companies.company_key("ABB LTD N 2. LINIE") == "ABB LTD"
+    assert companies.company_key("GEBERIT N") == companies.company_key("GEBERIT N 2. LINIE")
+
+
+def test_canonicalize_strips_legal_form_words_from_both_sides_the_same_way():
+    assert companies.canonicalize("Siegfried Holding AG") == "SIEGFRIED"
+    assert companies.canonicalize("SIEGFRIED") == "SIEGFRIED"
+    assert companies.canonicalize("Galderma Group AG") == \
+        companies.canonicalize("GALDERMA GROUP")
+
+
+def test_canonicalize_matches_swiss_german_umlaut_transliteration():
+    # Regressionsfall aus dem ersten Sync-Lauf: SIX schreibt Umlaute als
+    # ae/oe/ue ("JULIUS BAER"), nicht als blosses Entfernen des Diakritikums
+    # ("JULIUS BAR") — reines NFKD-Combining-Mark-Strippen hätte "Julius Bär"
+    # verfehlt.
+    assert companies.canonicalize("Julius Bär Gruppe AG") == companies.canonicalize("JULIUS BAER")
+    assert companies.canonicalize("Kühne + Nagel AG") == "KUEHNE + NAGEL"
+    assert companies.canonicalize("Flughafen Zürich AG") == "FLUGHAFEN ZUERICH"
+
+
+def test_canonicalize_no_longer_treats_international_as_a_stripped_legal_form():
+    # Regressionsfall "ARYZTA"/"ADECCO": "International" strippen wie eine
+    # Rechtsform ("AG") hätte "ARYZTA AG" und "ARYZTA International AG" zu
+    # demselben exakten Kern gemacht — zwei verschiedene Rechtseinheiten
+    # ununterscheidbar. "International" bezeichnet fast immer eine
+    # Konzern-Schwester, keine Rechtsform (siehe GENERIC_SUBSIDIARY_WORDS).
+    assert companies.canonicalize("Aryzta International AG") == "ARYZTA INTERNATIONAL"
+    assert companies.canonicalize("Aryzta International AG") != companies.canonicalize("ARYZTA")
+
+
+def test_canonicalize_still_strips_plain_diacritics_for_french_names():
+    # SIX schreibt französische Akzente dagegen einfach ohne Diakritikum
+    # ("GENEVE" für "Genève"), transliteriert sie nicht wie deutsche Umlaute.
+    assert companies.canonicalize("Café Résidence SA") == "CAFE RESIDENCE"
+
+
+def test_canonicalize_splits_st_written_without_a_following_space():
+    # Regressionsfall: Zefix führt die echte Bank als "St.Galler
+    # Kantonalbank AG" (kein Leerzeichen nach "St."), SIX schreibt sie als
+    # "ST GALLER KB" (mit Leerzeichen) — ohne diese Auflösung verschmilzt
+    # "St.Galler" zu einem einzigen Token ("STGALLER") und der Vergleich
+    # schlägt fehl, obwohl es zweifelsfrei dieselbe Bank ist.
+    assert companies.canonicalize("St.Galler Kantonalbank AG") == \
+        companies.canonicalize("ST GALLER KB")
+
+
+def test_canonicalize_does_not_split_sa_apart():
+    # Regressionsfall der Regressionsfall-Behebung: eine naive "jeden Punkt
+    # durch ein Leerzeichen ersetzen"-Regel hätte "S.A." in "S" + "A"
+    # gespalten, statt es weiterhin als Rechtsform "SA" zu erkennen und zu
+    # entfernen (Nestlé firmiert in Zefix als "Nestlé S.A.").
+    assert companies.canonicalize("Nestlé S.A.") == "NESTLE"
+
+
+def test_group_six_titles_collapses_share_classes_and_second_lines():
+    titles = [
+        {"shortName": "LINDT N", "isin": "CH1", "sixSymbol": "LISN", "productLine": "BC"},
+        {"shortName": "LINDT PS", "isin": "CH2", "sixSymbol": "LISP", "productLine": "BC"},
+        {"shortName": "LINDT N 2.LINIE", "isin": "CH3", "sixSymbol": "LISNE", "productLine": "DS"},
+        {"shortName": "ZEHNDER N", "isin": "CH4", "sixSymbol": "ZEHN", "productLine": "DS"},
+    ]
+    groups = companies.group_six_titles(titles)
+    keys = {g["key"] for g in groups}
+    assert keys == {"LINDT", "ZEHNDER"}
+    lindt = next(g for g in groups if g["key"] == "LINDT")
+    assert len(lindt["titles"]) == 3
+    assert lindt["primary"]["isin"] == "CH1"  # 1. Linie, alphabetisch erste
+
+
+def test_match_company_seat_accepts_a_single_exact_candidate():
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "Siegfried Holding AG",
+         "street": "Untere Brühlstrasse 4", "zip": "4800", "city": "Zofingen", "region": "AG"},
+    ]
+    outcome = companies.match_company_seat("SIEGFRIED", candidates)
+    assert outcome["status"] == "matched"
+    assert outcome["confidence"] == "exact"
+    assert outcome["match"]["city"] == "Zofingen"
+
+
+def test_match_company_seat_accepts_an_extended_candidate_with_one_extra_word():
+    # SIX kürzt "Aevis Victoria SA" auf "AEVIS" — ein zusätzliches Wort in
+    # der Zefix-Firmierung darf noch als Treffer zählen.
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "Aevis Victoria SA",
+         "street": "Rue X", "zip": "1700", "city": "Fribourg", "region": "FR"},
+    ]
+    outcome = companies.match_company_seat("AEVIS", candidates)
+    assert outcome["status"] == "matched"
+    assert outcome["confidence"] == "extended"
+
+
+def test_match_company_seat_does_not_guess_between_two_addresses():
+    # Regressionsfall "MONTANA": ein exakter, aber falscher Treffer
+    # ("Montana Holding AG", Solothurn) konkurriert mit dem tatsächlich
+    # gesuchten Unternehmen ("Montana Aerospace AG", Reinach), das nur die
+    # lockerere extended-Regel erfüllt (SIX liess "Aerospace" weg). Ein
+    # früher Return bei der ersten Stufe mit genau einem Treffer hätte den
+    # falschen Treffer stillschweigend ausgegeben — siehe Kommentar bei
+    # `match_company_seat`.
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "Montana Holding AG",
+         "street": "Steinbruggstrasse 39", "zip": "4500", "city": "Solothurn", "region": "SO"},
+        {"company": "https://register.ld.admin.ch/zefix/company/2", "name": "Montana Aerospace AG",
+         "street": "Alzbachstrasse 27", "zip": "5734", "city": "Reinach", "region": "AG"},
+    ]
+    outcome = companies.match_company_seat("MONTANA", candidates)
+    assert outcome["status"] == "ambiguous"
+
+
+def test_match_company_seat_accepts_an_address_majority_among_group_siblings():
+    # Holding-/Betriebs-/Verwaltungsgesellschaft am selben Sitz — welche UID
+    # genau die kotierte ist, bleibt unsicher, der Sitz selbst nicht.
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "Sika AG",
+         "street": "Zugerstrasse 50", "zip": "6341", "city": "Baar", "region": "ZG"},
+        {"company": "https://register.ld.admin.ch/zefix/company/2", "name": "Sika Finanz AG",
+         "street": "Zugerstrasse 50", "zip": "6341", "city": "Baar", "region": "ZG"},
+        {"company": "https://register.ld.admin.ch/zefix/company/3", "name": "Sika Schweiz AG",
+         "street": "Vulkanstrasse 110", "zip": "8048", "city": "Zürich", "region": "ZH"},
+    ]
+    outcome = companies.match_company_seat("SIKA", candidates)
+    assert outcome["status"] == "matched"
+    assert outcome["confidence"] == "address_majority"
+    assert outcome["match"]["city"] == "Baar"
+
+
+def test_match_company_seat_reports_unmatched_without_guessing():
+    outcome = companies.match_company_seat("NIRGENDS EXISTIEREND XYZ", [])
+    assert outcome["status"] == "unmatched"
+
+
+def test_match_company_seat_prefers_the_exact_match_over_a_generic_subsidiary():
+    # Regressionsfall "ARYZTA": "Aryzta International AG" ist eine
+    # Konzern-Schwester (generisches Zusatzwort "International"), keine
+    # konkurrierende Firma — sie darf den exakten Treffer "ARYZTA AG" nicht
+    # in die Mehrdeutigkeit ziehen, anders als ein echtes Identitätswort
+    # (siehe nächster Test, Montana).
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "ARYZTA AG",
+         "street": "Bahnhofstrasse 1", "zip": "8001", "city": "Zürich", "region": "ZH"},
+        {"company": "https://register.ld.admin.ch/zefix/company/2", "name": "ARYZTA International AG",
+         "street": "Andere Strasse 2", "zip": "6300", "city": "Zug", "region": "ZG"},
+    ]
+    outcome = companies.match_company_seat("ARYZTA", candidates)
+    assert outcome["status"] == "matched"
+    assert outcome["match"]["name"] == "ARYZTA AG"
+    assert outcome["confidence"] == "exact"
+
+
+def test_match_company_seat_still_refuses_to_guess_when_the_extra_word_is_not_generic():
+    # Regressionsfall "MONTANA" bleibt ein Regressionsfall: "Aerospace" ist
+    # kein generisches Konzern-Schwester-Wort, darf also den falschen
+    # exakten Treffer nicht unbeanstandet gewinnen lassen.
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "Montana Holding AG",
+         "street": "Steinbruggstrasse 39", "zip": "4500", "city": "Solothurn", "region": "SO"},
+        {"company": "https://register.ld.admin.ch/zefix/company/2", "name": "Montana Aerospace AG",
+         "street": "Alzbachstrasse 27", "zip": "5734", "city": "Reinach", "region": "AG"},
+    ]
+    outcome = companies.match_company_seat("MONTANA", candidates)
+    assert outcome["status"] == "ambiguous"
+
+
+# --- find_seat: mehrere Suchwörter, nicht nur das längste ------------------
+
+
+def _lindas_bindings(entries: list[dict]) -> bytes:
+    return json.dumps({"results": {"bindings": [
+        {k: {"value": v} for k, v in e.items()} for e in entries
+    ]}}).encode()
+
+
+def test_find_seat_stops_at_the_first_token_that_matches():
+    calls = []
+
+    def fetcher(url: str) -> bytes:
+        calls.append(url)
+        return _lindas_bindings([{
+            "company": "https://register.ld.admin.ch/zefix/company/1",
+            "name": "Siegfried Holding AG", "street": "Untere Brühlstrasse 4",
+            "zip": "4800", "city": "Zofingen", "region": "AG",
+        }])
+
+    outcome = companies.find_seat("SIEGFRIED", fetcher=fetcher)
+    assert outcome["status"] == "matched"
+    assert len(calls) == 1  # kein zweites Token nötig
+
+
+def test_find_seat_falls_back_to_a_rarer_token_when_the_longest_is_too_generic():
+    # Regressionsfall "SWISS PRIME SITE": das Token "SWISS" liefert exakt das
+    # Limit an Treffern (zu generisch, gilt nicht als verlässlich), ohne die
+    # gesuchte Firma zu enthalten — "PRIME" (kürzer, aber seltener) findet sie.
+    swiss_flood = [
+        {"company": f"https://register.ld.admin.ch/zefix/company/{i}",
+         "name": f"Swiss Something {i} AG", "street": "X", "zip": "8000",
+         "city": "Zürich", "region": "ZH"}
+        for i in range(companies._SEAT_QUERY_LIMIT)
+    ]
+    prime_hit = [{
+        "company": "https://register.ld.admin.ch/zefix/company/999",
+        "name": "Swiss Prime Site AG", "street": "Poststrasse 4a",
+        "zip": "6300", "city": "Zug", "region": "ZG",
+    }]
+
+    def fetcher(url: str) -> bytes:
+        # `seat_candidates_from_lindas` baut das Suchwort in die Abfrage ein —
+        # unterscheiden über den (bekannten) Fragment-Text im Query-String
+        # (beide Token sind genau 5 Zeichen lang, bleiben also unverkürzt).
+        if "SWISS" in url:
+            return _lindas_bindings(swiss_flood)
+        return _lindas_bindings(prime_hit)
+
+    outcome = companies.find_seat("SWISS PRIME SITE", fetcher=fetcher)
+    assert outcome["status"] == "matched"
+    assert outcome["match"]["name"] == "Swiss Prime Site AG"
+
+
+def test_find_seat_prefers_ambiguous_over_unmatched_across_tokens():
+    def fetcher(url: str) -> bytes:
+        if "AAAA" in url:  # längeres, erstes Token: mehrdeutig (zwei
+            # exakt passende Kandidaten an unterschiedlichen Adressen)
+            return _lindas_bindings([
+                {"company": "https://register.ld.admin.ch/zefix/company/1",
+                 "name": "AAAABBBB CCC AG", "street": "X", "zip": "1", "city": "A", "region": "AA"},
+                {"company": "https://register.ld.admin.ch/zefix/company/2",
+                 "name": "AAAABBBB CCC SA", "street": "Y", "zip": "2", "city": "B", "region": "BE"},
+            ])
+        return _lindas_bindings([])  # zweites (kürzeres) Token: gar nichts
+
+    outcome = companies.find_seat("AAAABBBB CCC", fetcher=fetcher)
+    assert outcome["status"] == "ambiguous"
+
+
+def test_match_company_seat_does_not_let_the_generic_filter_crown_a_wrong_candidate():
+    # Regressionsfall "WARTECK": die gesuchte "Warteck Invest AG" trägt mit
+    # "Invest" ausgerechnet ein Wort aus GENERIC_SUBSIDIARY_WORDS, während
+    # bei der fremden "Warteck Sport Holding AG" das "Holding" schon als
+    # Rechtsform wegfällt und nur das nicht-generische "Sport" übrig bleibt.
+    # Der Filter warf damit den RICHTIGEN Kandidaten weg und machte den
+    # falschen dadurch zum eindeutigen Treffer. Der Filter darf nur greifen,
+    # wenn ein exakter Treffer im Pool steht, den er von Konzern-Schwestern
+    # freiräumen kann — ohne Anker gibt es nichts zu bevorzugen.
+    candidates = [
+        {"company": "https://register.ld.admin.ch/zefix/company/1", "name": "Warteck Invest AG",
+         "street": "Grenzacherstrasse 79", "zip": "4058", "city": "Basel", "region": "BS"},
+        {"company": "https://register.ld.admin.ch/zefix/company/2", "name": "Warteck Sport Holding AG",
+         "street": "Burgfelderstrasse 1", "zip": "4053", "city": "Basel", "region": "BS"},
+    ]
+    outcome = companies.match_company_seat("WARTECK", candidates)
+    assert outcome["status"] == "ambiguous", (
+        "ohne exakten Treffer darf der Generik-Filter keinen Sieger küren"
+    )
+
+
+def test_find_seat_does_not_trust_a_match_from_a_truncated_candidate_list():
+    # Regressionsfall "GEORG FISCHER": das Limit schneidet die Trefferliste
+    # ab, der entscheidende Gegenkandidat kann jenseits des Schnitts liegen.
+    # Ein Treffer aus einer abgeschnittenen Liste ist deshalb genauso wenig
+    # verlässlich wie ein "unmatched" daraus — die Limit-Prüfung stand aber
+    # HINTER dem frühen Return auf "matched" und griff für Treffer nie.
+    flood = [
+        {"company": f"https://register.ld.admin.ch/zefix/company/{i}",
+         "name": f"Andere Firma {i} AG", "street": "X", "zip": "8000",
+         "city": "Zürich", "region": "ZH"}
+        for i in range(companies._SEAT_QUERY_LIMIT - 1)
+    ] + [{
+        "company": "https://register.ld.admin.ch/zefix/company/900",
+        "name": "Georg Fischer Rohrleitungssysteme AG", "street": "Ebnatstrasse 111",
+        "zip": "8200", "city": "Schaffhausen", "region": "SH",
+    }]
+    clean = [{
+        "company": "https://register.ld.admin.ch/zefix/company/1",
+        "name": "Georg Fischer AG", "street": "Amsler-Laffon-Strasse 9",
+        "zip": "8200", "city": "Schaffhausen", "region": "SH",
+    }]
+
+    def fetcher(url: str) -> bytes:
+        # Längstes Token "FISCHER" wird auf "FISCHE" gekürzt, "GEORG" bleibt.
+        return _lindas_bindings(flood if "FISCHE" in url else clean)
+
+    outcome = companies.find_seat("GEORG FISCHER", fetcher=fetcher)
+    assert outcome["status"] == "matched"
+    assert outcome["match"]["name"] == "Georg Fischer AG", (
+        "der Treffer aus der abgeschnittenen Liste darf das seltenere, "
+        "vollständig ausgewertete Suchwort nicht verdrängen"
+    )
+
+
+def test_find_seat_still_accepts_an_exact_match_from_a_truncated_list():
+    # Gegenstück zum Test darüber: die Limit-Regel darf nicht pauschal jeden
+    # Treffer verwerfen. "ZURICH INSURANCE" -> "Zurich Insurance Group AG" ist
+    # ein exakter Namenstreffer (kanonisch identisch) und bleibt richtig, auch
+    # wenn die Liste abgeschnitten ist — nur die Vergleichsstufen `extended`
+    # und `address_majority` brauchen das vollständige Feld.
+    flood = [
+        {"company": f"https://register.ld.admin.ch/zefix/company/{i}",
+         "name": f"Zurich Irgendwas {i} AG", "street": "X", "zip": "8000",
+         "city": "Zürich", "region": "ZH"}
+        for i in range(companies._SEAT_QUERY_LIMIT - 1)
+    ] + [{
+        "company": "https://register.ld.admin.ch/zefix/company/900",
+        "name": "Zurich Insurance Group AG", "street": "Mythenquai 2",
+        "zip": "8002", "city": "Zürich", "region": "ZH",
+    }]
+
+    outcome = companies.find_seat(
+        "ZURICH INSURANCE", fetcher=lambda _: _lindas_bindings(flood)
+    )
+    assert outcome["status"] == "matched"
+    assert outcome["confidence"] == "exact"
+    assert outcome["match"]["name"] == "Zurich Insurance Group AG"
+
+
+def test_find_seat_rejects_a_non_exact_match_from_a_truncated_list():
+    # Belegter Gegenfall aus demselben Lauf: "SIG GROUP" traf in einer
+    # abgeschnittenen Liste nur die Konzern-Schwester "SIG Services AG"
+    # (`extended`, nicht exakt) — die kotierte "SIG Group AG" lag jenseits des
+    # Schnitts. Ein Vergleichsurteil über ein unvollständiges Feld darf nicht
+    # als gesicherter Sitz in die CSV.
+    flood = [
+        {"company": f"https://register.ld.admin.ch/zefix/company/{i}",
+         "name": f"Andere Firma {i} AG", "street": "X", "zip": "8000",
+         "city": "Zürich", "region": "ZH"}
+        for i in range(companies._SEAT_QUERY_LIMIT - 1)
+    ] + [{
+        "company": "https://register.ld.admin.ch/zefix/company/900",
+        "name": "SIG Services AG", "street": "Laufengasse 18",
+        "zip": "8212", "city": "Neuhausen am Rheinfall", "region": "SH",
+    }]
+
+    outcome = companies.find_seat(
+        "SIG GROUP", fetcher=lambda _: _lindas_bindings(flood)
+    )
+    assert outcome["status"] == "ambiguous", (
+        "ein nicht-exakter Treffer aus abgeschnittener Liste ist kein Sitz"
+    )
+
+
+def test_seat_query_orders_before_limiting():
+    # Ein LIMIT ohne ORDER BY lässt offen, welche 300 Treffer zurückkommen —
+    # zwei identische Läufe können verschiedene Sitze in die CSV schreiben
+    # (beobachtet an "SWISS PRIME SITE": einmal zugeordnet, einmal nicht,
+    # ohne Codeänderung). Reproduzierbarkeit ist ein Abnahmekriterium des
+    # Pilots, deshalb hier festgenagelt statt nur im Kommentar erwähnt.
+    query = companies._SEAT_QUERY
+    assert "ORDER BY" in query
+    assert query.index("ORDER BY") < query.index("LIMIT")
+
+
+def test_uid_from_company_uri():
+    assert companies.uid_from_company_uri(
+        "https://register.ld.admin.ch/zefix/company/177019"
+    ) == "177019"
+    assert companies.uid_from_company_uri("https://example.test/nope") is None
+
+
+# --- Phase 3: SIX-Titelliste + Sync (Netzwerk gefaked über Fetcher) -------
+
+
+def _six_page(short_names_isins, product_line, delayed="20260814T13:46:42.627"):
+    return json.dumps({
+        "delayedDateTime": delayed,
+        "colNames": ["ShortName", "ISIN", "ValorSymbol", "ProductLine"],
+        "rowData": [[name, isin, isin[-4:], product_line] for name, isin in short_names_isins],
+    }).encode()
+
+
+def test_fetch_six_titles_paginates_until_an_empty_page(monkeypatch):
+    pages = {
+        ("BC", 1): _six_page([("ABB LTD N", "CH0012221716")], "BC"),
+        ("BC", 2): _six_page([], "BC"),
+        ("DS", 1): _six_page([("SIEGFRIED N", "CH1429326825")], "DS"),
+        ("DS", 2): _six_page([], "DS"),
+    }
+
+    def fake(url: str) -> bytes:
+        qs = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+        pl = qs["where"][0].removeprefix("ProductLine=")
+        page = int(qs["page"][0])
+        return pages[(pl, page)]
+
+    result = companies.fetch_six_titles(fetcher=fake)
+    assert result["retrievedAt"] == "2026-08-14"
+    assert {t["isin"] for t in result["titles"]} == {"CH0012221716", "CH1429326825"}
+
+
+def test_fetch_six_titles_raises_a_clear_error_when_unreachable():
+    def fail(_url: str) -> bytes:
+        raise OSError("network unreachable")
+
+    with pytest.raises(ConnectionError, match="nicht erreichbar"):
+        companies.fetch_six_titles(fetcher=fail)
+
+
+def test_sync_national_csv_appends_only_new_titles_and_leaves_existing_rows_untouched(tmp_path):
+    path = tmp_path / "listed_companies.csv"
+    with path.open("w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=companies.CSV_COLUMNS)
+        writer.writeheader()
+        writer.writerow(_row())  # ISIN CH0000000001, bereits recherchiert
+
+    six_pages = {
+        ("BC", 1): _six_page([("BEISPIEL N", "CH0000000001"), ("NEUFIRMA N", "CH0000000002")], "BC"),
+        ("BC", 2): _six_page([], "BC"),
+        ("DS", 1): _six_page([], "DS"),
+    }
+
+    def six_fetcher(url: str) -> bytes:
+        qs = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+        pl = qs["where"][0].removeprefix("ProductLine=")
+        page = int(qs["page"][0])
+        return six_pages.get((pl, page), _six_page([], pl))
+
+    def lindas_fetcher(_url: str) -> bytes:
+        return json.dumps({"results": {"bindings": [
+            {
+                "company": {"value": "https://register.ld.admin.ch/zefix/company/42"},
+                "name": {"value": "Neufirma Holding AG"},
+                "street": {"value": "Teststrasse 9"},
+                "zip": {"value": "9000"},
+                "city": {"value": "St. Gallen"},
+                "region": {"value": "SG"},
+            },
+        ]}}).encode()
+
+    report = companies.sync_national_csv(
+        path, six_fetcher=six_fetcher, lindas_fetcher=lindas_fetcher,
+    )
+
+    assert report["alreadyKnown"] == 1
+    assert report["added"] == 1
+    assert len(report["matched"]) == 1
+
+    rows = companies.load_csv(path)
+    assert len(rows) == 2
+    existing = next(r for r in rows if r["isin"] == "CH0000000001")
+    assert existing["name"] == "Beispiel AG" and existing["revenue"] == "1250000000"
+    new = next(r for r in rows if r["isin"] == "CH0000000002")
+    assert new["researched"] == "no"
+    assert new["name"] == "Neufirma Holding AG"
+    assert new["city"] == "St. Gallen"
+    assert new["revenue"] == ""

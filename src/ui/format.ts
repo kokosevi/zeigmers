@@ -30,3 +30,20 @@ export function formatRatio(value: number): string {
 export function formatProfit(value: number, currency: string | null): string {
   return value < 0 ? `Verlust ${formatRevenue(-value, currency)}` : formatRevenue(value, currency)
 }
+
+const GERMAN_MONTHS = [
+  'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+  'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember',
+]
+
+/** "2026-08-14" -> "14. August 2026" — für den SIX-Abrufstand in der Legende
+ *  (Ansicht «Börsennotierte Firmen», Abdeckungsangabe). Feste Monatsnamen
+ *  statt `Intl.DateTimeFormat`: das Datum kommt bereits als reines
+ *  ISO-Kalenderdatum aus dem ETL (`companies.py`, `_six_retrieved_date`),
+ *  keine Zeitzone im Spiel, die eine echte Datumsbibliothek bräuchte. */
+export function formatGermanDate(iso: string): string {
+  const [year, month, day] = iso.split('-')
+  const monthName = GERMAN_MONTHS[Number(month) - 1]
+  if (!year || !day || !monthName) return iso
+  return `${Number(day)}. ${monthName} ${year}`
+}

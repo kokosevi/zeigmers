@@ -107,9 +107,8 @@ function cantonEntry(): CantonEntry {
 }
 
 const COMPANIES: CompanyData = {
-  canton: 'AG',
   companies: [],
-  stats: { count: 0, withRevenue: 0, max: 0 },
+  stats: { count: 0, withRevenue: 0, max: 0, researched: 0, totalListed: 0, sixRetrievedDate: null },
 }
 
 const CANTON_BORDER_LAYER = buildCantonBorderLayer({ data: CANTONS_GEO })
@@ -126,7 +125,6 @@ function baseInput(overrides: Partial<Parameters<typeof buildViewLayers>[0]> = {
     cantonGeometries: [SWITZERLAND_POLYGON, SWITZERLAND_POLYGON],
     kantoneVmax: 1000,
     activeCanton: null,
-    companiesEntry: undefined,
     companies: COMPANIES,
     onEnterCanton: () => {},
     onShowMunicipalityPanel: () => {},
@@ -154,11 +152,7 @@ describe('buildViewLayers', () => {
   it.each([
     ['Beschäftigte · Schweiz', baseInput()],
     ['Beschäftigte · Kanton', baseInput({ level: 'kanton', activeCanton: cantonEntry() })],
-    ['Börsennotierte Firmen, Kanton noch nicht geladen', baseInput({ view: 'sichtbare' })],
-    [
-      'Börsennotierte Firmen, Kanton bereits geladen',
-      baseInput({ view: 'sichtbare', companiesEntry: cantonEntry() }),
-    ],
+    ['Börsennotierte Firmen', baseInput({ view: 'sichtbare' })],
   ] as const)('assigns unique deck.gl layer ids — %s', (_label, input) => {
     const ids = idsOf(buildViewLayers(input))
     expect(new Set(ids).size).toBe(ids.length)

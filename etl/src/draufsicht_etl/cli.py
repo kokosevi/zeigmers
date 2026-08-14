@@ -15,6 +15,8 @@ COMMANDS: dict[str, str] = {
     "noga": "NOGA-Tabelle prüfen und TypeScript erzeugen",
     "statent": "Hektardaten aufbereiten und Artefakte schreiben",
     "companies": "Ansicht A: CSV validieren, geokodieren, Artefakt schreiben",
+    "companies-sync": "Ansicht A: neue SIX-Titel gegen Zefix/LINDAS abgleichen, CSV ergänzen",
+    "companies-retry": "Ansicht A: nur die bisher sitzlosen Zeilen erneut abgleichen",
     "sanity-map": "2D-Kontrollkarte als PNG erzeugen",
     "all": "Alle Schritte in Reihenfolge ausführen",
 }
@@ -380,28 +382,105 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
 
     if args.command in ("companies", "all"):
-        import csv as _csv
-
         from . import companies, geocode, noga
 
         path = companies.csv_path()
         rows = companies.load_csv(path)
-        filled = geocode.fill_missing(rows)
-        if filled:
-            with path.open("w", newline="", encoding="utf-8") as handle:
-                writer = _csv.DictWriter(handle, fieldnames=companies.CSV_COLUMNS)
-                writer.writeheader()
-                writer.writerows(rows)
-            print(f"[companies] {filled} Zeilen neu geokodiert und persistiert")
+
+        # Ein Fehlschlag für EINE Adresse (siehe `geocode.fill_missing`,
+        # Kommentar zum Swisscom/"3050 Bern"-Fall) darf weder den ganzen
+        # Build abbrechen noch stillschweigend eine Zeile mit bekannter,
+        # aber nicht platzierbarer Adresse als „lon fehlt" durchfallen
+        # lassen — die Zeile behält ihre Identität, verliert aber Sitz und
+        # Koordinaten und wird damit zu einer Zeile ohne Marker (wie ein
+        # Titel ohne Zefix-Treffer), statt den Build zu blockieren.
+        geocode_failures: list[tuple[dict, LookupError]] = []
+        filled = geocode.fill_missing(
+            rows, on_failure=lambda row, exc: geocode_failures.append((row, exc))
+        )
+        for row, exc in geocode_failures:
+            print(f"[companies] Geokodierung fehlgeschlagen für {row['name']!r} "
+                  f"({row.get('geocode_query')!r}): {exc} — Zeile bleibt ohne Sitz/Marker.")
+            row["street"] = row["zip"] = row["city"] = row["geocode_query"] = ""
+        if filled or geocode_failures:
+            companies.write_csv(path, rows)
+            print(f"[companies] {filled} Zeilen neu geokodiert und persistiert"
+                  + (f", {len(geocode_failures)} ohne Treffer zurückgesetzt"
+                     if geocode_failures else ""))
 
         companies.validate(rows)
-        artifact = companies.build_artifact(rows, noga.load_table())
+
+        # Live abgefragt statt hartkodiert (Phase 3, Auftrag: "the number
+        # must be current and reproducible, and it must carry its retrieval
+        # date"): scheitert der Endpunkt, bricht der Build hart ab (siehe
+        # `fetch_six_titles`) statt still auf eine veraltete Zahl
+        # zurückzufallen.
+        six = companies.fetch_six_titles()
+        # `totalListed` ist die Zahl, die SIX selbst als kotierte Titel
+        # ausweist (Auftrag: „8 von 224 kotierten Gesellschaften recherchiert"
+        # — 224 war das gemessene Ergebnis am 2026-08-14) — bewusst die rohe
+        # Titelzahl, nicht `len(rows)`/die Zahl nach Zusammenfassung von
+        # Namen-/PS-Aktie und 2. Handelslinie (`group_six_titles`, 202 am
+        # selben Stichtag): `len(rows)` wäre ausserdem nur so lange richtig,
+        # wie die CSV exakt den aktuellen SIX-Stand widerspiegelt — bei einer
+        # neuen Kotierung seit dem letzten `companies-sync`-Lauf liefe die
+        # Karte sonst mit einer stillschweigend veralteten Zahl weiter.
+        six_meta = {"totalListed": len(six["titles"]), "retrievedAt": six["retrievedAt"]}
+        artifact = companies.build_artifact(rows, noga.load_table(), six_meta=six_meta)
         out = config.PUBLIC_DATA / "companies.json"
         out.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
-        print(f"[companies] {artifact['stats']['count']} Firmen, "
+        print(f"[companies] {artifact['stats']['count']} Firmen platziert "
+              f"({artifact['stats']['researched']} recherchiert von "
+              f"{artifact['stats']['totalListed']} kotierten Titeln, "
+              f"SIX-Stand {artifact['stats']['sixRetrievedDate']}), "
               f"{artifact['stats']['withRevenue']} mit Umsatz -> {out}")
         if args.command == "companies":
             return 0
+
+    if args.command == "companies-sync":
+        from . import companies
+
+        path = companies.csv_path()
+        report = companies.sync_national_csv(path, on_progress=print)
+        print(
+            f"[companies-sync] SIX-Stand {report['retrievedAt']}: "
+            f"{report['totalTitles']} Titel, {report['totalCompanies']} Gesellschaften "
+            f"(nach Zusammenfassung von Namen-/PS-Aktie und 2. Handelslinie); "
+            f"{report['alreadyKnown']} bereits bekannt, {report['added']} neu angelegt "
+            f"({len(report['matched'])} Sitz gefunden, {len(report['ambiguous'])} mehrdeutig, "
+            f"{len(report['unmatched'])} kein Treffer, {len(report['errors'])} Netzwerkfehler "
+            f"nach Wiederholung — erneuter Lauf greift diese wieder auf) -> {path}"
+        )
+        if report["sharedAddresses"]:
+            print(f"[companies-sync] {len(report['sharedAddresses'])} Sitzadresse(n) "
+                  "mit mehr als einer neuen Gesellschaft:")
+            for addr, names in report["sharedAddresses"].items():
+                print(f"    {addr}: {', '.join(names)}")
+        return 0
+
+    if args.command == "companies-retry":
+        # Zweiter Anlauf NUR für die Zeilen ohne Sitz — gedacht für den Fall,
+        # dass am Matcher etwas verbessert wurde (neue Abkürzungsauflösung,
+        # neue Umlaut-Regel) und man nicht alle 202 Gesellschaften erneut
+        # abfragen will (~15 Minuten gegenüber ~3). Ohne Codeänderung ist der
+        # Lauf seit `ORDER BY ?company` in `_SEAT_QUERY` folgenlos: dieselbe
+        # Abfrage liefert dieselbe Trefferliste, also dasselbe Ergebnis. Genau
+        # das ist beabsichtigt — vorher konnte ein blosser Wiederholungslauf
+        # zufällig einen anderen Ausschnitt erwischen und einen Sitz
+        # „finden", der sich beim nächsten Mal wieder verflüchtigt hätte.
+        from . import companies
+
+        path = companies.csv_path()
+        rows = companies.load_csv(path)
+        report = companies.retry_unmatched_rows(rows, on_progress=print)
+        companies.write_csv(path, rows)
+        print(
+            f"[companies-retry] {len(report['matched'])} Sitz nachgetragen, "
+            f"{len(report['ambiguous'])} weiterhin mehrdeutig, "
+            f"{len(report['still_unmatched'])} weiterhin ohne Treffer, "
+            f"{len(report['errors'])} Netzwerkfehler -> {path}"
+        )
+        return 0
 
     if args.command == "all":
         # Zwei Budgets statt eines Gesamtbudgets (siehe config.py): die Karte
@@ -450,3 +529,13 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 def run() -> None:
     sys.exit(main())
+
+
+# `python -m draufsicht_etl.cli …` lief ohne diesen Block stillschweigend
+# durch: das Modul wurde importiert, `main()` nie aufgerufen, Exit-Code 0 —
+# ein Aufruf, der Erfolg meldet und nichts getan hat. Das offizielle
+# Kommando ist zwar das Konsolenskript `draufsicht-etl` (siehe README und
+# `package.json`s `build:data`), aber `-m` ist der naheliegende Griff, wenn
+# das Skript nicht im PATH liegt, und darf dann nicht ins Leere laufen.
+if __name__ == "__main__":
+    run()

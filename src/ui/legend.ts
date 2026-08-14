@@ -1,12 +1,20 @@
 import type { PresentGroups } from '../domain/legendGroups'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import { litTopFaceColor } from '../layers/litColor'
-import { OUTLINE_COLOR } from '../layers/visible'
+import { OUTLINE_COLOR, UNRESEARCHED_MARKER_COLOR } from '../layers/visible'
 import type { ViewName } from './toggle'
 
 const OUTLINE_LEGEND_TEXT =
   'Balken mit Rand: andere Kennzahl als Nettoumsatz (z. B. Geschäftsertrag einer Bank) — ' +
   'Höhe nicht direkt mit den unmarkierten Balken vergleichbar.'
+
+// Phase 3: die flachen Marker (kein Balken, keine Branchenfarbe) sind eine
+// eigene, dritte Kategorie neben den Branchenfarben und der Rand-Markierung
+// oben — ohne eigenen Legendeneintrag liesse sich aus der Karte allein nicht
+// ablesen, dass ein grauer Punkt etwas grundsätzlich anderes bedeutet als
+// ein grauer ("nicht eindeutig bestimmbar") Balken.
+const UNRESEARCHED_LEGEND_TEXT =
+  'Kleiner Punkt: an der SIX kotiert, aber noch nicht recherchiert — Sitz bekannt, keine Höhenaussage.'
 
 // Die beiden Ansichten sind nicht ineinander umrechenbar (Geld vs. Personen),
 // liegen aber einen Tastendruck auseinander — die Legende muss deshalb die
@@ -33,15 +41,24 @@ export interface LegendOptions {
    *  hartcodiert, damit ein Kantons- oder Jahreswechsel automatisch die
    *  richtige Teilmenge zeigt. */
   presentGroups: PresentGroups
-  /** Phase 2 (nationale Navigation): welche Fläche die aktuelle Karte zeigt —
-   *  ein Kantonsname auf der Kantonsstufe von Ansicht «Beschäftigte», sonst
-   *  `undefined` (Schweiz-Stufe: alle 26, kein Einzelname nötig). Ansicht
-   *  «Börsennotierte Firmen» bleibt in dieser Phase Aargau-spezifisch, ihre
-   *  Kamera folgt aber Kantonswechseln in Ansicht «Beschäftigte» nicht (siehe
-   *  `main.ts`, Auftrag „Kamera unangetastet") — ohne diesen Zusatz stünde
-   *  dort nur „Jahresumsatz", ohne zu sagen, welchen Ausschnitt der
-   *  Schweiz die acht Firmen abdecken, während die Kamera möglicherweise
-   *  einen ganz anderen Kanton zeigt. */
+  /** Kontext-Zusatz neben `UNIT_LABEL` in der Legenden-Titelzeile.
+   *
+   *  - Ansicht «Beschäftigte», Kantonsstufe: der Kantonsname (Schweiz-Stufe:
+   *    `undefined`, alle 26, kein Einzelname nötig — Phase 2, nationale
+   *    Navigation).
+   *  - Ansicht «Börsennotierte Firmen» (seit Phase 3 national): die
+   *    Abdeckungsangabe — ZWEI Zahlen, nicht nur eine ("127 von 224
+   *    kotierten Titeln auf der Karte gezeigt, davon 8 recherchiert ·
+   *    SIX-Stand …", aus `companies.json`s `stats` berechnet, siehe
+   *    `main.ts`). Eine Zahl allein ("8 von 224 recherchiert") wäre
+   *    unvollständig: eine Leserin, die die Marker auf der Karte zählt,
+   *    sähe eine andere Zahl (die platzierten Marker, `stats.count`) als
+   *    224 — Titel ohne eindeutigen Zefix-Sitz erscheinen gar nicht auf der
+   *    Karte. Das ist Teil der Oberfläche, nicht nur der README: ohne diese
+   *    Zeile liesse sich aus der Karte selbst weder ablesen, dass acht
+   *    Säulen einen winzigen Ausschnitt aller kotierten Unternehmen zeigen,
+   *    noch dass ein Teil der kotierten Titel überhaupt nicht auf der Karte
+   *    erscheint. */
   scopeLabel?: string
 }
 
@@ -78,6 +95,14 @@ function outlineSwatch(): HTMLLIElement {
   return li
 }
 
+/** Swatch für die flachen Marker unrecherchierter Firmen — dieselbe Farbe
+ *  wie `buildUnresearchedCompanyLayer` tatsächlich zeichnet, nicht nur
+ *  beschrieben (gleiches Prinzip wie `outlineSwatch`). */
+function unresearchedSwatch(): HTMLLIElement {
+  const [r, g, b] = UNRESEARCHED_MARKER_COLOR
+  return swatch([r, g, b], UNRESEARCHED_LEGEND_TEXT)
+}
+
 /** Zeigt fix: Branchenfarben, graue Restkategorie, Datenjahr und die Einheit
  *  der aktuellen Ansicht. Wird bei jedem Wechsel von Ansicht oder Skala neu
  *  aufgerufen — die Legende ist ohne Interaktion sichtbar und aktualisiert
@@ -106,7 +131,10 @@ export function renderLegend(options: LegendOptions): void {
   if (presentGroups.hasUnknown) {
     branchen.appendChild(swatch(litTopFaceColor(UNKNOWN_COLOR), 'nicht eindeutig bestimmbar'))
   }
-  if (view === 'sichtbare') branchen.appendChild(outlineSwatch())
+  if (view === 'sichtbare') {
+    branchen.appendChild(outlineSwatch())
+    branchen.appendChild(unresearchedSwatch())
+  }
   el.appendChild(branchen)
 
   // Redesign Change 3 (2026-08-14): zwei Zeilen sind hier entfallen —

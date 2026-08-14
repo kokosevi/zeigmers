@@ -179,8 +179,23 @@ function nogaGroupLabel(nogaGroupIndex: number): string {
  *  Reingewinn gelten (`consolidationBasis` — Gesamtkonzern oder fortgeführte
  *  Geschäfte, siehe Kommentar direkt unten bei ihrer Verwendung): die Angabe
  *  landet bislang nur in `companies.json`, nirgends im Interface — derselbe
- *  Fehler, den `revenueType` schon einmal gemacht hat. */
+ *  Fehler, den `revenueType` schon einmal gemacht hat.
+ *
+ *  Phase 3: für `researched=false` (die flachen Marker, siehe
+ *  `layers/visible.ts`) ein bewusst kurzes Panel — nur Name und Sitz, ein
+ *  einziger Hinweis. Das ist eine andere Aussage als "Umsatz nicht
+ *  öffentlich verfügbar" (der `placeholder`-Fall unten): dort wurde
+ *  recherchiert und nichts Öffentliches gefunden, hier wurde noch gar nicht
+ *  recherchiert — dieselbe Formulierung für beide wäre irreführend. */
 export function companyContent(company: Company): PanelContent {
+  if (!company.researched) {
+    return {
+      title: company.name,
+      fields: company.city ? [{ label: 'Sitz', value: company.city }] : [],
+      notes: ['Noch nicht recherchiert — an der SIX kotiert, weitere Angaben fehlen bisher.'],
+    }
+  }
+
   const fields: PanelField[] = []
   const notes: string[] = []
 
