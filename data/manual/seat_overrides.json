@@ -1,0 +1,48 @@
+{
+ "CNTL": {
+  "name": "Centiel AG (vormals HT5 AG, davor HOCHDORF Holding AG)",
+  "uid": "CHE-102.468.656",
+  "street": "Via alla Stampa 15",
+  "zip": "6965",
+  "city": "Cadro (Lugano)",
+  "quelle": "centiel.com/investors-media/share-details (offizielle Firmenwebsite, 'Centiel Global HQ'); SIX Swiss Exchange Medienmitteilung 'Centiel vollzieht Börsengang bei SIX Swiss Exchange', 17.4.2026 (six-group.com/en/newsroom/media-releases/2026/20260417-centiel-listing.html); CapLaw-Artikel 'HT5 AG's Merger with Centiel SA and Placement of 15,386,988 Shares' (caplaw.ch); Moneyhouse/auditorstats.ch Firmenprofil 'Centiel AG, Cadro' UID CHE-102.468.656; schweizeraktien.net 'HT5/Centiel: Transformation vom Milchverarbeiter zum High-Tech Innovator'",
+  "grund": "Vermutung des Nutzers bestätigt und aufgeklärt: HOCHDORF Holding AG (Siedereistrasse 9, 6280 Hochdorf) wurde nach dem Verkauf des Milchgeschäfts zunächst in HT5 AG umfirmiert (Sitz weiterhin Hochdorf, UID unverändert CHE-102.468.656). Per 17.4.2026 fusionierte die operative UPS-Herstellerin CENTIEL SA (Cadro) auf diese Mantelgesellschaft ('reverse merger'); CENTIEL SA wurde dabei aus dem Handelsregister gelöscht (Fusion publiziert 20.4.2026), die aufnehmende Gesellschaft HT5 AG wurde in 'Centiel AG' umbenannt und der Sitz nach Cadro/Lugano verlegt. Handel unter CNTL/ISIN CH0024666528 seit 17.4.2026. Die UID CHE-102.468.656 ist also nach wie vor gültig und bezeichnet weiterhin dasselbe Rechtssubjekt – GLEIF ist schlicht nicht nachgeführt (weder auf HT5 AG noch auf Centiel AG). Name und Adresse bei GLEIF ('HOCHDORF Holding AG', Siedereistrasse 9, 6280 Hochdorf) sind veraltet; aktuell korrekt sind 'Centiel AG', Via alla Stampa 15, 6965 Cadro."
+ },
+ "EPIC": {
+  "name": "EPIC Suisse AG",
+  "uid": "CHE-222.173.414",
+  "street": "Seefeldstrasse 5a",
+  "zip": "8008",
+  "city": "Zürich",
+  "quelle": "epic.ch/de/kontakt (offizielle Firmenwebsite, Kontaktadresse); northdata.com Handelsregisterprofil 'EPIC Suisse AG, Zürich' (UID CHE-222.173.414); verwandte EPiC-Objektgesellschaften laut northdata ebenfalls c/o Seefeldstrasse 5a, 8008 Zürich",
+  "grund": "Adresse durch Firmenwebsite und Handelsregisterdatenbank übereinstimmend bestätigt. UID stammt nur aus einer Sekundärquelle (northdata) und wurde nicht direkt via Zefix verifiziert (Zefix-Volltextsuche war über den Tool-Zugriff nicht auswertbar), daher mit Vorbehalt."
+ },
+ "GMI": {
+  "name": "Groupe Minoteries SA",
+  "uid": "CHE-101.395.150",
+  "street": "Route des Moulins 31",
+  "zip": "1523",
+  "city": "Granges-près-Marnand",
+  "quelle": "moneyhouse.ch / help.ch Firmenprofil 'Groupe Minoteries SA, Granges-près-Marnand'; search.ch Adresseintrag Route des Moulins 31, 1523 Granges-près-Marnand; minoteries.ch (Firmenwebsite, Sektion Aktionäre/Generalversammlung)",
+  "grund": "Handelsname 'Gmsa' auf SIX ist offensichtlich die Kurzform von 'Groupe Minoteries SA'. Sitz laut Handelsregister und operativer Hauptsitz (Mühle) sind identisch."
+ },
+ "TIBN": {
+  "name": "Bergbahnen Engelberg-Trübsee-Titlis AG (BET)",
+  "uid": "CHE-103.148.243",
+  "street": "Poststrasse 3",
+  "zip": "6390",
+  "city": "Engelberg",
+  "quelle": "moneyhouse.ch Firmenprofil; northdata.de Handelsregisterprofil 'Bergbahnen Engelberg-Trübsee-Titlis AG, BET, Engelberg' (UID CHE-103.148.243); Gemeinde Engelberg, öffentliche Baupublikation 2026 ('Baugesuch der Bergbahnen Engelberg-Trübsee-Titlis AG, Poststrasse 3, 6390 Engelberg')",
+  "grund": "Vermutung des Nutzers bestätigt: TIBN = Titlis Bergbahnen = Bergbahnen Engelberg-Trübsee-Titlis AG. Laut Moneyhouse liegt der zivilrechtliche Handelsregistersitz in Wolfenschiessen (NW), der operative Hauptsitz (Poststrasse 3) ist jedoch in Engelberg (OW) – hier wie gewünscht der operative Sitz angegeben."
+ },
+ "VILN": {
+  "name": "Villars Holding SA",
+  "uid": "CHE-103.897.793",
+  "street": "Route Jo-Siffert 4",
+  "zip": "1762",
+  "city": "Givisiez",
+  "quelle": "villarsholding.ch/de/kontakt (offizielle Firmenwebsite); northdata.com Handelsregisterprofil 'Villars Holding SA, Givisiez' (UID CHE-103.897.793); moneyhouse.ch Firmenprofil",
+  "grund": "Adresse durch Firmenwebsite und zwei unabhängige Handelsregisterdatenbanken übereinstimmend bestätigt."
+ },
+ "_hinweis": "Begrenzte Ausnahmetabelle, kein Automatismus: jeder Eintrag ist von Hand belegt (Feld 'quelle'). CNTL korrigiert einen veralteten GLEIF-Datensatz (HOCHDORF Holding AG -> HT5 AG -> Centiel AG, gleiche UID, neuer Sitz in Cadro). Die uebrigen vier kennt GLEIF gar nicht. NICHT aufgenommen ist BALSP1 'Baloise Swiss Property': das ist kein Unternehmen, sondern ein vertraglicher Immobilienfonds nach KAG ohne eigene Rechtspersoenlichkeit und ohne UID, und die ISIN CH1567469239 gehoert nur zum befristeten Bezugsrecht einer Kapitalerhoehung. Die Adresse der Fondsleitung waere ein Naeherungswert, kein Sitz - der Titel bleibt deshalb ohne Marker."
+}

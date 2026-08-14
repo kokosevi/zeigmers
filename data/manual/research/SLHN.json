@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 11829,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 1234,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Lebensversicherungen und betriebliche Vorsorgelösungen für Privat- und Firmenkunden sowie Vermögensverwaltung und Finanzberatung, hauptsächlich in der Schweiz, Frankreich, Deutschland und Luxemburg.",
+ "products_url": "https://www.swisslife.com/en/home/about-us/who-we-are.html",
+ "founding_year": 1857,
+ "founding_year_source": "https://www.swisslife.com/en/home/about-us/our-history.html",
+ "employees": 10844,
+ "fiscal_year": 2025,
+ "report_url": "https://www.swisslife.com/content/dam/com_rel/dokumente/fy_results/fy_2025_publish_12_march/Swiss_Life_Full-year_results_2025_Extract_from_2025_Annual_Report.pdf",
+ "note": "Als Lebensversicherer weist Swiss Life keinen Nettoumsatz aus; verwendet wird die Zeile «Total income» aus der geografischen Segmentaufstellung (Note 4, Summe aller Länder), nicht die weiter oben stehende Teilsumme aus Versicherungs-, Kommissions- und Policengebührenertrag (10'667). Beschäftigte sind Vollzeitäquivalente (FTE); der Bericht weist keine separate Kopfzahl aus.",
+ "_verification": "Umsatz: Consolidated Financial Statements, Note 4 'Segment Information' – Tabelle 'Revenue from external customers' nach geografischer Lage, Zeile 'Total income', Spalte 2025, TOTAL = 11'829 (Vorjahr 11'923), aus dem Extract des Annual Report 2025. Gewinn: Consolidated Statement of Income (S. 232 lt. Inhaltsverzeichnis), Zeile 'Net profit attributable to equity holders of Swiss Life Holding' = 1'234 CHF Mio. für 2025 (1'224 für 2024); geprüft wurde, dass beide Zahlen aus derselben konsolidierten Rechnung für das Geschäftsjahr 2025 (Gesamtkonzern) stammen. Beschäftigtenzahl (10'844 FTE per Ende 2025) stammt aus dem Extract des Sustainability Report 2025."
+}

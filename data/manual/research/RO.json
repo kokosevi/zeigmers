@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 61516,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 12880,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Verschreibungspflichtige Arzneimittel vor allem in Onkologie, Neurologie, Immunologie und Ophthalmologie (z. B. Ocrevus, Tecentriq, Hemlibra, Vabysmo) sowie In-vitro-Diagnostik-Systeme und -Tests der Division Roche Diagnostics.",
+ "products_url": "https://www.roche.com/products",
+ "founding_year": 1896,
+ "founding_year_source": "https://www.roche.com/about/history",
+ "employees": 112774,
+ "fiscal_year": 2025,
+ "report_url": "https://assets.roche.com/f/176343/x/fca190f63e/fb25e.pdf",
+ "note": "Umsatz und Gewinn stammen aus dem Finance Report 2025 (Geschäftsjahr = Kalenderjahr 2025). Die Beschäftigtenzahl 112'774 ist eine Kopfzahl (Headcount) zum 31.12.2025 gemäss Roche Annual Report 2025, Sustainability-Report-Teil, Abschnitt 'Metrics' (S. 124): 'In 2025 our global workforce totalled 112,774 employees based on headcounts (HC) (2024: 103,249 based on full-time equivalents, FTE)'. Wegen dieses Methodenwechsels (FTE zu HC, erweiterter Berichtsumfang gemäss ESRS) ist die Zahl nicht direkt mit dem Vorjahr vergleichbar. Quelle: https://assets.roche.com/f/170920/x/fba4184df7/roche-annual-report-2025.pdf",
+ "_verification": "Umsatz (Sales, Zeile 'Sales' in der Tabelle 'Income statement' der 'Multi-Year Overview', Finance Report 2025 S. 168, sowie identisch in Note 3 'Information by geographical area', S. 60): CHF 61'516 Mio. Gewinn (Zeile 'Net income attributable to Roche shareholders', dieselbe Tabelle S. 168, sowie 'Finance in Brief'/Umschlaginnenseite): CHF 12'880 Mio. Geprüft: beide Zahlen stammen aus derselben konsolidierten IFRS-Jahresrechnung 2025 desselben Konzerns (kein fortgeführtes/aufgegebenes Geschäft ausgewiesen), Quelle direkt im Original-PDF gegengelesen (Seite 168 und 60 sowie Umschlaginnenseite). Gruendungsjahr 1896 und Beschaeftigtenzahl separat auf roche.com bzw. im Annual Report 2025 verifiziert."
+}

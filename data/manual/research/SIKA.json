@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 11201.3,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 1044.0,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Bauchemische Produkte und Klebstoffe/Dichtstoffe für Bauwesen und Industrie: Abdichtungs-, Kleb-, Dämpfungs-, Verstärkungs- und Beschichtungssysteme, u. a. für Beton, Fassaden, Dächer, Böden sowie für die Automobil- und Transportindustrie.",
+ "products_url": "https://www.sika.com/en/about-us/who-we-are.html",
+ "founding_year": 1910,
+ "founding_year_source": "https://www.sika.com/en/about-us/who-we-are/history.html",
+ "employees": 33707,
+ "fiscal_year": 2025,
+ "report_url": "https://www.sika.com/dam/dms/corporate/media/glo-ar-25-annual-report.pdf",
+ "note": "Konzern-Reingewinn 2025 betrug CHF 1'045.3 Mio., davon CHF 1'044.0 Mio. den Sika-Aktionären zurechenbar und CHF 1.3 Mio. Minderheitsanteilen (S. 218, 'Consolidated income statement'); eingetragen ist der Aktionärsanteil. Die Mitarbeiterzahl (33'707, S. 6 'Facts & Figures 2025') ist im Bericht nicht explizit als Köpfe oder Vollzeitstellen (FTE) bezeichnet; die separat ausgewiesene Sicherheitskennzahl 'Lost Time Accidents per 1,000 FTEs' legt nahe, dass FTE nur dort verwendet wird und die allgemeine Mitarbeiterzahl Köpfe (Headcount) meint, dies ist aber nicht ausdrücklich belegt.",
+ "_verification": "Umsatz (Net sales, CHF 11'201.3 Mio.) und Konzerngewinn (Net profit, CHF 1'045.3 Mio., davon CHF 1'044.0 Mio. 'Profit attributable to Sika shareholders') stammen aus dem 'Sika Business Year 2025' Annual Report (sika.com/annualreport), Seite 6 ('Facts & Figures 2025') und Seite 218 ('Consolidated income statement for the year ended December 31'). Geprüft: Zeilenbezeichnung 'Net sales' (nicht eine Summe wie 'Turnover'), Aufteilung von Net profit in Aktionärs- vs. Minderheitsanteil, Mitarbeiterzahl 33'707 auf S. 6, Gründungsjahr 1910 laut sika.com/en/about-us/who-we-are/history.html ('Kaspar Winkler was driven by his entrepreneurial spirit when he laid the cornerstone of our company in 1910')."
+}

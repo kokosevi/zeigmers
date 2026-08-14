@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": 15048,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 1270,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Mobilfunk-, Festnetz-, Breitband-Internet- und TV-Dienste sowie IT- und Cloud-Dienstleistungen für Privat- und Geschäftskunden in der Schweiz und (über Fastweb+Vodafone) in Italien.",
+ "products_url": "https://www.swisscom.ch/en/about/company.html",
+ "founding_year": 1998,
+ "founding_year_source": "https://www.swisscom.ch/en/about/company/history.html",
+ "employees": 23266,
+ "fiscal_year": 2025,
+ "report_url": "https://www.swisscom.ch/en/about/investors/key-figures/five-year-summary.html",
+ "note": "Beschäftigte als Vollzeitäquivalente (FTE) ausgewiesen (23'266); auf der Fünf-Jahres-Übersicht der IR-Seite ist keine separate Kopfzahl ausgewiesen. Konzernumsatz 2025 (CHF 15'048 Mio., +36.6% ggü. Vorjahr) enthält erstmals die Vollkonsolidierung von Vodafone Italia; die Übernahme (100%, kein Minderheitsanteil) wurde per 31.12.2024 abgeschlossen, weshalb 2025 das erste volle Konsolidierungsjahr ist und mit 2024 nicht direkt vergleichbar ist. Reingewinn CHF 1'270 Mio. ist der Konzerngewinn (keine Minderheitsanteile wegen 100%-Übernahme von Vodafone Italia); Konsistenz geprüft über EPS: 1'270 Mio. / 51.802 Mio. Aktien = CHF 24.54, exakt wie ausgewiesen.",
+ "_verification": "Umsatz (CHF 15'048 Mio.) und Reingewinn (CHF 1'270 Mio.) für Geschäftsjahr 2025 stammen aus der Tabelle 'Swisscom Group' der Fünf-Jahres-Übersicht (Zeilen 'Revenue' und 'Net income') auf der offiziellen Swisscom-Investor-Relations-Seite; dieselben Umsatz- und Gewinnzahlen wurden gegengeprüft mit der Swisscom-Medienmitteilung vom 12.02.2026 zu den Jahresergebnissen 2025 (identische Werte). Zusätzlich geprüft: EPS-Rechnung (1'270/51.802 = 24.54 CHF, stimmt mit ausgewiesenem EPS überein, bestätigt Aktionärszurechnung), 100%-Übernahme von Vodafone Italia per 31.12.2024 (keine Minderheitsanteile), Gründungsjahr 1998 auf der Firmengeschichte-Seite von Swisscom bestätigt."
+}

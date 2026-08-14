@@ -282,6 +282,70 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
         raise ValueError("CSV-Validierung fehlgeschlagen:\n  " + "\n  ".join(problems))
 
 
+def seat_overrides_path() -> Path:
+    return config.DATA_MANUAL / "seat_overrides.json"
+
+
+def load_seat_overrides(path: Path | None = None) -> dict[str, dict]:
+    path = path or seat_overrides_path()
+    if not path.exists():
+        return {}
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    # Schlüssel mit führendem `_` sind Erläuterungen für die Leserin der
+    # Datei, keine SIX-Symbole — die Begründung gehört neben die Ausnahme,
+    # nicht in eine getrennte Dokumentation, die veraltet.
+    return {key: value for key, value in raw.items() if not key.startswith("_")}
+
+
+def apply_seat_overrides(rows: list[dict], overrides: dict[str, dict]) -> list[str]:
+    """Von Hand belegte Sitze, die eine automatische Quelle nicht liefern kann.
+
+    Eine **begrenzte Ausnahmetabelle**, dasselbe Muster wie
+    `plausibility.py`: keine Heuristik, die still greift, sondern eine kurze
+    Liste namentlich genannter Fälle, jeder mit Quelle und Grund in der
+    Datei. Zwei Sorten kommen vor:
+
+    - **GLEIF ist veraltet.** Für CH0024666528 führt GLEIF weiterhin die
+      HOCHDORF Holding AG in Hochdorf. Tatsächlich wurde die Gesellschaft
+      nach dem Verkauf des Milchgeschäfts zu HT5 AG und dann zu Centiel AG
+      umfirmiert und sitzt heute in Cadro. Die ISIN-Zuordnung von GLEIF
+      stimmt, Name und Adresse nicht.
+    - **GLEIF kennt die ISIN gar nicht** (fünf Titel mit stark verkürzten
+      SIX-Handelsnamen, die auch der Namensabgleich nicht auflöst).
+
+    Die Koordinaten werden geleert, damit `geocode.fill_missing()` sie neu
+    bestimmt — sonst behielte die Zeile die Koordinaten der alten Adresse und
+    die Firma stünde weiterhin am falschen Ort, jetzt mit richtigem Namen
+    daneben, was schlimmer wäre als vorher.
+
+    Ein Symbol ohne passende Zeile ist ein Fehler, kein Achselzucken: es
+    heisst, die Tabelle beschreibt einen Titel, den es in der SIX-Liste nicht
+    (mehr) gibt — dann gehört sie nachgeführt, nicht stillschweigend
+    übergangen."""
+    by_symbol = {row.get("six_symbol", "").strip(): row for row in rows}
+    unknown = sorted(set(overrides) - set(by_symbol))
+    if unknown:
+        raise ValueError(
+            f"Sitz-Ausnahme für unbekannte(s) SIX-Symbol(e): {', '.join(unknown)} — "
+            f"steht in {seat_overrides_path().name}, aber in keiner CSV-Zeile"
+        )
+
+    applied: list[str] = []
+    for symbol, override in sorted(overrides.items()):
+        row = by_symbol[symbol]
+        for field in ("name", "uid", "lei", "street", "zip", "city"):
+            if override.get(field):
+                row[field] = str(override[field]).strip()
+        street, zip_code, city = row["street"], row["zip"], row["city"]
+        row["geocode_query"] = (
+            f"{street}, {zip_code} {city}" if street else f"{zip_code} {city}".strip()
+        )
+        row["seat_basis"] = "manuell"
+        row["lon"] = row["lat"] = ""
+        applied.append(symbol)
+    return applied
+
+
 def research_dir() -> Path:
     """Ein JSON je recherchierter Gesellschaft, benannt nach ihrem
     SIX-Symbol. Diese Dateien gehören ins Repo: sie sind der Nachweis, aus

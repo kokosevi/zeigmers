@@ -970,3 +970,45 @@ def test_merge_research_rejects_a_payload_that_would_not_validate():
     rows = [_row(six_symbol="NEU", researched="no")]
     with pytest.raises(ValueError, match="report_url"):
         companies.merge_research(rows, {"NEU": _research(report_url="")})
+
+
+# --- Sitz-Ausnahmen von Hand ----------------------------------------------
+
+
+def test_seat_override_replaces_a_stale_gleif_record():
+    # Regressionsfall CNTL: GLEIF fuehrt fuer CH0024666528 weiterhin die
+    # HOCHDORF Holding AG in Hochdorf. Tatsaechlich wurde die Gesellschaft
+    # nach dem Verkauf des Milchgeschaefts zu HT5 AG und dann zu Centiel AG
+    # umfirmiert und sitzt heute in Cadro. Die ISIN-Zuordnung von GLEIF ist
+    # richtig, sein Name und seine Adresse sind veraltet.
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    row.update({"six_symbol": "CNTL", "name": "HOCHDORF Holding AG",
+                "city": "Hochdorf", "seat_basis": "hq"})
+    override = {"CNTL": {"name": "Centiel AG", "uid": "CHE-102.468.656",
+                         "street": "Via alla Stampa 15", "zip": "6965",
+                         "city": "Cadro", "quelle": "centiel.com",
+                         "grund": "GLEIF veraltet"}}
+
+    applied = companies.apply_seat_overrides([row], override)
+
+    assert applied == ["CNTL"]
+    assert row["name"] == "Centiel AG"
+    assert row["city"] == "Cadro"
+    assert row["seat_basis"] == "manuell"
+    assert row["geocode_query"] == "Via alla Stampa 15, 6965 Cadro"
+
+
+def test_seat_override_clears_stale_coordinates_so_they_get_geocoded_again():
+    # Ohne das behielte die Zeile die Koordinaten der ALTEN Adresse und die
+    # Firma stuende weiterhin am falschen Ort — mit richtigem Namen daneben,
+    # was schlimmer waere als vorher.
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    row.update({"six_symbol": "CNTL", "city": "Hochdorf",
+                "lon": "8.29", "lat": "47.17"})
+    companies.apply_seat_overrides([row], {"CNTL": {"city": "Cadro"}})
+    assert row["lon"] == "" and row["lat"] == ""
+
+
+def test_seat_override_for_an_unknown_symbol_is_reported_not_ignored():
+    with pytest.raises(ValueError, match="WEG"):
+        companies.apply_seat_overrides([], {"WEG": {"city": "Nirgendwo"}})

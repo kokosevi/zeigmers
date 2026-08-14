@@ -521,6 +521,17 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         path = companies.csv_path()
         rows = companies.load_csv(path)
+        # Sitz-Ausnahmen zuerst: sie korrigieren Identität und Adresse, die
+        # Recherche danach nur Kennzahlen. Umgekehrt liefe die Validierung
+        # gegen eine Zeile, deren Sitz noch der alte ist.
+        overrides = companies.load_seat_overrides()
+        if overrides:
+            applied = companies.apply_seat_overrides(rows, overrides)
+            companies.write_csv(path, rows)
+            print(f"[companies-merge] {len(applied)} Sitz-Ausnahme(n) angewendet "
+                  f"({', '.join(applied)}) — Koordinaten geleert, werden neu "
+                  f"geokodiert")
+
         research = companies.load_research()
         if not research:
             print(f"[companies-merge] keine Recherchedateien in "

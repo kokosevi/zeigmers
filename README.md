@@ -609,13 +609,58 @@ gegen 224 (Titel, nicht Gesellschaften) — das ist die Zahl, die SIX selbst
 als „kotiert" ausweist und die in der Aufgabenstellung genannt wurde; der
 Unterschied zu 202 ist hier dokumentiert, nicht verschwiegen.
 
-### Sitz je Titel: Zefix/LINDAS, mit offen gelegten Grenzen
+### Sitz je Titel: GLEIF über die ISIN — und warum der Namensabgleich es nicht konnte
 
-Für jede der 202 Gesellschaften (ausser den acht bereits bekannten) sucht
-`companies.find_seat()` einen eindeutigen Sitz im Zefix-Handelsregister über
-denselben LINDAS-SPARQL-Endpunkt, der schon die AG-Kandidatensuche nutzte —
-nicht durch Rückgriff auf eine ISIN (Zefix führt keine ISINs), sondern über
-einen Namensabgleich:
+**Seit dem 14. August 2026 kommt der Sitz aus GLEIF**, nicht mehr aus einem
+Namensabgleich. Der Grund ist ein Befund, kein Geschmacksurteil: gegen GLEIF
+geprüft lagen **28 von 130 Platzierungen auf der falschen Rechtseinheit, 14
+davon in einer anderen Gemeinde.**
+
+| Kürzel | Namensabgleich | tatsächlich |
+|---|---|---|
+| `LISN` | Lindt **Dessous-Moden GmbH**, Solothurn | Chocoladefabriken Lindt & Sprüngli AG, Kilchberg |
+| `RO` | Roche **Sapac** AG | Roche Holding AG |
+| `SCHN` | Schindler **Aufzüge** AG, Ebikon | Schindler Holding AG, Hergiswil |
+| `UHR` | **Swatch AG**, Biel | The Swatch Group AG, Neuchâtel |
+| `GF` | Georg Fischer **Rohrleitungssysteme** AG | Georg Fischer AG |
+| `WARN` | Warteck **Sport Holding** AG | Warteck **Invest** AG |
+
+Ein Name kann nicht hergeben, was ein Name nicht enthält: ob eine Gesellschaft
+die Mutter, eine Tochter oder ein zufälliger Namensvetter ist. Die Kette aus
+Rechtsform-Entfernung, Umlaut-Transliteration und Konfidenzstufen unten hat
+das so weit getrieben, wie es geht — und ist trotzdem bei jeder fünften Firma
+auf der falschen gelandet, ohne dass irgendetwas gewarnt hätte.
+
+GLEIF (Global Legal Entity Identifier Foundation) veröffentlicht genau die
+Verbindung, die fehlte: **ISIN → Rechtsträger**. Die ISIN steht in der
+SIX-Titelliste, ist eindeutig, und wird nicht interpretiert. Der Datensatz
+liefert dazu `registeredAs` — die Schweizer UID im selben CHE-Format, das die
+acht handrecherchierten Zeilen schon trugen. Diese acht sind damit unabhängig
+bestätigt: gleicher Ort, gleiche UID, alle acht.
+
+**Die Säule steht am operativen Hauptsitz**, nicht am Rechtssitz. Bei 11 der
+192 Gesellschaften fallen die auseinander, und zwar dort, wo es sichtbar wird:
+Logitech ist in Hautemorges eingetragen (ein Dorf mit einigen hundert
+Einwohnern) und arbeitet in Lausanne; SGS ist in Genf eingetragen und führt
+den Konzern aus Baar; die Sandoz Group ist in Basel eingetragen und sitzt in
+Rotkreuz. Für eine Wirtschaftskarte ist der Ort, an dem gearbeitet wird, die
+ehrlichere Aussage als der Ort, an dem die Statuten liegen. Welche der beiden
+Adressen benutzt wurde, hält `seat_basis` je Zeile fest — die Wahl bleibt
+nachvollziehbar und umkehrbar, ohne neu abzufragen.
+
+**Keine der beiden Quellen genügt allein.** GLEIF kann einer Umbenennung
+nachhinken: für die ISIN CH0024666528 nennt SIX «Centiel N», GLEIF noch
+«HOCHDORF Holding AG» (ein Börsenmantel nach Übernahme). Solche Abweichungen
+meldet `companies-sync` unter `nameMismatch`, statt sie stillschweigend
+aufzulösen.
+
+Ergebnis: **197 von 202 Gesellschaften platziert** statt 135. 192 Sitze aus
+GLEIF, 5 über den Namensabgleich als Rückfall — der für Titel ohne
+GLEIF-Eintrag bestehen bleibt und deshalb hier weiter dokumentiert ist:
+
+Für Titel ohne GLEIF-Eintrag sucht `companies.find_seat()` einen eindeutigen
+Sitz im Zefix-Handelsregister über den LINDAS-SPARQL-Endpunkt — nicht über die
+ISIN (Zefix führt keine), sondern über einen Namensabgleich:
 
 - **Kern des Vergleichs (`companies.canonicalize()`):** Rechtsform- und
   Sammelwörter (`AG`, `Holding`, `Group`/`Gruppe`, …) werden von beiden Namen
@@ -750,6 +795,79 @@ verworfen, da nichts zwischendurch persistiert wird) — eine Zeile, die auch
 nach Wiederholung nicht geokodierbar ist, verliert nur ihren eigenen
 Sitz/Marker, nicht der ganze Build.
 
+### Die Säulenhöhe rechnet in CHF, das Panel zeigt das Original
+
+Ansicht A vergleicht Geld über die Höhe der Säulen. Solange nur acht Aargauer
+Firmen darauf standen, war der Währungsmix eine Fussnote. National steht
+Nestlé (CHF 89'490 Mio.) neben Novartis (USD 45'335 Mio. umgerechnet) und
+Richemont (EUR) — dann vergleicht die Höhe Beträge, die nicht dasselbe messen.
+Ein USD-Betrag, als wäre er CHF gezeichnet, überzeichnet die Firma 2025 um
+rund ein Fünftel.
+
+Deshalb: **die Höhe rechnet in CHF, das Panel zeigt die berichtete Zahl in
+ihrer Originalwährung.** Umgerechnet lässt sich vergleichen, im Original lässt
+sich nachprüfen. Schon unter den ursprünglichen acht ändert das die Rangfolge:
+Accelleron (USD 1'263 Mio.) steht nun unter Siegfried (CHF 1'328 Mio.) statt
+darüber.
+
+Kurs ist der **Jahresmittelkurs der Schweizerischen Nationalbank**
+(Datenwürfel `devkum`, Reihe `M0` = Monatsdurchschnitt), gemittelt über die
+Monate des Geschäftsjahres — ein Jahresmittel passt zu einer Erfolgsrechnung,
+die über das Jahr entsteht, anders als ein Stichtagskurs, der einen Tag
+überbetont. Für 2025: **EUR 0.9371, USD 0.8314** (`etl/src/draufsicht_etl/fx.py`).
+
+Beim Bauen fast danebengegangen: der SNB-Datensatz enthält zwei Reihen, `M0`
+(Monatsdurchschnitt) und `M1` (Monatsendkurs). Beide zusammen zu mitteln
+ergäbe eine Grösse, die es nicht gibt — aufgefallen nur, weil ein Jahr dann
+24 statt 12 Werte hatte.
+
+Zwei Zusicherungen hält der Code, statt sie zu versprechen:
+
+- **Maximum und Einzelhöhen stammen aus derselben Grösse.** Ein Maximum in
+  CHF neben Höhen in Berichtswährung wäre der Fehler, den Ansicht B schon
+  einmal hatte (jede Detailstufe auf ihr eigenes Maximum normiert).
+- **Halb umgerechnet gibt es nicht.** Bleibt eine einzige Umrechnung offen,
+  fällt die ganze Ansicht auf die Berichtswährungen zurück (`revenueInChf`),
+  statt zwei Massstäbe nebeneinanderzustellen, ohne dass man es sieht. Eine
+  Berichtswährung ohne hinterlegte SNB-Reihe bricht mit Meldung ab, statt
+  einen Kurs zu schätzen.
+
+### Recherche: recherchieren, widerlegen, übernehmen
+
+Den Aargauer Standard — Umsatz, Gewinn, Beschäftigte, Kerngeschäft, jede Zahl
+mit Quelle — auf alle Gesellschaften auszuweiten heisst rund 3'300 Werte.
+Ein Pilotlauf über acht bewusst schwierige Firmen hat gezeigt, warum ein
+einzelner Durchgang nicht genügt: **alle vier gegengelesenen Zeilen hatten
+einen Fund**, und keiner davon war sichtbar.
+
+| Firma | Fund |
+|---|---|
+| Avolta | 13'983 war «Turnover» (Nettoumsatz 13'760 plus 223 Mio. Werbeerträge), eingetragen als Nettoumsatz |
+| Alcon | 25'000 Beschäftigte gerundet, das Filing nennt 25'942 |
+| Clariant | 10'281 sind Vollzeitstellen, der Bericht hebt 10'449 Köpfe hervor |
+| Barry Callebaut | Zahlen korrekt, Quelle war eine Medienmitteilung statt des Geschäftsberichts |
+
+Daraus die Arbeitsweise: **recherchieren → widerlegen → übernehmen.** Der
+Prüfdurchgang bekommt den Auftrag, die Zeile zu *widerlegen*, nicht sie zu
+bestätigen, und holt die Zahlen unabhängig aus der Primärquelle, statt die
+vorgelegten nachzuvollziehen.
+
+Die Rechercheergebnisse liegen als ein JSON je Gesellschaft in
+`data/manual/research/<SIX-Symbol>.json` — **im Repo, nicht im Verborgenen**:
+sie sind der Nachweis, aus dem jede Zahl der Karte stammt, mit Quelle,
+Zeilenbezeichnung im Bericht und dem, was beim Gegenlesen geprüft wurde.
+`draufsicht-etl companies-merge` trägt sie in die CSV ein, mit drei
+Zusicherungen:
+
+- **Bereits recherchierte Zeilen bleiben unangetastet.** Die acht von Hand
+  geprüften Zeilen sind das Teuerste in diesem Repo; ein maschineller Lauf
+  darf sie nicht überschreiben, auch nicht mit zufällig richtigen Werten.
+- **Identität und Sitz kommen nicht aus der Recherche**, sondern aus GLEIF.
+  Eine Rechercheantwort, die einen Ort mitliefert, wird ignoriert, statt eine
+  geprüfte Angabe durch eine ungeprüfte zu ersetzen.
+- **`validate()` läuft vor dem Schreiben.** Ein Umsatz ohne Quelle fällt beim
+  Übernehmen auf, nicht erst im nächsten Build.
+
 ### Die CSV wird national
 
 `data/manual/ag_listed_companies.csv` ist `data/manual/listed_companies.csv`
@@ -877,6 +995,7 @@ Verfügung. Was ein Mensch vor dem nächsten Deploy ansehen sollte:
 | `npm run build:data` | Vollständiger ETL-Lauf (`draufsicht-etl all`): Grenzen, Hektarraster, Firmen — schreibt `public/data/` |
 | `uv run --project etl draufsicht-etl companies-sync` | Neue SIX-Titel gegen Zefix/LINDAS abgleichen, CSV ergänzen (~15 Min., bestehende Zeilen bleiben unangetastet) |
 | `uv run --project etl draufsicht-etl companies-retry` | Nur die bisher sitzlosen Zeilen erneut abgleichen (~3 Min.) — sinnvoll **nach** einer Verbesserung am Namensabgleich; ohne Codeänderung folgenlos, siehe „Reproduzierbarkeit" |
+| `uv run --project etl draufsicht-etl companies-merge` | Recherchierte Kennzahlen aus `data/manual/research/` in die CSV übernehmen (bestehende Recherche bleibt unangetastet, `validate()` läuft vorher) |
 | `npm run build` | Typprüfung + Produktions-Build (`dist/`) |
 | `npm run dev` | Lokaler Entwicklungsserver mit Hot Reload |
 | `npm test` | Frontend-Tests (Vitest) |

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 3760,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": 764,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Vermögensverwaltung, Anlageberatung und Wealth-Management-Dienstleistungen für vermögende Privatkunden (Private Banking).",
+ "products_url": "https://www.juliusbaer.com/en/about-us/",
+ "founding_year": 1890,
+ "founding_year_source": "https://www.juliusbaer.com/en/about-us/our-company/history/",
+ "employees": 7390,
+ "fiscal_year": 2025,
+ "report_url": "https://www.juliusbaer.com/en/media/news-portal/presentation-of-the-2025-full-year-results-for-the-julius-baer-group/",
+ "note": "Bank ohne Nettoumsatz: revenue_type ist operating_income (Geschäftsertrag), wie in Falle 1 vorgesehen. Beschäftigte sind als Vollzeitäquivalente (FTE) ausgewiesen (7'390 per Ende 2025, Vorjahr 7'595 FTE); eine separate Kopfzahl wurde in den geprüften Quellen nicht gefunden. Der IFRS-Konzerngewinn 2025 (CHF 764 Mio., den Aktionären zurechenbar) lag wegen eines Sondereffekts 2024 (Auflösung von Steuerrückstellungen) deutlich unter dem Vorjahreswert (CHF 1'022 Mio.); der zugrunde liegende (adjusted) Vorsteuergewinn stieg dagegen um 17% auf CHF 1'266 Mio. - hier eingetragen ist der ausgewiesene IFRS-Konzerngewinn, konsistent zum Gesamtkonzern-Geschäftsertrag.",
+ "_verification": "Geschäftsertrag (operating income) CHF 3'760 Mio. (2024: CHF 3'861 Mio.) und IFRS-Konzerngewinn den Aktionären zurechenbar CHF 764 Mio. (2024: CHF 1'022 Mio.) stammen von der offiziellen Medienmitteilung 'Presentation of the 2025 full-year results for the Julius Baer Group' auf juliusbaer.com/en/media/news-portal/, die die Eckdaten aus dem am 2. Februar 2026 veröffentlichten Full-Year-2025-Ergebnis wiedergibt; Gründungsjahr 1890 und Geschäftsbeschreibung wurden auf den eigenen Unternehmensseiten juliusbaer.com/en/about-us/our-company/history/ und juliusbaer.com/en/about-us/ geprüft. Direkte PDF-Links zum Geschäftsbericht 2025 (dumpFile-URLs mit Token) waren beim Abruf serverseitig ungültig/abgelaufen (Weiterleitung auf Fehlerseite), weshalb als report_url die primäre firmeneigene IR-Medienseite mit denselben, dort textlich ausgewiesenen Zahlen verwendet wurde."
+}
