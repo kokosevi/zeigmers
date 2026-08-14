@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "62945",
+ "revenue_currency": "USD",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "6798",
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Erstversicherung (Schaden/Unfall, Leben) sowie Rückversicherung und verwandte Finanzdienstleistungen für Privat- und Firmenkunden in über 200 Ländern.",
+ "products_url": "https://www.zurich.com/about-us",
+ "founding_year": "1872",
+ "founding_year_source": "https://www.zurich.com/about-us/history-and-heritage",
+ "employees": "65437",
+ "fiscal_year": "2025",
+ "report_url": "https://www.zurich.com/-/media-assets/project/zurich/dotcom/investor-relations/docs/financial-reports/2025/annual-report-2025-en.pdf",
+ "note": "Zurich weist unter IFRS 17 keine Zeile 'Total revenues' aus; als Gesamtertrag wird die oberste Zeile der Konzern-Erfolgsrechnung 'Insurance revenue' verwendet (siehe _verification). Beschäftigte als Kopfzahl (Headcount) 65'437 gemäss Sustainability-Report S. 191; FTE-Basis wäre 63'965.",
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated income statements') S. 273 (bzw. identisch S. 3 der separat veröffentlichten 'Consolidated financial statements, Annual results 2025') weist als oberste Zeile 'Insurance revenue' USD 62'945 Mio. (2025) aus; darunter 'Net income after taxes, attributable to shareholders' USD 6'798 Mio. Es gibt keine separate Zeile 'Total revenues' oder Bruttoprämien im Konzernabschluss (IFRS 17); daher wurde 'Insurance revenue' als Gesamtertrags-Analogon gewählt, revenue_type auf operating_income gesetzt. Geprüft: Zahlen sind identisch in Group Overview 'Key figures' (S. 6) und in Note 9/26 des Annual Report 2025 (Zurich Insurance Group Ltd, ZURN, Sitz Zürich). Beschäftigtenzahl (Headcount 65'437) laut Sustainability-Report S. 191 ('our headcount increased to 65,437 employees'), FTE-Zahl 63'965 laut Remuneration-Report S. 191/wird dort erwähnt."
+}

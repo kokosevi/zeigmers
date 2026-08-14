@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "89490",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "9033",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung und Vertrieb von Nahrungsmitteln und Getränken in den Kategorien Pulver- und Flüssiggetränke (u. a. Nescafé, Nespresso), Wasser, Milchprodukte und Speiseeis, Ernährungs- und Gesundheitsprodukte (inkl. Nestlé Health Science), Fertiggerichte und Kochzutaten, Süsswaren sowie Heimtiernahrung (Purina).",
+ "products_url": "https://www.nestle.com/about",
+ "founding_year": "1866",
+ "founding_year_source": "https://www.nestle.com/about/history",
+ "employees": "271000",
+ "fiscal_year": "2025",
+ "report_url": "https://www.nestle.com/sites/default/files/2026-02/financial-statements-2025-en.pdf",
+ "note": "Beschäftigte: Der Geschäftsbericht nennt nur eine gerundete Näherung ('employs around 271 000 people', Note 3, S. 93) – keine exakte Kopf- oder VZÄ-Zahl verfügbar, daher wird diese Näherungsangabe der Firma selbst übernommen. Ob Köpfe oder Vollzeitäquivalente gemeint sind, wird im Bericht nicht spezifiziert.",
+ "_verification": "Umsatz (CHF 89'490 Mio., Zeile 'Sales') und Gewinn (CHF 9'033 Mio., Zeile 'of which attributable to shareholders of the parent (Net profit)', unter 'Profit for the year' CHF 9'254 Mio. abzüglich Minderheitsanteile CHF 221 Mio.) stammen beide aus der 'Consolidated income statement for the year ended December 31, 2025', S. 80 der Financial Statements 2025 (Konzernabschluss, dieselbe Berichtswährung CHF, derselbe Konsolidierungskreis). Geprüft: Zeilenbezeichnung 'Sales' (nicht 'Net sales', aber einzige Umsatzzeile des Konzerns, keine Summe mehrerer Posten), Zuordnung Gewinn zu Aktionären vs. Minderheitsanteilen, sowie Beschäftigtenangabe in Note 3 (S. 93)."
+}

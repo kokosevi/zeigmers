@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 7472,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 1071,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung von Duft- und Riechstoffen für Parfum-, Kosmetik- und Haushaltsprodukte sowie von Aromastoffen und Inhaltsstoffen für Lebensmittel und Getränke, im Auftrag von Industriekunden.",
+ "products_url": "https://www.givaudan.com/our-company",
+ "founding_year": 1895,
+ "founding_year_source": "https://www.givaudan.com/our-company/rich-heritage/timeline",
+ "employees": 17580,
+ "fiscal_year": 2025,
+ "report_url": "https://www.givaudan.com/files/giv-2025-gcfr.pdf",
+ "note": "Beschäftigtenzahl laut Bericht (S. 2, Infografik) 'Our full-time employees 17,580' — es handelt sich um Vollzeitäquivalente (FTE); eine gesonderte Kopfzahl weist der Bericht nicht aus. 'Income attributable to non-controlling interests' ist Nil, daher entspricht der eingetragene Gewinn sowohl dem Konzerngewinn als auch dem Aktionärsanteil.",
+ "_verification": "Konsolidierte Erfolgsrechnung im '2025 Governance, Compensation and Financial Report' (PDF), Seite 63: Zeile 'Sales' CHF 7'472 Mio. (2025) und Zeile 'Income attributable to equity holders of the parent' CHF 1'071 Mio.; geprüft, dass 'Income attributable to non-controlling interests' mit '–' (Nil) ausgewiesen ist, sodass keine Verzerrung durch Minderheitsanteile vorliegt. Beschäftigtenzahl 17'580 aus der Kennzahlen-Infografik auf Seite 2 desselben Berichts; Gründungsjahr 1895 auf der offiziellen Timeline-Seite von Givaudan verifiziert ('Léon and Xavier Givaudan embark on a rich journey with the founding of Givaudan in Zürich, Switzerland' — nicht zu verwechseln mit 1768, dem Datum einer Vorläuferfirma, die erst später mit Givaudan fusionierte)."
+}

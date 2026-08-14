@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 49573,
+ "revenue_currency": "USD",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": 7767,
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Vermögensverwaltung für Privat- und institutionelle Kunden (Global Wealth Management), Privat- und Firmenkundengeschäft in der Schweiz, Investmentbanking (Kapitalmarkt- und Beratungsdienstleistungen) sowie Anlagefondsmanagement (Asset Management).",
+ "products_url": "https://www.ubs.com/global/en/our-firm/what-we-do.html",
+ "founding_year": 1862,
+ "founding_year_source": "https://www.ubs.com/global/en/our-firm/our-history/ubs-in-the-world/1862-1872.html",
+ "employees": 105236,
+ "fiscal_year": 2025,
+ "report_url": "https://www.ubs.com/content/dam/assets/cc/investor-relations/annual-report/2025/annual-report-ubs-group-2025.pdf",
+ "note": "Bank: revenue_type = operating_income, Zeile 'Total revenues' aus dem Konzernergebnis (kein Nettoumsatz). employees = 105'236 ist die Headcount-Zahl der internen Mitarbeitenden per 31.12.2025 (laut UBS-Angabe entspricht das 103'177 Vollzeitstellen/FTE); zusätzlich beschäftigte UBS rund 16'412 externe Mitarbeitende (Workforce-Count), die hier nicht mitgezählt sind. Gründungsjahr 1862 bezieht sich auf die Bank in Winterthur, eine der historischen Vorläuferbanken (UBS Group AG als Holdinggesellschaft wurde erst 2014 gegründet, UBS AG entstand 1998 durch Fusion von Union Bank of Switzerland und Swiss Bank Corporation).",
+ "_verification": "Total revenues (49'573) und Net profit attributable to shareholders (7'767) stammen beide aus der Tabelle 'UBS Group key figures' auf der Seite 'Our key figures' im UBS Group Annual Report 2025 (Spalte 31.12.25, Zeilen 'Total revenues' und 'Net profit / (loss) attributable to shareholders'), dieselbe konsolidierte Rechnung, dasselbe Geschäftsjahr, dieselbe Berichtswährung USD. Zahlen zusätzlich gegen den UBS Group Fourth Quarter 2025 Report (full-report-ubs-group-consolidated-4q25.pdf, Seite 2, Spalte 'As of or for the year ended 31.12.25') abgeglichen, wo dieselben Werte erscheinen; Mitarbeiterzahl gegen die UBS-Seite 'Our workforce' (105'236 Headcount / 103'177 FTE per 31.12.2025) geprüft."
+}

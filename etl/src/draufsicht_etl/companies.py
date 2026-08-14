@@ -282,6 +282,69 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
         raise ValueError("CSV-Validierung fehlgeschlagen:\n  " + "\n  ".join(problems))
 
 
+def research_dir() -> Path:
+    """Ein JSON je recherchierter Gesellschaft, benannt nach ihrem
+    SIX-Symbol. Diese Dateien gehören ins Repo: sie sind der Nachweis, aus
+    dem jede Zahl der Karte stammt — mit Quelle, Zeilenbezeichnung im
+    Bericht und dem, was beim Gegenlesen geprüft wurde (`_verification`).
+    Die CSV trägt danach nur noch das Ergebnis."""
+    return config.DATA_MANUAL / "research"
+
+
+def load_research(directory: Path | None = None) -> dict[str, dict]:
+    directory = directory or research_dir()
+    if not directory.exists():
+        return {}
+    return {
+        path.stem: json.loads(path.read_text(encoding="utf-8"))
+        for path in sorted(directory.glob("*.json"))
+    }
+
+
+def merge_research(rows: list[dict], research: dict[str, dict],
+                   table: NogaTable | None = None) -> dict:
+    """Trägt recherchierte Kennzahlen in die CSV-Zeilen ein, nach SIX-Symbol.
+
+    Drei Zusicherungen, jede an einer Erfahrung dieses Projekts:
+
+    - **Bereits recherchierte Zeilen bleiben unangetastet.** Die acht von
+      Hand geprüften Zeilen sind das Teuerste in diesem Repo; ein
+      maschineller Lauf darf sie nicht überschreiben, auch nicht mit
+      zufällig richtigen Werten. Sie erscheinen im Bericht unter
+      `skippedResearched`.
+    - **Identität und Sitz kommen nicht aus der Recherche.** Name, UID, LEI
+      und Adresse stammen aus GLEIF und sind geprüft (siehe `gleif.py`).
+      Eine Rechercheantwort, die einen Ort mitliefert, wird an dieser Stelle
+      ignoriert, statt eine geprüfte Angabe durch eine ungeprüfte zu
+      ersetzen.
+    - **Ungültiges wird gar nicht erst geschrieben.** `validate()` läuft über
+      das Ergebnis, bevor der Aufrufer speichert — ein Umsatz ohne Quelle
+      fällt hier auf, nicht erst im nächsten Build.
+
+    Mutiert `rows` in place (wie `geocode.fill_missing`); der Aufrufer
+    persistiert selbst."""
+    by_symbol = {row.get("six_symbol", "").strip(): row for row in rows}
+    report: dict = {"merged": [], "skippedResearched": [], "unknownSymbol": []}
+
+    for symbol, payload in sorted(research.items()):
+        row = by_symbol.get(symbol)
+        if row is None:
+            report["unknownSymbol"].append(symbol)
+            continue
+        if row.get("researched", "").strip() == "yes":
+            report["skippedResearched"].append(symbol)
+            continue
+
+        for field in RESEARCH_ONLY_FIELDS:
+            value = payload.get(field)
+            row[field] = "" if value is None else str(value).strip()
+        row["researched"] = "yes"
+        report["merged"].append(symbol)
+
+    validate(rows, table)
+    return report
+
+
 def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = None,
                    monthly_fx: dict | None = None) -> dict:
     """`six_meta` (optional): `{"totalListed": int, "retrievedAt": str | None}`

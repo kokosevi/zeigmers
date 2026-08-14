@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "542.2",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "179.6",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Konsumkreditgeschäft: Privatkredite, Auto-Leasing und Autokredite, Kreditkarten, Buy-now-pay-later/Rechnungsfinanzierung (CembraPay), Versicherungsvermittlung zu diesen Produkten sowie Spar- und Festgeldprodukte für Privat- und institutionelle Kunden in der Schweiz.",
+ "products_url": "https://www.cembra.ch/assets/cembra/investor-relation/berichte-und-praesentationen/finanzberichte/geschaeftsbericht-2025-en.pdf",
+ "founding_year": "1912",
+ "founding_year_source": "https://www.cembra.ch/assets/cembra/investor-relation/berichte-und-praesentationen/finanzberichte/geschaeftsbericht-2025-en.pdf",
+ "employees": "773",
+ "fiscal_year": "2025",
+ "report_url": "https://www.cembra.ch/assets/cembra/investor-relation/berichte-und-praesentationen/finanzberichte/geschaeftsbericht-2025-en.pdf",
+ "note": "Bank ohne Nettoumsatz: 'Net revenues' (Nettozinsertrag + Kommissions-/Gebührenertrag), S.3 und S.145 des Geschäftsberichts, ist das Gegenstück zum Geschäftsertrag -> revenue_type=operating_income. Beschäftigte: Kennzahlentabelle S.3 nennt 773 Vollzeitstellen (FTE) per 31.12.2025; daneben nennt der Bericht auf S.4/S.5 826 bzw. 'mehr als 800' Personen (Köpfe) aus rund 40 Ländern - hier wurde die FTE-Zahl aus der offiziellen Kennzahlentabelle übernommen. Gründungsjahr: Cembra selbst führt ihre Wurzeln im Geschäftsbericht (S.5, Abschnitt 'History') auf 1912 zurück (Banque commerciale et agricole E. Uldry & Cie., Fribourg, spaeter Bank Prokredit/Bank Aufina/GE Money Bank); als eigenstaendige 'Cembra Money Bank AG' entstand die Gesellschaft erst beim Spin-off/IPO im Oktober 2013, Umbenennung in 'Cembra' 2020.",
+ "_verification": "Umsatz (Net revenues 542.2 Mio. CHF) und Gewinn (Net income 179.6 Mio. CHF) stammen beide aus der Kennzahlentabelle 'Key figures' auf Seite 3 des Geschäftsberichts 2025 sowie übereinstimmend aus der Consolidated statement of income auf Seite 145 (542,191 bzw. 179,567 TCHF), also derselben konsolidierten Rechnung und demselben Geschäftsjahr 2025. Geprüft wurden zusätzlich Mitarbeiterzahl und Produktbeschreibung auf Seite 3-5 (Key figures / About Cembra / History) desselben PDF sowie Konsistenz der Zahlen zwischen Kennzahlentabelle und Jahresrechnung."
+}

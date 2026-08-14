@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 10319,
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 980,
+ "profit_currency": "USD",
+ "profit_unit": 1000000,
+ "core_products": "Chirurgische Produkte für die Augenheilkunde (Intraokularlinsen, Verbrauchsmaterialien und Geräte für Katarakt- und Netzhautoperationen) sowie Kontaktlinsen und rezeptfreie Ocular-Health-Produkte wie Augentropfen.",
+ "products_url": "https://www.sec.gov/Archives/edgar/data/1167379/000116737926000014/alc-20251231.htm",
+ "founding_year": 1945,
+ "founding_year_source": "https://www.sec.gov/Archives/edgar/data/1167379/000116737926000014/alc-20251231.htm",
+ "employees": "25942",
+ "fiscal_year": 2025,
+ "report_url": "https://www.sec.gov/Archives/edgar/data/1167379/000116737926000014/alc-20251231.htm",
+ "note": "Vollzeitaequivalente ('Total full-time equivalent associates', Item 6.D des Form 20-F); der Bericht weist keine separate Kopfzahl aus. Zuvor stand hier die gerundete Angabe 25'000.",
+ "_verification": "Nettoumsatz (10'319 Mio. USD) und Konzerngewinn (980 Mio. USD, 'Net income attributable to: Shareholders of Alcon Inc.') stammen beide aus derselben Consolidated Income Statement für das Geschäftsjahr 2025 im Form 20-F (Tabelle 'Key figures' S.59 sowie Consolidated Financial Statements S. F-2), Gesamtkonzern-Basis, keine Veräusserungen/fortgeführtes Geschäft ausgewiesen. Geprüft: Zahlen sind im Volltext des SEC-Dokuments alc-20251231.htm identisch an mehreren Stellen (MD&A-Tabelle und geprüfter Jahresabschluss) wiedergegeben."
+}

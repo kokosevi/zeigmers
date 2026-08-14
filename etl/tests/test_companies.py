@@ -904,3 +904,69 @@ def test_build_artifact_falls_back_to_reported_amounts_when_one_rate_is_missing(
     assert artifact["stats"]["max"] == pytest.approx(1_000_000_000.0)
     assert len(artifact["stats"]["fxMissing"]) == 1
     assert "GBP" in artifact["stats"]["fxMissing"][0]["error"]
+
+
+# --- Recherche in die CSV uebernehmen -------------------------------------
+
+
+def _research(**overrides):
+    payload = {
+        "noga_group": "industrie", "consolidation_basis": "total_group",
+        "revenue": "1500.5", "revenue_currency": "EUR",
+        "revenue_type": "net_sales", "revenue_unit": "1000000",
+        "profit": "120.25", "profit_currency": "EUR", "profit_unit": "1000000",
+        "core_products": "Beispielprodukte", "products_url": "https://example.test/p",
+        "founding_year": "1900", "founding_year_source": "https://example.test/h",
+        "employees": "4200", "fiscal_year": "2025",
+        "report_url": "https://example.test/gb2025.pdf", "note": "",
+    }
+    payload.update(overrides)
+    return payload
+
+
+def test_merge_research_fills_an_unresearched_row_and_marks_it_researched():
+    rows = [_row(six_symbol="NEU", researched="no", noga_group="", revenue="",
+                 revenue_currency="", revenue_type="", revenue_unit="",
+                 fiscal_year="", report_url="")]
+    report = companies.merge_research(rows, {"NEU": _research()})
+
+    assert report["merged"] == ["NEU"]
+    assert rows[0]["researched"] == "yes"
+    assert rows[0]["revenue"] == "1500.5"
+    assert rows[0]["revenue_currency"] == "EUR"
+    assert rows[0]["employees"] == "4200"
+
+
+def test_merge_research_refuses_to_overwrite_an_already_researched_row():
+    # Die acht handrecherchierten Zeilen sind das Teuerste in diesem Repo.
+    # Ein zweiter, maschineller Lauf darf sie unter keinen Umstaenden
+    # ueberschreiben — auch nicht "aus Versehen richtig".
+    rows = [_row(six_symbol="ALT", researched="yes", revenue="999")]
+    report = companies.merge_research(rows, {"ALT": _research()})
+
+    assert rows[0]["revenue"] == "999", "bestehende Recherche bleibt unangetastet"
+    assert report["merged"] == []
+    assert report["skippedResearched"] == ["ALT"]
+
+
+def test_merge_research_reports_a_symbol_that_matches_no_row():
+    rows = [_row(six_symbol="DA")]
+    report = companies.merge_research(rows, {"WEG": _research()})
+    assert report["unknownSymbol"] == ["WEG"]
+
+
+def test_merge_research_keeps_identity_and_seat_columns_untouched():
+    # Die Recherche liefert Kennzahlen, nicht Identitaet: Sitz und UID kommen
+    # aus GLEIF und sind bereits geprueft. Eine Rechercheantwort, die einen
+    # Ort mitliefert, darf ihn nicht ueberschreiben.
+    rows = [_row(six_symbol="NEU", researched="no", city="Aarau", uid="CHE-1")]
+    companies.merge_research(rows, {"NEU": _research(city="Zug", uid="CHE-9")})
+    assert rows[0]["city"] == "Aarau" and rows[0]["uid"] == "CHE-1"
+
+
+def test_merge_research_rejects_a_payload_that_would_not_validate():
+    # Ein Umsatz ohne Quelle ist genau das, was validate() verbietet. Der
+    # Merge muss das VOR dem Schreiben bemerken, nicht der naechste Build.
+    rows = [_row(six_symbol="NEU", researched="no")]
+    with pytest.raises(ValueError, match="report_url"):
+        companies.merge_research(rows, {"NEU": _research(report_url="")})

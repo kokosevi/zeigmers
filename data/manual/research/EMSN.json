@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 1949.7,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 470.8,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Hochleistungspolymere (Polyamid-Granulate, u. a. Marken Grilon und Grivory) für Automobil-, Elektronik- und andere Industrien sowie Spezialchemikalien wie Fasern, Schmelzklebstoffe, Klebegarne, Pulverlacke und Reaktivverdünner.",
+ "products_url": "https://www.ems-group.com/fileadmin/user_upload/EMS-Group/documents/Business-Reports/EMS_Annual_Report_EN_2025_2026_891552.pdf",
+ "founding_year": 1936,
+ "founding_year_source": "https://www.ems-group.com/en/about-ems/about-ems/company-history/",
+ "employees": 2657,
+ "fiscal_year": 2025,
+ "report_url": "https://www.ems-group.com/fileadmin/user_upload/EMS-Group/documents/Business-Reports/EMS_Annual_Report_EN_2025_2026_891552.pdf",
+ "note": "Zahlen aus dem '63rd Annual Report 2025/2026', Tabelle 'Key Figures 2021–2025', S. 7: Net sales 1'949.7, Net operating income (EBIT) 567.0, Net income 470.8 (alle CHF Mio.), Number of employees at 31.12.2025: 2'657 (exkl. 142 Lehrlinge). Diese konsolidierten Kennzahlen betreffen das Kalenderjahr 2025 (EMS-Gruppe); die eigenständige EMS-CHEMIE HOLDING AG (Holdinggesellschaft) hat ein abweichendes Statutar-Geschäftsjahr Mai–April, das aber nicht für die hier verwendeten Konzernzahlen massgeblich ist. Vorläufige Ad-hoc-Zahlen vom 6.2.2026 wichen geringfügig ab (Nettogewinn CHF 467 Mio. statt 470.8 Mio.); es wurden die testierten Zahlen aus dem endgültigen Geschäftsbericht verwendet.",
+ "_verification": "Umsatz, EBIT, Nettogewinn und Mitarbeiterzahl 2025 stammen aus der Tabelle 'Key Figures 2021–2025' auf Seite 7 des '63rd Annual Report 2025/2026' von EMS-CHEMIE HOLDING AG (PDF direkt von ems-group.com). Gründungsjahr 1936 wurde auf der offiziellen Firmengeschichte-Seite ems-group.com/en/about-ems/about-ems/company-history/ verifiziert (per curl-Abruf der Rohseite, dort erscheint '1936' als erster Zeittafel-Eintrag); Produktbeschreibung wurde gegen den Abschnitt 'Business areas' im selben Geschäftsbericht (S. 6) geprüft."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": 21399,
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 3762,
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Design, Herstellung und Vertrieb von Luxusgütern – Schmuck (u. a. Cartier, Van Cleef & Arpels, Buccellati), Präzisionsuhren (u. a. IWC Schaffhausen, Jaeger-LeCoultre, Vacheron Constantin, Panerai) sowie Mode- und Lederwaren, Schreibgeräte und Accessoires (u. a. Chloé, Montblanc, Alaïa) über die konzerneigenen Maisons.",
+ "products_url": "https://www.richemont.com/our-maisons/",
+ "founding_year": 1988,
+ "founding_year_source": "https://www.richemont.com/about-us/history/",
+ "employees": 38896,
+ "fiscal_year": 2025,
+ "report_url": "https://www.richemont.com/media/ue1bjrjv/richemont-fy25-annual-report-en.pdf",
+ "note": "Geschäftsjahr endet am 31. März; fiscal_year 2025 = Geschäftsjahr 1. April 2024–31. März 2025 (FY25). YNAP wurde per 23. April 2025 verkauft und im Bericht als 'discontinued operations' geführt; die Zeile 'Revenue' (21'399) im Konzern-Erfolgsrechnung schliesst YNAP bereits aus (nur fortgeführtes Geschäft). Damit revenue und profit denselben Umfang haben, wurde profit als 'Profit attributable to: Owners of the parent company – continuing operations' (3'762) eingetragen, nicht der Totalwert 2'751 (der den YNAP-Abschreibungsverlust von 1'011 aus dem aufgegebenen Geschäft enthält). Employees = 'Average number of employees from continuing operations' laut Fünfjahresübersicht (nicht Stichtags-Headcount, nicht als FTE/Köpfe spezifiziert – der Bericht nennt nur 'average number of employees').",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated income statement for the year ended 31 March' auf Seite 83 des Richemont Annual Report and Accounts 2025 (Zeilen 'Revenue' 21'399 €m und 'Profit attributable to: Owners of the parent company – continuing operations' 3'762 €m); Mitarbeiterzahl aus der Fünfjahresübersicht ('Average number of employees from continuing operations', Spalte 2025, 38'896). Geprüft: Konsistenz von Umsatz- und Gewinnbasis (beide 'continuing operations', wegen YNAP-Verkauf als discontinued operations gemäss Note 2.5/17), Geschäftsjahresende laut Berichtstitel, Gründungsjahr 1988 gegen die offizielle Richemont-Historienseite abgeglichen."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": "33220",
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "4561",
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Elektrotechnische Ausrüstung und Automatisierungslösungen: Schaltanlagen und Niederspannungskomponenten (Elektrifizierung), Elektromotoren, Generatoren und Antriebe (Motion) sowie Prozessleitsysteme und industrielle Automatisierungslösungen für Industrie, Gebäude und Versorger.",
+ "products_url": "https://new.abb.com/about/our-businesses",
+ "founding_year": "1988",
+ "founding_year_source": "https://library.e.abb.com/public/b32991481e8b4418a5c5261c5ff25440/ABB%20Financial%20Report%202025.pdf (S. 3f., Abschnitt \"History of the ABB Group\")",
+ "employees": "111900",
+ "fiscal_year": "2025",
+ "report_url": "https://library.e.abb.com/public/b32991481e8b4418a5c5261c5ff25440/ABB%20Financial%20Report%202025.pdf",
+ "note": "Umsatz (33'220) und Gewinn (4'561) beziehen sich beide auf das fortgeführte Geschäft (continuing operations): Im Oktober 2025 vereinbarte ABB den Verkauf der Robotics-Division an SoftBank Group Corp.; deren Ergebnis wird für alle dargestellten Jahre als 'discontinued operations' separat ausgewiesen und ist in den 33'220 Mio. Umsatz NICHT enthalten. Als profit wurde bewusst 'Income from continuing operations, net of tax, attributable to ABB shareholders' (4'561) gewählt statt des ausgewiesenen Gesamt-'Net income attributable to ABB' von 4'734 (das zusätzlich 173 Mio. aus discontinued operations enthält), um denselben Konsolidierungskreis wie beim Umsatz zu wahren. Mitarbeitende: Gesamtzahl 111'900 per 31.12.2025 laut Aufschlüsselung nach Region; der Bericht spezifiziert nicht, ob Köpfe oder Vollzeitäquivalente gemeint sind.",
+ "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Income Statement Data' auf S. 26 des ABB Financial Report 2025 (Zeilen 'Revenues' = 33'220 und 'Income from continuing operations, net of tax' zurechenbar an ABB-Aktionäre = 4'561, im Abschnitt 'Amounts attributable to ABB shareholders'); geprüft wurde zusätzlich S. 31 ('Income from discontinued operations, net of tax' und 'Net income attributable to ABB'), um sicherzustellen, dass Umsatz- und Gewinnzahl denselben Konsolidierungskreis (fortgeführtes Geschäft ohne Robotics) abdecken. Mitarbeiterzahl (111'900) stammt aus der Tabelle 'Employees' auf S. 3 desselben Berichts; Gründungsjahr 1988 und Kerngeschäft (Electrification/Motion/Automation) ebenfalls aus S. 3–10 desselben Primärdokuments."
+}

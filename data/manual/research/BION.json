@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": 578.133,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Beteiligungsgesellschaft mit dauerhaftem Kapital, die börsennotierte Biotechnologie-Unternehmen zur Wertsteigerung erwirbt und hält, ohne selbst Produkte herzustellen.",
+ "products_url": "https://www.bbbiotech.ch/all-en/all/portfolio/investment-strategy",
+ "founding_year": 1993,
+ "founding_year_source": "https://www.bbbiotech.ch/_Resources/Persistent/7/4/6/c/746cb818af6a39ab5739cd1965eb90e4e93dae2a/BB%20Biotech%20AG%20GB%202025_en.pdf (S. 127, Tabelle 'Official listing and share structure': 'Foundation - November 9, 1993, Schaffhausen, Switzerland')",
+ "employees": "",
+ "fiscal_year": 2025,
+ "report_url": "https://www.bbbiotech.ch/_Resources/Persistent/7/4/6/c/746cb818af6a39ab5739cd1965eb90e4e93dae2a/BB%20Biotech%20AG%20GB%202025_en.pdf",
+ "note": "BB Biotech AG ist eine reine Beteiligungsgesellschaft (Investmentgesellschaft mit dauerhaftem Kapital), die in Aktien von Biotech-Unternehmen investiert; die konsolidierte Gesamterfolgsrechnung (Annual Report 2025, S. 24) kennt keine Position 'Umsatz'/'Nettoerlös', sondern nur 'Operating income' aus Kursgewinnen auf Wertschriften (CHF 614.1 Mio.), Zins-, FX- und sonstigem Ertrag - das ist Anlageergebnis (Portfolioperformance), nicht Umsatz aus operativer Geschäftstätigkeit, deshalb bleibt revenue leer. employees ist ebenfalls leer: BB Biotech AG hat laut Geschäftsbericht (Vergütungsbericht, Ziff. 1.1) keine eigene Geschäftsleitung/Mitarbeitende - die Anlageverwaltung ist vollständig an die externe Bellevue Asset Management AG delegiert; die im Bericht genannten 72.8 FTE (S. 116) betreffen den Investment Manager Bellevue, nicht die BB Biotech AG selbst.",
+ "_verification": "Profit stammt aus der 'Consolidated statement of comprehensive income for the year ended December 31' (Annual Report 2025, S. 24), Zeile 'Profit/(loss) for the period' = CHF 578'133 Tsd. (2025); es gibt keine Minderheitsanteile, der Betrag ist somit vollständig den Aktionären der BB Biotech AG zurechenbar. Geprüft wurde die PDF-Originaldatei (per curl heruntergeladen und mit pdftotext ausgelesen), insbesondere Bilanz, Erfolgsrechnung, Segmentbericht (Ziff. 12, S. 44: 'Revenue is derived by investing in a portfolio of companies... for the purpose of capital appreciation') sowie die Angaben zu Gründung (S. 127) und Mitarbeitenden (S. 116, Vergütungsbericht Ziff. 1.1)."
+}

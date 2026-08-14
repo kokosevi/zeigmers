@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 3915,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -75,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Spezialchemikalien: Wirkstoffe und Additive für Körper- und Haushaltspflege sowie industrielle Anwendungen (Care Chemicals), Katalysatoren für chemische, petrochemische und Raffinerieprozesse (Catalysts) und Adsorbentien auf Bentonit- und Kunststoffbasis (Adsorbents & Additives).",
+ "products_url": "https://www.clariant.com/en/Solutions/Industries",
+ "founding_year": 1995,
+ "founding_year_source": "https://www.clariant.com/en/Company/Clariant-at-a-glance/Anniversary-30-Years-of-Greater-Chemistry",
+ "employees": "10449",
+ "fiscal_year": 2025,
+ "report_url": "https://www.clariant.com/-/media/Files/Company/Integrated-Report/Clariant-Integrated-Report-2025-EN.pdf",
+ "note": "Kopfzahl per 31.12.2025 ('10 449 employees (head count)', S. 145). Die Kennzahlen-Infografik auf S. 22 nennt daneben 10'281 Vollzeitstellen — dieselbe Firma, andere Messgroesse. Die Venezuela-Devestition 2025 gilt laut Bericht ausdruecklich nicht als aufgegebener Geschaeftsbereich, Umsatz und Gewinn stammen deshalb aus derselben Gesamtkonzern-Rechnung.",
+ "_verification": "Umsatz (Sales CHF 3'915 Mio., FY2025) und Gewinn (Net income/loss attributable to shareholders of Clariant Ltd, CHF -75 Mio.) stammen aus der 'Consolidated Income Statement' im Clariant Integrated Report 2025 (Financial Report, S. 254; Gewinn zusätzlich bestätigt in Note 18 'Earnings per share', S. 281) sowie identisch aus den separat publizierten 'Condensed Consolidated Financial Statements FY 2025' vom 26.02.2026. Geprüft wurde: dass keine 'discontinued operations'-Zeile existiert (Devestitionen laufen als 'Gain from disposal of activities not qualifying as discontinued operations' durch die normale Erfolgsrechnung, S. 254/besitzt keine Ausgliederung) – Umsatz und Gewinn beziehen sich also auf denselben Konsolidierungskreis; Mitarbeiterzahl (10'281 FTE, Stand 31.12.2025) stammt aus demselben Bericht, S. 19 ('Organizational Structure'); Sitz Muttenz und Börsenkotierung SIX seit 1995 (Symbol CLN) aus Corporate-Governance-Kapitel, S. 12170ff. des Berichts (Group Structure)."
+}

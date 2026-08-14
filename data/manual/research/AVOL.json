@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "total_group",
+ "revenue": "13760",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 199,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Betreibt weltweit Duty-free- und Duty-paid-Einzelhandel sowie Gastronomie- und Convenience-Konzepte an Flughäfen, Autobahnraststätten, Kreuzfahrtschiffen und Bahnhöfen.",
+ "products_url": "https://www.avoltaworld.com/en/meet-avolta/what-we-do",
+ "founding_year": 1865,
+ "founding_year_source": "https://www.avoltaworld.com/system/files/2026-03/Annual_Report_2025.pdf",
+ "employees": 69278,
+ "fiscal_year": 2025,
+ "report_url": "https://www.avoltaworld.com/system/files/2026-03/Annual_Report_2025.pdf",
+ "note": "Zeile 'Net sales' der konsolidierten Erfolgsrechnung (S. 172). Der Bericht weist daneben 'Turnover' von 13'983 Mio. CHF aus (Net sales plus 223 Mio. Werbeertraege) — das ist nicht der Nettoumsatz und stand hier zuvor faelschlich. Gewinn ist der auf die Aktionaere der Avolta AG entfallende Anteil (199 Mio.); der Konzerngewinn inkl. Minderheitsanteilen betraegt 339 Mio.",
+ "_verification": "Umsatz (Turnover CHF 13'983 Mio.) und Konzerngewinn (Net profit CHF 339 Mio., davon Equity holders of Avolta AG CHF 199 Mio.) stammen aus der 'Consolidated statement of profit or loss for the year ended December 31, 2025' im Annual Report 2025 (interne S. 172/410); dieselbe konsolidierte Rechnung, dasselbe Geschäftsjahr, derselbe Konsolidierungskreis (kein Hinweis auf fortgeführtes/aufgegebenes Geschäft). Zusätzlich geprüft: Mitarbeiterzahl 69'278 FTE per 31.12.2025 aus dem Segmentanhang (interne S. 191/410) und Gründungsjahr 1865 aus Note 1 'Corporate information' der Financial Statements Avolta AG (interne S. 251/410) - beides im selben PDF-Dokument, direkt von avoltaworld.com."
+}

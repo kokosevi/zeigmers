@@ -17,6 +17,7 @@ COMMANDS: dict[str, str] = {
     "companies": "Ansicht A: CSV validieren, geokodieren, Artefakt schreiben",
     "companies-sync": "Ansicht A: neue SIX-Titel gegen Zefix/LINDAS abgleichen, CSV ergänzen",
     "companies-retry": "Ansicht A: nur die bisher sitzlosen Zeilen erneut abgleichen",
+    "companies-merge": "Ansicht A: recherchierte Kennzahlen aus data/manual/research/ in die CSV übernehmen",
     "sanity-map": "2D-Kontrollkarte als PNG erzeugen",
     "all": "Alle Schritte in Reihenfolge ausführen",
 }
@@ -513,6 +514,31 @@ def main(argv: Sequence[str] | None = None) -> int:
             f"{len(report['still_unmatched'])} weiterhin ohne Treffer, "
             f"{len(report['errors'])} Netzwerkfehler -> {path}"
         )
+        return 0
+
+    if args.command == "companies-merge":
+        from . import companies
+
+        path = companies.csv_path()
+        rows = companies.load_csv(path)
+        research = companies.load_research()
+        if not research:
+            print(f"[companies-merge] keine Recherchedateien in "
+                  f"{companies.research_dir()} — nichts zu tun")
+            return 0
+
+        # `merge_research` validiert VOR dem Schreiben und wirft bei einem
+        # ungültigen Ergebnis; die CSV bleibt dann unverändert auf der Platte.
+        report = companies.merge_research(rows, research)
+        companies.write_csv(path, rows)
+        print(f"[companies-merge] {len(report['merged'])} Zeile(n) übernommen "
+              f"({len(research)} Recherchedatei(en) gelesen) -> {path}")
+        if report["skippedResearched"]:
+            print(f"    {len(report['skippedResearched'])} bereits recherchiert, "
+                  f"unangetastet gelassen: {', '.join(report['skippedResearched'])}")
+        if report["unknownSymbol"]:
+            print(f"    {len(report['unknownSymbol'])} Symbol(e) ohne passende "
+                  f"Zeile: {', '.join(report['unknownSymbol'])}")
         return 0
 
     if args.command == "all":

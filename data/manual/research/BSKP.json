@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 675.098,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 202.808,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Bankdienstleistungen für Privat- und Firmenkunden: Konten, Sparen, Vermögensverwaltung, Hypotheken/Kredite und Zahlungsverkehr.",
+ "products_url": "https://www.bkb.ch/de/die-basler-kantonalbank",
+ "founding_year": 1899,
+ "founding_year_source": "https://www.bkb.ch/de/die-basler-kantonalbank/portraet/geschichte-der-basler-kantonalbank",
+ "employees": 1443,
+ "fiscal_year": 2025,
+ "report_url": "https://report.bkb.ch/2025/konzern-bkb-auf-einen-blick",
+ "note": "Bank: Umsatzäquivalent ist der Geschäftsertrag des Konzerns (keine Nettoumsatzerlöse). employees = Headcount 1'443 gemäss Bericht; Vollzeitäquivalente (FTE) betragen 1'273. Geschäftsertrag und Konzerngewinn stammen aus derselben konsolidierten Konzernrechnung, Geschäftsjahr 2025.",
+ "_verification": "Geschäftsertrag (675'098 Tsd. CHF) und Konzerngewinn (202'808 Tsd. CHF) stammen beide von der offiziellen Online-Geschäftsbericht-Seite 'Konzern BKB – auf einen Blick' (report.bkb.ch/2025), derselben Kennzahlentabelle für das Geschäftsjahr 2025. Geprüft: beide Zahlen sind Konzernzahlen (total_group) aus derselben Quelle/Zeile, Gründungsjahr 1899 stammt von der offiziellen BKB-Geschichtsseite (bkb.ch), Mitarbeiterzahl aus derselben Kennzahlentabelle wie die Finanzzahlen."
+}

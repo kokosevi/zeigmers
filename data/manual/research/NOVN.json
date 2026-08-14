@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": "54532",
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "13984",
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Forschung, Entwicklung, Herstellung und Vertrieb innovativer verschreibungspflichtiger Arzneimittel, insbesondere in den Bereichen Herz-Kreislauf/Nieren/Stoffwechsel, Immunologie, Neurowissenschaften und Onkologie.",
+ "products_url": "https://www.novartis.com/about",
+ "founding_year": "1996",
+ "founding_year_source": "https://www.sec.gov/Archives/edgar/data/0001114448/000111444826000004/nvs-20251231.htm",
+ "employees": "75267",
+ "fiscal_year": "2025",
+ "report_url": "https://www.novartis.com/sites/novartis_com/files/q4-2025-interim-financial-report-en.pdf",
+ "note": "Sandoz wurde bereits im Oktober 2023 vollständig abgespalten; der Geschäftsbericht 2025 weist die verbleibende Novartis-Gruppe durchgängig als 'net sales from continuing operations' aus (Annual Report 2025 / Form 20-F, Item 4.A: 'net sales from continuing operations of USD 54.5 billion, and net income from continuing operations amounted to USD 14.0 billion'), es gibt für 2025 keine separate Gesamtkonzern-Zahl mit Sandoz mehr. Konzern-Reingewinn insgesamt betrug USD 13'967 Mio.; den Aktionären der Novartis AG zurechenbar (eingetragener Wert) waren USD 13'984 Mio. (die Differenz ergibt sich aus nicht beherrschenden Anteilen von USD -17 Mio.). Beschäftigtenzahl ist Vollzeitäquivalente (FTE) laut Geschäftsbericht (Item 6.D Employees); eine Kopfzahl wird im Bericht nicht ausgewiesen.",
+ "_verification": "Umsatz (Net sales to third parties, USD 54'532 Mio.) und Gewinn (Net income attributable to shareholders of Novartis AG, USD 13'984 Mio., sowie Total net income USD 13'967 Mio.) stammen aus der 'Consolidated income statements – Full year (audited)', Seite 17 des Novartis Fourth Quarter and Full Year 2025 Condensed Financial Report (q4-2025-interim-financial-report-en.pdf). Beschäftigtenzahl (75'267 FTE zum 31.12.2025) und Gründungsjahr (Novartis AG gegründet am 29. Februar 1996 durch Fusion von Ciba-Geigy AG und Sandoz AG) stammen aus dem Novartis Annual Report 2025 / Form 20-F (Item 4.A History and development, Item 6.D Employees). Geprüft: Zahlen stehen wortgleich in beiden PDFs (per pdftotext extrahiert), keine Umrechnung vorgenommen, Konsolidierungskreis (continuing operations, post-Sandoz) explizit im Bericht bestätigt."
+}
