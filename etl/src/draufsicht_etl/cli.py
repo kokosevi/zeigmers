@@ -54,7 +54,7 @@ def _run_statent(force: bool) -> dict:
     import json as _json
 
     from . import (aggregate, binpack, boundaries, columns, fetch,
-                   inspect_statent, noga, statent)
+                   inspect_statent, noga, plausibility, statent)
 
     table = noga.load_table()
     noga.generate_typescript(table, config.ROOT / "src" / "domain" / "noga.generated.ts")
@@ -117,7 +117,6 @@ def _run_statent(force: bool) -> dict:
     columns.save(resolved, config.STATENT_YEAR)
 
     canton_index: list[dict] = []
-    plausibility_violations: list[dict] = []
     overview_rows: list[tuple[dict, aggregate.LevelData]] = []
     opening_canton: dict | None = None  # config.CANTON — für sanity-map/Rückgabewert
 
@@ -173,48 +172,45 @@ def _run_statent(force: bool) -> dict:
         noloc = statent.noloc_employees(statent_zip, resolved, bounds.municipalities)
         total = canton_level.value[0]
         s = aggregate.stats(hectare)
-        lower = reference - noloc
-        upper = reference + s["overstatementMax"]
+        base_lower = reference - noloc
+        base_upper = reference + s["overstatementMax"]
+        # Zwei Kantone verletzen dieses Fenster aus einem Grund, der nicht
+        # Rundung/NOLOC ist, aber einzeln benennbar und betragsscharf belegt
+        # ist (Moutiers Kantonswechsel 2026 für Jura, das Dreispitz-Areal für
+        # Basel-Stadt) — siehe `plausibility.py` für Begründung und Quellen.
+        # `widen()` verschiebt GENAU EINE Grenze um GENAU den belegten
+        # Betrag; ein Kanton ohne Eintrag bekommt unveränderte Grenzen. Der
+        # Guard selbst bleibt hart: ein Verstoss über die (ggf. geweiteten)
+        # Grenzen hinaus bricht den Lauf ab, für jeden Kanton gleichermassen.
+        lower, upper, exceptions = plausibility.widen(code, base_lower, base_upper)
         deviation = (total - reference) / reference if reference else 0.0
 
+        exceptions_note = ""
+        if exceptions:
+            parts = ", ".join(f"{e.direction}+{e.amount:,.0f}" for e in exceptions)
+            exceptions_note = f"  [Ausnahme: {parts}]"
         print(
             f"[statent] {code:>2} {name:<24} Gemeinden {municipality.count:3d}  "
             f"Beschäftigte {total:>9,.0f}  Referenz {reference:>9,.0f} ({deviation:+.2%})  "
-            f"Plausibel [{lower:,.0f} .. {upper:,.0f}]  "
+            f"Plausibel [{lower:,.0f} .. {upper:,.0f}]{exceptions_note}  "
             f"Grenzen -> {boundaries_out.name} ({boundaries_out.stat().st_size / 1024:.0f} KB)"
         )
 
         if not (lower <= total <= upper):
-            # National (Phase 1) bewusst kein harter Abbruch mehr wie im
-            # Ein-Kanton-Lauf: an echten Daten reisst genau ein Kanton dieses
-            # Fenster, Basel-Stadt, und das aus einem Grund, den das Fenster
-            # nicht modelliert — nicht Rundung/NOLOC, sondern reiner
-            # Grenzeffekt: BS ist mit 37 km² der kleinste, am dichtesten von
-            # einem einzigen Nachbarn (BL) umschlossene Kanton, und das feste
-            # 100-m-STATENT-Hektarraster ordnet einen Teil der administrativ
-            # BS zugerechneten Beschäftigten (BFS-Referenz) geometrisch
-            # knapp jenseits der Kantonsgrenze zu (siehe ETL-Report: ~10'400
-            # Beschäftigte liegen in einem 300-m-Ring um BS, praktisch
-            # vollständig in BL). Das ist ein realer Effekt der Geometrie,
-            # kein Verschnitt- oder Spaltenfehler — ein harter Abbruch hier
-            # würde den gesamten Lauf (25 unauffällige Kantone) an einem
-            # einzigen, erklärbaren Randfall scheitern lassen. Stattdessen:
-            # deutlich als Warnung melden, sammeln, im Report ausweisen —
-            # die beiden anderen Guards (Summen-Invariante, Minimum 4) bleiben
-            # hart, weil dort keine legitime Ausnahme existiert.
             side = "unterhalb der unteren" if total < lower else "oberhalb der oberen"
-            message = (
-                f"Kantonssumme {total:,.0f} liegt {side} Grenze des "
-                f"Plausibilitätsfensters [{lower:,.0f} .. {upper:,.0f}] "
-                f"(BFS-Referenz {reference:,.0f}, NOLOC-Anteil {noloc:,.0f}, "
-                f"Aufrundung bis {s['overstatementMax']:,})"
+            exceptions_text = (
+                f", inkl. dokumentierter Ausnahme(n) {exceptions_note.strip()}"
+                if exceptions else ""
             )
-            print(f"[statent] WARNUNG [{code}] {message}")
-            plausibility_violations.append({
-                "code": code, "name": name, "total": total, "reference": reference,
-                "lower": lower, "upper": upper, "deviation": deviation,
-                "message": message,
-            })
+            raise ValueError(
+                f"[{code}] Kantonssumme {total:,.0f} liegt {side} Grenze des "
+                f"Plausibilitätsfensters [{lower:,.0f} .. {upper:,.0f}]{exceptions_text} "
+                f"(BFS-Referenz {reference:,.0f}, NOLOC-Anteil {noloc:,.0f}, "
+                f"Aufrundung bis {s['overstatementMax']:,}). Das deutet auf einen "
+                "Verschnitt- oder Spaltenfehler hin, nicht auf Rundung — oder auf "
+                "eine bisher unbekannte, noch nicht in plausibility.py dokumentierte "
+                "Ursache."
+            )
 
         canton_index.append({
             "code": code, "bfsNr": canton_bfs_nr, "name": name,
@@ -239,12 +235,6 @@ def _run_statent(force: bool) -> dict:
         raise ValueError(
             f"Konfigurierter Kanton {config.CANTON} kommt in den Gemeindegrenzen nicht vor."
         )
-
-    if plausibility_violations:
-        print(f"[statent] {len(plausibility_violations)} Kanton(e) ausserhalb des "
-              "Plausibilitätsfensters (siehe WARNUNG-Zeilen oben):")
-        for v in plausibility_violations:
-            print(f"           {v['code']} {v['name']}: {v['message']}")
 
     # Nationale Übersichtsstufe `ch_kantone`: eine Zeile je Kanton, dieselben
     # Felder wie eine Gemeindezeile (Beschäftigte, dominante Branchengruppe,
@@ -278,7 +268,6 @@ def _run_statent(force: bool) -> dict:
     result = dict(opening_canton)
     result["national"] = national
     result["cantons_gdf"] = cantons_gdf
-    result["plausibility_violations"] = plausibility_violations
     return result
 
 
@@ -452,15 +441,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             if worst_size > config.MAX_CANTON_PAYLOAD_BYTES:
                 print("[all] FEHLER: Kanton-Paket-Budget überschritten")
                 failed = True
-
-        # `result` kommt aus `_run_statent()` weiter oben in `main()` — für
-        # `all` immer gesetzt, da dieser Zweig erst nach dem ersten
-        # `if args.command in ("statent", "all", "sanity-map")`-Block erreicht wird.
-        violations = result.get("plausibility_violations")
-        if violations:
-            codes = ", ".join(v["code"] for v in violations)
-            print(f"[all] HINWEIS: Plausibilitätsfenster verletzt für {codes} "
-                  "(kein Build-Abbruch, siehe [statent] WARNUNG-Zeilen oben und ETL-Report)")
 
         return 1 if failed else 0
 

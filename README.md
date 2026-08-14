@@ -427,41 +427,65 @@ direktem Geometrie-Vergleich zwischen `boundaries.build()` und
 `boundaries.build_all()` (`etl/tests/test_boundaries.py::
 test_build_all_matches_build_for_aargau`).
 
-**Das Plausibilitätsfenster hält für 24 von 26 Kantonen hart — für zwei
-schlägt es an, ohne den Lauf abzubrechen.** Bis Phase 1 brach ein
-Fensterverstoss den gesamten ETL-Lauf ab (sinnvoll bei einem einzigen
-Kanton). National würde das bedeuten: ein einziger auffälliger Kanton
-verhindert, dass die anderen 25 überhaupt Artefakte bekommen. Der Guard
-prüft deshalb weiterhin **jeden** Kanton gegen seine eigene BFS-Referenz und
-seinen eigenen NOLOC-Anteil, meldet einen Verstoss aber als **Warnung**
-(`[statent] WARNUNG [<code>] ...`, gesammelt und am Ende noch einmal
-aufgelistet) statt mit einem harten Abbruch. Die beiden anderen Guards
-(Σ Hektar = Σ Gemeinde = Kanton; kleinster Hektarwert = 4) bleiben hart —
-dafür gibt es keine legitime Ausnahme, ein Verstoss dort ist immer ein Bug.
+**Das Plausibilitätsfenster bricht weiterhin hart ab — für alle 26 Kantone,
+ohne Ausnahme.** Ein erster Zwischenstand hatte das Fenster bei einer
+Verletzung nur noch warnen statt abbrechen lassen, damit ein auffälliger
+Kanton nicht die anderen 25 blockiert. Das wurde zurückgenommen: eine
+Warnung statt Abbruch entwaffnet den Guard für **alle** 26 Kantone, nicht
+nur die betroffenen — genau die Prüfung, die Verschnitt- und Spaltenfehler
+fangen soll, hätte dann niemand mehr durchgesetzt. Der Guard prüft **jeden**
+Kanton gegen seine eigene BFS-Referenz und seinen eigenen NOLOC-Anteil und
+bricht bei einer Verletzung weiterhin hart ab — wie die beiden anderen
+Guards (Σ Hektar = Σ Gemeinde = Kanton; kleinster Hektarwert = 4), für die
+es ohnehin keine legitime Ausnahme gibt.
 
-Zwei Kantone verletzen das Fenster tatsächlich:
+**Zwei Kantone verletzen das rohe Fenster — beide aus einem einzeln
+benennbaren, betragsscharf belegten Grund, keiner aus Rundung oder NOLOC.**
+Statt einer Pro-Kanton-Toleranz (dieselbe Entwaffnung in kleinerem Kostüm)
+trägt `etl/src/draufsicht_etl/plausibility.py` eine kleine, **bounded**
+Ausnahmetabelle: jeder Eintrag nennt Kanton, Betrag, Ursache und Beleg und
+weitet **genau eine** Fenstergrenze um **genau diesen** Betrag — nicht mehr.
+Ein Kanton, der über seine dokumentierte Ausnahme hinaus abweicht, bricht
+den Lauf weiterhin ab (`etl/tests/test_plausibility.py` prüft das explizit,
+mit +100 Beschäftigten über die Ausnahme hinaus als Regressionsfall).
 
+- **Jura** (56'370 Beschäftigte, Referenz 48'533, **+16.15 %**, oberes
+  Fenster ohne Ausnahme 54'911 → Verstoss): **Moutier wechselte per
+  1. Januar 2026 vom Kanton Bern zum Kanton Jura.** Unsere Geometrie ist
+  der 2026-Jahrgang und zählt Moutiers Hektaren zu Jura; die STATENT-
+  Referenz ist der 2023-Jahrgang und führt Moutier weiterhin unter Bern —
+  zwei intakte, unterschiedliche Jahrgänge derselben Schweiz. Eine
+  automatische Zuordnung scheitert zweifach: über die aktuelle Geometrie,
+  weil Moutier beim Kantonswechsel eine neue BFS-Nummer bekam (Berns Block
+  3xx–9xx, Jurassisch 67xx–68xx), und über den historisierten Identifikator
+  (`hist_nr`), weil der Wechsel eine neue historisierte Einheit erzeugt hat
+  (Moutiers 2026er `hist_nr` 16669 kommt im 2023er-File gar nicht vor). Die
+  Ausnahme weitet die obere Grenze um Moutiers eigene Hektarsumme (**3'893**,
+  direkt aus der Pipeline, nicht geschätzt) — danach liegt Jura mit 56'370
+  innerhalb von [47'848 .. 58'804]. Ohne Moutier: 52'477 gegen Referenz
+  48'533 = **+8.13 %**, bereits innerhalb des unveränderten Fensters. Ein
+  zweiter, kleinerer Fall (Basse-Vendline, BFS 6812, 2023er-Gemeindefusion,
+  499 Beschäftigte) fehlt ebenfalls im 2023er-Referenzfile, ändert aber
+  nichts an der Kantonssumme (die Fusion ist rein innerkantonal, ihre
+  Vorgänger-Codes stecken bereits in der Referenz) und braucht deshalb
+  keinen eigenen Tabelleneintrag.
 - **Basel-Stadt** (196'257 Beschäftigte, Referenz 199'745, **-1.75 %**,
-  unterhalb der unteren Grenze 199'245): BS ist mit 37 km² der kleinste
-  Kanton und vollständig von einem einzigen Nachbarn (Basel-Landschaft)
-  umschlossen. Rund 10'400 Beschäftigte liegen in einem 300-m-Ring um BS,
-  praktisch vollständig in BL — das feste 100-m-STATENT-Hektarraster
-  ordnet einen Teil der administrativ BS zugerechneten Beschäftigten
-  geometrisch knapp jenseits der Kantonsgrenze zu. Ein realer Grenzeffekt,
-  kein Pipeline-Fehler.
-- **Jura** (56'370 Beschäftigte, Referenz 48'533, **+16.15 %**, oberhalb der
-  oberen Grenze 54'911): weniger eindeutig geklärt. Ein 300-m-Grenzring
-  zu Bern enthält nur ~245 Beschäftigte — Grenzeffekt scheidet als
-  Haupterklärung aus. JU hat einen überdurchschnittlichen Anteil
-  mehrdeutiger (auf 4 gerundeter) Hektarzellen (61.9 % gegenüber 56.3 % in
-  Aargau) und mindestens einen auffälligen Einzelfall: Die Gemeinde
-  Fontenais (282 Beschäftigte laut amtlicher Referenz) enthält eine
-  einzelne Hektarzelle mit 453 Beschäftigten — mutmasslich ein grösserer
-  Arbeitgeber, dessen Hektarlage laut Geometrie in Fontenais liegt, dessen
-  Beschäftigte administrativ aber (teilweise) einer anderen Gemeinde
-  zugerechnet werden. Ob das die vollständige Erklärung ist, ist **nicht**
-  abschliessend verifiziert — dieser Befund braucht eine genauere Prüfung,
-  bevor er als verstanden gelten kann.
+  unteres Fenster ohne Ausnahme 199'245 → Verstoss): der gesamte Fehlbetrag
+  sitzt in der Gemeinde Basel selbst (BFS 2701: −3'931; Bettingen und Riehen
+  liegen beide leicht über ihrer Referenz, wie praktisch überall sonst).
+  Ursache: das **Dreispitz-Areal**, 50 ha, liegt je zur Hälfte in den
+  Gemeinden Basel und Münchenstein (BL), Kantonsgrenze mitten durchs Areal;
+  sein Kernstück "Wirtschaftspark Dreispitz" zählt rund 4'000 Arbeitsplätze
+  (externe Quellen, siehe `plausibility.py`). Ein unabhängiger 300-m-
+  Grenzring auf der Münchensteiner Seite fängt 3'942 Beschäftigte — nahezu
+  deckungsgleich mit dem gemessenen Fehlbetrag. Die Ausnahme weitet die
+  untere Grenze um genau diesen gemessenen Fehlbetrag (**3'931**) — danach
+  liegt Basel-Stadt mit 196'257 innerhalb von [195'314 .. 201'269]. Weniger
+  scharf belegt als Moutier (kein einzelnes, datiertes Ereignis, sondern ein
+  diffuser Grenzeffekt um ein konkret benennbares Areal) — als solcher im
+  Code gekennzeichnet.
+
+Vollständige Herleitung, Belege und Zahlen: ETL-Report.
 
 **Reproduzierbarkeit.** Zwei vollständige, aufeinanderfolgende
 `draufsicht-etl all`-Läufe erzeugen alle 83 Artefaktdateien (26 × 3 Kanton-
