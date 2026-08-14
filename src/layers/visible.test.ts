@@ -37,28 +37,28 @@ function data(revenues: (number | null)[]): CompanyData {
 
 describe('companyElevations', () => {
   it('gives the largest revenue the full height', () => {
-    const h = companyElevations(data([1e9, 1e10]), 5000, 'log')
+    const h = companyElevations(data([1e9, 1e10]), 5000, 'gedaempft')
     expect(h[1]).toBeCloseTo(5000, 3)
   })
 
   it('gives companies without revenue a fixed fraction of the smallest bar', () => {
-    const h = companyElevations(data([1e9, 1e10, null]), 5000, 'log')
+    const h = companyElevations(data([1e9, 1e10, null]), 5000, 'gedaempft')
     const smallest = Math.min(h[0]!, h[1]!)
     expect(h[2]).toBeCloseTo(smallest * UNKNOWN_BAR_FRACTION, 3)
   })
 
   it('never gives a placeholder a height of zero', () => {
-    const h = companyElevations(data([null]), 5000, 'log')
+    const h = companyElevations(data([null]), 5000, 'gedaempft')
     expect(h[0]!).toBeGreaterThan(0)
   })
 
   it('keeps placeholders below every real bar', () => {
-    const h = companyElevations(data([1e6, 1e12, null]), 5000, 'log')
+    const h = companyElevations(data([1e6, 1e12, null]), 5000, 'gedaempft')
     expect(h[2]!).toBeLessThan(Math.min(h[0]!, h[1]!))
   })
 
   it('handles a dataset where no company has revenue', () => {
-    const h = companyElevations(data([null, null]), 5000, 'log')
+    const h = companyElevations(data([null, null]), 5000, 'gedaempft')
     expect(h[0]!).toBeGreaterThan(0)
     expect(Number.isFinite(h[0]!)).toBe(true)
   })
@@ -71,7 +71,7 @@ describe('buildCompanyLayer outline predicate', () => {
   function accessors(revenueType: Company['revenueType']) {
     const layer = buildCompanyLayer(
       { canton: 'AG', companies: [company({ revenueType })], stats: { count: 1, withRevenue: 1, max: 1e9 } },
-      'log',
+      'gedaempft',
       () => {},
     )
     const getLineColor = layer.props.getLineColor as unknown as (c: Company) => number[]

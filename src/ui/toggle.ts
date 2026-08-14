@@ -16,13 +16,19 @@ import type { ScaleMode } from '../domain/scale'
 // Label-Änderung unverhältnismässig.
 export type ViewName = 'sichtbare' | 'beschaeftigte'
 
-/** Je Ansicht ein eigener Default. Ansicht B ist extrem schief verteilt und
- *  braucht die logarithmische Skala; Ansicht A hat acht Balken, die logarithmisch
- *  alle zwischen 82 % und 100 % der Hoehe laegen -- Faktor 66 im Umsatz wuerde
- *  zu 22 % im Bild. Die zuletzt gewaehlte Skala bleibt je Ansicht erhalten. */
+/** Je Ansicht ein eigener Default. Ansicht B (Gemeinden) ist extrem schief
+ *  verteilt und braucht die gedämpfte Skala (Exponent 0.4, siehe
+ *  `domain/scale.ts`, ersetzt seit Change 6 die frühere logarithmische
+ *  Skala). Ansicht A behält ihren Default `linear` (Auftrag, unverändert) —
+ *  acht Firmen, deren Umsätze linear zwischen 1.5 % und 100 % der Höhe lägen.
+ *  Schaltet man dort manuell auf `gedaempft`, verhält sich die Skala trotzdem
+ *  sinnvoll: dieselben acht Balken liegen dann zwischen rund 19 % und 100 %
+ *  (Faktor 5.3) — spürbar milder als es die frühere logarithmische Skala dort
+ *  gewesen wäre (82 %–100 %, Faktor 66 im Umsatz auf nur 22 % im Bild). Die
+ *  zuletzt gewaehlte Skala bleibt je Ansicht erhalten. */
 export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
   sichtbare: 'linear',
-  beschaeftigte: 'log',
+  beschaeftigte: 'gedaempft',
 }
 
 export function createToggle(
@@ -39,7 +45,7 @@ export function createToggle(
       <button data-view="beschaeftigte">Beschäftigte</button>
     </div>
     <div class="gruppe" role="radiogroup" aria-label="Höhenskala">
-      <button data-mode="log">logarithmisch</button>
+      <button data-mode="gedaempft">gedämpft</button>
       <button data-mode="linear">linear</button>
     </div>`
 

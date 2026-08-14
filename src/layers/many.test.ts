@@ -88,12 +88,12 @@ describe('buildMunicipalityLayer', () => {
       level: lvl,
       geometries: GEOMETRIES,
       vmax: VMAX,
-      mode: 'log',
+      mode: 'gedaempft',
       opacity: 1,
       visible: true,
     })
 
-    const expected = computeElevations(lvl.arrays.values, VMAX, MAX_BAR_HEIGHT_M, 'log')
+    const expected = computeElevations(lvl.arrays.values, VMAX, MAX_BAR_HEIGHT_M, 'gedaempft')
     const getElevation = layer.props.getElevation as (f: { properties: { index: number } }) => number
 
     for (let i = 0; i < VALUES.length; i++) {
@@ -112,7 +112,7 @@ describe('buildMunicipalityLayer', () => {
       level: lvl,
       geometries: GEOMETRIES,
       vmax: VMAX,
-      mode: 'log',
+      mode: 'gedaempft',
       opacity: 1,
       visible: true,
     })
@@ -142,7 +142,7 @@ describe('buildMunicipalityLayer', () => {
       level: lvl,
       geometries: GEOMETRIES,
       vmax: VMAX,
-      mode: 'log' as const,
+      mode: 'gedaempft' as const,
       opacity: 1,
       visible: true,
     }

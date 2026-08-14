@@ -1,17 +1,18 @@
 import { GeoJsonLayer } from '@deck.gl/layers'
-import type { Feature, FeatureCollection, Geometry, Position } from 'geojson'
+import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import type { Level } from '../data/loader'
 import { buildColors } from '../domain/colors'
 import { computeElevations, type ScaleMode } from '../domain/scale'
 import { CANTON_ELEVATION_M } from './cantons'
+import { withBaseElevation } from './elevation'
 import { MAP_MATERIAL } from './material'
 
 // Redesign-Vorgabe (2026-08-14): 12'000 → 3'000. Der höchste Balken (Aarau)
 // lag bei 21 % der Kantonsbreite, die Referenz liegt eher bei 5 % — ein
 // Machbarkeitsnachweis, keine Skyline. `vmax` (Gemeindemaximum, aus
-// `main.ts`) und die logarithmische Skala sind unverändert, nur die Decke
-// zieht sich zusammen; relative Höhen zwischen Gemeinden bleiben exakt
-// erhalten (siehe `domain/scale.ts`, `computeElevations`).
+// `main.ts`) und die aktive Höhenskala (`domain/scale.ts`) sind unverändert,
+// nur die Decke zieht sich zusammen; relative Höhen zwischen Gemeinden
+// bleiben exakt erhalten (siehe `domain/scale.ts`, `computeElevations`).
 export const MAX_BAR_HEIGHT_M = 3000
 
 /** Jedes Feature trägt nur den Zeilenindex — Höhe und Farbe werden per
@@ -70,27 +71,6 @@ interface CacheEntry {
  *  ohne stabile Referenz zwischen Renders bräuchte jeder Aufruf einen neuen
  *  Accessor, den deck.gl dann als "geändert" behandeln müsste. */
 const cache = new Map<string, CacheEntry>()
-
-/** Hebt eine Polygon-/MultiPolygon-Geometrie auf eine feste Höhe `z` an
- *  (Redesign, Change: Licht/Form). `SolidPolygonLayer` extrudiert relativ zur
- *  eigenen Vertex-Höhe (`pos.z += elevations * elevationScale`, siehe
- *  `@deck.gl/layers/solid-polygon-layer`) — ohne diesen Offset begänne jede
- *  Gemeindefläche bei z=0 und stünde damit IN der flachen Kantonsplatte
- *  (`layers/cantons.ts`, `CANTON_ELEVATION_M`) statt sichtbar AUF ihr. Nur
- *  x/y aus den ursprünglichen Koordinaten bleiben erhalten. */
-function withBaseElevation(geometry: Geometry, z: number): Geometry {
-  const lift = (ring: Position[]): Position[] => ring.map((pos) => [pos[0] ?? 0, pos[1] ?? 0, z])
-  if (geometry.type === 'Polygon') {
-    return { type: 'Polygon', coordinates: geometry.coordinates.map(lift) }
-  }
-  if (geometry.type === 'MultiPolygon') {
-    return {
-      type: 'MultiPolygon',
-      coordinates: geometry.coordinates.map((polygon) => polygon.map(lift)),
-    }
-  }
-  return geometry
-}
 
 function getCacheEntry(
   id: string,
@@ -203,5 +183,44 @@ export function buildMunicipalityLayer(
           onHover(feature ? feature.properties.index : null, info.x, info.y)
         }
       : undefined,
+  })
+}
+
+// Change 7 («Börsennotierte Firmen» bekommt eine sichtbare Gemeindegliederung):
+// dieselben `ag_boundaries.geojson`-Polygone wie `buildMunicipalityLayer`
+// oben (`geometries`, bereits beim Laden gejoint, kein zweiter Fetch), aber
+// als reine, ungefüllte Linienlage ohne Extrusion — die Firmensäulen sind der
+// Inhalt dieser Ansicht, die Gemeindegrenze nur die Fläche, auf der sie
+// stehen. Farbe/Breite bewusst unter denen der Kantonsgrenze
+// (`layers/cantons.ts`, `buildCantonBorderLayer`): dünner und blasser, damit
+// die Hierarchie Kanton > Gemeinde auch optisch stimmt. Auf die Plattenhöhe
+// gehoben (siehe `withBaseElevation`), sonst läge die Linie bei z=0 unter der
+// Kantonsplatte statt sichtbar auf ihr.
+const MUNICIPALITY_BORDER_COLOR: [number, number, number, number] = [168, 182, 198, 130] // --land-kante, reduzierte Deckkraft
+const MUNICIPALITY_BORDER_WIDTH_PX = 0.6
+
+/** Nur für Ansicht B («Börsennotierte Firmen») gebaut, einmalig in `main.ts` —
+ *  die Geometrie hängt weder von `vmax` noch von `mode` ab, ein Cache wie bei
+ *  `buildMunicipalityLayer` ist hier unnötig. */
+export function buildMunicipalityBorderLayer(
+  geometries: Geometry[],
+): GeoJsonLayer<Record<string, never>> {
+  const features: Feature<Geometry, Record<string, never>>[] = geometries.map((geometry) => ({
+    type: 'Feature',
+    geometry: withBaseElevation(geometry, CANTON_ELEVATION_M),
+    properties: {},
+  }))
+
+  return new GeoJsonLayer<Record<string, never>>({
+    id: 'gemeinde-grenzen',
+    data: { type: 'FeatureCollection', features },
+    filled: false,
+    stroked: true,
+    extruded: false,
+    pickable: false,
+    getLineColor: MUNICIPALITY_BORDER_COLOR,
+    getLineWidth: MUNICIPALITY_BORDER_WIDTH_PX,
+    lineWidthUnits: 'pixels',
+    lineWidthMinPixels: MUNICIPALITY_BORDER_WIDTH_PX,
   })
 }

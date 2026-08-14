@@ -30,8 +30,30 @@ html, body {
      nur innerhalb einer Zeile lesbar sein. */
   font-variant-numeric: tabular-nums;
 }
-#map { position: absolute; inset: 0; }
-#ui { position: absolute; inset: 0; pointer-events: none; }
+/* Explizite Stapelreihenfolge (Regression-Fix): #map und #ui sind beide
+   `position: absolute` ohne eigenen `z-index` — allein reicht das nicht,
+   deren Malreihenfolge folgt in dem Fall der DOM-Reihenfolge (#ui zuletzt,
+   also oben), solange keiner der beiden Nachfahren mit einem eigenen
+   z-index aus dem Rahmen fallen. Genau das passiert seit `interleaved:
+   false` (siehe `map.ts`): deck.gls `MapboxOverlay` hängt seinen
+   Overlay-Canvas nicht irgendwo in `#map` ein, sondern über
+   `map.addControl()` (Standardposition „top-left“, siehe
+   `MapboxOverlay.getDefaultPosition()`) in MapLibres eigenen
+   `.maplibregl-ctrl-top-left`-Positions-Div — und der trägt in
+   maplibre-gl.css ein hartes `z-index: 2`. Weil `#map` ohne eigenen
+   `z-index` selbst KEINEN Stacking-Context bildet (nur `position` +
+   `z-index != auto` tut das), entkommt dieser Nachfahre bis zur
+   Wurzel-Stacking-Context und gewinnt dort gegen `#ui` (das dort ohne
+   z-index als „Layer 0“ liegt) — unabhängig von der DOM-Reihenfolge der
+   Geschwister. Ein `z-index` auf `#map` selbst schliesst das wieder ein:
+   `#map` wird dadurch zur eigenen Stacking-Context, MapLibre-Canvas UND
+   deck.gl-Overlay-Canvas bleiben darin gefangen, unterhalb von `#ui`. Die
+   drei Werte bilden eine einzige, durchgehende Skala statt einzelner loser
+   Zahlen (siehe auch `#hover-label` unten, das denselben Massstab
+   fortsetzt): Karte + beide Canvasse zuunterst, die Oberfläche darüber, das
+   Hover-Label über allem. */
+#map { position: absolute; inset: 0; z-index: 0; }
+#ui { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 #ui > * { pointer-events: auto; }
 
 /* Sichtbarer Tastaturfokus auf allen interaktiven Elementen — Buttons haben
@@ -151,7 +173,7 @@ a:focus-visible, button:focus-visible {
    typografischen Stimme der Legende (klein, Großbuchstaben, Sperrung), damit
    sie als Teil derselben Karte gelesen wird, nicht als generischer Tooltip. */
 #hover-label {
-  position: fixed; z-index: 5; pointer-events: none;
+  position: fixed; z-index: 2; pointer-events: none;
   transform: translate(14px, 14px);
   background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
   color: var(--tinte); font-size: .6875rem;

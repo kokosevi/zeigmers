@@ -17,8 +17,13 @@ const UNIT_LABEL: Record<ViewName, string> = {
   sichtbare: 'Jahresumsatz',
 }
 
+// «gedämpft» nennt den Exponenten mit, nicht nur den Modusnamen (Change 6) —
+// «logarithmisch» wäre für eine Potenzskala (`h = (v/vmax)**0.4 * maxHeight`,
+// siehe `domain/scale.ts`) schlicht falsch, und dieses Projekt behauptet in
+// der Oberfläche nichts, was sich nicht nachprüfen lässt. Der Exponent selbst
+// steht deshalb direkt im Label, nicht nur im Code.
 const MODE_LABEL: Record<ScaleMode, string> = {
-  log: 'logarithmisch',
+  gedaempft: 'gedämpft (Exponent 0,4)',
   linear: 'linear',
 }
 

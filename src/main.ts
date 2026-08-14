@@ -3,8 +3,8 @@ import { loadCantons, loadMunicipalityBoundaries, joinMunicipalityGeometry } fro
 import { loadLevel, loadMeta } from './data/loader'
 import { municipalityOverstatementStats } from './domain/overstatement'
 import type { ScaleMode } from './domain/scale'
-import { buildCantonsLayer } from './layers/cantons'
-import { buildMunicipalityLayer } from './layers/many'
+import { buildCantonBorderLayer, buildCantonsLayer } from './layers/cantons'
+import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './layers/many'
 import { buildCompanyLayer, loadCompanies } from './layers/visible'
 import { createMap } from './map'
 import { showError } from './ui/error'
@@ -54,6 +54,18 @@ async function start() {
   // reine `(daten, uiState) → Layer`-Funktion.
   const municipalityGeometries = joinMunicipalityGeometry(gemeinde, boundaries)
   const cantonsLayer = buildCantonsLayer({ data: cantons, activeBfsNr: meta.canton.bfs_nr })
+  // Umriss der Kantonsflächen (Regression-Fix, Change 6): `buildCantonsLayer`
+  // selbst zeichnet keinen Rand mehr, weil `stroked` auf einer extrudierten
+  // `GeoJsonLayer` ohnehin wirkungslos war (siehe Kommentar dort) — dieser
+  // separate Layer ist der tatsächlich sichtbare Kantonsrand, in **beiden**
+  // Ansichten gezeichnet (Auftrag), deshalb wie `cantonsLayer` einmalig
+  // gebaut statt in `render()` neu.
+  const cantonBorderLayer = buildCantonBorderLayer({ data: cantons })
+  // Gemeindegrenzen nur für Ansicht B («Börsennotierte Firmen», Change 7):
+  // dieselben bereits geladenen `municipalityGeometries` wie oben, als reine
+  // Linienlage ohne Füllung/Extrusion — kein zweiter Fetch, keine Abhängigkeit
+  // von `vmax`/`mode`, deshalb ebenfalls einmalig statt in `render()`.
+  const municipalityBorderLayer = buildMunicipalityBorderLayer(municipalityGeometries)
 
   // Bezugsgrösse für Ansicht B ist jetzt das Gemeindemaximum (Aarau), nicht
   // mehr das Kantonstotal: ohne die anderen beiden Stufen gäbe es sonst keinen
@@ -78,8 +90,10 @@ async function start() {
   // hier nirgends angefasst — das ist Sache von map.ts, und genau das lässt
   // die Kameraposition beim Umschalten unverändert.
   //
-  // Die Kantonsflächen (`cantonsLayer`) sind Basiskarte, kein Ansichtsinhalt —
-  // sie werden in beiden Ansichten zuunterst gezeichnet, unabhängig vom Toggle.
+  // Die Kantonsflächen (`cantonsLayer`) und ihr Rand (`cantonBorderLayer`)
+  // sind Basiskarte, kein Ansichtsinhalt — sie werden in beiden Ansichten
+  // zuunterst gezeichnet, unabhängig vom Toggle (Auftrag: Kantonsgrenzen in
+  // beiden Ansichten sichtbar).
   const render = () => {
     hidePanel()
     // Ein Ansichts- oder Skalenwechsel baut den Layer neu (siehe unten) — ein
@@ -91,6 +105,7 @@ async function start() {
     if (view === 'beschaeftigte') {
       handle.setLayers([
         cantonsLayer,
+        cantonBorderLayer,
         buildMunicipalityLayer('gemeinde', {
           level: gemeinde,
           geometries: municipalityGeometries,
@@ -112,7 +127,15 @@ async function start() {
         }),
       ])
     } else {
-      handle.setLayers([cantonsLayer, buildCompanyLayer(companies, mode, showCompanyPanel)])
+      // Change 7: Gemeindegrenzen (`municipalityBorderLayer`) nur hier — die
+      // Firmensäulen stehen sonst auf einer blanken Fläche, die den Kanton
+      // zwar begrenzt, seine innere Gliederung aber nicht zeigt.
+      handle.setLayers([
+        cantonsLayer,
+        cantonBorderLayer,
+        municipalityBorderLayer,
+        buildCompanyLayer(companies, mode, showCompanyPanel),
+      ])
     }
 
     renderLegend({
