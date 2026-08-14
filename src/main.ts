@@ -1,33 +1,26 @@
 import './style.css'
-import type { Geometry } from 'geojson'
 import {
   loadCantons,
   loadMunicipalityBoundaries,
   joinCantonGeometry,
   joinMunicipalityGeometry,
 } from './data/boundaries'
-import { loadLevel, loadMeta, type Level } from './data/loader'
+import { loadLevel, loadMeta } from './data/loader'
 import { boundsOfGeometries } from './domain/bounds'
-import { presentGroupsFromIndices, type PresentGroups } from './domain/legendGroups'
+import { presentGroupsFromIndices } from './domain/legendGroups'
 import { NOGA_UNKNOWN_INDEX } from './domain/noga.generated'
 import type { ScaleMode } from './domain/scale'
-import { buildCantonBorderLayer, buildCantonsLayer } from './layers/cantons'
-import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './layers/many'
-import { buildCompanyLayer, loadCompanies } from './layers/visible'
+import { buildCantonBorderLayer } from './layers/cantons'
+import { buildMunicipalityBorderLayer } from './layers/many'
+import { loadCompanies } from './layers/visible'
+import { buildViewLayers, kantonRowInfo, type CantonEntry } from './layers/viewLayers'
 import { createMap } from './map'
 import { renderBackControl } from './ui/backControl'
 import { showError } from './ui/error'
-import { formatNumber } from './ui/format'
-import { hideHoverLabel, showHoverLabel } from './ui/hoverLabel'
+import { hideHoverLabel } from './ui/hoverLabel'
 import { renderLegend } from './ui/legend'
 import { renderNotices, type NoticeLevel } from './ui/notices'
-import {
-  configureCanton,
-  hidePanel,
-  municipalityName,
-  showCompanyPanel,
-  showMunicipalityPanel,
-} from './ui/panel'
+import { configureCanton, hidePanel, showCompanyPanel, showMunicipalityPanel } from './ui/panel'
 import { createToggle, DEFAULT_MODE, type ViewName } from './ui/toggle'
 
 // Phase 2 («nationale Navigation»): Ansicht «Beschäftigte» hat seit diesem
@@ -40,23 +33,14 @@ import { createToggle, DEFAULT_MODE, type ViewName } from './ui/toggle'
 // löst keine Kameraüberblendung „hinein" aus.
 type BeschaeftigteLevel = NoticeLevel
 
-/** Alles, was ein betretener Kanton für Ansicht «Beschäftigte» braucht, einmal
- *  geladen und aus den beiden Rohdateien (`<code>_gemeinde.{json,bin}`,
- *  `<code>_boundaries.geojson`) abgeleitet — pro Kanton einmalig berechnet und
- *  danach in `cantonCache` (unten) für die Dauer der Sitzung wiederverwendet,
- *  nicht bei jedem Render. Trägt bewusst auch `borderLayer`: Ansicht
- *  «Börsennotierte Firmen» braucht dieselben Gemeindegrenzen wie Ansicht
- *  «Beschäftigte» (siehe `layers/many.ts`, `buildMunicipalityBorderLayer`),
- *  aus demselben Cache-Eintrag, ohne zweiten Fetch. */
-interface CantonEntry {
-  code: string
-  name: string
-  bfsNr: number
-  gemeinde: Level
-  geometries: Geometry[]
-  vmax: number
-  presentGroups: PresentGroups
-  borderLayer: ReturnType<typeof buildMunicipalityBorderLayer>
+/** Zeigt einen Fehler aus einer fehlgeschlagenen Navigation (Kanton- oder
+ *  Firmenansicht-Fetch) über den bestehenden `showError`-Weg an. Ohne diesen
+ *  Aufrufer verschwand ein abgelehntes Promise stillschweigend — genau der
+ *  Grund, warum sich ein fehlgeschlagener Fetch früher als „gar nichts
+ *  passiert" zeigte statt als sichtbarer Fehler (siehe Bericht, Abschnitt
+ *  „Fehlerpfad bei fehlgeschlagener Navigation"). */
+function reportNavigationError(context: string): (error: unknown) => void {
+  return (error) => showError(`${context}: ${String(error)}`)
 }
 
 async function start() {
@@ -105,10 +89,11 @@ async function start() {
 
   // Kantonsgrenzen (Basiskarte, siehe `layers/cantons.ts`) — in beiden
   // Ansichten und auf beiden Stufen von «Beschäftigte» sichtbar (Auftrag),
-  // deshalb einmalig gebaut. `cantonsLayer` selbst (die Füllung mit dem
-  // hervorgehobenen aktiven Kanton) wandert dagegen in `render()`: welcher
-  // Kanton „aktiv" ist, ändert sich jetzt mit der Navigation (siehe
-  // `activeHighlightBfsNr`), was vor Phase 2 nie der Fall war.
+  // deshalb einmalig gebaut. Die Kantonsflächen-Füllung selbst (mit dem
+  // hervorgehobenen aktiven Kanton) baut `buildViewLayers` dagegen bei jedem
+  // Render neu: welcher Kanton „aktiv" ist, ändert sich jetzt mit der
+  // Navigation (siehe `activeHighlightBfsNr`), was vor Phase 2 nie der Fall
+  // war.
   const cantonBorderLayer = buildCantonBorderLayer({ data: cantonsGeo })
 
   // Pro Kanton einmal geladen, danach für die Sitzung im Speicher (Auftrag:
@@ -149,21 +134,15 @@ async function start() {
       return entry
     })()
     cantonFetches.set(code, promise)
-    void promise.finally(() => cantonFetches.delete(code))
+    // `.finally()` gibt eine eigene, zweite Promise-Kette zurück, die bei
+    // einem fehlgeschlagenen Fetch ebenfalls ablehnt — `promise` selbst (an
+    // die Aufrufer oben zurückgegeben) trägt den eigentlichen Fehler bereits
+    // und wird dort behandelt (`enterCanton`/`ensureCompaniesReady`, beide
+    // über `reportNavigationError`). Ohne `.catch(() => {})` hier würde diese
+    // zweite, nur für die Cache-Aufräumung gebaute Kette zusätzlich als
+    // unbehandelte Ablehnung auffallen.
+    promise.finally(() => cantonFetches.delete(code)).catch(() => {})
     return promise
-  }
-
-  /** Löst eine Zeile der Kantonsstufe (`kantone.arrays.*[index]`) zu Name/Code/
-   *  bfs_nr auf — dieselbe `gemeindeIdx` → Metadaten-Indirektion wie
-   *  `ui/panel.ts`s `municipalityName`, nur über `meta.kantone` statt
-   *  `meta.gemeinden` (siehe `data/loader.ts`, `LevelMeta.kantone`). */
-  function kantonRowInfo(
-    index: number,
-  ): { bfsNr: number; code: string; name: string } | undefined {
-    const { gemeindeIdx } = kantone.arrays
-    const entries = kantone.meta.kantone
-    if (!gemeindeIdx || !entries) return undefined
-    return entries[gemeindeIdx[index] ?? -1]
   }
 
   let view: ViewName = 'beschaeftigte'
@@ -204,77 +183,38 @@ async function start() {
   const render = () => {
     // Verteidigung gegen einen Zustand, der laut obigem Kommentar nie
     // entstehen sollte (Kantonsstufe ohne geladenen Kanton) — fällt statt
-    // eines leeren Renders auf die Schweiz-Stufe zurück.
+    // eines leeren Renders auf die Schweiz-Stufe zurück. `buildViewLayers`
+    // hat dieselbe Verteidigung nochmals eingebaut (siehe
+    // `layers/viewLayers.ts`, `viewLayers.test.ts`), diese hier hält
+    // zusätzlich `level` selbst konsistent (für `documentTitle`,
+    // `renderBackControl`, den `keydown`-Listener).
     if (level === 'kanton' && !activeCanton) level = 'schweiz'
 
     hidePanel()
     hideHoverLabel()
     document.title = documentTitle()
 
-    const cantonsLayer = buildCantonsLayer({
-      data: cantonsGeo,
-      activeBfsNr: activeHighlightBfsNr(),
-    })
-
-    if (view === 'beschaeftigte' && level === 'schweiz') {
-      handle.setLayers([
-        cantonsLayer,
+    handle.setLayers(
+      buildViewLayers({
+        view,
+        level,
+        mode,
+        cantonsGeo,
+        activeBfsNr: activeHighlightBfsNr(),
         cantonBorderLayer,
-        buildMunicipalityLayer('kantone', {
-          level: kantone,
-          geometries: cantonGeometries,
-          vmax: kantoneVmax,
-          mode,
-          opacity: 1,
-          visible: true,
-          onClick: (index) => void enterCanton(index),
-          onHover: (index, x, y) => {
-            if (index === null) return hideHoverLabel()
-            const info = kantonRowInfo(index)
-            if (!info) return hideHoverLabel()
-            const value = kantone.arrays.values[index] ?? 0
-            showHoverLabel(`${info.name} · ${formatNumber(value)} Beschäftigte`, x, y)
-          },
-        }),
-      ])
-    } else if (view === 'beschaeftigte' && activeCanton) {
-      const entry = activeCanton
-      handle.setLayers([
-        cantonsLayer,
-        cantonBorderLayer,
-        buildMunicipalityLayer('gemeinde', {
-          level: entry.gemeinde,
-          geometries: entry.geometries,
-          vmax: entry.vmax,
-          mode,
-          opacity: 1,
-          visible: true,
-          onClick: (index) => showMunicipalityPanel(entry.gemeinde, index),
-          onHover: (index, x, y) => {
-            if (index === null) return hideHoverLabel()
-            const name = municipalityName(entry.gemeinde, index)
-            if (name) showHoverLabel(name, x, y)
-            else hideHoverLabel()
-          },
-        }),
-      ])
-    } else {
-      // Ansicht «Börsennotierte Firmen»: unverändert Aargau-spezifisch (Phase
-      // 3 folgt). `companiesEntry` ist beim allerersten Umschalten auf diese
-      // Ansicht noch nicht geladen (siehe `ensureCompaniesReady`) — die
-      // Gemeindegrenzen erscheinen dann einen Render später nach, statt den
-      // Wechsel selbst zu blockieren; die Firmensäulen (aus dem separat,
-      // eigenständig geladenen `companies.json`) stehen sofort.
-      const companiesEntry = cantonCache.get(meta.canton.code)
-      handle.setLayers(
-        [
-          cantonsLayer,
-          cantonBorderLayer,
-          companiesEntry?.borderLayer,
-          buildCompanyLayer(companies, mode, showCompanyPanel),
-        ].filter((layer) => layer !== undefined),
-      )
-    }
+        kantone,
+        cantonGeometries,
+        kantoneVmax,
+        activeCanton,
+        companiesEntry: cantonCache.get(meta.canton.code),
+        companies,
+        onEnterCanton: (index) => {
+          enterCanton(index).catch(reportNavigationError('Kanton konnte nicht geladen werden'))
+        },
+        onShowMunicipalityPanel: showMunicipalityPanel,
+        onShowCompanyPanel: showCompanyPanel,
+      }),
+    )
 
     renderLegend({
       view,
@@ -304,9 +244,12 @@ async function start() {
   /** Betritt den Kanton der angeklickten Zeile der Schweiz-Stufe: schwenkt die
    *  Kamera sofort auf dessen bereits geladenen Umriss (kein Warten auf den
    *  Datenfetch), lädt parallel die beiden kantonsspezifischen Dateien und
-   *  rendert erst danach um. */
+   *  rendert erst danach um. Wirft weiter, statt den Fehler selbst zu
+   *  schlucken — der Aufrufer (`onEnterCanton` in `render()`) hängt
+   *  `reportNavigationError` an, damit ein fehlgeschlagener Fetch sichtbar
+   *  wird statt „einfach nichts passiert". */
   async function enterCanton(index: number) {
-    const info = kantonRowInfo(index)
+    const info = kantonRowInfo(kantone, index)
     const geometry = cantonGeometries[index]
     if (!info || !geometry) return
     const token = ++navToken
@@ -352,7 +295,9 @@ async function start() {
     view = newView
     mode = newMode
     render()
-    void ensureCompaniesReady()
+    ensureCompaniesReady().catch(
+      reportNavigationError('Gemeindegrenzen für «Börsennotierte Firmen» konnten nicht geladen werden'),
+    )
   })
   ui?.appendChild(toggle)
 
