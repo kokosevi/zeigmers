@@ -79,7 +79,7 @@ def test_build_produces_aargau(boundaries_real):
 
 @pytest.mark.integration
 def test_write_geojson_is_wgs84_and_small(boundaries_real, tmp_path):
-    out = boundaries.write_geojson(boundaries_real, tmp_path / "b.geojson")
+    out = boundaries.write_geojson(boundaries_real.municipalities, tmp_path / "b.geojson")
     size = out.stat().st_size
     assert size < config.MAX_BOUNDARIES_BYTES, f"{size} Bytes"
 
@@ -103,3 +103,40 @@ def test_write_geojson_is_wgs84_and_small(boundaries_real, tmp_path):
 
     assert 7.6 < min(lons) and max(lons) < 8.6, (min(lons), max(lons))
     assert 47.1 < min(lats) and max(lats) < 47.7, (min(lats), max(lats))
+
+
+def test_cantons_geojson_path_is_canton_independent(monkeypatch):
+    # Anders als geojson_path() (Regressionstest oben, C1) muss dieser Pfad
+    # NICHT von config.CANTON abhängen: die Basiskarte zeigt immer alle 26
+    # Kantone. Ein Kantonswechsel darf den Dateinamen nicht verändern, sonst
+    # bräuchte jeder Kantonswechsel eine neue Kopie derselben CH-weiten Datei.
+    monkeypatch.setitem(config.CANTON, "code", "ZH")
+    assert boundaries.cantons_geojson_path() == config.PUBLIC_DATA / "ch_kantone.geojson"
+    monkeypatch.setitem(config.CANTON, "code", "AG")
+    assert boundaries.cantons_geojson_path() == config.PUBLIC_DATA / "ch_kantone.geojson"
+
+
+@pytest.mark.integration
+def test_build_cantons_produces_26_cantons_including_aargau(cantons_real):
+    assert len(cantons_real) == 26
+    assert set(cantons_real["bfs_nr"]) == set(range(1, 27))
+    assert config.CANTON["bfs_nr"] in set(cantons_real["bfs_nr"])
+    assert cantons_real["name"].str.len().min() > 0
+    aargau = cantons_real[cantons_real["bfs_nr"] == config.CANTON["bfs_nr"]]
+    assert aargau["name"].iloc[0] == config.CANTON["name"]
+
+
+@pytest.mark.integration
+def test_write_geojson_cantons_is_wgs84_and_small(cantons_real, tmp_path):
+    out = boundaries.write_geojson(
+        cantons_real, tmp_path / "kantone.geojson",
+        simplify_percent=config.CANTON_SIMPLIFY_PERCENT,
+        max_bytes=config.MAX_CANTONS_BYTES,
+    )
+    size = out.stat().st_size
+    assert size < config.MAX_CANTONS_BYTES, f"{size} Bytes"
+
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert len(data["features"]) == 26
+    for feature in data["features"]:
+        assert set(feature["properties"]) >= {"bfs_nr", "name"}

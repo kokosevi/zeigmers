@@ -35,7 +35,23 @@ def _run_statent(force: bool) -> dict:
         force=force,
     )
     bounds = boundaries.build(zip_path, config.CANTON["bfs_nr"])
-    boundaries.write_geojson(bounds, boundaries.geojson_path())
+    boundaries_out = boundaries.write_geojson(bounds.municipalities, boundaries.geojson_path())
+    print(f"[boundaries] {len(bounds.municipalities)} Gemeinden -> {boundaries_out} "
+          f"({boundaries_out.stat().st_size / 1024:.0f} KB)")
+
+    # Alle 26 Kantone, für die selbstgezeichnete Basiskarte (Change 3) — ersetzt
+    # die bisherigen swisstopo-Vektorkacheln, siehe README/Spec Abschnitt 9/10.
+    # Kantonsunabhängig (siehe `cantons_geojson_path()`), deshalb hier statt im
+    # `if level.name == ...`-Zweig geschrieben: ein Kantonswechsel ändert nichts
+    # an dieser Datei, nur daran, welcher der 26 im Frontend hervorgehoben wird.
+    cantons = boundaries.build_cantons(zip_path)
+    cantons_out = boundaries.write_geojson(
+        cantons, boundaries.cantons_geojson_path(),
+        simplify_percent=config.CANTON_SIMPLIFY_PERCENT,
+        max_bytes=config.MAX_CANTONS_BYTES,
+    )
+    print(f"[boundaries] {len(cantons)} Kantone -> {cantons_out} "
+          f"({cantons_out.stat().st_size / 1024:.0f} KB)")
 
     statent_zip = fetch.download(
         fetch.statent_geodata_url(config.STATENT_YEAR),
@@ -193,10 +209,19 @@ def main(argv: Sequence[str] | None = None) -> int:
             url, config.DATA_RAW / "swissboundaries3d.gpkg.zip", force=args.force
         )
         b = boundaries.build(zip_path, config.CANTON["bfs_nr"])
-        out = boundaries.write_geojson(b, boundaries.geojson_path())
+        out = boundaries.write_geojson(b.municipalities, boundaries.geojson_path())
         print(f"[boundaries] {len(b.municipalities)} Gemeinden, "
               f"{b.canton_lv95.area / 1e6:.0f} km2 -> {out} "
               f"({out.stat().st_size / 1024:.0f} KB)")
+
+        cantons = boundaries.build_cantons(zip_path)
+        cantons_out = boundaries.write_geojson(
+            cantons, boundaries.cantons_geojson_path(),
+            simplify_percent=config.CANTON_SIMPLIFY_PERCENT,
+            max_bytes=config.MAX_CANTONS_BYTES,
+        )
+        print(f"[boundaries] {len(cantons)} Kantone -> {cantons_out} "
+              f"({cantons_out.stat().st_size / 1024:.0f} KB)")
         return 0
 
     if args.command in ("statent", "all", "sanity-map"):

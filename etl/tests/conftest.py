@@ -17,3 +17,10 @@ def boundaries_real():
     url = fetch.swissboundaries_gpkg_url()
     zip_path = fetch.download(url, config.DATA_RAW / "swissboundaries3d.gpkg.zip")
     return boundaries.build(zip_path, config.CANTON["bfs_nr"])
+
+
+@pytest.fixture(scope="session")
+def cantons_real():
+    url = fetch.swissboundaries_gpkg_url()
+    zip_path = fetch.download(url, config.DATA_RAW / "swissboundaries3d.gpkg.zip")
+    return boundaries.build_cantons(zip_path)

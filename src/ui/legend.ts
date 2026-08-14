@@ -30,7 +30,7 @@ const CURRENCY_NOTE =
 // liegen aber einen Tastendruck auseinander — die Legende muss deshalb die
 // Einheit selbst nennen, nicht nur "Skala".
 const UNIT_LABEL: Record<ViewName, string> = {
-  viele: 'Beschäftigte',
+  beschaeftigte: 'Beschäftigte',
   sichtbare: 'Jahresumsatz',
 }
 
@@ -106,7 +106,7 @@ export function renderLegend(options: LegendOptions): void {
   el.appendChild(branchen)
 
   const ticks = referenceTicks(vmax, mode)
-  const formatTick = view === 'viele' ? formatNumber : (v: number) => formatRevenue(v, null)
+  const formatTick = view === 'beschaeftigte' ? formatNumber : (v: number) => formatRevenue(v, null)
   const scale = document.createElement('div')
   scale.className = 'legende-skala'
   scale.textContent = `Höhe (${MODE_LABEL[mode]}): ${ticks.map(formatTick).join(' · ')}`
@@ -121,7 +121,7 @@ export function renderLegend(options: LegendOptions): void {
   // `ambiguousCells` (Rohzahl Hektaren) und `overstatementPct` (Median/Max je
   // Gemeinde, siehe `domain/overstatement.ts`) sind unabhängige, zueinander
   // passende Fakten, keine zwei Versionen derselben Zahl.
-  if (view === 'viele' && ambiguousCells > 0) {
+  if (view === 'beschaeftigte' && ambiguousCells > 0) {
     const hint = document.createElement('div')
     hint.className = 'legende-hinweis'
     hint.textContent =

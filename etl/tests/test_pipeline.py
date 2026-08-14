@@ -86,3 +86,17 @@ def test_meta_json_lists_only_shipped_levels():
     meta = json.loads((config.PUBLIC_DATA / "meta.json").read_text(encoding="utf-8"))
     assert meta["levels"] == ["gemeinde"]
     assert meta["canton"]["code"] == "AG"
+
+
+def test_cantons_geojson_is_shipped_and_within_its_own_budget():
+    # ch_kantone.geojson (Change 3, ersetzt die swisstopo-Vektorkacheln) ist
+    # kantonsunabhängig und wird deshalb hier separat geprüft, nicht über
+    # gemeinde_artifact/meta.json (die kennen nur die STATENT-Stufen).
+    path = config.PUBLIC_DATA / "ch_kantone.geojson"
+    if not path.exists():
+        pytest.skip("ch_kantone.geojson fehlt, zuerst `draufsicht-etl all` laufen lassen")
+    assert path.stat().st_size < config.MAX_CANTONS_BYTES
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert len(data["features"]) == 26
+    bfs_numbers = {f["properties"]["bfs_nr"] for f in data["features"]}
+    assert config.CANTON["bfs_nr"] in bfs_numbers

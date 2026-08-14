@@ -1,8 +1,10 @@
 import './style.css'
+import { loadCantons, loadMunicipalityBoundaries, joinMunicipalityGeometry } from './data/boundaries'
 import { loadLevel, loadMeta } from './data/loader'
 import { municipalityOverstatementStats } from './domain/overstatement'
 import type { ScaleMode } from './domain/scale'
-import { buildColumnLayer } from './layers/many'
+import { buildCantonsLayer } from './layers/cantons'
+import { buildMunicipalityLayer } from './layers/many'
 import { buildCompanyLayer, loadCompanies } from './layers/visible'
 import { createMap } from './map'
 import { showError } from './ui/error'
@@ -30,10 +32,21 @@ async function start() {
 
   // Ansicht B zeigt nur noch die Gemeindestufe, bei jedem Zoom gleich — die
   // Kanton- und Hektarstufe wurden am 2026-08-13 verworfen (siehe README).
-  const [gemeinde, companies] = await Promise.all([
+  // `boundaries`/`cantons` sind neu (Change 2/3): die Gemeindepolygone für die
+  // extrudierten Flächen in Ansicht B und die Kantonsflächen für die
+  // selbstgezeichnete Basiskarte, beide als eigene `*.geojson`-Artefakte.
+  const [gemeinde, companies, boundaries, cantons] = await Promise.all([
     loadLevel(`${prefix}_gemeinde`),
     loadCompanies(),
+    loadMunicipalityBoundaries(prefix),
+    loadCantons(),
   ])
+
+  // Join einmal beim Laden (siehe `data/boundaries.ts`), nicht bei jedem
+  // Render: `many.ts` bekommt fertige Geometrien je Zeile und bleibt eine
+  // reine `(daten, uiState) → Layer`-Funktion.
+  const municipalityGeometries = joinMunicipalityGeometry(gemeinde, boundaries)
+  const cantonsLayer = buildCantonsLayer({ data: cantons, activeBfsNr: meta.canton.bfs_nr })
 
   // Bezugsgrösse für Ansicht B ist jetzt das Gemeindemaximum (Aarau), nicht
   // mehr das Kantonstotal: ohne die anderen beiden Stufen gäbe es sonst keinen
@@ -50,20 +63,25 @@ async function start() {
   const companyYear =
     Math.max(0, ...companies.companies.map((c) => c.fiscalYear ?? 0)) || statentYear
 
-  let view: ViewName = 'viele'
+  let view: ViewName = 'beschaeftigte'
   let mode: ScaleMode = DEFAULT_MODE[view]
 
   // Zustand ist (view, mode). Jede Änderung an einem der beiden rendert
   // komplett neu: Layer, Legende, Pflichthinweis. Der viewState der Karte wird
   // hier nirgends angefasst — das ist Sache von map.ts, und genau das lässt
   // die Kameraposition beim Umschalten unverändert.
+  //
+  // Die Kantonsflächen (`cantonsLayer`) sind Basiskarte, kein Ansichtsinhalt —
+  // sie werden in beiden Ansichten zuunterst gezeichnet, unabhängig vom Toggle.
   const render = () => {
     hidePanel()
 
-    if (view === 'viele') {
+    if (view === 'beschaeftigte') {
       handle.setLayers([
-        buildColumnLayer('gemeinde', {
+        cantonsLayer,
+        buildMunicipalityLayer('gemeinde', {
           level: gemeinde,
+          geometries: municipalityGeometries,
           vmax,
           mode,
           opacity: 1,
@@ -72,16 +90,16 @@ async function start() {
         }),
       ])
     } else {
-      handle.setLayers([buildCompanyLayer(companies, mode, showCompanyPanel)])
+      handle.setLayers([cantonsLayer, buildCompanyLayer(companies, mode, showCompanyPanel)])
     }
 
     renderLegend({
       view,
       mode,
-      year: view === 'viele' ? statentYear : companyYear,
-      vmax: view === 'viele' ? vmax : companies.stats.max,
-      ambiguousCells: view === 'viele' ? gemeinde.meta.stats.ambiguousCells : 0,
-      overstatementPct: view === 'viele' ? overstatementPct : { medianPct: 0, maxPct: 0 },
+      year: view === 'beschaeftigte' ? statentYear : companyYear,
+      vmax: view === 'beschaeftigte' ? vmax : companies.stats.max,
+      ambiguousCells: view === 'beschaeftigte' ? gemeinde.meta.stats.ambiguousCells : 0,
+      overstatementPct: view === 'beschaeftigte' ? overstatementPct : { medianPct: 0, maxPct: 0 },
     })
     renderNotices(view)
   }

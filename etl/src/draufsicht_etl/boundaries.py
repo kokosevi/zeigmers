@@ -17,6 +17,7 @@ from . import config
 # swissBOUNDARIES3D benennt Layer und Felder je Jahrgang leicht unterschiedlich.
 # Deshalb wird gesucht statt angenommen.
 _MUNICIPALITY_LAYER_NEEDLES = ["hoheitsgebiet", "gemeinde"]
+_CANTON_LAYER_NEEDLES = ["kantonsgebiet"]
 _BFS_FIELD_NEEDLES = ["bfs_nummer", "bfs_nr", "gemeindenummer"]
 _NAME_FIELD_NEEDLES = ["name", "gemeindename"]
 _CANTON_FIELD_NEEDLES = ["kantonsnummer", "kanton_nr", "kantonsnr"]
@@ -37,6 +38,18 @@ def geojson_path() -> Path:
     return config.PUBLIC_DATA / f"{config.CANTON['code'].lower()}_boundaries.geojson"
 
 
+def cantons_geojson_path() -> Path:
+    """Pfad zum gesamtschweizerischen Kantonsgrenzen-Artefakt.
+
+    Anders als `geojson_path()` hängt dieser Name NICHT von `config.CANTON` ab:
+    die selbstgezeichnete Basiskarte (Change 3) zeigt immer alle 26 Kantone,
+    nicht nur den konfigurierten — ein Kantonswechsel ändert an dieser Datei
+    nichts, nur daran, welcher der 26 hervorgehoben wird (siehe `meta.json`,
+    gelesen im Frontend).
+    """
+    return config.PUBLIC_DATA / "ch_kantone.geojson"
+
+
 def _extract(gpkg_zip: Path) -> Path:
     target = config.DATA_INTERIM / "swissboundaries"
     target.mkdir(parents=True, exist_ok=True)
@@ -44,7 +57,14 @@ def _extract(gpkg_zip: Path) -> Path:
         names = [n for n in zf.namelist() if n.lower().endswith(".gpkg")]
         if not names:
             raise LookupError(f"Kein .gpkg in {gpkg_zip}; enthalten: {zf.namelist()[:20]}")
-        return Path(zf.extract(names[0], target))
+        name = names[0]
+        dest = target / name
+        # Municipality- und Cantons-Aufbereitung (build()/build_cantons()) extrahieren
+        # beide aus demselben Zip; ohne diese Prüfung würde das ~74-MB-GeoPackage bei
+        # jedem `draufsicht-etl all`-Lauf zweimal ausgepackt.
+        if not dest.exists():
+            zf.extract(name, target)
+        return dest
 
 
 def find_layer(gpkg_path: Path, needles: list[str]) -> str:
@@ -116,17 +136,64 @@ def build(gpkg_zip: Path, canton_bfs_nr: int) -> Boundaries:
     return Boundaries(canton_lv95=canton, municipalities=municipalities)
 
 
-def write_geojson(b: Boundaries, out: Path, *, simplify_percent: float = 8.0) -> Path:
-    """Schreibt die Gemeinden als vereinfachtes WGS84-GeoJSON.
+def build_cantons(gpkg_zip: Path) -> gpd.GeoDataFrame:
+    """Alle 26 Kantone aus `tlm_kantonsgebiet`, für die selbstgezeichnete
+    Basiskarte (Change 3, ersetzt die bisherigen swisstopo-Vektorkacheln).
+
+    Anders als `build()` gibt es hier keinen Kantonsfilter — die Basiskarte
+    zeigt die ganze Schweiz, unabhängig vom konfigurierten Kanton. Der Layer
+    führt jeden Kanton laut swisstopo bereits als eine Zeile (26 Features,
+    keine Exklaven-Aufsplittung wie bei den Gemeinden); dissolved wird trotzdem
+    nach `bfs_nr`/`name`, damit ein künftiger Jahrgang mit Exklaven denselben
+    Code trifft wie `build()` es für Gemeinden tut.
+    """
+    gpkg = _extract(gpkg_zip)
+    layer = find_layer(gpkg, _CANTON_LAYER_NEEDLES)
+    gdf = gpd.read_file(gpkg, layer=layer)
+
+    bfs_col = _find_column(list(gdf.columns), _CANTON_FIELD_NEEDLES)
+    name_col = _find_column(list(gdf.columns), _NAME_FIELD_NEEDLES)
+
+    gdf["geometry"] = gdf.geometry.force_2d()
+    gdf = gdf.set_crs(config.SRC_LV95, allow_override=True)
+
+    cantons = (
+        gdf[[bfs_col, name_col, "geometry"]]
+        .rename(columns={bfs_col: "bfs_nr", name_col: "name"})
+        .dissolve(by=["bfs_nr", "name"], as_index=False)
+        .astype({"bfs_nr": "int32"})
+        .sort_values("bfs_nr")
+        .reset_index(drop=True)
+    )
+    if len(cantons) != 26:
+        raise ValueError(
+            f"tlm_kantonsgebiet liefert {len(cantons)} Kantone nach Dissolve, "
+            "erwartet 26 — Layer oder Feldauflösung prüfen."
+        )
+    return cantons
+
+
+def write_geojson(
+    gdf: gpd.GeoDataFrame,
+    out: Path,
+    *,
+    simplify_percent: float = config.MUNICIPALITY_SIMPLIFY_PERCENT,
+    max_bytes: int = config.MAX_BOUNDARIES_BYTES,
+) -> Path:
+    """Schreibt `gdf` (Spalten `bfs_nr`, `name`, `geometry` in LV95) als
+    vereinfachtes WGS84-GeoJSON. Generisch über Gemeinde- und Kantonsstufe:
+    beide brauchen nur diese drei Spalten und denselben Vereinfachungsschritt,
+    nur Zieltoleranz und Byte-Budget unterscheiden sich (siehe `config.py`,
+    `MUNICIPALITY_SIMPLIFY_PERCENT`/`CANTON_SIMPLIFY_PERCENT`).
 
     Vereinfacht wird mit mapshaper, nicht mit shapely: mapshaper baut zuerst
     Topologie auf und hält gemeinsame Kanten zusammen. Shapely vereinfacht jede
-    Fläche einzeln und reisst dabei Lücken zwischen Nachbargemeinden.
+    Fläche einzeln und reisst dabei Lücken zwischen Nachbarn.
     """
     out.parent.mkdir(parents=True, exist_ok=True)
-    tmp = config.DATA_INTERIM / "municipalities_wgs84.geojson"
+    tmp = config.DATA_INTERIM / f"{out.stem}_wgs84.geojson"
     tmp.parent.mkdir(parents=True, exist_ok=True)
-    b.municipalities.to_crs(config.DST_WGS84).to_file(tmp, driver="GeoJSON")
+    gdf.to_crs(config.DST_WGS84).to_file(tmp, driver="GeoJSON")
 
     for percent in (simplify_percent, simplify_percent / 2, simplify_percent / 4):
         subprocess.run(
@@ -138,11 +205,11 @@ def write_geojson(b: Boundaries, out: Path, *, simplify_percent: float = 8.0) ->
             check=True,
             cwd=config.ROOT,
         )
-        if out.stat().st_size <= config.MAX_BOUNDARIES_BYTES:
+        if out.stat().st_size <= max_bytes:
             break
     else:
         raise ValueError(
-            f"{out.name} bleibt über {config.MAX_BOUNDARIES_BYTES} Bytes "
+            f"{out.name} bleibt über {max_bytes} Bytes "
             f"({out.stat().st_size}) — Toleranz weiter senken"
         )
 

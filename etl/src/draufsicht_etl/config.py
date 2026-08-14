@@ -29,9 +29,6 @@ SWISSBOUNDARIES_STAC = (
     "https://data.geo.admin.ch/api/stac/v0.9/collections/"
     "ch.swisstopo.swissboundaries3d/items"
 )
-BASEMAP_STYLE = (
-    "https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json"
-)
 GEOCODE_URL = "https://api3.geo.admin.ch/rest/services/api/SearchServer"
 LINDAS_SPARQL = "https://ld.admin.ch/query"
 
@@ -46,7 +43,21 @@ NOGA_UNKNOWN_INDEX = 255
 UNKNOWN_COLOR_HEX = "#BFBFBF"
 
 MAX_PUBLIC_DATA_BYTES = 2 * 1024 * 1024
-MAX_BOUNDARIES_BYTES = 300 * 1024
+
+# Gemeindegrenzen werden extrudiert (Ansicht B, Change 2) — grobe Vereinfachung
+# zeigt an den Seitenwänden sichtbare Facetten. 300 KB (Toleranz 8 %, ~38
+# Stützpunkte/Gemeinde im Schnitt) war für eine flache 2D-Karte gewählt und
+# reichte dafür; für Extrusion ist mehr Detail nötig. 30 % Toleranz ergibt
+# ~124 Stützpunkte/Gemeinde bei rund 460 KB — beides deutlich unter dem
+# 2-MB-Gesamtbudget, das noch reichlich Luft lässt.
+MUNICIPALITY_SIMPLIFY_PERCENT = 30.0
+MAX_BOUNDARIES_BYTES = 600 * 1024
+
+# Kantone bleiben flach (nur Basiskarten-Orientierung, keine Extrusion) — eine
+# gröbere Vereinfachung fällt dort nicht als Facette auf. 7 % Toleranz ergibt
+# ~14 100 Stützpunkte über alle 26 Kantone bei rund 260 KB.
+CANTON_SIMPLIFY_PERCENT = 7.0
+MAX_CANTONS_BYTES = 350 * 1024
 
 COLUMN_PATTERNS = {
     "reli": r"^RELI$",

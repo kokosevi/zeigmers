@@ -18,6 +18,12 @@ Eine statische, auf Netlify deploybare Website mit zwei 3D-Kartenansichten des K
 
 **Die Zahl hinter dem Titel «Die Vielen».** 10 109 dieser 17 940 Hektaren — **56,3 %** — tragen den Wert 4, der beim Bundesamt für alles unter 4 steht. Zurückgerechnet liegt der wahre Mittelwert dort bei **1,69 Beschäftigten**. Mehr als die Hälfte der wirtschaftlich genutzten Fläche des Kantons besteht aus Ein- und Zweipersonenbetrieben, die in keiner Statistik einzeln auftauchen. Diese Verzerrung trifft, nach oben aggregiert, auch die 196 Gemeindesummen, die einzigen Zahlen, die Ansicht B seit dem Entscheid noch zeigt: **im Median 15,7 %, im Maximum 54,1 % (Obermumpf), 76 der 196 Gemeinden über 20 %** — gemessen am committeten `ag_gemeinde.json`. Das ist der Grund, warum der Pflichthinweis in Ansicht B (Abschnitt 9) seit diesem Entscheid die Grössenordnung explizit benennt statt nur ein theoretisches Maximum.
 
+> **Stand 2026-08-13, weitere nachträgliche Änderung (Rename, Form, Basiskarte).** Drei zusammenhängende Änderungen, alle noch am selben Tag wie die Hektar-/Kantonsstufen-Entfernung oben:
+>
+> 1. **Umbenennung.** «Die Vielen» heisst seither **«Beschäftigte»** (Ansicht A behält «Die Sichtbaren»). Der interne Schlüssel wurde mitumbenannt (`'viele'` → `'beschaeftigte'`, `src/ui/toggle.ts` und alle Verwendungsstellen) — dieses Dokument zitiert den alten Namen «Die Vielen» weiter dort, wo es die ursprüngliche Entwurfsentscheidung vom 12. August beschreibt (siehe oben), nicht die heutige Beschriftung in der App.
+> 2. **Form.** Ansicht B zeichnet jede Gemeinde seither als eigenes, extrudiertes Polygon (`GeoJsonLayer`, `filled: true`, `extruded: true`, `wireframe: false`) statt als `ColumnLayer`-Säule an einem Referenzpunkt — Geometrie aus `ag_boundaries.geojson`, per `bfs_nr` gegen `ag_gemeinde.{bin,json}` gejoint (`src/data/boundaries.ts`). Die Vereinfachungstoleranz für dieses Artefakt wurde dafür von 8 % auf 30 % gelockert (124 statt 38 Stützpunkte je Gemeinde im Schnitt, 469 KB statt 160 KB), weil grobe Vereinfachung an extrudierten Seitenwänden als sichtbare Facette auffällt, an einer flachen Karte dagegen nicht. Das bringt eine zusätzliche, offengelegte Verzerrung: Volumen ist Fläche mal Höhe, und Aargauer Gemeindeflächen streuen um Faktor 23 — Aarau (36 677 Beschäftigte, die höchste Zahl im Datensatz) wirkt dadurch *kleiner* als Zurzach (4 335 Beschäftigte, aber mehr als doppelte Fläche). Der Pflichthinweis in Ansicht B (Abschnitt 9) benennt das seither zusätzlich.
+> 3. **Basiskarte.** Die Karte lädt keine externen swisstopo-Vektorkacheln mehr (Abschnitt 9 unten, „Basemap"); Abschnitt 10s Risiko „swisstopo-Vektorkacheln fallen aus" ist entsprechend als erledigt markiert, nicht mehr als offenes Risiko geführt.
+
 ## 2. Nicht Teil dieses Piloten
 
 - Kein Backend, kein Laufzeit-API-Schlüssel, keine Serverkomponente.
@@ -73,14 +79,17 @@ Draufsicht/
 ├── public/data/                  committed Artefakte, Zielgrösse gesamt < 2 MB
 │   ├── meta.json
 │   ├── ag_gemeinde.bin / ag_gemeinde.json     einziges Ansicht-B-Artefakt seit 2026-08-13
-│   ├── ag_boundaries.geojson                  erzeugt, aber von niemandem geladen
+│   ├── ag_boundaries.geojson                  Gemeindeflächen; seit Change 2 (2026-08-13) geladen und gegen ag_gemeinde per bfs_nr gejoint
+│   ├── ch_kantone.geojson                     alle 26 Kantone; seit Change 3 (2026-08-13) selbstgezeichnete Basiskarte
 │   └── companies.json
 ├── src/                          Vite + Vanilla TS
 │   ├── main.ts
-│   ├── map.ts                    MapLibre + deck.gl Overlay, ViewState-Besitzer
+│   ├── map.ts                    MapLibre (minimaler Stil seit Change 3) + deck.gl Overlay, ViewState-Besitzer
 │   ├── layers/visible.ts         Ansicht A
-│   ├── layers/many.ts            Ansicht B (eine Stufe, kein LOD mehr seit 2026-08-13)
+│   ├── layers/many.ts            Ansicht B (eine Stufe, kein LOD mehr seit 2026-08-13; GeoJsonLayer seit Change 2)
+│   ├── layers/cantons.ts         Basiskarte (Change 3): Kantonsflächen, konfigurierter Kanton hervorgehoben
 │   ├── data/loader.ts            .bin + .json → deck.gl Binary Attributes
+│   ├── data/boundaries.ts        .geojson laden + Gemeinde↔Geometrie-Join per bfs_nr (Change 2)
 │   ├── domain/noga.generated.ts  aus etl/noga_groups.json erzeugt, nicht von Hand editiert
 │   ├── domain/scale.ts           log/linear
 │   └── ui/{toggle,legend,panel,notices,error}.ts
@@ -350,9 +359,13 @@ Der ETL **bricht ab**, wenn eine Zeile mit gesetztem `revenue` kein `report_url`
 
 **Stack.** Vite + Vanilla TS. MapLibre GL JS als Basiskarte, deck.gl über `MapboxOverlay` im interleaved-Modus. Keine zweite Kartenbibliothek.
 
-**Basemap.** swisstopo Vektorkacheln, `https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json` — schlüsselfrei. Der Style wird zur Laufzeit von swisstopo geladen; fällt er aus, rendert die Karte auf einfarbigem Grund weiter und zeigt einen Hinweis.
+**Basemap.** Seit 2026-08-13 (Abschnitt 1) selbstgezeichnet, keine externe Ressource mehr: MapLibre lädt einen minimalen Stil ohne Quellen (`BLANK_STYLE` in `src/map.ts`, nur eine einfarbige `background`-Layer) und bleibt allein für Pan/Rotate/Zoom sowie den WebGL-Kontext zuständig, den `MapboxOverlay({ interleaved: true })` braucht. Die Kantonsflächen zeichnet ein eigener deck.gl-Layer (`src/layers/cantons.ts`, `GeoJsonLayer`, `extruded: false`) aus `public/data/ch_kantone.geojson` — alle 26 Kantone, aus `tlm_kantonsgebiet` (demselben swissBOUNDARIES3D-GeoPackage wie die Gemeindegrenzen) gebaut, dissolved je Kanton, nach WGS84 reprojiziert, mit mapshaper vereinfacht (7 % Toleranz, 262 KB, 26 Features, 14 104 Stützpunkte). Der konfigurierte Kanton (`meta.canton.bfs_nr`, nicht hartcodiert) ist heller/dunkler hervorgehoben. Ersetzt die bis dahin zur Laufzeit von swisstopo geladenen Vektorkacheln (`https://vectortiles.geo.admin.ch/styles/ch.swisstopo.lightbasemap.vt/style.json`, 66 Layer, davon 19 Beschriftungen und 30 Linien) — die Anforderung (keine Gemeindenamen, keine Strassen, nur Schweiz, markierte Kantonsgrenzen) liess sich aus diesem Stil nicht durch Ausblenden erreichen, und einen Kantonsgrenzen-Layer führte er ohnehin nicht.
 
-**Layer.** Ansicht B ist seit 2026-08-13 (Abschnitt 1) ein einzelner `ColumnLayer` für die Gemeindestufe, mit `diskResolution: 4` und `angle: 45` (achsparallele Quadrate), `extruded: true`, `material: false` für flaches, günstigeres Shading. Er wird beim Start geladen und existiert dauerhaft, bei jedem Zoom gleich.
+> **Bis 2026-08-13: externe Vektorkacheln.** swisstopo Vektorkacheln, schlüsselfrei, zur Laufzeit von swisstopo geladen; fiel der Style aus, rendere die Karte auf einfarbigem Grund weiter und zeige einen Hinweis (Fallback in `map.ts`, `onError`). Dieser Fallback existiert im Code weiterhin (er greift jetzt für den — deutlich unwahrscheinlicheren — Fall, dass der eigene, quellenfreie Stil selbst nicht lädt), aber das Ausfallrisiko, das ihn ursprünglich nötig machte, gibt es nicht mehr: siehe Abschnitt 10.
+
+**Layer.** Ansicht B zeichnet seit 2026-08-13 (Change 2, siehe Abschnitt 1) jede Gemeinde als eigenes, extrudiertes Polygon: `GeoJsonLayer` mit `filled: true`, `extruded: true`, `wireframe: false`, `material: false` für flaches, günstigeres Shading (dieselbe Begründung wie zuvor beim `ColumnLayer`). Die Geometrie kommt aus `ag_boundaries.geojson`, gejoint gegen `ag_gemeinde.{bin,json}` per `bfs_nr` beim Laden (`src/data/boundaries.ts`, `joinMunicipalityGeometry`) — das Binärformat bleibt Datenquelle für Werte, Farbe und Mehrdeutigkeits-Zählung (`dist`, `ambiguousCells`, `stats`), nur die Position wird nicht mehr gebraucht. Der Layer wird beim Start geladen und existiert dauerhaft, bei jedem Zoom gleich.
+
+> **Bis 2026-08-13: `ColumnLayer` an einem Referenzpunkt.** Ansicht B war ein einzelner `ColumnLayer` für die Gemeindestufe, mit `diskResolution: 4` und `angle: 45` (achsparallele Quadrate), Radius fix 700 m um den Gemeinde-Repräsentativpunkt (`GEMEINDE_RADIUS_M`). Praktisch für 196 gleich grosse Kreise, verschenkte aber die tatsächliche Form und Grösse jeder Gemeinde.
 
 > **Bis 2026-08-13: LOD-Überblendung.** Ansicht B rendere drei überblendete `ColumnLayer` (Kanton, Gemeinde, Hektare), gewichtet nach Zoom:
 >
@@ -386,11 +399,13 @@ Die Legende nennt die aktive Skala unmissverständlich und zeigt drei Referenzh�
 **Pflichthinweise.** Beide Sätze sind sichtbarer Bestandteil der jeweiligen Ansicht, nicht in ein Info-Panel versteckt:
 
 1. Ansicht A: Der dargestellte Umsatz ist der **weltweite Konzernumsatz**, nicht die Wertschöpfung am Standort.
-2. Ansicht B *(Wortlaut neu gefasst am 2026-08-13, siehe Abschnitt 1)*: Das BFS rundet aus Datenschutzgründen **alle Werte unter 4 auf 4 auf**. Die Gemeindesummen sind dadurch Obergrenzen — im Median rund 16 %, bei kleinen Gemeinden bis 54 % zu hoch. Das Klick-Panel nennt den Betrag je Gemeinde.
+2. Ansicht B *(Wortlaut neu gefasst am 2026-08-13, siehe Abschnitt 1)*: Das BFS rundet aus Datenschutzgründen **alle Werte unter 4 auf 4 auf**. Die Gemeindesummen sind dadurch Obergrenzen — im Median rund 16 %, bei kleinen Gemeinden bis 54 % zu hoch. Das Klick-Panel nennt den Betrag je Gemeinde. **Ergänzt, selben Tag, mit Change 2:** «Die Höhe zeigt die Beschäftigten, die Grundfläche die Gemeindefläche — grosse Gemeinden wirken dadurch gewichtiger, als sie sind.»
 
 > **Abweichung vom Briefing, bewusst.** Das Briefing gab für Ansicht B den Satz «Hektaren mit vier oder weniger Beschäftigten sind aus Datenschutzgründen nur klassiert verfügbar» vor. Die Variablenliste belegt eine andere Regel (Aufrundung statt Klassierung, Abschnitt 6.4). Der vorgegebene Wortlaut wäre selbst irreführend und wurde deshalb sachlich korrigiert; Zweck und Sichtbarkeit des Hinweises bleiben unverändert.
 >
 > **Zweite Abweichung, 2026-08-13.** Der bis dahin gültige Wortlaut («Hektaren mit dem Wert 4 sind gesondert markiert») wurde mit der Hektarstufe selbst falsch: Es gibt keine gezeichnete Hektarzelle mehr, die markiert sein könnte. Der neue Wortlaut benennt stattdessen direkt, was jetzt der einzige sichtbare Effekt der Aufrundung ist — die Verzerrung der Gemeindesummen —, und beziffert sie (Median, Maximum) statt nur ein Intervall („zwischen 1 und 4“) zu nennen, das auf Gemeindeebene ohnehin nicht mehr zutrifft.
+>
+> **Dritte Ergänzung, 2026-08-13 (Change 2).** Mit den extrudierten Gemeindeflächen kommt eine zweite, unabhängige Verzerrung hinzu: Volumen ist Fläche mal Höhe, und Aargauer Gemeindeflächen streuen um Faktor 23. Aarau (36 677 Beschäftigte, das Maximum im Datensatz) wirkt dadurch kleiner als Zurzach (4 335 Beschäftigte, mehr als doppelte Fläche); Ennetbaden und Böztal haben praktisch dieselbe Beschäftigtenzahl, Böztal wirkt aber rund 10,6× grösser. Diese Verzerrung ist eine bewusst in Kauf genommene Nebenwirkung der Formkodierung, nicht ein Fehler — die Alternative (Kartogramm, verzerrte Gemeindeflächen) hätte eine echte Fläche durch eine erfundene ersetzt. Der dritte Satz oben legt sie offen, statt sie zu verschweigen.
 
 ---
 
@@ -475,4 +490,4 @@ Nach jedem Schritt wird ein Ergebnis vorgelegt, bevor der nächste beginnt.
 | SIX-Emittentenliste maschinell nicht zugänglich | Fallback auf eine dokumentierte, datierte Symbolliste im Repo |
 | Fehlerhaft übernommene Umsatzzahl bleibt unmarkiert | Bewusst akzeptiert; `report_url` pro Zeile ist der einzige Kontrollmechanismus |
 | Hektarzahl weicht deutlich von der Schätzung ab | Binärformat und LOD-Ansatz tragen bis mindestens 10⁵ Zellen; darüber wäre Kachelung nachzurüsten |
-| swisstopo-Vektorkacheln fallen aus | Karte rendert auf einfarbigem Grund weiter, mit Hinweis |
+| ~~swisstopo-Vektorkacheln fallen aus~~ | **Entfällt seit 2026-08-13** (Abschnitt 1, Change 3): keine externen Vektorkacheln mehr, die Basiskarte zeichnet die Kantonsflächen aus einem eigenen, beim ETL-Lauf erzeugten Artefakt (`ch_kantone.geojson`). Es gibt keinen Laufzeit-Request an einen fremden Dienst mehr, der ausfallen könnte — der in Abschnitt 9 beschriebene Fallback (einfarbiger Grund, Hinweis) bleibt im Code, greift jetzt aber nur noch für den unwahrscheinlicheren Fall, dass der eigene, quellenfreie Stil selbst nicht lädt |

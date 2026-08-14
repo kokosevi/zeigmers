@@ -1,6 +1,10 @@
 import type { ScaleMode } from '../domain/scale'
 
-export type ViewName = 'sichtbare' | 'viele'
+// Interner Schlüssel folgt dem sichtbaren Namen: die Ansicht hiess bis zu
+// ihrer Umbenennung «Die Vielen» und der Schlüssel entsprechend `viele`. Ein
+// Name-ohne-passenden-Schlüssel wäre genau die Art Drift, die die nächste
+// Leserin fehlleitet — deshalb wurde `viele` mitumbenannt, nicht nur das Label.
+export type ViewName = 'sichtbare' | 'beschaeftigte'
 
 /** Je Ansicht ein eigener Default. Ansicht B ist extrem schief verteilt und
  *  braucht die logarithmische Skala; Ansicht A hat acht Balken, die logarithmisch
@@ -8,13 +12,13 @@ export type ViewName = 'sichtbare' | 'viele'
  *  zu 22 % im Bild. Die zuletzt gewaehlte Skala bleibt je Ansicht erhalten. */
 export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
   sichtbare: 'linear',
-  viele: 'log',
+  beschaeftigte: 'log',
 }
 
 export function createToggle(
   onChange: (view: ViewName, mode: ScaleMode) => void,
 ): HTMLElement {
-  let view: ViewName = 'viele'
+  let view: ViewName = 'beschaeftigte'
   const modes: Record<ViewName, ScaleMode> = { ...DEFAULT_MODE }
 
   const root = document.createElement('div')
@@ -22,7 +26,7 @@ export function createToggle(
   root.innerHTML = `
     <div class="gruppe" role="radiogroup" aria-label="Ansicht">
       <button data-view="sichtbare">Die Sichtbaren</button>
-      <button data-view="viele">Die Vielen</button>
+      <button data-view="beschaeftigte">Beschäftigte</button>
     </div>
     <div class="gruppe" role="radiogroup" aria-label="Höhenskala">
       <button data-mode="log">logarithmisch</button>
