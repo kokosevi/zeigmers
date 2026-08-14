@@ -131,6 +131,7 @@ def test_build_artifact_marks_rows_without_revenue():
 def test_validate_accepts_a_complete_row_with_profit_and_founding_year():
     companies.validate([_row(
         profit="45000000", profit_currency="CHF", profit_unit="1",
+        consolidation_basis="total_group",
         core_products="Beispielprodukte", founding_year="1950",
         founding_year_source="https://example.test/history",
     )])
@@ -140,6 +141,7 @@ def test_validate_rejects_profit_without_report_url():
     with pytest.raises(ValueError, match="profit gesetzt, aber report_url"):
         companies.validate([_row(
             profit="45000000", profit_currency="CHF", profit_unit="1", report_url="",
+            consolidation_basis="total_group",
             # revenue leer machen, damit nicht die revenue-Regel denselben Fehler meldet
             revenue="", revenue_currency="", revenue_type="", revenue_unit="",
             fiscal_year="", note="Umsatz nicht öffentlich",
@@ -150,6 +152,7 @@ def test_validate_rejects_profit_without_fiscal_year():
     with pytest.raises(ValueError, match="profit gesetzt, aber fiscal_year"):
         companies.validate([_row(
             profit="45000000", profit_currency="CHF", profit_unit="1",
+            consolidation_basis="total_group",
             revenue="", revenue_currency="", revenue_type="", revenue_unit="",
             report_url="https://example.test/gb2024.pdf", fiscal_year="",
             note="Umsatz nicht öffentlich",
@@ -158,7 +161,10 @@ def test_validate_rejects_profit_without_fiscal_year():
 
 def test_validate_rejects_profit_without_profit_currency():
     with pytest.raises(ValueError, match="profit gesetzt, aber profit_currency"):
-        companies.validate([_row(profit="45000000", profit_unit="1", profit_currency="")])
+        companies.validate([_row(
+            profit="45000000", profit_unit="1", profit_currency="",
+            consolidation_basis="total_group",
+        )])
 
 
 def test_validate_rejects_profit_without_profit_unit():
@@ -166,13 +172,36 @@ def test_validate_rejects_profit_without_profit_unit():
     # leeres profit_unit als Faktor 1 und verschiebt eine in Millionen gemeldete Zahl
     # unbemerkt um den Faktor 10**6.
     with pytest.raises(ValueError, match="profit gesetzt, aber profit_unit"):
-        companies.validate([_row(profit="45000000", profit_currency="CHF", profit_unit="")])
+        companies.validate([_row(
+            profit="45000000", profit_currency="CHF", profit_unit="",
+            consolidation_basis="total_group",
+        )])
+
+
+def test_validate_rejects_profit_without_consolidation_basis():
+    # Genau die Lücke, durch die Montana Aerospace beim Sourcing-Review durchrutschte:
+    # revenue auf continuing operations, profit auf total group — nichts prüfte, dass
+    # beide Zahlen dieselbe Konzernabgrenzung meinen (siehe CONSOLIDATION_BASES-
+    # Kommentar in companies.py).
+    with pytest.raises(ValueError, match="profit gesetzt, aber consolidation_basis"):
+        companies.validate([_row(
+            profit="45000000", profit_currency="CHF", profit_unit="1",
+            consolidation_basis="",
+        )])
+
+
+def test_validate_rejects_unknown_consolidation_basis():
+    with pytest.raises(ValueError, match="unbekannt"):
+        companies.validate([_row(
+            profit="45000000", profit_currency="CHF", profit_unit="1",
+            consolidation_basis="segment_only",
+        )])
 
 
 def test_validate_allows_empty_profit_without_extra_provenance():
     # profit ist optional (nicht jede Firma weist einen Reingewinn öffentlich aus) —
-    # anders als revenue erzwingt ein leeres profit keine note.
-    companies.validate([_row(profit="")])
+    # anders als revenue erzwingt ein leeres profit keine note oder consolidation_basis.
+    companies.validate([_row(profit="", consolidation_basis="")])
 
 
 def test_validate_rejects_founding_year_without_source():
@@ -189,6 +218,7 @@ def test_build_artifact_carries_profit_products_and_founding_year():
     artifact = companies.build_artifact(
         [_row(
             profit="45000000", profit_currency="CHF", profit_unit="1",
+            consolidation_basis="total_group",
             core_products="Pharmazeutische Wirkstoffe im Auftrag",
             products_url="https://example.test/about",
             founding_year="1950", founding_year_source="https://example.test/history",
@@ -198,6 +228,7 @@ def test_build_artifact_carries_profit_products_and_founding_year():
     entry = artifact["companies"][0]
     assert entry["profit"] == 45_000_000
     assert entry["profitCurrency"] == "CHF"
+    assert entry["consolidationBasis"] == "total_group"
     assert entry["coreProducts"] == "Pharmazeutische Wirkstoffe im Auftrag"
     assert entry["productsUrl"] == "https://example.test/about"
     assert entry["foundingYear"] == 1950
@@ -206,7 +237,10 @@ def test_build_artifact_carries_profit_products_and_founding_year():
 def test_build_artifact_handles_a_loss_as_a_negative_profit():
     table = noga.load_table()
     artifact = companies.build_artifact(
-        [_row(profit="-3071000", profit_currency="EUR", profit_unit="1")],
+        [_row(
+            profit="-3071000", profit_currency="EUR", profit_unit="1",
+            consolidation_basis="total_group",
+        )],
         table,
     )
     assert artifact["companies"][0]["profit"] == -3_071_000
@@ -214,10 +248,11 @@ def test_build_artifact_handles_a_loss_as_a_negative_profit():
 
 def test_build_artifact_marks_missing_profit_as_none():
     table = noga.load_table()
-    artifact = companies.build_artifact([_row(profit="")], table)
+    artifact = companies.build_artifact([_row(profit="", consolidation_basis="")], table)
     entry = artifact["companies"][0]
     assert entry["profit"] is None
     assert entry["profitCurrency"] is None
+    assert entry["consolidationBasis"] is None
     assert entry["coreProducts"] is None
     assert entry["foundingYear"] is None
 

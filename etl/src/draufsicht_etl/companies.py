@@ -16,6 +16,7 @@ CSV_COLUMNS = (
     "uid", "name", "six_symbol", "isin",
     "street", "zip", "city", "lon", "lat", "geocode_query",
     "noga_group",
+    "consolidation_basis",
     "revenue", "revenue_currency", "revenue_type", "revenue_unit",
     "profit", "profit_currency", "profit_unit",
     "core_products", "products_url",
@@ -28,11 +29,28 @@ CSV_COLUMNS = (
 # for banks). Closed set for now; Task 16 draws non-net_sales bars distinctly.
 REVENUE_TYPES = {"net_sales", "operating_income"}
 
-# Unlike `revenue`, net profit attributable to shareholders (Reingewinn) is broadly
-# comparable across an ordinary industrial company and a bank — both report a single,
-# similarly-defined bottom line under Swiss GAAP FER/IFRS. `profit` therefore carries no
+# Unlike `revenue`, net profit attributable to shareholders (Reingewinn) is defensibly
+# comparable across an ordinary industrial company and a bank — both report a single
+# post-tax bottom line under Swiss GAAP FER/IFRS. `profit` therefore carries no
 # `revenue_type`-style tag, only its own currency/unit (mirroring `revenue_currency`/
-# `revenue_unit`) and the shared `report_url`/`fiscal_year` of the row.
+# `revenue_unit`) and the shared `report_url`/`fiscal_year` of the row. "Comparable" is
+# not "identical", though: a bank's Konzerngewinn can still run through bank-specific,
+# discretionary items — e.g. Hypothekarbank Lenzburg's "Veränderungen von Reserven für
+# allgemeine Bankrisiken", a Swiss-banking-law smoothing reserve sitting directly in the
+# waterfall to Konzerngewinn — that an industrial company's income statement has no
+# equivalent of. That caveat is named in the row's own `note`, not asserted away here.
+#
+# `consolidation_basis` closes a hole `revenue_type` doesn't cover: nothing before this
+# constrained `revenue` and `profit` in the same row to the same corporate scope, and a
+# row (Montana Aerospace, discovered in sourcing review) pairs continuing-operations
+# revenue with a total-group profit that includes a divested segment — two different
+# companies, arithmetically, wearing one row. `fiscal_year` being a single shared column
+# already rules out a *year* mismatch structurally; `consolidation_basis` does the same
+# job for *scope*. Required whenever `profit` is set (not merely when `note` happens to
+# mention a divestment — free text is not something `validate()` can rely on) because
+# that's exactly the situation where two figures might silently disagree on what they're
+# both measuring.
+CONSOLIDATION_BASES = {"total_group", "continuing_operations"}
 
 Fetcher = Callable[[str], bytes]
 
@@ -125,12 +143,26 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
         # falsch skalieren oder einer falschen Periode zuordnen wie ein Umsatz ohne
         # `revenue_unit` (siehe Kommentar bei `test_validate_rejects_revenue_without_revenue_unit`).
         if row.get("profit", "").strip():
-            for field in ("report_url", "fiscal_year", "profit_currency", "profit_unit"):
+            for field in (
+                "report_url", "fiscal_year", "profit_currency", "profit_unit",
+                "consolidation_basis",
+            ):
                 if not row.get(field, "").strip():
                     problems.append(
                         f"{label}: profit gesetzt, aber {field} fehlt — "
                         "jede Zahl muss auf eine Quelle zurückführbar sein"
                     )
+
+        # Geschlossenes Set, unabhängig davon, ob profit gesetzt ist (siehe
+        # Kommentar bei CONSOLIDATION_BASES) — ein Tippfehler oder ein Wert
+        # ausserhalb des vereinbarten Sets wäre sonst so wenig prüfbar wie gar
+        # keine Angabe.
+        basis = row.get("consolidation_basis", "").strip()
+        if basis and basis not in CONSOLIDATION_BASES:
+            problems.append(
+                f"{label}: consolidation_basis {basis!r} unbekannt, "
+                f"erlaubt: {sorted(CONSOLIDATION_BASES)}"
+            )
 
         # `founding_year` stammt entweder aus eigenen Unternehmensunterlagen oder aus dem
         # Zefix-Eintrag (siehe README, "Was revenue bedeutet" — derselbe Grundsatz gilt für
@@ -167,6 +199,7 @@ def build_artifact(rows: list[dict], table: NogaTable) -> dict:
                 "revenueType": row.get("revenue_type") or None,
                 "profit": float(profit) * profit_unit if profit else None,
                 "profitCurrency": row.get("profit_currency") or None,
+                "consolidationBasis": row.get("consolidation_basis") or None,
                 "coreProducts": row.get("core_products") or None,
                 "productsUrl": row.get("products_url") or None,
                 "foundingYear": int(row["founding_year"]) if row.get("founding_year") else None,
