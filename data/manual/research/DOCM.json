@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://ir-corporate.docmorris.com/media/document/dc19bba5-cc07-4d08-969a-cbeb3c53e8c7/assets/Annual_Report_Sustainability_2025_en.pdf",
  "note": "DocMorris weist einen Konzernverlust aus (Net loss CHF -134.395 Mio., vollständig den Aktionären zurechenbar, keine Minderheitsanteile). Beschäftigte als Kopfzahl (1'576) aus dem Nachhaltigkeitsteil 'Workforce diversity' übernommen; die Kennzahlenseite nennt daneben 1'418 Vollzeitäquivalente (FTE) zum 31.12.2025 – abweichend, da Teilzeitstellen enthalten sind. Firma hervorgegangen aus der 1993 in Steckborn/Frauenfeld gegründeten Zur Rose (seit Mai 2023 als DocMorris AG firmierend, nach Übernahme der Marke DocMorris 2012).",
- "_verification": "Umsatz und Verlust stammen aus der 'Consolidated Income Statement' (S. 145) des Annual Report 2025: Zeile 'Net revenue' CHF 1'124'455 Tsd. und 'Net income / (loss) ... Attributable to Doc Morris AG shareholders' CHF -134'395 Tsd. Geprüft: dieselbe Umsatzzahl 1'124.5 Mio. erscheint konsistent in der Kennzahlenübersicht 'Key Financials' und in der Segmentberichterstattung (Net revenue with external customers); die Beschäftigtenzahl 1'576 (Köpfe) aus dem Sustainability-Teil wurde gegen die FTE-Zahl 1'418 aus den Key Financials abgeglichen."
+ "_verification": "Umsatz und Verlust stammen aus der 'Consolidated Income Statement' (S. 145) des Annual Report 2025: Zeile 'Net revenue' CHF 1'124'455 Tsd. und 'Net income / (loss) ... Attributable to Doc Morris AG shareholders' CHF -134'395 Tsd. Geprüft: dieselbe Umsatzzahl 1'124.5 Mio. erscheint konsistent in der Kennzahlenübersicht 'Key Financials' und in der Segmentberichterstattung (Net revenue with external customers); die Beschäftigtenzahl 1'576 (Köpfe) aus dem Sustainability-Teil wurde gegen die FTE-Zahl 1'418 aus den Key Financials abgeglichen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "DocMorris AG",
+  "revenue_zeile": "Net revenue",
+  "profit_zeile": "Net income/(loss), Attributable to Doc Morris AG shareholders",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (Annual_Report_Sustainability_2025_en.pdf) und Consolidated Income Statement auf S. 145 extrahiert: 'Net revenue' 1'124'455 Tsd. und 'Net income/(loss) Attributable to Doc Morris AG shareholders' -134'395 Tsd. stimmen exakt. Vorsicht geboten: eine zweite, ähnliche Zahl -134'063 ('Total comprehensive income/(loss), Attributable to DocMorris AG shareholders', S. 146) existiert im Bericht, betrifft aber das Gesamtergebnis inkl. OCI und wurde korrekt nicht verwendet. Beschäftigte 1'576 (Köpfe) vs. 1'418 (FTE) beide im Bericht gefunden, Kopfzahl korrekt gemäss Vorgabe gewählt."
+ }
 }

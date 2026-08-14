@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 788.483,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 79.452,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Produktion, Verteilung und Vermarktung von Strom in der Westschweiz sowie Energiedienstleistungen (Solaranlagen, Ladestationen, Fernwärme, energetische Gebäudesanierung).",
+ "products_url": "https://www.romande-energie.ch/tout-sur-nous",
+ "founding_year": 1886,
+ "founding_year_source": "https://www.romande-energie.ch/tout-sur-nous/histoire",
+ "employees": 1512,
+ "fiscal_year": 2025,
+ "report_url": "https://investor.romande-energie.ch/~/media/Files/R/Romande-Energie-IR/2025/2025_rapport_annuel_fr.pdf",
+ "note": "noga_group 'industrie' konsistent mit BKW.json (vergleichbarer Energieversorger) gewählt, da keine eigene Energiekategorie vorgesehen ist. Gründungsgeschichte komplex: älteste Vorgängergesellschaft (Société électrique Vevey-Montreux) 1886, Fusion zur Société Romande d'Électricité 1904, aktuelle Holdingstruktur seit 2006/1997. Mitarbeitende: 'Nombre total de collaborateurs' (Köpfe) 1'512 per 31.12.2025 verwendet gemäss Regel 6; ETP/FTE-Wert im selben Bericht: 1'397. Konzernergebnis total (inkl. Minderheiten) betrug CHF 80.062 Mio.; der auf die Aktionäre der Romande Energie Holding SA entfallende Anteil (verwendet) betrug CHF 79.452 Mio., wesentlich getragen durch den Erfolgsbeitrag der Beteiligung an Alpiq.",
+ "_verification": "Umsatz: Zeile 'Total des produits d'exploitation' = CHF 788'483 Tsd. (788.483 Mio.) für 2025 aus der konsolidierten Erfolgsrechnung im Rapport annuel 2025 (Groupe Romande Energie, S. 'États financiers 2025'). Gewinn: Zeile 'Attribuable à: Actionnaires Romande Energie Holding SA' = CHF 79'452 Tsd. (79.452 Mio.) für 2025, unterschieden von 'Résultat net du Groupe' (CHF 80'062 Tsd. inkl. Minderheitsanteile CHF 610 Tsd.) in derselben Tabelle. Beide Zahlen stammen aus derselben testierten Konzernrechnung 2025, genehmigt am 25.03.2026 durch den Verwaltungsrat. Mitarbeitendenzahl aus der Tabelle 'Synthèse des indicateurs' (Nachhaltigkeitsbericht im selben Geschäftsbericht) geprüft, Kopfzahl vs. ETP verglichen."
+}

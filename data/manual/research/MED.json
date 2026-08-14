@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "269.257",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "8.349",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Implantate, Schrauben und Platten für die operative Versorgung von Knochenbrüchen (Trauma- und Extremitätenchirurgie).",
+ "products_url": "https://medartis.com/en/products",
+ "founding_year": "1997",
+ "founding_year_source": "https://medartis.com/fileadmin/user_upload/006_Investors/002_Reports_Presentations/2026/EN/Medartis_Annual_Report_2025.pdf",
+ "employees": "1337",
+ "fiscal_year": "2025",
+ "report_url": "https://medartis.com/fileadmin/user_upload/006_Investors/002_Reports_Presentations/2026/EN/Medartis_Annual_Report_2025.pdf",
+ "note": "Konzern-Erfolgsrechnung weist die Zeile 'Net revenue' aus (269'257 Tsd. CHF), nicht wörtlich 'Net sales' - inhaltlich aber der Produktumsatz des Konzerns. Vom Konzern-Nettogewinn (9'336 Tsd. CHF) entfallen 987 Tsd. auf nicht beherrschende Anteile (KeriMedical, NeoOrtho); eingetragen ist der auf die Aktionäre der Medartis Holding AG entfallende Anteil (8'349 Tsd.). Mitarbeitendenzahl ist der ausgewiesene Headcount zum 31.12.2025 (nicht die im Text gerundete Marketingangabe 'approx. 1,400').",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. 124) des Annual Report 2025: Zeile 'Net revenue' 269'257 (2025) sowie 'Attributable to: Medartis Holding AG shareholders' 8'349. Mitarbeitendenzahl aus der Tabelle 'KEY FIGURES EMPLOYEES / Global workforce', explizit als Headcount zum Berichtsstichtag deklariert. Geprüft: PDF direkt heruntergeladen, Zahlen im Volltext an der Quellstelle verifiziert."
+}

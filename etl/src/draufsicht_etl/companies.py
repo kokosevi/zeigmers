@@ -211,6 +211,22 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
                     f"gerundeter Wert eintragen und die Rundung in note erklären"
                 )
 
+        # Umsatz und Gewinn einer Zeile stammen aus derselben Rechnung — dann
+        # stehen sie auch in derselben Einheit. Wären sie es nicht, stünde im
+        # Panel ein Gewinn, der den Umsatz tausendfach übersteigt, ohne dass
+        # irgendetwas warnt. Die Recherche liefert beide Schreibweisen
+        # (Millionen und absolute Franken), je nachdem wie der Bericht es
+        # darstellt — das ist zulässig, aber nicht gemischt in einer Zeile.
+        revenue_unit = row.get("revenue_unit", "").strip()
+        profit_unit = row.get("profit_unit", "").strip()
+        if (row.get("revenue", "").strip() and row.get("profit", "").strip()
+                and revenue_unit and profit_unit and revenue_unit != profit_unit):
+            problems.append(
+                f"{label}: Einheit für Umsatz ({revenue_unit}) und Gewinn "
+                f"({profit_unit}) verschieden — beide kommen aus derselben "
+                f"Rechnung und gehören in dieselbe Einheit"
+            )
+
         group = row.get("noga_group", "").strip()
         if group and group not in valid_groups:
             problems.append(

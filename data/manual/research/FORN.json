@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://forbo.blob.core.windows.net/forbodocuments/b0ece9c1-2a2b-4a88-a4b1-6493bf48d0ce/Forbo_Annual%20Report%202025_Web-PDF_FINAL.pdf",
  "note": "employees = 5'100 Vollzeitäquivalente (Total full-time equivalents) per 31.12.2025; der Bericht weist an dieser Stelle keine separate Kopfzahl aus, daher FTE übernommen.",
- "_verification": "Umsatz (Net sales 1'085.4 Mio. CHF) und Gewinn (Profit attributable to shareholders of Forbo Holding Ltd, 68.9 Mio. CHF) stammen beide aus der Consolidated income statement, Annual Report 2025 (Financial Report), S. 163/164 — Profit for the year ist vollständig den Aktionären zurechenbar, keine Minderheitsanteile. Geprüft: Zeilenbezeichnung 'Net sales' vs. Summenzeilen in der Segmentnote, Employees-Tabelle im Gesamtbericht (S. mit 'Total full-time equivalents 5,100'), Gründungsjahr auf der offiziellen Forbo-Firmengeschichte-Seite."
+ "_verification": "Umsatz (Net sales 1'085.4 Mio. CHF) und Gewinn (Profit attributable to shareholders of Forbo Holding Ltd, 68.9 Mio. CHF) stammen beide aus der Consolidated income statement, Annual Report 2025 (Financial Report), S. 163/164 — Profit for the year ist vollständig den Aktionären zurechenbar, keine Minderheitsanteile. Geprüft: Zeilenbezeichnung 'Net sales' vs. Summenzeilen in der Segmentnote, Employees-Tabelle im Gesamtbericht (S. mit 'Total full-time equivalents 5,100'), Gründungsjahr auf der offiziellen Forbo-Firmengeschichte-Seite.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Forbo Holding Ltd",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Profit attributable to shareholders of Forbo Holding Ltd",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (Forbo_Annual Report 2025_Web-PDF_FINAL.pdf) und Consolidated income statement auf S. 163 extrahiert: 'Net sales' 1'085.4 und 'Profit attributable to shareholders of Forbo Holding Ltd' 68.9 stimmen exakt; 'Profit' (vor Zurechnung) ist identisch 68.9, also keine Minderheitsanteile, wie vorgelegt. Beschäftigte 5'100 als 'Total full-time equivalents' bestätigt."
+ }
 }

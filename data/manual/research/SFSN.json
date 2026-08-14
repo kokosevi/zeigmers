@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 3045.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 219.0,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Präzisionsformteile, mechanische Befestigungssysteme und Baubeschläge (Türen, Fenster, Fassaden) für Industrien wie Automobil, Luftfahrt, Elektronik, Medizintechnik und Bau, sowie Beschaffungsdienstleistungen (C-Teile-Management).",
+ "products_url": "https://www.sfs.com/ch/en/products-technologies/",
+ "founding_year": 1928,
+ "founding_year_source": "https://www.sfs.com/ch/en/sfs-group/sfs-history/",
+ "employees": 13646,
+ "fiscal_year": 2025,
+ "report_url": "https://reports.sfs.com/annual-report/2025/en/consolidated-income-statement",
+ "note": "Mitarbeitendenzahl 13'646 ist FTE (Vollzeitäquivalente) per 31.12.2025 gemäss Geschäftsbericht; eine separate Kopfzahl wird im Bericht nicht ausgewiesen. Zeile 'Net sales' (CHF 3'045.4 Mio.) unterscheidet sich von der in Medienmitteilungen genannten 'Sales'-Zahl CHF 3'056.6 Mio. (vermutlich inkl. weiterer Bestandteile); die konsolidierte Erfolgsrechnung selbst weist ausschliesslich 'Net sales' = 3'045.4 Mio. aus, diese wurde verwendet.",
+ "_verification": "Umsatz: Zeile 'Net sales' = CHF 3'045.4 Mio. (2025) aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 (reports.sfs.com/annual-report/2025/en/consolidated-income-statement), abgegrenzt von 'Other operating income' (42.1 Mio.) und von der abweichenden 'Sales'-Zahl in Pressemitteilungen. Gewinn: Zeile 'Attributable to SFS shareholders' = CHF 219.0 Mio. (2025), unterschieden vom Konzern-Nettogewinn 'Net income' CHF 220.2 Mio. (inkl. Minderheitsanteile CHF 1.2 Mio.) in derselben Tabelle für dasselbe Geschäftsjahr 2025. Mitarbeitendenzahl aus dem Management Report desselben Geschäftsberichts geprüft."
+}

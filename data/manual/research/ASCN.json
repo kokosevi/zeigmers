@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": "292.1",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "15.1",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Kommunikations- und Kollaborationslösungen für Gesundheitseinrichtungen und Unternehmen, u.a. mobile Endgeräte, Alarmierungs- und Nurse-Call-Systeme sowie zugehörige Software.",
+ "products_url": "https://www.ascom.com/products-and-services/",
+ "founding_year": "1987",
+ "founding_year_source": "https://www.ascom.com/globalassets/assets/global/corporate/documents/about-us/220812_ir_presentation_final.pdf",
+ "employees": "1358",
+ "fiscal_year": "2025",
+ "report_url": "https://www.ascom.com/globalassets/assets/global/corporate/documents/reports-and-presentations/2025/ascom_annualreport2025_web.pdf",
+ "note": "Mitarbeitende als Vollzeitäquivalente ausgewiesen ('Number of employees (FTEs)': 1'358 per Ende 2025), keine Kopfzahl im Bericht.",
+ "_verification": "Zeilen 'Net revenue' (CHF 292.1 Mio., Note 18) und 'Group profit for the period attributable to owners of the parent' (CHF 15.1 Mio.) stammen aus der 'Consolidated income statement' im Ascom Annual Report 2025, S. 117 bzw. Note zu Earnings per Share. Geprüft gegen die im Ad-hoc-Jahresergebnis-Communiqué vom 9. März 2026 genannten identischen Werte (Net revenue 292.1, Group profit 15.1, Employees FTE 1'358). Gründungsjahr 1987 (Fusion Hasler/Autophon/Zellweger) aus einer offiziellen Ascom-Investorenpräsentation von 2022 bestätigt, da der Geschäftsbericht 2025 selbst keine Gründungsangabe enthält."
+}

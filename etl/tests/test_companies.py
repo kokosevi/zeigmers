@@ -1070,3 +1070,17 @@ def test_validate_rejects_a_non_integer_employee_count():
 
 def test_validate_accepts_a_plain_integer_employee_count():
     companies.validate([_row(employees="1206")])
+
+
+def test_validate_rejects_mismatched_units_between_revenue_and_profit():
+    # Umsatz und Gewinn einer Zeile stammen aus derselben Rechnung — dann
+    # stehen sie auch in derselben Einheit. Eine Zeile mit Umsatz in
+    # Millionen und Gewinn in absoluten Franken waere um den Faktor 10**6
+    # verschoben, und im Panel staende ein Gewinn, der den Umsatz
+    # tausendfach uebersteigt, ohne dass irgendetwas warnt.
+    with pytest.raises(ValueError, match="Einheit"):
+        companies.validate([_row(
+            revenue="1500", revenue_unit="1000000",
+            profit="45000000", profit_unit="1", profit_currency="CHF",
+            consolidation_basis="total_group",
+        )])

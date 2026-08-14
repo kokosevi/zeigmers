@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 1669.0,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 325.2,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Private Banking und Vermögensverwaltung für vermögende Privatkunden (Anlageberatung, Vermögensverwaltungsmandate, Kreditlösungen, Trust-Dienstleistungen) sowie Asset Management über die eigene Fondsplattform New Capital.",
+ "products_url": "https://www.efginternational.com/us/private-banking.html",
+ "founding_year": 1980,
+ "founding_year_source": "https://www.efginternational.com/about/history.html",
+ "employees": 3225,
+ "fiscal_year": 2025,
+ "report_url": "https://a.storyblok.com/f/272522/x/b7b18673fe/efg_annual_report_2025.pdf",
+ "note": "Als Privatbank weist EFG International keinen Nettoumsatz aus; 'Operating income' (Geschäftsertrag, CHF 1'669.0 Mio.) ist das Gegenstück, zusammengesetzt aus Nettozinsertrag, Netto-Kommissions- und Gebührenertrag sowie sonstigem Ertrag. Gewinn 'Net profit attributable to equity holders of the Group' CHF 325.2 Mio.; davon abweichend der Konzern-Gesamtgewinn 'Net profit for the year' CHF 325.4 Mio., wovon CHF 0.2 Mio. auf nicht beherrschende Anteile (non-controlling interests) entfallen. Beschäftigte als Vollzeitäquivalente ausgewiesen ('Number of employees (full-time equivalents)' 3'225); der Bericht nennt separat nur die Kopfzahl der Kundenberater ('Number of Client Relationship Officers (headcount)' 763), nicht die Gesamtbelegschaft als Köpfe. Gründungsjahr 1980 bezieht sich auf die eigene Firmengeschichte: das Geschäft entstand 1980 mit dem Erwerb der Genfer Banque de Dépôts durch die Familie Latsis; die Marke EFG entstand erst 1995/1997 in Zürich, EFG International AG wurde 2005 an der SIX kotiert.",
+ "_verification": "Geschäftsertrag und Gewinn stammen aus der 'Consolidated Income Statement' des Annual Report 2025: Zeile 'Operating income' CHF 1'669.0 Mio. und 'Net profit attributable to equity holders of the Group' CHF 325.2 Mio. (getrennt von 'Net profit attributable to non-controlling interests' CHF 0.2 Mio. ausgewiesen). Geprüft: dieselben Werte erscheinen konsistent im Segmentbericht (Operating income je Region summiert auf 1'669.0) und in der Kennzahlenübersicht am Berichtsanfang ('Operating income, in CHF million 1,669.0'); Mitarbeiterzahl 3'225 FTE ebenfalls aus dieser Übersicht sowie im Fliesstext bestätigt ('At end-2025, the number of employees was 3,225 (full-time equivalents')."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 319.57,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -60.318,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Verbundwerkstoffe (Composites) für Windenergie-, Marine- und Industrieanwendungen: Kernmaterialien, Prepregs, Klebstoffe/Harze sowie Werkzeug- und Formenbau.",
+ "products_url": "https://www.gurit.com/products-and-materials/",
+ "founding_year": 1835,
+ "founding_year_source": "https://www.gurit.com/history-2/",
+ "employees": 1961,
+ "fiscal_year": 2025,
+ "report_url": "https://www.gurit.com/downloads/Gurit-Annual-Report-2025.pdf",
+ "note": "Gurit hat 2025 das Carbonfaser-Pultrusionsgeschäft sowie weitere Werke (u.a. PET-Präparationsanlage Carmignano di Brenta) als 'discontinued business' eingestuft/veräussert. Die konsolidierte Erfolgsrechnung weist NET SALES als 'TOTAL GROUP' (319.57 Mio. CHF = Continued Operations 293.6 Mio. + Discontinued Operations/Wind Materials 25.95 Mio.) aus einer einzigen Zeile aus – daher total_group. Konzernergebnis (Result for the year) war ein Verlust von –60.408 Mio. CHF, davon den Aktionären von Gurit zurechenbar –60.318 Mio. CHF (Minderheitsanteil –0.090 Mio.). employees = 'Number of employees at December 31' 2025 = 1'961 — explizit als Kopfzahl (Headcount) ausgewiesen, nicht die daneben genannten 2'047 durchschnittlichen Vollzeitäquivalenten (FTE).",
+ "_verification": "Umsatz (NET SALES 319'570 Tsd. CHF, TOTAL GROUP) und Konzernergebnis (RESULT FOR THE YEAR –60'408 Tsd. CHF, davon 'Thereof attributable to shareholders of Gurit' –60'318 Tsd. CHF) stammen beide aus der Consolidated Income Statement im Gurit Annual Report 2025, S. 100. Geprüft: Segmentnote 3 (Net Sales by Segments) bestätigt, dass die Zeile 'TOTAL GROUP' Continued und Discontinued Operations zusammenfasst und mit der Zeile in der Erfolgsrechnung übereinstimmt; Employees-Kennzahlen auf der Umschlagseite (Headcount vs. FTE explizit unterschieden, S. Workforce-Daten Fussnote 'based on headcounts as of 31.12.2025')."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "514.2",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "55.9",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Materialflusstechnik-Komponenten und -Systeme fuer Foerderanlagen: Rollen, Antriebe (Drives), Foerder- und Sortiersysteme (Conveyors & Sorters) sowie Palettenhandling-Loesungen fuer Systemintegratoren und OEMs.",
+ "products_url": "https://ir-interroll-prod.fra1.cdn.digitaloceanspaces.com/files/Reporting/Annual-Report-2025/PDF/2025_Business_Report.pdf",
+ "founding_year": "1959",
+ "founding_year_source": "https://ir-interroll-prod.fra1.cdn.digitaloceanspaces.com/files/Reporting/Annual-Report-2025/PDF/2025_Business_Report.pdf",
+ "employees": "2379",
+ "fiscal_year": "2025",
+ "report_url": "https://ir-interroll-prod.fra1.cdn.digitaloceanspaces.com/files/Reporting/Annual-Report-2025/PDF/2025_Financial-Report-Interroll-Group.pdf",
+ "note": "Kein Minderheitsanteil ausgewiesen ('Result attributable to: non-controlling interests -; owners of Interroll Holding AG 55'947'). employees = durchschnittliche Vollzeitstellen (Average number of employees, FTE) 2'379 gemaess Kennzahlentabelle im Business Report; eine Kopfzahl (Headcount) weist der Bericht nicht separat aus, im Fliesstext gerundet 'around 2,400 employees'.",
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated income statement'), Interroll Financial Report Interroll Group 2025, S. 3: Zeile 'Sales' CHF 514'157 Tsd. (2025, Vorjahr 527'105); darunter 'Result' CHF 55'947 Tsd., 'Result attributable to: owners of Interroll Holding AG' CHF 55'947 Tsd. (keine non-controlling interests). Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Zahlen decken sich mit der Kennzahlentabelle im Business Report 2025 (S. 2: 'Total sales 514.2', 'Result 55.9', 'Average number of employees (FTE) 2,379'); Gründungsjahr 1959 laut 'About Interroll'-Abschnitt im selben Business Report (S. 3: 'The company was founded in 1959')."
+}

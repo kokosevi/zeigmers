@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": "1568",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "-52",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Oberflächenbeschichtungen und -behandlungen (PVD, CVD, thermisches Spritzen) sowie additive Fertigung und Beschichtungsanlagen für Industriekunden.",
+ "products_url": "https://www.oerlikon.com/en/about-us/",
+ "founding_year": "1906",
+ "founding_year_source": "https://www.oerlikon.com/en/about-us/history/",
+ "employees": "9343",
+ "fiscal_year": "2025",
+ "report_url": "https://www.oerlikon.com/ecoma/files/Oerlikon_Annual_Report_2025.pdf?download=true",
+ "note": "FALLE 2/3 einschlaegig: Am 5. Mai 2025 wurde der Verkauf der Barmag-Division (Textilmaschinen fuer Chemiefasern) an Rieter angekuendigt; Closing erfolgte erst am 2. Februar 2026, also nach Bilanzstichtag. Der gesamte Geschaeftsbericht 2025 berichtet standardmaessig 'Reporting scope: continuing operations' - Barmag wird als aufgegebener Geschaeftsbereich (discontinued operations) separat ausgewiesen, auch die Vorjahreszahlen 2024 wurden entsprechend restated. revenue (1'568 Mio., Zeile 'Total sales') und employees (9'343 FTE) sind beide bereits auf Basis 'continuing operations' (ohne Barmag). profit ist NICHT direkt als Zeile ausgewiesen: Die Erfolgsrechnung zeigt nur 'Result from continuing operations' -51 Mio. (vor Aufteilung Aktionaere/Minderheiten) und getrennt 'Attributable to: Shareholders of the parent' nur fuer das Gesamtergebnis (fortgefuehrt+aufgegeben zusammen: -19 Mio.). Der eingetragene Wert -52 Mio. wurde daher berechnet als Gesamtergebnis Aktionaersanteil (-19 Mio.) minus Aktionaersanteil des aufgegebenen Geschaefts Barmag (33 Mio., separat in der Note 'Result from discontinued operations' ausgewiesen) = -52 Mio.; beide Ausgangswerte sind explizit im Bericht genannt, nur die Subtraktion stammt von uns. Kleinere Rundungsdifferenz zur Zeile 'Result from continuing operations' (-51 Mio., inkl. dortiger Minderheitsanteile) ist auf Rundung auf ganze Millionen zurueckzufuehren.",
+ "_verification": "Umsatz aus der 'Consolidated Income Statement' (S. 70 des Annual Report 2025), Zeile 'Total sales' 1'568 Mio. CHF (2025, continuing operations, Vorjahr restated). Gewinn abgeleitet aus zwei Zeilen: 'Attributable to: Shareholders of the parent' im Haupt-Erfolgsrechnung (-19 Mio., Gesamtkonzern inkl. Barmag) minus derselben Zeile in der Detail-Note 'Result from discontinued operations' (33 Mio., nur Barmag) = -52 Mio. fuer das fortgefuehrte Geschaeft. Mitarbeitendenzahl aus 'Key Figures Oerlikon Group', Zeile 'Number of employees (full-time equivalents)' 9'343, mit Fussnote 'Continuing operations'. Geprüft: alle Zahlen direkt aus dem PDF extrahiert und Konsistenz zwischen Haupttabelle, Erfolgsrechnung und Barmag-Detailnote gegengerechnet."
+}

@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://report.flughafen-zuerich.ch/2025/ar/app/uploads/Integrierter_Bericht_2025_FZAG.pdf",
  "note": "revenue_type als operating_income gewählt: FHZN weist keinen klassischen Nettoumsatz aus, sondern 'Total Erträge' (Aviation- + Non-Aviation-Erträge) in der Konzernerfolgsrechnung, S. 179. Konzernergebnis 346.5 Mio. entfällt vollständig auf Aktionäre der Flughafen Zürich AG (Minderheitsanteil 0.0). employees = 'Anzahl Mitarbeitende (ohne Lernende, Praktikanten, Trainees)', Flughafen Zürich Gruppe Total 2025, aus Nachhaltigkeitskennzahlen S. 10 — Kopfzahl, keine FTE-Angabe im Bericht ausgewiesen. founding_year: Flughafen Zürich AG in heutiger Form entstand am 1. April 2000 durch Fusion von Flughafen-Immobilien-Gesellschaft (FIG) und Flughafendirektion Zürich (FDZ) nach der Privatisierungsabstimmung 1999; der Flughafen selbst ist seit 1948 in Betrieb.",
- "_verification": "Umsatz (Total Erträge 1'361.1 Mio. CHF) und Konzernergebnis (346.5 Mio. CHF) stammen beide aus der Konzernerfolgsrechnung im Integrierten Bericht 2025, S. 179 (Mehrjahresvergleich S. 9 bestätigt dieselben Werte für 2025). Geprüft: Zeilenbezeichnungen im PDF ('Total Erträge', 'Konzernergebnis', 'Anteil Aktionäre der Flughafen Zürich AG am Konzernergebnis'), Mitarbeitendenzahl in Nachhaltigkeitskennzahlen-Tabelle, Gründungsjahr per Websuche auf flughafen-zuerich.ch-Magazin und mehreren Medien gegengeprüft."
+ "_verification": "Umsatz (Total Erträge 1'361.1 Mio. CHF) und Konzernergebnis (346.5 Mio. CHF) stammen beide aus der Konzernerfolgsrechnung im Integrierten Bericht 2025, S. 179 (Mehrjahresvergleich S. 9 bestätigt dieselben Werte für 2025). Geprüft: Zeilenbezeichnungen im PDF ('Total Erträge', 'Konzernergebnis', 'Anteil Aktionäre der Flughafen Zürich AG am Konzernergebnis'), Mitarbeitendenzahl in Nachhaltigkeitskennzahlen-Tabelle, Gründungsjahr per Websuche auf flughafen-zuerich.ch-Magazin und mehreren Medien gegengeprüft.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Flughafen Zürich AG",
+  "revenue_zeile": "Total Erträge (Konzernerfolgsrechnung, Aviation-Erträge 709.1 + Non-Aviation-Erträge 652.0)",
+  "profit_zeile": "Konzernergebnis / Anteil Aktionäre der Flughafen Zürich AG am Konzernergebnis",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen und mit pdftotext extrahiert (Integrierter_Bericht_2025_FZAG.pdf); in der Konzernerfolgsrechnung (S. 179) stehen 'Total Erträge' 1'361.1 und 'Konzernergebnis' 346.5 exakt wie vorgelegt, Minderheitsanteil 0.0 bestätigt. Beschäftigtenzahl 2'721 in der Nachhaltigkeitskennzahlen-Tabelle 'Flughafen Zürich Gruppe Total' gegengeprüft, keine Abweichung gefunden."
+ }
 }

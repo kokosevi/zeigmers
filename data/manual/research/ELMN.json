@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 176.0,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 4.145,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Gehäuse- und Systemtechnik für die Elektronikindustrie: Elektronikgehäuse, 19-Zoll-Baugruppenträger und -Schrankkonzepte, Embedded-Computing-Baugruppen (Einplatinencomputer, Backplanes) sowie Dreh- und Bedienschalter für Medizinal-, Militär-, Industrie- und Telekommunikationsanwendungen.",
+ "products_url": "https://products.elma.com/",
+ "founding_year": 1960,
+ "founding_year_source": "https://www.elma.com/en/about/history",
+ "employees": 821,
+ "fiscal_year": 2025,
+ "report_url": "https://cdn.prod.website-files.com/646bab0a12a17d3240118a9e/69a1306912656fab78c595c4_Elma-Geschaeftsbericht-2025_DE.pdf",
+ "note": "Beschäftigte als 'Personalendbestand in Vollzeitstellen (inkl. temporären Mitarbeitenden)' ausgewiesen (821 per 31.12.2025), keine separate Kopfzahl im Bericht. Der Bericht nach Swiss GAAP FER weist keine Minderheitsanteile aus (kein Hinweis auf 'Minderheiten' im gesamten Konzernabschluss); 'Unternehmensgewinn' CHF 4.145 Mio. ist somit vollständig den Aktionären zurechenbar.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Konsolidierten Erfolgsrechnung' des Geschäftsberichts 2025: Zeile 'Nettoerlöse aus Lieferungen und Leistungen' kCHF 175'995 und 'Unternehmensgewinn' kCHF 4'145. Geprüft: derselbe Umsatzwert wird im Lagebericht als 'Net sales reached CHF 176.0 million' bestätigt; Mitarbeiterzahl aus der Kennzahlenübersicht ('Personalendbestand in Vollzeitstellen (inkl. temporären Mitarbeitenden)' 821 für 2025 vs. 828 für 2024) im vorderen Berichtsteil geprüft."
+}

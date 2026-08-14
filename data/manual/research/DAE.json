@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://reports.datwyler.com/files/pages/data/downloads/financial-report-2025/ffa8993701-1770997952/datwyler.com_financial-report_2025.en.pdf",
  "note": "Der Konzern weist keine Minderheitsanteile aus ('There are no minority interests', Notes zum Konzernabschluss), daher entspricht 'Net result' CHF 80.8 Mio. vollständig dem Aktionärsanteil. Beschäftigte laut Fünfjahresübersicht 'Number of employees (at year-end)' 2025 = 7'823; der Bericht spezifiziert nicht, ob Köpfe oder FTE gezählt werden.",
- "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. F05) des Datwyler Financial Report 2025: Zeile 'Net revenue' CHF 1'100.5 Mio. und 'Net result' CHF 80.8 Mio. Geprüft: dieselben Werte erscheinen in der Fünfjahresübersicht (Key Figures) zusammen mit 'Number of employees (at year-end)' 7'823 für 2025; laut Notes bestehen keine Minderheitsanteile, sodass der Nettogewinn vollständig den Aktionären zuzurechnen ist."
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. F05) des Datwyler Financial Report 2025: Zeile 'Net revenue' CHF 1'100.5 Mio. und 'Net result' CHF 80.8 Mio. Geprüft: dieselben Werte erscheinen in der Fünfjahresübersicht (Key Figures) zusammen mit 'Number of employees (at year-end)' 7'823 für 2025; laut Notes bestehen keine Minderheitsanteile, sodass der Nettogewinn vollständig den Aktionären zuzurechnen ist.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Dätwyler Holding Inc. (dt. Bericht: Dätwyler Holding AG)",
+  "revenue_zeile": "Net revenue",
+  "profit_zeile": "Net result",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (datwyler.com_financial-report_2025.en.pdf) und Consolidated Income Statement extrahiert: 'Net revenue' 1'100.5 und 'Net result' 80.8 stimmen exakt; Notiz 'There are no minority interests' (Konsolidierungsgrundsätze) bestätigt, dass der volle Gewinn den Aktionären zusteht. Beschäftigte 7'823 als 'Number of employees (at year-end)' in der Fünfjahresübersicht bestätigt."
+ }
 }

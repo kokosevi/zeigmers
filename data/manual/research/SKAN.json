@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 333.335,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 16.274,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Isolatoren, Reinraumausrüstung und Dekontaminationssysteme für die aseptische Verarbeitung in der Pharma- und Biotechindustrie, inkl. Fill-Finish-Lösungen und Laborsicherheitsausrüstung.",
+ "products_url": "https://skan.com/en/company/about-skan/",
+ "founding_year": 1968,
+ "founding_year_source": "https://skan.com/en/company/about-skan/",
+ "employees": 1755,
+ "fiscal_year": 2025,
+ "report_url": "https://ir.skan.com/media/document/a9782c71-52d4-45ef-9d6e-0cbf51b0f196/assets/SKAN_Annual_Report_2025.pdf?disposition=inline",
+ "note": "Gewinn: 'Profit attributable to shareholders of SKAN Group AG' (CHF 16.274 Mio.) verwendet, unterschieden vom Konzern-'Net profit for the period' total (CHF 17.565 Mio., inkl. Minderheitsanteile CHF 1.291 Mio.). Mitarbeitendenzahl: explizit als 'Headcount as of 31 December' ausgewiesen (1'755 per 31.12.2025, keine Rundung nötig).",
+ "_verification": "Umsatz: Zeile 'Net sales from goods and services' = CHF 333'335 Tsd. (333.335 Mio.) für 2025 aus der konsolidierten Erfolgsrechnung im SKAN Annual Report 2025 (ir.skan.com PDF, S. Finanzberichterstattung). Gewinn: Zeile 'Profit attributable to shareholders of SKAN Group AG' = CHF 16'274 Tsd. (16.274 Mio.) für 2025, abgegrenzt von 'Profit attributable to minority interests' (CHF 1'291 Tsd.) in derselben Tabelle des Eigenkapitalnachweises/Erfolgsrechnung, gleiches Geschäftsjahr 2025. Mitarbeitendenzahl aus der Segmentberichtstabelle ('Headcount as of 31 December') desselben Berichts geprüft."
+}

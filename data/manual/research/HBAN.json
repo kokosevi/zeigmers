@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "9291.3",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "552.3",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Erst- und Rückversicherung (Leben und Nicht-Leben), betriebliche und private Altersvorsorge sowie Vermögensverwaltung für Privat- und Firmenkunden in Europa.",
+ "products_url": "https://www.helvetia-baloise.com/corporate/hb/en/home/about-us.html",
+ "founding_year": "1858",
+ "founding_year_source": "https://www.helvetia.de/de/ueber-uns/geschichte.html",
+ "employees": "21138",
+ "fiscal_year": "2025",
+ "report_url": "https://www.helvetia-baloise.com/content/dam/os/corporate/hb/documents/annual-results/2025/annual-report-2025.pdf",
+ "note": "Wichtig zum Zeitraum: Die Fusion von Helvetia und Baloise auf Holdingstufe wurde erst am 5. Dezember 2025 vollzogen und bilanziell als Akquisition (IFRS) abgebildet. Der Bericht sagt ausdrücklich: 'the income statement for the year 2025 reflects exclusively the results of Helvetia' - der Ertrag der ehemaligen Baloise-Einheiten vom 5.-31.12.2025 wurde als unwesentlich weggelassen. Umsatz (9'291.3) und Gewinn (552.3) sind also reine Helvetia-Zahlen fuer das volle Jahr 2025, NICHT die kombinierte Gruppe. Die Mitarbeiterzahl (21'138) ist dagegen ein Stichtagswert per 31.12.2025 und schliesst die ehemaligen Baloise-Mitarbeitenden bereits ein (Konzern nach Fusionsvollzug) - Umsatz/Gewinn einerseits und Mitarbeiterzahl andererseits beziehen sich damit auf unterschiedliche Unternehmensumfänge. employees = Headcount (Koepfe), nicht FTE; der Bericht stellte 2025 explizit von FTE auf Headcount um ('Employee key figures are disclosed this year in terms of headcount (HC) rather than full-time equivalent (FTE)', Sustainability Statement). revenue_type auf operating_income gesetzt, da unter IFRS 17 keine Zeile 'Total revenues'/Nettoumsatz existiert; 'Insurance revenue' ist die oberste Ertragszeile der Konzern-Erfolgsrechnung (analog zu Zurich/Swiss Re in diesem Datensatz). Eine alternative Kennzahl 'Business volume' (Praemien+Einlagen, 11'550.4) wird vom Bericht selbst als 'not directly comparable to any figure under IFRS' bezeichnet und daher nicht verwendet.",
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated income statement'), Helvetia Baloise Annual Report 2025, S. 237: oberste Zeile 'Insurance revenue' CHF 9'291.3 Mio. (2025, Vorjahr 9'101.4); weiter unten 'Net income' CHF 574.7 Mio., davon 'Attributable to: Shareholders of Helvetia Baloise Holding AG' CHF 552.3 Mio. (Rest 22.4 Mio. Non-controlling interests). Beide Zahlen aus derselben Konzern-Erfolgsrechnung, gleicher Umfang. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Formulierung zum Fusionsstichtag und zur alleinigen Helvetia-Basis der 2025er-Erfolgsrechnung steht wörtlich auf S. 1 ('Key figures'); Mitarbeiterzahl 21'138 ('Helvetia Baloise Group', Headcount) auf derselben Seite 1 sowie im Sustainability-Teil (Umstellung auf Headcount) bestätigt; Gründungsjahr 1858 über helvetia.de/Geschichte verifiziert (Konzernwebseite mit Fusionsstichtag nennt kein eigenes Gründungsjahr mehr)."
+}

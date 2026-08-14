@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.aryzta.com/media/document/7be11c9f-2070-4f15-8781-7064d7396981/assets/ARYZTA_AG_2025_Annual_Report.pdf",
  "note": "Mitarbeiterzahl als Kopfzahl ausgewiesen ('Headcount of Total Employees': 8'138 für 2025) im Sustainability-Statement-Teil des Geschäftsberichts, nicht als FTE. ARYZTA berichtet in EUR und mit Geschäftsjahr per 31. Dezember. Kein Minderheitsanteil ausgewiesen: 'Profit for the year attributable to equity shareholders' (EUR 112.3 Mio.) ist die einzige Ergebniszeile.",
- "_verification": "Zeilen 'Revenue' (EUR 2'223.3 Mio.) und 'Profit for the year attributable to equity shareholders' (EUR 112.3 Mio.) stammen aus der 'Group Consolidated Income Statement for the year ended 31 December 2025' im Annual Report 2025 (S. 190). Geprüft: keine separate Minderheitsanteilszeile in der Erfolgsrechnung. Mitarbeiterzahl aus der ESRS-Kennzahlentabelle 'People and Talent' (S. ca. 9331 im Volltext) desselben Berichts entnommen. Gründungsjahr 2008 (Fusion IAWS Group plc und Hiestand) aus dem ARYZTA-Geschäftsbericht 2010 bestätigt, da der Bericht 2025 selbst keine Gründungsangabe enthält."
+ "_verification": "Zeilen 'Revenue' (EUR 2'223.3 Mio.) und 'Profit for the year attributable to equity shareholders' (EUR 112.3 Mio.) stammen aus der 'Group Consolidated Income Statement for the year ended 31 December 2025' im Annual Report 2025 (S. 190). Geprüft: keine separate Minderheitsanteilszeile in der Erfolgsrechnung. Mitarbeiterzahl aus der ESRS-Kennzahlentabelle 'People and Talent' (S. ca. 9331 im Volltext) desselben Berichts entnommen. Gründungsjahr 2008 (Fusion IAWS Group plc und Hiestand) aus dem ARYZTA-Geschäftsbericht 2010 bestätigt, da der Bericht 2025 selbst keine Gründungsangabe enthält.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "ARYZTA AG",
+  "revenue_zeile": "Revenue",
+  "profit_zeile": "Profit for the year attributable to equity shareholders",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (ARYZTA_AG_2025_Annual_Report.pdf) und Group Consolidated Income Statement auf S. 191 extrahiert: 'Revenue' 2'223.3 und 'Profit for the year attributable to equity shareholders' 112.3 stimmen exakt, keine separate Minderheitsanteilszeile. Geschäftsjahr gezielt geprüft: ARYZTA hatte 2023 einen Wechsel des Geschäftsjahresendes (Bericht nennt explizit eine '17-month period ended 31 December 2023' als Übergangsperiode), das Geschäftsjahr 2025 selbst ist aber wieder ein normales Kalenderjahr ('for the year ended 31 December 2025') - fiscal_year 2025 ist somit korrekt und keine Abweichung."
+ }
 }

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "194.619",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "-15.234",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Industrieholding mit Geschäftseinheiten für ophthalmologische Medizingeräte (Haag-Streit), Kabelverarbeitungsmaschinen (Schleuniger) und Infrastrukturtechnik.",
+ "products_url": "https://metallzug.ch/en/profile",
+ "founding_year": "1887",
+ "founding_year_source": "https://metallzug.ch/en/profile/history",
+ "employees": "913",
+ "fiscal_year": "2025",
+ "report_url": "https://metallzug.ch/assets/uploads/files/documents/reports/Reports/2025-AR/Geschaeftsbericht_2025_Englisch_Web.pdf",
+ "note": "Am 7. Juni 2024 wurden die Business Unit Infection Control und die Belimed Life Science Group dekonsolidiert und in das Joint Venture SteelcoBelimed AG eingebracht (Metall Zug hält 33%); dadurch ist der Vorjahreswert 2024 (283.4 Mio.) nicht mit 2025 vergleichbar. Die hier eingetragenen 2025-Werte sind bereits die Zahlen des dekonsolidierten (kleineren) Konzerns - es gibt keine separate 'fortgeführtes Geschäft'-Zeile, da die Dekonsolidierung bereits im Vorjahr vollzogen wurde. Konzernergebnis 2025 gesamt: -16.719 Mio. CHF, davon Aktionäre Metall Zug AG -15.234 Mio., nicht beherrschende Anteile -1.485 Mio. Mitarbeitende: durchschnittliche Vollzeitstellen (FTE) im Jahr, kein Stichtags-Headcount im Bericht ausgewiesen.",
+ "_verification": "Umsatz und Ergebnis aus der 'Consolidated Income Statement' (S. 86f. des Annual Report 2025): Zeile 'Net sales' 194'619 (Tsd. CHF) und 'Net result attributable to: Shareholders of Metall Zug AG' -15'234 (Tsd. CHF). Mitarbeitendenzahl aus Note zu den Personalaufwendungen: 'the average number of full-time equivalents for the year ... 913 (previous year: 983)'. Geprüft: korrekte PDF-Version (Englisch_Web) nach Fehlversuch mit falscher URL heruntergeladen, Zahlen im Volltext verifiziert."
+}

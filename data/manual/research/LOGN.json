@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "4840.761",
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "711.187",
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Computer-Peripheriegeräte wie Mäuse, Tastaturen, Webcams, Gaming-Zubehör und Videokonferenz-Ausrüstung.",
+ "products_url": "https://www.logitech.com/en-eu/about",
+ "founding_year": "1981",
+ "founding_year_source": "https://www.logitech.com/en-eu/about",
+ "employees": "7300",
+ "fiscal_year": "2026",
+ "report_url": "https://www.sec.gov/Archives/edgar/data/1032975/000103297526000021/logi-20260331.htm",
+ "note": "Geschäftsjahr endet am 31. März. Mitarbeitendenzahl laut 10-K: 'approximately 7,300 persons' (inkl. indirekt über Personaldienstleister Beschäftigte, davon rund 2'300 im Werk Suzhou), Stichtag 31.03.2026; keine genauere Zahl im Bericht ausgewiesen. Net income enthält keinen separat ausgewiesenen Minderheitenanteil (Konzern ist im Wesentlichen vollkonsolidiert ohne wesentliche NCI).",
+ "_verification": "Umsatz ('Total Net Sales', Zeile in der Konzern-Erfolgsrechnung/Supplemental Financial Information) und Net income (GAAP) stammen beide aus dem Form 10-K für das am 31.03.2026 endende Geschäftsjahr (identisch mit den Zahlen der Q4/FY26-Pressemitteilung); Mitarbeitendenzahl stammt aus Item 1 'Human Capital Resources' desselben 10-K. Geprüft: Zahlen direkt aus dem SEC-Filing extrahiert (nicht aus einer Sekundärquelle), Konsistenz zwischen 10-K-Volltext und Pressemitteilung verglichen."
+}

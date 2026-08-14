@@ -1,0 +1,20 @@
+{
+ "noga_group": "bau",
+ "consolidation_basis": "total_group",
+ "revenue": 553.391,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": 382.468,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Besitz, Entwicklung und Bewirtschaftung eines Portfolios von rund 130 Büro-, Verkaufs- und Mischnutzungsimmobilien an Schweizer Toplagen sowie Asset-Management-Dienstleistungen für Dritte.",
+ "products_url": "https://sps.swiss/en/group/real-estate/portfolio",
+ "founding_year": 1999,
+ "founding_year_source": "https://sps.swiss/en/25-years-sps/looking-back",
+ "employees": 210,
+ "fiscal_year": 2025,
+ "report_url": "https://sps.swiss/fileadmin/user_upload/redakteure/gruppe/pdf/geschaeftsberichte/2025/en/Financial_Report_2025_en.pdf",
+ "note": "Als Immobiliengesellschaft weist Swiss Prime Site keinen 'Net sales' aus; verwendet wurde die Zeile 'Total operating income' (Betriebsertrag), daher revenue_type = operating_income. Rückgang von Umsatz und Mitarbeitenden 2025 gegenüber 2024 (497 auf 210 Mitarbeitende) primär durch Schliessung des Warenhausgeschäfts Jelmoli per Anfang 2025 bedingt. Mitarbeitendenzahl 210 ist die ausdrücklich als 'Number of employees as at 31.12.' (Köpfe) ausgewiesene Zahl gemäss Regel 6; FTE im selben Bericht: 192.",
+ "_verification": "Umsatz: Zeile 'Total operating income' = CHF 553.391 Mio. (2025; Vorjahr 663.421 Mio.) aus der konsolidierten Erfolgsrechnung im Financial Report 2025 von Swiss Prime Site (sps.swiss). Gewinn: Zeile 'Profit attributable to shareholders of Swiss Prime Site AG' = CHF 382.468 Mio. (2025; Vorjahr 360.250 Mio.), explizit als Aktionärsanteil ausgewiesen (keine separate Minderheitsanteilszeile vorhanden/'n.a.'), aus derselben Erfolgsrechnung für dasselbe Geschäftsjahr 2025. Mitarbeitendenzahl aus der Tabelle 'Number of employees as at 31.12.' im selben Finanzbericht geprüft."
+}

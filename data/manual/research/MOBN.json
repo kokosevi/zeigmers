@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": "353.798",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "192.943",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Vermietung und Bewirtschaftung von Wohn- und Geschäftsliegenschaften in der Deutsch- und Westschweiz.",
+ "products_url": "https://www.mobimo.ch/de/unternehmen",
+ "founding_year": "1999",
+ "founding_year_source": "https://mobimo25.ch/de/kurz-und-gut/",
+ "employees": "180",
+ "fiscal_year": "2025",
+ "report_url": "https://www.mobimo.ch/api/mobimo/files/gb25_mob_geschaftsbericht_2025_de.pdf?fileId=1f10-81e9-170b5c01-a3e6-0e758609d69d&timestamp=2026-02-12T14:24:40.732Z&storageContext=direct&filename=GB25_MOB_Geschaftsbericht_2025_DE.pdf",
+ "note": "Umsatz enthält neben dem Mietertrag (145.5 Mio.) auch Erträge aus Entwicklungen/Verkauf Promotion-Liegenschaften (200.5 Mio.) sowie sonstige Erlöse (7.8 Mio.) - alles zusammen als Zeile 'Umsatzerlöse' in der Konsolidierten Erfolgsrechnung ausgewiesen; der reine Mietertrag allein beträgt 145.5 Mio. Gewinn (192.9 Mio.) enthält einen substanziellen Neubewertungserfolg der Liegenschaften (106.9 Mio.); ohne Neubewertung läge das Ergebnis bei 105.6 Mio. Die Erfolgsrechnung weist keine gesonderten Minderheitsanteile aus, der Gewinn ist somit vollständig den Aktionären zurechenbar. Mitarbeitendenzahl ist der ausgewiesene Kopf-Bestand (180) zum Jahresende, nicht die Vollzeitäquivalente (165.8).",
+ "_verification": "Umsatz aus der Zeile 'Umsatzerlöse' (Summe aus 'Ertrag aus Vermietung Liegenschaften', 'Ertrag aus Entwicklungen und Verkauf Promotion (Liegenschaften)' und 'Sonstige Erlöse') der 'Konsolidierten Erfolgsrechnung' im Finanzbericht des Geschäftsberichts 2025: 353'798 TCHF. Gewinn aus derselben Erfolgsrechnung, Zeile 'Gewinn': 192'943 TCHF. Mitarbeitendenzahl aus der Tabelle 'Mitarbeitendenstruktur' (GRI 2-7, 'nach Köpfen'): Total Angestellte 180. Geprüft: PDF direkt heruntergeladen, alle drei Werte im Volltext an ihrer Quellstelle verifiziert."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "683.827",
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "95.460",
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Orthopädische Implantate und chirurgische Instrumente für Hüft-, Knie- und Wirbelsäulenchirurgie sowie Sportmedizin.",
+ "products_url": "https://www.medacta.com/EN/about-us",
+ "founding_year": "1999",
+ "founding_year_source": "https://www.medacta.com/US/history",
+ "employees": "2036",
+ "fiscal_year": "2025",
+ "report_url": "https://aws-media.medacta.com/media/2025-financial-report.pdf",
+ "note": "Bericht weist nur die 'AVERAGE NR OF EMPLOYEES DURING THE YEAR' aus (2'036 für 2025), keinen Stichtags-Headcount; deshalb wurde diese Durchschnittszahl übernommen. Rechnungslegung in EUR (nicht CHF), obwohl Sitz in der Schweiz.",
+ "_verification": "Umsatz aus Zeile 'Revenues' (Note 6.25.1) der Consolidated Statement of Profit or Loss, S. 161f. des Financial Report 2025: 683'827 Tsd. EUR. Nettogewinn aus Zeile 'PROFIT FOR THE YEAR' / 'Shareholders of the parent company' (Note 6.28), ebenfalls S. 162: 95'460 Tsd. EUR — identisch, da keine nicht beherrschenden Anteile ausgewiesen sind. Mitarbeitendenzahl aus der Tabelle 'Personnel expenses by function' im selben Bericht. Geprüft: PDF direkt heruntergeladen und Zahlen im Volltext verifiziert."
+}
