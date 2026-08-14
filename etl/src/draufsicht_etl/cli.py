@@ -382,7 +382,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             return 0
 
     if args.command in ("companies", "all"):
-        from . import companies, geocode, noga
+        from . import companies, fetch, geocode, noga
 
         path = companies.csv_path()
         rows = companies.load_csv(path)
@@ -431,7 +431,35 @@ def main(argv: Sequence[str] | None = None) -> int:
         # neuen Kotierung seit dem letzten `companies-sync`-Lauf liefe die
         # Karte sonst mit einer stillschweigend veralteten Zahl weiter.
         six_meta = {"totalListed": len(six["titles"]), "retrievedAt": six["retrievedAt"]}
-        artifact = companies.build_artifact(rows, noga.load_table(), six_meta=six_meta)
+
+        # Jahresmittelkurse der SNB für die Säulenhöhe (siehe `fx.py`): ohne
+        # sie vergliche die Höhe CHF, EUR und USD, als wären sie dasselbe.
+        # Der Datensatz wird wie alle Rohdaten gecacht — ein zweiter Build
+        # lädt nichts nach und rechnet mit denselben Kursen.
+        from . import fx
+
+        fx_path = fx.cache_path()
+        fx_path.parent.mkdir(parents=True, exist_ok=True)
+        if args.force or not fx_path.exists():
+            fetch.download(fx.SNB_URL, fx_path, force=args.force)
+        monthly_fx = fx.parse(fx_path.read_text(encoding="utf-8-sig"))
+
+        artifact = companies.build_artifact(
+            rows, noga.load_table(), six_meta=six_meta, monthly_fx=monthly_fx,
+        )
+        stats = artifact["stats"]
+        if stats["fxMissing"]:
+            print(f"[companies] {len(stats['fxMissing'])} Umrechnung(en) offen — "
+                  f"Höhen bleiben in Berichtswährung:")
+            for miss in stats["fxMissing"]:
+                print(f"    {miss['name']}: {miss['error']}")
+        elif stats["revenueInChf"]:
+            rates = ", ".join(
+                f"{key} {value['rate']:.4f}"
+                + ("" if value["months"] == 12 else f" ({value['months']} Mt.)")
+                for key, value in sorted(stats["fxRates"].items())
+            )
+            print(f"[companies] Höhen in CHF, SNB-Jahresmittel: {rates or 'nur CHF'}")
         out = config.PUBLIC_DATA / "companies.json"
         out.write_text(json.dumps(artifact, ensure_ascii=False), encoding="utf-8")
         print(f"[companies] {artifact['stats']['count']} Firmen platziert "

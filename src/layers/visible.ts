@@ -40,6 +40,12 @@ export interface Company {
   lat: number
   nogaGroupIndex: number
   revenue: number | null
+  /** Derselbe Umsatz zum SNB-Jahresmittelkurs des Geschäftsjahres in CHF —
+   *  die Grösse, aus der die Säulenhöhe entsteht. `revenue`/`currency`
+   *  bleiben daneben die berichteten Werte fürs Panel: umgerechnet lässt
+   *  sich vergleichen, im Original lässt sich nachprüfen. `null`, solange
+   *  keine Kurse vorliegen (siehe `etl/src/draufsicht_etl/fx.py`). */
+  revenueChf: number | null
   currency: string | null
   revenueType: RevenueType | null
   profit: number | null
@@ -68,7 +74,16 @@ export interface CompanyData {
   stats: {
     count: number
     withRevenue: number
+    /** Höchster Wert derselben Grösse, aus der die Höhen entstehen — in CHF,
+     *  sobald `revenueInChf` gilt, sonst in Berichtswährung. Maximum und
+     *  Einzelhöhen müssen aus derselben Grösse stammen, sonst normiert die
+     *  Ansicht gegen einen Massstab, der nicht zu ihr gehört. */
     max: number
+    /** `true`, sobald JEDE Säule aus einem umgerechneten Betrag entsteht.
+     *  Bleibt eine einzige Umrechnung offen, fällt die ganze Ansicht auf die
+     *  Berichtswährungen zurück — halb umgerechnet stünden zwei Massstäbe
+     *  nebeneinander, ohne dass man es sieht. */
+    revenueInChf: boolean
     /** Anzahl Zeilen mit `researched=yes` — der Zähler der Abdeckungsangabe
      *  ("8 von 224 kotierten Gesellschaften recherchiert"). */
     researched: number
@@ -89,25 +104,36 @@ function researchedCompanies(data: CompanyData): Company[] {
   return data.companies.filter((c) => c.researched)
 }
 
+/** Die Grösse, aus der die Höhe entsteht: der in CHF umgerechnete Umsatz,
+ *  wo er vorliegt, sonst der berichtete. Nestlé berichtet in CHF, Novartis in
+ *  USD, Richemont in EUR — ohne Umrechnung vergliche die Höhe Beträge, die
+ *  nicht dasselbe messen (ein USD-Betrag als CHF gezeichnet überzeichnet die
+ *  Firma 2025 um rund ein Fünftel). Der Rückfall auf `revenue` gilt nur,
+ *  solange gar keine Kurse vorliegen; das ETL sorgt dafür, dass nie ein Teil
+ *  der Firmen umgerechnet ist und ein anderer nicht (`stats.revenueInChf`). */
+export function heightValue(company: Company): number | null {
+  return company.revenueChf ?? company.revenue
+}
+
 export function companyElevations(
   companies: Company[],
   vmax: number,
   maxHeight: number,
   mode: ScaleMode,
 ): Float32Array {
-  const values = new Float32Array(companies.map((c) => c.revenue ?? 0))
+  const values = new Float32Array(companies.map((c) => heightValue(c) ?? 0))
   const heights = computeElevations(values, vmax, maxHeight, mode)
 
   let smallest = Infinity
   for (let i = 0; i < heights.length; i++) {
-    if (companies[i]!.revenue !== null) smallest = Math.min(smallest, heights[i]!)
+    if (heightValue(companies[i]!) !== null) smallest = Math.min(smallest, heights[i]!)
   }
   const placeholder = Number.isFinite(smallest)
     ? smallest * UNKNOWN_BAR_FRACTION
     : PLACEHOLDER_BASE_HEIGHT
 
   for (let i = 0; i < heights.length; i++) {
-    if (companies[i]!.revenue === null) heights[i] = placeholder
+    if (heightValue(companies[i]!) === null) heights[i] = placeholder
   }
   return heights
 }

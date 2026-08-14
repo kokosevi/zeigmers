@@ -5,6 +5,7 @@ import {
   companyElevations,
   UNKNOWN_BAR_FRACTION,
   UNRESEARCHED_MARKER_COLOR,
+  heightValue,
   type Company,
   type CompanyData,
 } from './visible'
@@ -12,7 +13,7 @@ import {
 function company(overrides: Partial<Company> = {}): Company {
   return {
     uid: 'CHE-1', name: 'Test AG', sixSymbol: null, lon: 8, lat: 47.4,
-    nogaGroupIndex: 1, revenue: 1e9, currency: 'CHF', revenueType: 'net_sales',
+    nogaGroupIndex: 1, revenue: 1e9, revenueChf: null, currency: 'CHF', revenueType: 'net_sales',
     profit: null, profitCurrency: null, consolidationBasis: null,
     coreProducts: null, productsUrl: null,
     foundingYear: null,
@@ -25,7 +26,7 @@ function company(overrides: Partial<Company> = {}): Company {
 function companiesOf(revenues: (number | null)[]): Company[] {
   return revenues.map((revenue, i) => ({
     uid: `CHE-${i}`, name: `F${i}`, sixSymbol: null, lon: 8, lat: 47.4,
-    nogaGroupIndex: 1, revenue, currency: 'CHF',
+    nogaGroupIndex: 1, revenue, revenueChf: null, currency: 'CHF',
     revenueType: revenue === null ? null : 'net_sales',
     profit: null, profitCurrency: null, consolidationBasis: null,
     coreProducts: null, productsUrl: null,
@@ -78,7 +79,7 @@ describe('buildCompanyLayer researched filter', () => {
         company({ uid: 'A', researched: true }),
         company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
       ],
-      stats: { count: 2, withRevenue: 1, max: 1e9, researched: 1, totalListed: 2, sixRetrievedDate: null },
+      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, researched: 1, totalListed: 2, sixRetrievedDate: null },
     }
     const layer = buildCompanyLayer(d, 'logarithmisch', () => {})
     expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['A'])
@@ -92,7 +93,7 @@ describe('buildUnresearchedCompanyLayer', () => {
         company({ uid: 'A', researched: true }),
         company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
       ],
-      stats: { count: 2, withRevenue: 1, max: 1e9, researched: 1, totalListed: 2, sixRetrievedDate: null },
+      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, researched: 1, totalListed: 2, sixRetrievedDate: null },
     }
     const layer = buildUnresearchedCompanyLayer(d, () => {}, () => {})
     expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['B'])
@@ -102,7 +103,7 @@ describe('buildUnresearchedCompanyLayer', () => {
   it('reports hover by name, not just index', () => {
     const d: CompanyData = {
       companies: [company({ uid: 'B', researched: false, revenue: null, revenueType: null })],
-      stats: { count: 1, withRevenue: 0, max: 0, researched: 0, totalListed: 1, sixRetrievedDate: null },
+      stats: { count: 1, withRevenue: 0, max: 0, revenueInChf: false, researched: 0, totalListed: 1, sixRetrievedDate: null },
     }
     let hovered: Company | null = null
     const layer = buildUnresearchedCompanyLayer(d, () => {}, (c) => {
@@ -127,7 +128,7 @@ describe('buildCompanyLayer outline predicate', () => {
       {
         companies: [company({ revenueType })],
         stats: {
-          count: 1, withRevenue: 1, max: 1e9,
+          count: 1, withRevenue: 1, max: 1e9, revenueInChf: false,
           researched: 1, totalListed: 1, sixRetrievedDate: null,
         },
       },
@@ -163,5 +164,32 @@ describe('buildCompanyLayer outline predicate', () => {
   it('measures the outline width in metres, not pixels', () => {
     const { lineWidthUnits } = accessors('operating_income')
     expect(lineWidthUnits).toBe('meters')
+  })
+})
+
+
+describe('heightValue', () => {
+  it('nimmt den in CHF umgerechneten Betrag, wo er vorliegt', () => {
+    // Ohne Umrechnung vergliche die Höhe CHF, EUR und USD, als wären sie
+    // dasselbe: ein USD-Betrag als CHF gezeichnet überzeichnet die Firma
+    // 2025 um rund ein Fünftel.
+    expect(heightValue(company({ revenue: 1e9, revenueChf: 8.3e8 }))).toBe(8.3e8)
+  })
+
+  it('fällt auf den berichteten Betrag zurück, solange keine Kurse vorliegen', () => {
+    expect(heightValue(company({ revenue: 1e9, revenueChf: null }))).toBe(1e9)
+  })
+
+  it('bleibt null, wenn gar kein Umsatz bekannt ist', () => {
+    expect(heightValue(company({ revenue: null, revenueChf: null }))).toBeNull()
+  })
+
+  it('zeichnet die Höhe aus dem umgerechneten, nicht dem berichteten Betrag', () => {
+    // Zwei Firmen mit gleichem berichtetem Betrag, aber verschiedener
+    // Währung, dürfen NICHT gleich hoch werden.
+    const chf = company({ revenue: 1e9, revenueChf: 1e9 })
+    const usd = company({ revenue: 1e9, revenueChf: 8.3e8 })
+    const heights = companyElevations([chf, usd], 1e9, 12000, 'linear')
+    expect(heights[0]).toBeGreaterThan(heights[1]!)
   })
 })

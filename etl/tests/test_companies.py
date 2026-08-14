@@ -865,3 +865,42 @@ def test_sync_national_csv_appends_only_new_titles_and_leaves_existing_rows_unto
     assert new["name"] == "Neufirma Holding AG"
     assert new["city"] == "St. Gallen"
     assert new["revenue"] == ""
+
+
+def test_build_artifact_converts_revenue_to_chf_for_the_bar_height():
+    # Ohne Umrechnung vergleicht die Saeulenhoehe Betraege, die nicht
+    # dasselbe messen: Nestle berichtet in CHF, Novartis in USD, Richemont in
+    # EUR. Der berichtete Wert bleibt daneben stehen — umgerechnet laesst
+    # sich vergleichen, im Original laesst sich nachpruefen.
+    monthly = {("USD", 2025): [0.80] * 12}
+    artifact = companies.build_artifact(
+        [_row(revenue="1000", revenue_currency="USD", revenue_unit="1000000",
+              fiscal_year="2025")],
+        noga.load_table(), monthly_fx=monthly,
+    )
+    entry = artifact["companies"][0]
+    assert entry["revenue"] == 1_000_000_000.0, "berichteter Betrag bleibt unangetastet"
+    assert entry["currency"] == "USD"
+    assert entry["revenueChf"] == pytest.approx(800_000_000.0)
+    assert artifact["stats"]["revenueInChf"] is True
+    assert artifact["stats"]["max"] == pytest.approx(800_000_000.0), (
+        "der Massstab muss aus derselben Groesse stammen wie die Hoehen"
+    )
+
+
+def test_build_artifact_falls_back_to_reported_amounts_when_one_rate_is_missing():
+    # Halb umgerechnet waere schlimmer als gar nicht: dann staenden zwei
+    # Massstaebe nebeneinander, ohne dass man es sieht.
+    monthly = {("USD", 2025): [0.80] * 12}
+    artifact = companies.build_artifact(
+        [_row(revenue="1000", revenue_currency="USD", revenue_unit="1000000",
+              fiscal_year="2025"),
+         _row(name="Zweite AG", uid="CHE-999.999.999", isin="CH9999999999",
+              revenue="500", revenue_currency="GBP", revenue_unit="1000000",
+              fiscal_year="2025")],
+        noga.load_table(), monthly_fx=monthly,
+    )
+    assert artifact["stats"]["revenueInChf"] is False
+    assert artifact["stats"]["max"] == pytest.approx(1_000_000_000.0)
+    assert len(artifact["stats"]["fxMissing"]) == 1
+    assert "GBP" in artifact["stats"]["fxMissing"][0]["error"]

@@ -282,15 +282,28 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
         raise ValueError("CSV-Validierung fehlgeschlagen:\n  " + "\n  ".join(problems))
 
 
-def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = None) -> dict:
+def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = None,
+                   monthly_fx: dict | None = None) -> dict:
     """`six_meta` (optional): `{"totalListed": int, "retrievedAt": str | None}`
     aus `fetch_six_titles()` — die Grundlage der Abdeckungsangabe ("8 von 224
     kotierten Gesellschaften recherchiert"). Ohne `six_meta` (z.B. in Tests)
     fällt `totalListed` auf `len(rows)` zurück, `retrievedAt` bleibt `None`.
+
+    `monthly_fx` (optional): SNB-Monatsdurchschnitte aus `fx.parse()`. Damit
+    bekommt jede Firma zusätzlich `revenueChf` — die Grösse, aus der die
+    Säulenhöhe entsteht. `revenue`/`currency` bleiben die berichteten Werte
+    für das Panel: umgerechnet lässt sich vergleichen, im Original lässt sich
+    nachprüfen. Ohne `monthly_fx` bleibt `revenueChf` `None` und die Karte
+    fällt auf den Originalbetrag zurück (Verhalten wie vor dem 14. August
+    2026, als nur acht Aargauer Firmen darauf standen).
     """
+    from . import fx as fx_module
+
     index = {g.key: i for i, g in enumerate(table.groups)}
     entries = []
     researched_count = 0
+    fx_used: dict[str, dict] = {}
+    fx_missing: list[dict] = []
     for row in rows:
         researched = row.get("researched", "").strip() == "yes"
         if researched:
@@ -306,6 +319,24 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
         profit = row.get("profit", "").strip()
         profit_unit = float(row.get("profit_unit") or 1)
         group = row.get("noga_group", "").strip()
+
+        # Umrechnung in CHF für die Säulenhöhe. Schlägt sie fehl (Währung
+        # ohne SNB-Reihe, Geschäftsjahr ausserhalb der Daten), bleibt
+        # `revenueChf` leer und der Fall wird gemeldet — nie mit einem
+        # geschätzten Kurs überbrückt.
+        revenue_chf = None
+        currency = (row.get("revenue_currency") or "").strip()
+        fiscal_year = row.get("fiscal_year", "").strip()
+        if revenue and monthly_fx is not None and currency and fiscal_year:
+            try:
+                converted = fx_module.rate(currency, int(fiscal_year), monthly_fx)
+            except (KeyError, LookupError) as exc:
+                fx_missing.append({"name": row["name"], "currency": currency,
+                                   "fiscalYear": fiscal_year, "error": str(exc)})
+            else:
+                revenue_chf = float(revenue) * unit * converted["rate"]
+                fx_used[f"{currency}/{fiscal_year}"] = converted
+
         entries.append(
             {
                 "uid": row["uid"] or None,
@@ -315,6 +346,7 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "lat": float(row["lat"]),
                 "nogaGroupIndex": index[group] if group in index else config.NOGA_UNKNOWN_INDEX,
                 "revenue": float(revenue) * unit if revenue else None,
+                "revenueChf": revenue_chf,
                 "currency": row.get("revenue_currency") or None,
                 "revenueType": row.get("revenue_type") or None,
                 "profit": float(profit) * profit_unit if profit else None,
@@ -334,13 +366,28 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
         )
 
     revenues = [e["revenue"] for e in entries if e["revenue"] is not None]
+    # Höhenmassstab über die umgerechneten Beträge, sonst über die
+    # berichteten: `max` und die einzelnen Höhen müssen aus DERSELBEN Grösse
+    # stammen. Ein Maximum in CHF neben Höhen in Berichtswährung wäre genau
+    # der Fehler, der bei den Detailstufen von Ansicht B schon einmal
+    # auftrat (jede Stufe auf ihr eigenes Maximum normiert, siehe README).
+    revenues_chf = [e["revenueChf"] for e in entries if e.get("revenueChf") is not None]
+    height_values = revenues_chf if len(revenues_chf) == len(revenues) else revenues
     six_meta = six_meta or {}
     return {
         "companies": entries,
         "stats": {
             "count": len(entries),
             "withRevenue": len(revenues),
-            "max": max(revenues) if revenues else 0.0,
+            "max": max(height_values) if height_values else 0.0,
+            # `true`, sobald JEDE Säule aus einem umgerechneten Betrag
+            # entsteht. Bleibt eine einzige Umrechnung offen, fällt die
+            # ganze Ansicht auf die Berichtswährungen zurück — halb
+            # umgerechnet wäre schlimmer als gar nicht, weil dann zwei
+            # Massstäbe nebeneinander stünden, ohne dass man es sieht.
+            "revenueInChf": bool(revenues) and len(revenues_chf) == len(revenues),
+            "fxRates": fx_used,
+            "fxMissing": fx_missing,
             "researched": researched_count,
             "totalListed": six_meta.get("totalListed", len(rows)),
             "sixRetrievedDate": six_meta.get("retrievedAt"),

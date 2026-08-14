@@ -108,7 +108,10 @@ function cantonEntry(): CantonEntry {
 
 const COMPANIES: CompanyData = {
   companies: [],
-  stats: { count: 0, withRevenue: 0, max: 0, researched: 0, totalListed: 0, sixRetrievedDate: null },
+  stats: {
+    count: 0, withRevenue: 0, max: 0, revenueInChf: false,
+    researched: 0, totalListed: 0, sixRetrievedDate: null,
+  },
 }
 
 const CANTON_BORDER_LAYER = buildCantonBorderLayer({ data: CANTONS_GEO })
