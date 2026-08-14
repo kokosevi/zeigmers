@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "547.297",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "175.355",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank mit Konten, Karten, Hypotheken, Anlage- und Kreditlösungen sowie Vorsorgeberatung für Privat- und Firmenkunden in den Kantonen Bern und Solothurn.",
+ "products_url": "https://www.bekb.ch/die-bekb/portraet",
+ "founding_year": "1834",
+ "founding_year_source": "https://www.bekb.ch/die-bekb/portraet/geschichte",
+ "employees": "1264",
+ "fiscal_year": "2025",
+ "report_url": "https://report.bekb.ch/2025/app/uploads/BEKB_Geschaeftsbericht_2025_de.pdf",
+ "note": "Die BEKB hielt per 31.12.2025 keine wesentlichen konsolidierungspflichtigen Tochtergesellschaften ('Konzernstruktur und Aktionariat', S. 53); die ausgewiesene Erfolgsrechnung ist somit bereits die für den gesamten Betrieb geltende Rechnung, es gibt keinen separaten Minderheitsanteil. Mitarbeitendenzahl 1264 ist die Kopfzahl 'Anzahl Mitarbeitende' ohne die 9 Verwaltungsräte (inkl. VR: 1273 Köpfe); teilzeitbereinigt sind es 1056 (Mitarbeitende) bzw. 1058 (inkl. VR).",
+ "_verification": "Erfolgsrechnung (BEKB Geschäftsbericht 2025, S. 105): Zeile 'Geschäftsertrag' 547'297 Tausend CHF (2025) und – über die Bilanz (Passiven, S. 104) – Zeile 'Gewinn' 175'355 Tausend CHF (2025). Geprüft: 'Geschäftsertrag' ist die Summe der vier FINMA-Teilergebnisse (Netto-Zinsengeschäft, Kommissions-/Dienstleistungsgeschäft, Handelsgeschäft, übriger ordentlicher Erfolg) unmittelbar vor dem Geschäftsaufwand, keine abweichende 'Total'-Zeile. Personalbestand aus 'Angabe des Personalbestandes' (S. 47): 'Anzahl Mitarbeitende' 1264 (Köpfe, exkl. Verwaltungsrat) per 31.12.2025."
+}

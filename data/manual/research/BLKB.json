@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "499.145",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "189.523",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank mit Retail-, Anlage-, Vorsorge- und Unternehmerbanking (Hypotheken, Vermögensverwaltung, Firmenkundengeschäft) im Kanton Basel-Landschaft und der Region Nordwestschweiz.",
+ "products_url": "https://www.blkb.ch/die-blkb/portrait/uebersicht",
+ "founding_year": "1864",
+ "founding_year_source": "https://www.blkb.ch/160",
+ "employees": "926",
+ "fiscal_year": "2025",
+ "report_url": "https://www.blkb.ch/dam/pdf/berichte/2025/BLKB_Geschaeftsbericht_2025.pdf",
+ "note": "Profit ist der auf die BLKB-Aktionäre entfallende Anteil: die Erfolgsrechnung Konzern weist 'Konzerngewinn' 154.541 Mio. CHF (Total, inkl. Minderheiten) aus, davon 'Minderheitsanteile am Konzerngewinn' -34.982 Mio. CHF (negativ, primär wegen der Liquidation der Tochter Radicant) und 'Konzerngewinn (ohne Minderheiten)' 189.523 Mio. CHF, ausgewiesen im Eigenkapitalnachweis/in der Bilanz (Passiven), S. 66-67 und 107 des Geschäftsberichts. Letzterer, den BLKB-Aktionären zurechenbare Betrag wurde als 'profit' eingetragen, nicht die in der Medienberichterstattung meist zitierte Gesamtsumme 154.5 Mio. Personalbestand 926 ist der Konzern-Durchschnittsbestand in Vollzeitpensen ('Konzern auf einen Blick', S. 9); eine Kopfzahl weist der Bericht nicht aus.",
+ "_verification": "Erfolgsrechnung Konzern (Geschäftsbericht 2025, S. 67/'Konzern auf einen Blick' S. 9): Zeile 'Geschäftsertrag' 499'145 Tausend CHF (2025). Gewinnzeilen S. 66f./107: 'Konzerngewinn' 154'541, 'Minderheitsanteile am Konzerngewinn' -34'982, 'Konzerngewinn (ohne Minderheiten)' 189'523 (alles Tausend CHF, 2025) - geprüft, dass 189'523 + (-34'982) = 154'541 rechnerisch aufgeht, also 189'523 der Aktionärsanteil ist gemäss Regel 5."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "553.837",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "220.888",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank mit Retail- und Firmenkundengeschäft, Private Banking, Asset Management, Anlagefonds, Vorsorgeberatung, Hypothekarfinanzierungen sowie Krediten an Unternehmen und öffentliche Körperschaften.",
+ "products_url": "https://www.bcge.ch/fr/qui-sommes-nous",
+ "founding_year": "1816",
+ "founding_year_source": "https://www.bcge.ch/en/histoire",
+ "employees": "958",
+ "fiscal_year": "2025",
+ "report_url": "https://www.bcge.ch/documents/395713/3091252/BCGE_resultats_annuels_2025.pdf/9197a663-29fe-5c17-028d-9fc1dad82690?t=1773678739794",
+ "note": "Effektivbestand ist ausschliesslich als Vollzeitäquivalent ausgewiesen (958 'équivalents 100%' per 31.12.2025); eine separate Kopfzahl nennt der Bericht nicht. Kein Minderheitsanteil am Konzerngewinn ('dont part des intérêts minoritaires au bénéfice groupe' = '-'). BCGE datiert ihre Gründung selbst auf 1816 (Caisse d'Epargne de la République de Genève), obwohl die heutige Rechtsform erst 1994 aus der Fusion mit der Banque Hypothécaire du Canton de Genève entstand.",
+ "_verification": "Compte de résultat consolidé (S. 6f. von 'Résultats annuels du Groupe BCGE au 31 décembre 2025'), Zeile 'Total des produits d'exploitation' 553'837 Tausend CHF (2025) und Zeile 'Bénéfice/perte (résultat de la période)' 220'888 Tausend CHF (2025). Geprüft: die Zeile 'Total des produits d'exploitation' ist die Summe der vier FINMA-Teilergebnisse (Zins-, Kommissions-, Handelsgeschäft, übrige ordentliche Erträge) nach Wertberichtigungen aus dem Zinsengeschäft, nicht eine andere 'Total'-Zeile; Effektivbestand 958 (Vollzeitäquivalente) aus Kennzahlentabelle und Fliesstext übereinstimmend."
+}

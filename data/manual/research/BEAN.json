@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 1120.813,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 181.625,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Entwicklung, Herstellung und Vertrieb von Feldgeräten für die Heizungs-, Lüftungs- und Klimatechnik (HLK/HVAC) — insbesondere Antriebe (Damper Actuators) und Regelventile (Control Valves).",
+ "products_url": "https://www.belimo.com/us/en_US/products",
+ "founding_year": 1975,
+ "founding_year_source": "https://www.belimo.com/mam/corporate-communications/pictures-graphics/history/40_years_belimo.pdf",
+ "employees": 2817,
+ "fiscal_year": 2025,
+ "report_url": "https://report.belimo.com/ar25/app/uploads/Annual-Report-2025.pdf",
+ "note": "Der Bericht nennt zwei Mitarbeiterzahlen: 2'704 Vollzeitäquivalente (FTEs) per 31.12.2025 (Kennzahlentabelle 'Number of Employees, FTEs as at December 31') und 2'817 Personen (Headcount) als Jahresdurchschnitt/-gesamtzahl im Sustainability-Abschnitt ('Belimo employed a total of 2 817 people (headcount)'). Gemäss Regel 6 wurde die Kopfzahl (2'817) eingetragen. Nettogewinn ist laut Erfolgsrechnung fast vollständig den Aktionären zurechenbar (Minderheitsanteile 2025: CHF 0, 2024: CHF -60 Tsd.) — Regel 5 daher unproblematisch.",
+ "_verification": "Nettoumsatz (CHF 1'120'813 Tsd.) und Reingewinn, aktionärszurechenbar (CHF 181'625 Tsd.), stammen aus der 'Consolidated Income Statement' (Zeilen 'Net sales' bzw. 'Attributable to shareholders of BELIMO Holding AG') im 'Annual Report 2025' (Financial Report, S. 198), Geschäftsjahr 2025 vs. 2024. Geprüft: Die Zeile heisst exakt 'Net sales', keine Summenzeile mehrerer unterschiedlich benannter Posten (Regel 4); der Gewinnwert ist explizit als Aktionärsanteil ausgewiesen, getrennt von der (hier verschwindend kleinen) Zeile für Minderheitsanteile (Regel 5). Mitarbeiterzahl (Headcount 2'817 vs. FTE 2'704) im selben Bericht abschnittsübergreifend verglichen (Regel 6). Gründungsjahr 1975 (Gossau ZH) über die offizielle Belimo-Firmengeschichte-PDF ('40 Years Belimo') bestätigt; Kerngeschäft (HLK-Feldgeräte: Antriebe und Regelventile) im Lagebericht desselben Annual Reports (Produktsegmente 'Damper Actuators' und 'Control Valves') beschrieben."
+}

@@ -86,7 +86,7 @@ Prüfe, dass die Zahl, die du einträgst, in der verlinkten Quelle
 | `products_url` | Seite der Firma, die das belegt |
 | `founding_year` | Jahr als Zahl |
 | `founding_year_source` | eigene Quelle dafür (oft die Firmengeschichte-Seite) |
-| `employees` | Zahl aus demselben Bericht; ob Vollzeitäquivalente oder Köpfe, gehört in `note`, wenn der Bericht es sagt |
+| `employees` | **Ganze Zahl** aus demselben Bericht; ob Vollzeitäquivalente oder Köpfe, gehört in `note`, wenn der Bericht es sagt. Banken weisen Vollzeitstellen oft mit Dezimalstelle aus («159.3») — dann runde auf die ganze Zahl und halte die Rundung in `note` fest. Die Karte zählt Personen; eine Zehntelstelle wäre eine Genauigkeit, die die Grösse nicht hat |
 | `fiscal_year` | Geschäftsjahr der Zahlen (z. B. `2025`); bei abweichendem Geschäftsjahr das Endjahr |
 | `report_url` | Primärquelle für Umsatz/Gewinn/Beschäftigte |
 | `note` | nur wenn nötig: Besonderheiten, Abweichungen, warum ein Feld leer ist |

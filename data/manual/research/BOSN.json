@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "total_group",
+ "revenue": 1068.946,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 71.891,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Distribution von Verbindungs- und Befestigungstechnik (Schrauben, Muttern und verwandte Komponenten) inklusive eigener Bossard-ecosyn-Markenprodukte sowie zugehöriger Engineering- und Logistikdienstleistungen (Smart Factory Logistics) für Industriekunden.",
+ "products_url": "https://www.bossard.com/ch-en/about-us/bossard-group/who-we-are/",
+ "founding_year": 1831,
+ "founding_year_source": "https://www.bossard.com/ch-en/about-us/bossard-group/who-we-are/history/",
+ "employees": 3156,
+ "fiscal_year": 2025,
+ "report_url": "https://ir.bossard.com/media/document/c6617905-e913-439e-b10c-21631ddd164a/assets/Bossard_Annual_Report_2025_EN_full_Version_web.pdf",
+ "note": "Mitarbeitende: Der Bericht weist nur Vollzeitäquivalente (FTE) aus, keine gesonderte Kopfzahl (Regel 6 daher nicht anwendbar mangels zweiter Zahl). Eingetragen ist die FTE-Zahl per Stichtag 31.12.2025 (3'156, gegenüber 2'924 im Vorjahr, Anstieg v. a. durch die Akquisition von Ferdinand Gross); daneben nennt der Bericht separat den Jahresdurchschnitt der FTE (3'144, Vorjahr 2'878). Die im Marketingtext genannte gerundete Zahl 'around 3,300 employees' wurde bewusst nicht verwendet (Regel 6: nie runden). Gewinn CHF 71.891 Mio. ist der den Aktionären der Bossard Holding AG zurechenbare Anteil; davon abweichend beträgt der Konzerngewinn inkl. Minderheitsanteilen CHF 74.648 Mio. (Minderheitsanteil CHF 2.757 Mio., v. a. aus nicht vollständig konsolidierten Tochtergesellschaften) — Regel 5.",
+ "_verification": "Nettoumsatz (CHF 1'068.946 Mio.) und Reingewinn, Aktionärsanteil (CHF 71.891 Mio.), stammen aus der 'Consolidated income statement' im 'Bossard Annual Report 2025' (Kapitel Financial Report, Zeilen 'Net sales' bzw. 'Attributable to: Shareholders of Bossard Holding AG'), Geschäftsjahr 2025 vs. 2024. Geprüft: Die Zeile heisst exakt 'Net sales' (keine Summenzeile, Regel 4); der ausgewiesene Gewinn ist explizit vom Minderheitsanteil (CHF 2.757 Mio.) getrennt ausgewiesen (Regel 5). Mitarbeiterzahl (3'156 FTE per Jahresende) aus dem Kapitel 'Report to the shareholders' desselben Berichts entnommen und mit der separat ausgewiesenen Jahresdurchschnitts-FTE (3'144) in der Kennzahlentabelle abgeglichen; beide Werte sind FTE-basiert, keine Kopfzahl im Bericht vorhanden. Gründungsjahr 1831 (Zug) direkt im Kapitel 'At a glance' desselben Berichts sowie auf der offiziellen Bossard-History-Seite genannt."
+}

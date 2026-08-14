@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": -6728246,
+ "profit_currency": "CHF",
+ "profit_unit": 1,
+ "core_products": "Klinisches Biotech-Unternehmen ohne zugelassenes oder vermarktetes Produkt; entwickelt niedermolekulare allosterische Modulatoren (u.a. dipraglurant) fuer neurologische Erkrankungen und lizenziert Wirkstoffkandidaten an Partner.",
+ "products_url": "https://www.addextherapeutics.com/en/about-us/",
+ "founding_year": 2002,
+ "founding_year_source": "https://www.addextherapeutics.com/index.php/download_file/431/ (Annual Report 2025, Board-Biografie CEO Tim Dyer: \"Since co-founding Addex in 2002, Mr. Dyer has been instrumental...\")",
+ "employees": 3,
+ "fiscal_year": 2025,
+ "report_url": "https://www.addextherapeutics.com/index.php/download_file/431/",
+ "note": "Addex ist ein klinisches Biotech-Unternehmen ohne zugelassenes Produkt und damit ohne Produktumsatz. Die konsolidierte Erfolgsrechnung 2025 (Annual Report 2025, Consolidated Statements of Profit or Loss) weist eine Zeile \"Revenue from contract with customer\" von lediglich CHF 29'972 aus (2024: CHF 404'102) - ein geringfuegiger Lizenz-/Meilensteinertrag aus einer 2018 abgeschlossenen Auslizenzierung, keine kommerzielle Umsatzgroesse. Wegen der wirtschaftlichen Unbedeutsamkeit (unter CHF 0.03 Mio.) und weil es sich nicht um Produktumsatz handelt, bleibt revenue leer statt eine irrefuehrende Saeulenhoehe zu erzeugen. Konzernergebnis (Net profit/(loss) for the period) betrug CHF -6'728'246 (2025), zusammengesetzt aus einem Verlust aus fortgefuehrter Geschaeftstaetigkeit von CHF -6'842'588 und einem Gewinn aus aufgegebenem Geschaeftsbereich (Neurosterix-Transfer) von CHF 114'342; keine nicht beherrschenden Anteile, vollstaendig den Aktionaeren zurechenbar. Rechtseinheit \"Addex Therapeutics Ltd\" (vormals Addex Pharmaceuticals Ltd) wurde laut Statutory Financial Statements Note 1 formal erst am 19. Februar 2007 gegruendet (Holdingreorganisation); die operative Gruendung von Addex erfolgte laut eigener CEO-Biografie im selben Bericht 2002. Beschaeftigte: Headcount 3 FTE per 31.12.2025 (Durchschnitt 2025: 2 FTE), nachdem die meisten Mitarbeitenden am 2. April 2024 zu Neurosterix Pharma Sarl transferiert wurden.",
+ "_verification": "Umsatzzeile (CHF 29'972, \"Revenue from contract with customer\") und Konzernergebnis (CHF -6'728'246, \"Net profit/(loss) for the period\", vollstaendig den Aktionaeren zurechenbar da keine NCI) stammen aus den Consolidated Statements of Profit or Loss im Addex Annual Report 2025 (PDF von addextherapeutics.com/index.php/download_file/431/, per curl heruntergeladen und mit pdftotext ausgelesen). Geprueft wurden zusaetzlich Note 15 (Revenue from contract with customer, Detailaufschluesselung), die Statutory Financial Statements Note 1 (Gruendungsdatum der Rechtseinheit) sowie die CEO-Biografie und der Beschaeftigten-Absatz im Business Review (Headcount 3 FTE per 31.12.2025)."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "1149.9",
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": "429.7",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Universalbank mit Alltagsbanking, Hypotheken- und Vorsorgeberatung, Firmenkundengeschäft (Finanzierungen, Treasury) und Private Banking/Vermögensverwaltung im Kanton Waadt.",
+ "products_url": "https://www.bcv.ch/en/home/la-bcv.html",
+ "founding_year": "1845",
+ "founding_year_source": "https://mobile.bcv.ch/content/dam/bcv/fichiers/publications/publications-institutionnelles/rapports/ra-et-rse/rapports-annuels-et-intermediaires/2025/2025_rapport-annuel-bcv_en_web.pdf",
+ "employees": "2083",
+ "fiscal_year": "2025",
+ "report_url": "https://mobile.bcv.ch/content/dam/bcv/fichiers/publications/publications-institutionnelles/rapports/ra-et-rse/rapports-annuels-et-intermediaires/2025/2025_rapport-annuel-bcv_en_web.pdf",
+ "note": "Effektivbestand 2'083 ist in Vollzeitäquivalenten ausgewiesen ('full-time-equivalent employees'); eine separate Kopfzahl nennt der Bericht nicht. Minderheitsanteile am Konzerngewinn sind mit '-0.0' Mio. CHF verschwindend gering; 'Net profit attributable to BCV shareholders' entspricht praktisch dem gesamten 'Net profit'.",
+ "_verification": "Consolidated income statement (2025 Annual Report, S. 123): Zeile 'Total income from ordinary banking operations' CHF 1'149.9 Mio. (2025) und Zeile 'Net profit attributable to BCV shareholders' CHF 429.7 Mio. (2025). Geprüft: 'Total income from ordinary banking operations' ist die Summe der vier FINMA-Teilergebnisse (u.a. 'Net interest income after loan impairment charges/reversals' 526.2, 'Net fee and commission income' 394.3, 'Net trading income' 194.8, 'Other ordinary income' 34.6) und steht unmittelbar vor den Betriebsaufwendungen - keine andere, unpassende 'Total'-Zeile. Wert stimmt mit der 5-Jahresübersicht (S. 227) und dem 'BCV Group posts stable revenues of CHF 1.15bn'-Communiqué überein."
+}

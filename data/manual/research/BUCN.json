@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 2914.3,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 235.0,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Herstellung von Landtechnik (Kuhn Group), Kommunalfahrzeugen und Strassenreinigungsmaschinen (Bucher Municipal), Hydraulikkomponenten (Bucher Hydraulics) sowie Maschinen zur Glasbehälterproduktion (Bucher Emhart Glass) und weiteren Spezialmaschinen (Bucher Specials).",
+ "products_url": "https://www.bucherindustries.com/en/about-us",
+ "founding_year": 1807,
+ "founding_year_source": "https://www.bucherindustries.com/en/about-us/history",
+ "employees": 14198,
+ "fiscal_year": 2025,
+ "report_url": "https://www.bucherindustries.com/index.php?eID=dumpFile&t=f&f=4705&token=bc1f1f8cea6d45f6fdf8079359462f839fe5bbe3",
+ "note": "Mitarbeitende: Der Bericht weist im Sustainability-Teil die Tabelle 'Number of employees as at year-end' mit 14'198 Personen aus (Summe aus 12'268 Festangestellten, 397 Lernenden, 1'533 befristet/temporär Beschäftigten) — dies ist eine Kopfzahl (Regel 6). Daneben nennt der Bericht divisionsweise 'Average number of full-time equivalents' (FTE) für interne Kennzahlen wie 'Net sales per FTE'; diese FTE-Werte wurden nicht verwendet, da die Jahresend-Kopfzahl explizit vorliegt. Gewinn CHF 235.0 Mio. ist der den Aktionären der Bucher Industries AG zurechenbare Anteil; der Minderheitsanteil beträgt lediglich CHF 0.4 Mio. (Gesamtkonzerngewinn 235.4 Mio.) — Regel 5. Keine Hinweise auf aufgegebene Geschäftsbereiche oder 'discontinued operations' in der Erfolgsrechnung gefunden.",
+ "_verification": "Nettoumsatz (CHF 2'914.3 Mio.) und Reingewinn, Aktionärsanteil (CHF 235.0 Mio.), stammen aus der 'Consolidated income statement' im 'Bucher Industries Annual Report 2025' (Kapitel Consolidated financial statements, S. 82, Zeilen 'Net sales' bzw. 'Attributable to owners of Bucher Industries AG'), Geschäftsjahr 2025 vs. 2024. Geprüft: Die Zeile heisst exakt 'Net sales' (keine Summenzeile, Regel 4); der Bericht trennt den Gesamtkonzerngewinn klar in Aktionärs- und Minderheitsanteil (Regel 5). Mitarbeiterzahl (14'198, Kopfzahl per Jahresende) aus der Tabelle 'Number of employees as at year-end' im Sustainability-Teil desselben Berichts, mit den divisionsweisen FTE-Angaben verglichen (Regel 6). Gründungsjahr 1807 (Übernahme einer Schmiede in Niederweningen durch Heinrich Bucher-Weiss) über die offizielle Bucher-Industries-History-Seite bestätigt; im Geschäftsbericht selbst nicht explizit genannt."
+}
