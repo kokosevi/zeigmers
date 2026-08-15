@@ -37,7 +37,7 @@ export interface LevelMeta {
     name: string
     ambiguousCells: number
     /** Einwohnerzahl, Stand 31.12.2024 (swissBOUNDARIES3D-Objektkatalog,
-     *  Attribut `EINWOHNERZAHL`; siehe `etl/src/draufsicht_etl/boundaries.py`).
+     *  Attribut `EINWOHNERZAHL`; siehe `etl/src/zeigmers_etl/boundaries.py`).
      *  Optional: das Feld fehlt in älteren Artefakten/Test-Fixtures, und der
      *  swisstopo-Objektkatalog garantiert ohnehin keinen Wert für jede Zeile
      *  (Exklaven-Teilpolygone führen keinen) — `ui/panel.ts` behandelt beides
@@ -143,7 +143,7 @@ export interface Meta {
 }
 
 /** Wird von jedem Kantonswechsel automatisch mitgeschrieben (siehe
- *  `draufsicht-etl statent`/`all`) und hier als erstes gelesen: der
+ *  `zeigmers-etl statent`/`all`) und hier als erstes gelesen: der
  *  Artefakt-Dateipräfix (`meta.canton.code`) und der Kantonsname für Titel
  *  und Panel kommen ausschliesslich von hier, nicht aus einer hartcodierten
  *  Konstante im Frontend. */

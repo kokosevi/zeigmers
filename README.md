@@ -1,10 +1,10 @@
-# Draufsicht
+# zeigmers
 
 Eine statische 3D-Wirtschaftskarte der Schweiz: zwei Ansichten derselben
 Fläche, nebeneinander gehalten, damit der Unterschied sichtbar wird.
 
 **Ansicht A** zeigt die börsenkotierten Unternehmen, gesamtschweizerisch:
-**201 der 202 an der SIX kotierten Gesellschaften stehen an ihrem operativen
+**201 der 224 an der SIX kotierten Gesellschaften stehen an ihrem operativen
 Hauptsitz, und alle 201 sind recherchiert** — Umsatz, Gewinn, Beschäftigte,
 Branche, Kerngeschäft, jede Zahl mit Primärquelle und einer unabhängigen
 Gegenprüfung. Die Höhe der Säule ist der Umsatz, in CHF umgerechnet, damit
@@ -81,7 +81,7 @@ Beschäftigte (schweizweit betrifft dieselbe Ausschlussregel 56'073
 Beschäftigte, 0.99 % aller Erwerbstätigen). Die obere Grenze addiert den
 denkbar grössten Effekt der Aufrundung (jede der Zellen mit Wert 4 könnte in
 Wirklichkeit nur 1 sein, also höchstens 3 zu viel zählen; für Aargau macht das
-3 × 10'109 = 30'327). Der ETL-Lauf (`draufsicht-etl statent`/`all`) bricht mit
+3 × 10'109 = 30'327). Der ETL-Lauf (`zeigmers-etl statent`/`all`) bricht mit
 einem harten Fehler ab, falls die Summe dieses Fenster verlässt — das wäre
 dann tatsächlich ein Verschnitt- oder Spaltenfehler, keine Rundung.
 
@@ -110,7 +110,7 @@ diesem Entscheid die Grössenordnung direkt in der Karte statt nur ein
 theoretisches Maximum, und das Klick-Panel zeigt zu jeder Gemeinde ihren
 eigenen, ungerundeten Betrag (`src/ui/panel.ts`, `aggregateCellContent`).
 
-`etl/src/draufsicht_etl/aggregate.py` und `binpack.py` berechnen die
+`etl/src/zeigmers_etl/aggregate.py` und `binpack.py` berechnen die
 Hektarstufe weiterhin vollständig — die Gemeindeaggregation und die
 Mehrdeutigkeits-Zählung je Gemeinde hängen direkt daran (Abschnitt 6.5 der
 Spezifikation). Nur der Schreibaufruf für `ag_hektar.*` und `ag_kanton.*` in
@@ -170,7 +170,7 @@ ursprüngliche Zieltoleranz (8 %, ≈ 38 Stützpunkte je Gemeinde im Schnitt,
 160 KB) war für eine flache 2D-Karte gewählt und reichte dafür. Extrudierte
 Seitenwände zeigen grobe Vereinfachung dagegen als sichtbare Facetten. Die
 Toleranz ist deshalb auf **30 %** angehoben (`MUNICIPALITY_SIMPLIFY_PERCENT`
-in `etl/src/draufsicht_etl/config.py`), was **124 Stützpunkte je Gemeinde**
+in `etl/src/zeigmers_etl/config.py`), was **124 Stützpunkte je Gemeinde**
 im Schnitt ergibt (24'363 insgesamt, gegenüber 7'425 vorher — 3.3×) bei
 **469 KB** (gegenüber 160 KB vorher). Beides bleibt weit unter dem
 2-MB-Gesamtbudget für `public/data/`, das genug Spielraum liess, um hier
@@ -248,7 +248,7 @@ durchgehend Gleiches mit Gleichem. Die App markiert `operating_income`-Balken
 optisch anders — ein sichtbarer Rand statt keinem, siehe `getLineColor`/
 `getLineWidth` in `src/layers/visible.ts` — und zeigt bei Auswahl den
 jeweiligen `note`-Text aus dem CSV (`src/ui/panel.ts`); jede einzelne Zahl trägt ausserdem eine
-`report_url` zur Primärquelle. `companies.validate()` (`etl/src/draufsicht_etl/
+`report_url` zur Primärquelle. `companies.validate()` (`etl/src/zeigmers_etl/
 companies.py`) erzwingt das: jede Zeile mit einem `revenue`-Wert braucht
 `report_url`, `fiscal_year`, `revenue_currency`, `revenue_type` **und**
 `revenue_unit`, sonst bricht der Build ab.
@@ -321,14 +321,14 @@ Artefakte werden geprüft und dann committet.
 
 ## Aktualisierung auf ein neues Datenjahr
 
-1. In `etl/src/draufsicht_etl/config.py` `STATENT_YEAR` ändern (z. B. `2024`).
+1. In `etl/src/zeigmers_etl/config.py` `STATENT_YEAR` ändern (z. B. `2024`).
 2. `npm run build:data` laufen lassen.
 3. Neue Artefakte in `public/data/` committen.
 
 Die Spaltenauflösung passt sich dabei selbst an: STATENT-Spaltennamen tragen
 ein Jahrgangs-Präfix, das mit der NOGA-Nomenklaturversion wechselt, **nicht**
 mit dem Datenjahr — die Spalten heissen `B08EMPT` (NOGA 2008), nicht `B24EMPT`,
-selbst für 2024er-Daten. `etl/src/draufsicht_etl/columns.py` löst die Spalten
+selbst für 2024er-Daten. `etl/src/zeigmers_etl/columns.py` löst die Spalten
 deshalb per Regex-Muster (`COLUMN_PATTERNS` in `config.py`) statt über einen
 festen Namen auf; ein hartcodiertes `B24` hätte beim ersten neuen Jahrgang mit
 unverändertem Präfix stillschweigend danebengegriffen. Das Ergebnis der
@@ -407,7 +407,7 @@ Gesamtbudget über `public/data/` (bisher 2 MB) ist mit 26 Kantonen das
 falsche Mass: die Karte lädt nie mehr als zwei Pakete gleichzeitig — die
 nationale Übersicht beim Start, danach je ein einzelnes Kanton-Paar. Neu
 gelten deshalb zwei Budgets (`config.py`, `MAX_STARTUP_BYTES`/
-`MAX_CANTON_PAYLOAD_BYTES`), beide von `draufsicht-etl all` geprüft und
+`MAX_CANTON_PAYLOAD_BYTES`), beide von `zeigmers-etl all` geprüft und
 gemeldet:
 
 | Budget | Inhalt | Budget | Gemessen |
@@ -450,7 +450,7 @@ es ohnehin keine legitime Ausnahme gibt.
 **Zwei Kantone verletzen das rohe Fenster — beide aus einem einzeln
 benennbaren, betragsscharf belegten Grund, keiner aus Rundung oder NOLOC.**
 Statt einer Pro-Kanton-Toleranz (dieselbe Entwaffnung in kleinerem Kostüm)
-trägt `etl/src/draufsicht_etl/plausibility.py` eine kleine, **bounded**
+trägt `etl/src/zeigmers_etl/plausibility.py` eine kleine, **bounded**
 Ausnahmetabelle: jeder Eintrag nennt Kanton, Betrag, Ursache und Beleg und
 weitet **genau eine** Fenstergrenze um **genau diesen** Betrag — nicht mehr.
 Ein Kanton, der über seine dokumentierte Ausnahme hinaus abweicht, bricht
@@ -496,7 +496,7 @@ mit +100 Beschäftigten über die Ausnahme hinaus als Regressionsfall).
 Vollständige Herleitung, Belege und Zahlen: ETL-Report.
 
 **Reproduzierbarkeit.** Zwei vollständige, aufeinanderfolgende
-`draufsicht-etl all`-Läufe erzeugen alle 83 Artefaktdateien (26 × 3 Kanton-
+`zeigmers-etl all`-Läufe erzeugen alle 83 Artefaktdateien (26 × 3 Kanton-
 Dateien + `ch_kantone.{bin,json,geojson}` + `meta.json` + `companies.json`)
 byte-identisch — per SHA-256/`cmp` über jede einzelne Datei geprüft, nicht nur
 stichprobenartig.
@@ -639,7 +639,7 @@ dieser Phase drei Zustände je Zeile, nicht mehr zwei — die Spalte
 3. **noch nicht recherchiert** (`researched=no`) — neu. Das ist **nicht**
    dieselbe Aussage wie Zustand 2: „wir haben nachgesehen und nichts
    Öffentliches gefunden" ist etwas anderes als „wir haben noch nicht
-   nachgesehen". `companies.validate()` (`etl/src/draufsicht_etl/
+   nachgesehen". `companies.validate()` (`etl/src/zeigmers_etl/
    companies.py`) erzwingt den Unterschied maschinell: eine `researched=no`-
    Zeile darf **keine einzige** Kennzahl tragen (`RESEARCH_ONLY_FIELDS`) —
    nicht nur „wenn `revenue` gesetzt ist, dann auch `report_url`" wie bisher,
@@ -685,7 +685,7 @@ ein künftiger `companies-sync`-Lauf mit mehr recherchierten Firmen oder einem
 neuen SIX-Stand zieht sie automatisch nach. `224` ist die Zahl der
 kotierten **Titel** (siehe unten — nicht identisch mit der Zahl der
 Gesellschaften, weil einzelne Firmen mehr als einen Titel stellen), live von
-SIX abgefragt (`companies.fetch_six_titles()`) bei jedem `draufsicht-etl
+SIX abgefragt (`companies.fetch_six_titles()`) bei jedem `zeigmers-etl
 companies`/`all`-Lauf — kein Rückfall auf eine veraltete Zahl, falls der
 Endpunkt nicht erreichbar ist: der Build bricht dann mit einer klaren Meldung
 ab (`ConnectionError`).
@@ -885,7 +885,7 @@ Sitz weiterhin).
 
 Die 202-8=194 neu gefundenen Adressen wurden über denselben swisstopo-
 `SearchServer` geokodiert wie die ursprünglichen acht (`geocode.py`) —
-gecacht in der CSV (`lon`/`lat`), ein erneuter `draufsicht-etl
+gecacht in der CSV (`lon`/`lat`), ein erneuter `zeigmers-etl
 companies`/`all`-Lauf geokodiert nichts doppelt. Ein Fehlschlag entdeckt
 dabei einen echten Fallstrick: Swisscoms Zefix-Adresse trägt die postalische
 PLZ **3050 Bern** (eine reine Postfach-Sammel-PLZ), swisstopos
@@ -918,7 +918,7 @@ Kurs ist der **Jahresmittelkurs der Schweizerischen Nationalbank**
 (Datenwürfel `devkum`, Reihe `M0` = Monatsdurchschnitt), gemittelt über die
 Monate des Geschäftsjahres — ein Jahresmittel passt zu einer Erfolgsrechnung,
 die über das Jahr entsteht, anders als ein Stichtagskurs, der einen Tag
-überbetont. Für 2025: **EUR 0.9371, USD 0.8314** (`etl/src/draufsicht_etl/fx.py`).
+überbetont. Für 2025: **EUR 0.9371, USD 0.8314** (`etl/src/zeigmers_etl/fx.py`).
 
 **Abweichende Geschäftsjahre bekommen ein rollendes Fenster.** Logitechs
 Geschäftsjahr 2025/26 lief von April 2025 bis März 2026; die CSV führt nur
@@ -973,7 +973,7 @@ Die Rechercheergebnisse liegen als ein JSON je Gesellschaft in
 `data/manual/research/<SIX-Symbol>.json` — **im Repo, nicht im Verborgenen**:
 sie sind der Nachweis, aus dem jede Zahl der Karte stammt, mit Quelle,
 Zeilenbezeichnung im Bericht und dem, was beim Gegenlesen geprüft wurde.
-`draufsicht-etl companies-merge` trägt sie in die CSV ein, mit drei
+`zeigmers-etl companies-merge` trägt sie in die CSV ein, mit drei
 Zusicherungen:
 
 - **Bereits recherchierte Zeilen bleiben unangetastet.** Die acht von Hand
@@ -994,13 +994,13 @@ hängt nicht mehr an `config.CANTON`). Die acht ursprünglichen Zeilen sind
 die vorherige `ag_listed_companies.csv` (0 Abweichungen) — die einzige
 Änderung an ihnen ist die neue Spalte `researched=yes` am Ende jeder Zeile,
 die es vorher nicht gab. Die CSV wird nie von Hand neu geschrieben: `uv run
---project etl draufsicht-etl companies-sync` gleicht die aktuelle SIX-Liste
+--project etl zeigmers-etl companies-sync` gleicht die aktuelle SIX-Liste
 gegen die CSV ab, hängt fehlende Titel an (nach demselben Zefix/LINDAS-
 Verfahren wie oben) und lässt bestehende Zeilen unangetastet.
 
 ### Reproduzierbarkeit
 
-Zwei vollständige, aufeinanderfolgende `draufsicht-etl all`-Läufe (bzw.
+Zwei vollständige, aufeinanderfolgende `zeigmers-etl all`-Läufe (bzw.
 `npm run build:data`) erzeugen `companies.json` byte-identisch (`cmp`
 geprüft) — jede der 194 neuen Zeilen trägt bereits gecachte Koordinaten,
 kein Geokodierungs-Request wiederholt sich.
@@ -1027,7 +1027,7 @@ STATENT-Verarbeitung.
 Mit Phase 1 baut das ETL immer alle 26 Kantone — ein Kantonswechsel ändert
 nicht mehr, **was** gebaut wird, sondern nur noch, welchen der bereits
 gebauten 26 Kantone die Karte beim Start zeigt. `CANTON` in
-`etl/src/draufsicht_etl/config.py` bedeutet seither: der Startkanton der
+`etl/src/zeigmers_etl/config.py` bedeutet seither: der Startkanton der
 Karte (`meta.canton`, gelesen in `src/main.ts`) — nicht mehr, welche Gemeinden
 und Grenzen das ETL berechnet. Bis Phase 3 hing auch der Pfad der Firmen-CSV
 (`companies.csv_path()`) an `CANTON`; seit die CSV national ist (siehe „Phase
@@ -1035,7 +1035,7 @@ und Grenzen das ETL berechnet. Bis Phase 3 hing auch der Pfad der Firmen-CSV
 
 Ein Kantonswechsel ist als Zweischritt gedacht:
 
-1. `CANTON` in `etl/src/draufsicht_etl/config.py` auf den neuen Kanton setzen
+1. `CANTON` in `etl/src/zeigmers_etl/config.py` auf den neuen Kanton setzen
    (`code`, `bfs_nr`, `name`). Gemeindegrenzen und -summen für diesen Kanton
    existieren bereits in `public/data/<code>_gemeinde.*`/
    `<code>_boundaries.geojson` — das ETL baut sie bei jedem Lauf für alle 26
@@ -1044,7 +1044,7 @@ Ein Kantonswechsel ist als Zweischritt gedacht:
    ist seit Phase 3 national (eine Datei für alle 26 Kantone, siehe „Phase 3"
    unten) und ändert sich mit einem Startkantonwechsel nicht mehr. Ein neuer
    Startkanton zeigt seine dort bereits vorhandenen kotierten Firmen (falls
-   welche recherchiert sind) automatisch; `draufsicht-etl companies-sync`
+   welche recherchiert sind) automatisch; `zeigmers-etl companies-sync`
    ergänzt neu an der SIX gelistete Titel unabhängig vom Startkanton.
 
 Danach `npm run build:data` laufen lassen (schreibt vor allem ein neues
@@ -1109,10 +1109,10 @@ Verfügung. Was ein Mensch vor dem nächsten Deploy ansehen sollte:
 
 | Befehl | Wirkung |
 |---|---|
-| `npm run build:data` | Vollständiger ETL-Lauf (`draufsicht-etl all`): Grenzen, Hektarraster, Firmen — schreibt `public/data/` |
-| `uv run --project etl draufsicht-etl companies-sync` | Neue SIX-Titel gegen Zefix/LINDAS abgleichen, CSV ergänzen (~15 Min., bestehende Zeilen bleiben unangetastet) |
-| `uv run --project etl draufsicht-etl companies-retry` | Nur die bisher sitzlosen Zeilen erneut abgleichen (~3 Min.) — sinnvoll **nach** einer Verbesserung am Namensabgleich; ohne Codeänderung folgenlos, siehe „Reproduzierbarkeit" |
-| `uv run --project etl draufsicht-etl companies-merge` | Recherchierte Kennzahlen aus `data/manual/research/` in die CSV übernehmen (bestehende Recherche bleibt unangetastet, `validate()` läuft vorher) |
+| `npm run build:data` | Vollständiger ETL-Lauf (`zeigmers-etl all`): Grenzen, Hektarraster, Firmen — schreibt `public/data/` |
+| `uv run --project etl zeigmers-etl companies-sync` | Neue SIX-Titel gegen Zefix/LINDAS abgleichen, CSV ergänzen (~15 Min., bestehende Zeilen bleiben unangetastet) |
+| `uv run --project etl zeigmers-etl companies-retry` | Nur die bisher sitzlosen Zeilen erneut abgleichen (~3 Min.) — sinnvoll **nach** einer Verbesserung am Namensabgleich; ohne Codeänderung folgenlos, siehe „Reproduzierbarkeit" |
+| `uv run --project etl zeigmers-etl companies-merge` | Recherchierte Kennzahlen aus `data/manual/research/` in die CSV übernehmen (bestehende Recherche bleibt unangetastet, `validate()` läuft vorher) |
 | `npm run build` | Typprüfung + Produktions-Build (`dist/`) |
 | `npm run dev` | Lokaler Entwicklungsserver mit Hot Reload |
 | `npm test` | Frontend-Tests (Vitest) |

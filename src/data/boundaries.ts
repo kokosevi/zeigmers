@@ -34,7 +34,7 @@ export function loadMunicipalityBoundaries(
 /** Alle 26 Kantone der Schweiz (`ch_kantone.geojson`), kantonsunabhängig
  *  benannt: die selbstgezeichnete Basiskarte (Change 3, ersetzt die
  *  bisherigen swisstopo-Vektorkacheln) zeigt immer alle 26, nicht nur den
- *  konfigurierten — siehe `etl/src/draufsicht_etl/boundaries.py`,
+ *  konfigurierten — siehe `etl/src/zeigmers_etl/boundaries.py`,
  *  `cantons_geojson_path()`. */
 export function loadCantons(base = '/data'): Promise<BoundaryFeatureCollection> {
   return loadGeojson(`${base}/ch_kantone.geojson`)

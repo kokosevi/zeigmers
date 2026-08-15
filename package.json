@@ -1,5 +1,5 @@
 {
-  "name": "draufsicht",
+  "name": "zeigmers",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,7 +7,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "build:data": "uv run --project etl draufsicht-etl all"
+    "build:data": "uv run --project etl zeigmers-etl all"
   },
   "dependencies": {
     "@deck.gl/core": "^9.0.0",

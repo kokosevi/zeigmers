@@ -1,5 +1,5 @@
 // ERZEUGT AUS etl/noga_groups.json — NICHT VON HAND ÄNDERN.
-// Neu erzeugen mit: uv run --project etl draufsicht-etl noga
+// Neu erzeugen mit: uv run --project etl zeigmers-etl noga
 
 export interface NogaGroup {
   readonly key: string

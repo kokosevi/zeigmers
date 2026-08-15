@@ -21,7 +21,7 @@ export const OUTLINE_COLOR: readonly [number, number, number, number] = [30, 30,
 
 export type RevenueType = 'net_sales' | 'operating_income'
 
-// Geschlossenes Set wie `RevenueType`, siehe `etl/src/draufsicht_etl/companies.py`,
+// Geschlossenes Set wie `RevenueType`, siehe `etl/src/zeigmers_etl/companies.py`,
 // `CONSOLIDATION_BASES`: hält fest, ob Umsatz und Reingewinn derselben Zeile den
 // Gesamtkonzern (inkl. zur Veräusserung klassierter/verkaufter Sparten) oder nur die
 // fortgeführten Geschäfte abbilden. `validate()` erzwingt das Feld dort, sobald `profit`
@@ -31,7 +31,7 @@ export type ConsolidationBasis = 'total_group' | 'continuing_operations'
 
 export interface Company {
   // `null`: der Titel liess sich keiner eindeutigen Zefix-Rechtseinheit
-  // zuordnen (siehe `etl/src/draufsicht_etl/companies.py`,
+  // zuordnen (siehe `etl/src/zeigmers_etl/companies.py`,
   // `match_company_seat`) — Name, ISIN und SIX-Symbol kommen trotzdem direkt
   // von SIX, nur die Zefix-UID fehlt.
   uid: string | null
@@ -45,7 +45,7 @@ export interface Company {
    *  die Grösse, aus der die Säulenhöhe entsteht. `revenue`/`currency`
    *  bleiben daneben die berichteten Werte fürs Panel: umgerechnet lässt
    *  sich vergleichen, im Original lässt sich nachprüfen. `null`, solange
-   *  keine Kurse vorliegen (siehe `etl/src/draufsicht_etl/fx.py`). */
+   *  keine Kurse vorliegen (siehe `etl/src/zeigmers_etl/fx.py`). */
   revenueChf: number | null
   currency: string | null
   revenueType: RevenueType | null
@@ -65,7 +65,7 @@ export interface Company {
   // auf Mindesthöhe) von "noch nicht recherchiert" (`researched=false` —
   // bekommt gar keine Säule, sondern einen flachen, neutralen Marker, siehe
   // `buildUnresearchedCompanyLayer`). Dieselbe Unterscheidung wie in
-  // `etl/src/draufsicht_etl/companies.py`s Moduldokumentation.
+  // `etl/src/zeigmers_etl/companies.py`s Moduldokumentation.
   researched: boolean
   city: string | null
   /** Versatz in Metern, wenn sich mehrere kotierte Gesellschaften eine
@@ -73,7 +73,7 @@ export interface Company {
    *  verdeckt die höhere Säule die niedrigere vollständig — die kleinere
    *  Firma wäre weder zu sehen noch anzuklicken. Das Panel nennt den
    *  Versatz, damit die Position verschoben, aber nicht verschwiegen ist
-   *  (siehe `etl/src/draufsicht_etl/companies.py`,
+   *  (siehe `etl/src/zeigmers_etl/companies.py`,
    *  `_spread_shared_positions`). */
   positionAdjusted: number | null
 }
