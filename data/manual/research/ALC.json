@@ -24,5 +24,6 @@
   "profit_zeile": "Net income / Net income attributable to Shareholders of Alcon Inc. (beide Zeilen zeigen 980; Non-controlling interests sind mit nur USD 1 Mio. (Aurion-Beteiligung) unwesentlich und nicht separat abgezogen)",
   "abweichungen": [],
   "begruendung": "Ich habe das Form 20-F direkt von sec.gov per curl geladen und den Volltext durchsucht. Net sales (10,319) und Net income (980) sind mehrfach identisch bestätigt, ebenso 'Total full-time equivalent associates 25,942' (Item 6.D) — die im Datensatz bereits korrigierte employees-Zahl (25942 statt der früheren gerundeten 25000) ist exakt richtig, und die bereits im Datensatz vorhandene Korrektur/Begründung ist zutreffend. Unter den Regeln 5-7 ergeben sich keine weiteren Funde: Net income ist praktisch vollständig Aktionärsanteil (NCI unwesentlich), Net sales ist die tatsächliche Umsatzzeile ohne Aggregationsproblem."
- }
+ },
+ "_korrektur": "Beschaeftigte 25'000 -> 25'942: die 25'000 waren gerundet, das Filing nennt 25'942 Vollzeitaequivalente."
 }

@@ -30,5 +30,6 @@
    "revenue_type 'operating_income' passt nicht zur korrekten Zeile: 'Revenues from management services, net' ist im Bericht explizit als 'Revenue' bezeichnet (vgl. Accounting policy: Revenue recognition, S. 51), keine 'operating_income'-Grösse im Sinne von Banken/Versicherern."
   ],
   "begruendung": "Ich habe den Annual Report 2025 von Partners Group Holding AG direkt als PDF geladen und Note 1.1 'Revenue and other operating income' (S. 51) sowie die zugehörige Accounting-Policy-Box (S. 52) und die Segment-/Geografie-Notes (S. 54, 56) gelesen. Der Bericht führt zwei getrennte, klar benannte Zeilen — 'Revenues from management services, net' (2'461.2) als eigentliche Umsatzgrösse und 'Other operating income' (101.9), die der Bericht wörtlich als 'not revenue from management services' bezeichnet — und summiert beide nur in einer Totalzeile (2'563.1), die für einen Umsatzvergleich zwischen Firmen ungeeignet ist."
- }
+ },
+ "_korrektur": "Umsatz 2'563.1 -> 2'461.2: die Summenzeile enthaelt 101.9 Mio. 'other operating income', die der Bericht selbst als 'not revenue' abgrenzt (Regel 7)."
 }

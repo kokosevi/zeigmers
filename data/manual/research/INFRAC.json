@@ -20,9 +20,9 @@
  "_pruefung": {
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Infracore SA",
-  "revenue_zeile": "Rental income (Financial Key Figures, FY2025-Spalte)",
-  "profit_zeile": "Profit for the period (Financial Key Figures, FY2025-Spalte)",
+  "revenue_zeile": "Rental income (Key-Figures-Seite; nicht 'Total revenue including result from revaluation' = 82'523)",
+  "profit_zeile": "Profit for the period",
   "abweichungen": [],
-  "begruendung": "Die IR-Seite infracore.ch/en/investor-relations/financials/key-figures selbst geladen (JS-Seite, gerendert): 'Rental Income' FY2025 = 66'059 TCHF, 'Profit for the Period' FY2025 = 55'757 TCHF, 'Total Revenue Including Result from Revaluation' = 82'523 TCHF (davon 16'160 Neubewertung, korrekt NICHT als Umsatz verwendet). Legal Name 'Infracore SA' auf der About-Us-Seite bestätigt. Da noch kein PDF-Geschäftsbericht für FY2025 verfügbar ist (IPO erst Juli 2026), ist die eigene IR-Kennzahlenseite die bestmögliche Primärquelle; Zahlen stimmen exakt überein."
+  "begruendung": "Ich habe die IR-Key-Figures-Seite auf infracore.ch direkt abgerufen: 'Rental Income' CHF 66'059 Tsd., 'Total Revenue Including Result from Revaluation' CHF 82'523 Tsd. (nicht verwendet), 'Profit for the Period' CHF 55'757 Tsd. - bestätigt. Zusätzlich geprüft: die Unterseite 'Reports and Presentations' zeigt für 2026 nur den Eintrag 'Publication of the Key figures 1H2026', kein FY2025-Geschäftsbericht-PDF ist verlinkt - bestätigt damit die Aussage des Researchers, dass kein testierter Abschluss auffindbar war."
  }
 }

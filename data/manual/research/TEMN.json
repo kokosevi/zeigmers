@@ -26,5 +26,6 @@
    "Nicht revenue/profit-relevant: founding_year_source verweist auf Wikipedia statt eine Primärquelle; im Annual Report 2025 selbst und auf temenos.com/about-us konnte kein explizites Gründungsjahr gefunden werden, das ist bereits im note-Feld der Vorlage transparent offengelegt."
   ],
   "begruendung": "PDF direkt heruntergeladen: 'Total revenues' 1,090,830 Tsd. USD und 'Profit for the year', vollständig 'Attributable to: Equity holders of the Company', 280,606 Tsd. USD, beide aus derselben Konzern-Erfolgsrechnung 2025; Mitarbeitendenzahl 5,205 ('Temenos employed 5,205 people worldwide') bestätigt. Berichtswährung korrekt USD; einzige Auffälligkeit betrifft die Sekundärquelle für das Gründungsjahr, nicht die geprüften Finanzzahlen."
- }
+ },
+ "_korrektur": "Gruendungsjahr entfernt: die einzige Quelle war Wikipedia, nach dem Vertrag unzulaessig."
 }

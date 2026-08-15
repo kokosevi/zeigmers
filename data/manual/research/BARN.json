@@ -27,5 +27,6 @@
    "Ich konnte in dieser Sitzung nicht unabhängig prüfen, ob 'Net profit for the year' (188.4 Mio.) der Aktionärsanteil ist oder der Konzerngesamtgewinn inkl. Minderheitsanteilen (Regel 5) — barry-callebaut.com blockierte sämtliche Zugriffsversuche (curl und WebFetch, mehrere User-Agents, mehrere URLs) mit Cloudflare-403/JS-Challenge. Das ist ein offener Punkt, kein bestätigter Fund."
   ],
   "begruendung": "Ich habe versucht, die Primärquelle unabhängig zu öffnen (report_url direkt, die Investor-Relations-Publikationsseite, die Media-Releases-Seite, sowie über einen Proxy-Reader) — barry-callebaut.com antwortete durchgehend mit Cloudflare-403 ('Attention Required' / 'Enable JavaScript and cookies'), sodass ich die Zahlen in dieser Sitzung nicht selbst am Primärdokument nachvollziehen konnte. Ich stütze mich daher auf die bereits im Datensatz dokumentierte, offenbar sorgfältige frühere Extraktion (u. a. mit spezifischem Zitat der Dokumentkopfzeile), kann sie aber nicht als eigenständig bestätigt kennzeichnen; der bereits bekannte Fund zur Quellenart bleibt bestehen."
- }
+ },
+ "_korrektur": "Zahlen bestaetigt, Quelle bleibt eine Ad-hoc-Mitteilung statt des Geschaeftsberichts — barry-callebaut.com sperrt jeden Zugriff. Offen, nicht geloest."
 }

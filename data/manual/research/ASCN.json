@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.ascom.com/globalassets/assets/global/corporate/documents/reports-and-presentations/2025/ascom_annualreport2025_web.pdf",
  "note": "Mitarbeitende als Vollzeitäquivalente ausgewiesen ('Number of employees (FTEs)': 1'358 per Ende 2025), keine Kopfzahl im Bericht.",
- "_verification": "Zeilen 'Net revenue' (CHF 292.1 Mio., Note 18) und 'Group profit for the period attributable to owners of the parent' (CHF 15.1 Mio.) stammen aus der 'Consolidated income statement' im Ascom Annual Report 2025, S. 117 bzw. Note zu Earnings per Share. Geprüft gegen die im Ad-hoc-Jahresergebnis-Communiqué vom 9. März 2026 genannten identischen Werte (Net revenue 292.1, Group profit 15.1, Employees FTE 1'358). Gründungsjahr 1987 (Fusion Hasler/Autophon/Zellweger) aus einer offiziellen Ascom-Investorenpräsentation von 2022 bestätigt, da der Geschäftsbericht 2025 selbst keine Gründungsangabe enthält."
+ "_verification": "Zeilen 'Net revenue' (CHF 292.1 Mio., Note 18) und 'Group profit for the period attributable to owners of the parent' (CHF 15.1 Mio.) stammen aus der 'Consolidated income statement' im Ascom Annual Report 2025, S. 117 bzw. Note zu Earnings per Share. Geprüft gegen die im Ad-hoc-Jahresergebnis-Communiqué vom 9. März 2026 genannten identischen Werte (Net revenue 292.1, Group profit 15.1, Employees FTE 1'358). Gründungsjahr 1987 (Fusion Hasler/Autophon/Zellweger) aus einer offiziellen Ascom-Investorenpräsentation von 2022 bestätigt, da der Geschäftsbericht 2025 selbst keine Gründungsangabe enthält.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Ascom Holding AG",
+  "revenue_zeile": "Net revenue (Consolidated Income Statement, Note 18: 292.1 Mio.)",
+  "profit_zeile": "Group profit for the period attributable to owners of the parent (= Group profit for the period gesamt, keine Minderheitsanteile vorhanden)",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Ascom Annual Report 2025 direkt von ascom.com geladen und mit pdftotext ausgelesen. Net revenue (292.1 Mio.) und Group profit for the period (15.1 Mio., vollständig 'attributable to owners of the parent', keine Non-controlling-interests-Zeile vorhanden) stimmen exakt. Employees (1'358) ist exakt die Zahl aus der offiziellen 5-Jahres-Kennzahlentabelle ('Number of employees (FTEs)', Stand 31.12.2025); eine im Bericht separat genannte Zahl von 1'423 bezieht sich auf einen abweichenden Sustainability-Berichtszeitraum (31.7.2025) und ist keine Alternative zur Jahresendzahl. Eine Kopfzahl-Alternative zur FTE-Zahl wurde im Bericht nicht gefunden, FTE ist also nach Regel 6 richtig. Gründungsjahr 1987 stammt korrekt aus einer separaten Quelle, da der Geschäftsbericht selbst keine Gründungsangabe enthält (Note dazu bereits korrekt im Datensatz)."
+ }
 }

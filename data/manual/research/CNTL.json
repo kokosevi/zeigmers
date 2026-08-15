@@ -27,5 +27,6 @@
    "Formal aber ein echter Fund nach Regel 6: die geöffnete Quelle ('Centiel-Financial-Statement-2025.pdf') ist der geprüfte Konzernabschluss der operativen Centiel SA, Cadro, und ihrer Töchter - nicht der Abschluss der Gesellschaft, die den SIX-Ticker CNTL tatsächlich trägt. Diese hiess per Bilanzstichtag 31.12.2025 noch HT5 AG und wies laut eigenem 'HT5 Gruppe Geschäftsbericht 2025' nur rund CHF -1.6 Mio. Verlust aus, keine CHF 45.7 Mio. Umsatz/CHF 7.8 Mio. Gewinn; die Fusion mit Centiel SA wurde erst am 19.1.2026 angekündigt und war zum Stichtag nicht vollzogen."
   ],
   "begruendung": "PDF Centiel-Financial-Statement-2025.pdf (centiel.com) sowie die Centiel-Investorenpräsentation Juni 2026 selbst geladen: 'Net revenue from deliveries and services' 45'710 und 'Profit for the year' 7'949 (Aktionärsanteil 7'824) bestätigen die im Datensatz genannten Zahlen exakt und betreffen zweifelsfrei das heutige Stromversorgungsgeschäft (StratusPower/CumulusPower etc.), nicht HOCHDORFs Milchgeschäft. Der Datensatz legt die Reverse-Merger-Konstellation und die Nichtverwendung der HT5-Mantelzahlen bereits transparent offen; dennoch bleibt es strenggenommen ein abweichender Rechtseinheiten-Fund, da der zum Stichtag 31.12.2025 tatsächlich unter dem Ticker CNTL notierte Rechtsträger (HT5 AG) eigene, deutlich andere Zahlen auswies."
- }
+ },
+ "_korrektur": "Uebergangsfall benannt: die Zahlen sind die der operativen Centiel SA, nicht der HT5 AG, die am Bilanzstichtag den Ticker trug."
 }

@@ -26,5 +26,6 @@
    "Die Mitarbeiterzahl 1'626 wird im selben Geschäftsbericht widersprüchlich ausgewiesen: die 5-Jahresübersicht (S. 8) beschriftet sie ausdrücklich als 'Employees (in FTEs)', während der Notenanhang zeitgleich von '1,626 people' (Kopfzahl-Formulierung) spricht — die Forschungsnotiz behauptet fälschlich, es sei 'explizit als Personenzahl (nicht FTE) ausgewiesen', obwohl an anderer Stelle im selben Bericht explizit 'FTEs' dabeisteht. Betrifft nicht Umsatz/Gewinn."
   ],
   "begruendung": "Ich habe den LEM Annual Report 2025/26 direkt heruntergeladen und die Consolidated income statement (S. 48) sowie die Notes geprüft. Sales CHF 287'675 Tsd. und Net profit CHF 9'857 Tsd. stehen exakt so für die Periode April 2025 – März 2026 (fiscal_year 2026 als Endjahr korrekt gewählt); keine Minderheitsanteile im Bericht erwähnt, Gewinn also vollständig den Aktionären zurechenbar."
- }
+ },
+ "_korrektur": "Widerspruch im Bericht dokumentiert: dieselbe Zahl 1'626 heisst einmal 'Employees (in FTEs)' und einmal '1,626 people'."
 }

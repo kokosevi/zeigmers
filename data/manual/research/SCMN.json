@@ -29,5 +29,6 @@
    "Die Differenz ist mit CHF 1 Mio. (0.08%) wirtschaftlich unbedeutend und ändert an Umsatz- oder Konsolidierungskreis-Konsistenz (Punkt 2 der Prüfkriterien) nichts - Umsatz und Gewinn stammen beide aus derselben Gesamtkonzern-Rechnung FY2025 -, aber die spezifisch verlangte Prüfung 'ist der Gewinn der den Aktionären von Swisscom AG zurechenbare Anteil?' ist mit dem erfassten Wert 1'270 formal zu verneinen."
   ],
   "begruendung": "Ich habe die Fünf-Jahres-Übersicht (report_url) sowie ergänzend die offizielle Swisscom-IR-Tabelle 'P&L, FCF restated as per December 31, 2025' (PDF, swisscom.ch/investor) unabhängig geöffnet und dort die Gruppen-P&L-Zeilen für FY2025 gelesen. Revenue (15'048) und Net income gesamt (1'270) stimmen mit dem vorgelegten Datensatz überein und stammen beide aus derselben Gesamtkonzernrechnung; die für Swisscom-AG-Aktionäre relevante Zeile lautet jedoch 'Net income attributable to equity holders of Swisscom Ltd' = 1'271 Mio., da 2025 - anders als im Datensatz-Kommentar behauptet - eine (kleine, negative) Zeile 'non-controlling interests' von CHF -1 Mio. existiert."
- }
+ },
+ "_korrektur": "Gewinn 1'270 -> 1'271: 1'270 ist das Konzernergebnis, 1'271 der Aktionaersanteil (Regel 5), gegengerechnet ueber die Gewinn-je-Aktie."
 }

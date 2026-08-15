@@ -16,5 +16,13 @@
  "fiscal_year": "",
  "report_url": "",
  "note": "Keine eigene, öffentlich erreichbare Firmenwebsite gefunden (naheliegende Domainnamen wie matador-se.ch/matadorpe.com etc. lösen nicht auf); die administrative Verwaltung erfolgt laut Handelsregister-Adresse (Grundacher 5, 6060 Sarnen) vermutlich durch die am gleichen Sitz eingetragene Alegro Capital AG, deren Domain alegrocapital.com nur eine geparkte Verkaufsseite (hugedomains.com) ist. Aus einem über Moneyhouse zugänglichen SHAB-Publikationstext (Einladung zur ordentlichen Generalversammlung 2025) geht hervor, dass der Verwaltungsrat plante, die Rechnungslegung erst ab Geschäftsjahr 2025 auf IFRS umzustellen und die Gesellschaft 'zukünftig an der Schweizer Börse SIX Swiss Exchange' zu listen ('Ausblick', Traktandum 9) – die Gesellschaft war zum Zeitpunkt dieser GV-Einladung (Frühjahr 2025) also noch nicht bzw. erst im Begriff, an der SIX kotiert zu werden. Ein Geschäftsbericht mit Umsatz-, Gewinn- oder Mitarbeiterzahlen war innerhalb der Recherche nicht auffindbar; Moneyhouse weist Umsatz und Mitarbeiterzahlen nur für Premium-Mitglieder aus. 'revenue', 'profit', 'employees', 'fiscal_year' und 'report_url' bleiben deshalb leer statt mit ungeprüften Zahlen aus einer unzulässigen Quelle gefüllt.",
- "_verification": "Keine Primärquelle mit Umsatz-/Gewinnzahlen auffindbar (siehe note); die Felder bleiben deshalb bewusst leer. Verifiziert wurden lediglich Sitz, Rechtsform, Zweck (Beteiligungs-/Fondsmanagementgesellschaft, Branche laut Moneyhouse 'Betreiben von Fondsmanagement') und Gründungsdatum über den Moneyhouse-Handelsregisterauszug sowie ein über Moneyhouse einsehbarer SHAB-Text der GV-Einladung 2025, der den (zum damaligen Zeitpunkt noch bevorstehenden) SIX-Börsengang der Gesellschaft bestätigt."
+ "_verification": "Keine Primärquelle mit Umsatz-/Gewinnzahlen auffindbar (siehe note); die Felder bleiben deshalb bewusst leer. Verifiziert wurden lediglich Sitz, Rechtsform, Zweck (Beteiligungs-/Fondsmanagementgesellschaft, Branche laut Moneyhouse 'Betreiben von Fondsmanagement') und Gründungsdatum über den Moneyhouse-Handelsregisterauszug sowie ein über Moneyhouse einsehbarer SHAB-Text der GV-Einladung 2025, der den (zum damaligen Zeitpunkt noch bevorstehenden) SIX-Börsengang der Gesellschaft bestätigt.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "",
+  "revenue_zeile": "",
+  "profit_zeile": "",
+  "abweichungen": [],
+  "begruendung": "Eigener Versuch, moneyhouse.ch (Handelsregisterauszug für Matador Secondary Private Equity AG) abzurufen, scheiterte mit 403 Forbidden, ebenso wie eine eigene Firmenwebsite nicht auffindbar war. Ohne eigenen Zefix-API-Zugang und ohne Geschäftsbericht liess sich keine Primärquelle mit Finanzzahlen finden. Die durchgängig leeren Felder sind damit nachvollziehbar - kein Fund, aber Verifikation der Nichtexistenz einer Quelle bleibt eingeschränkt."
+ }
 }

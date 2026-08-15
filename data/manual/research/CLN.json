@@ -24,5 +24,6 @@
   "profit_zeile": "Net income/loss, attributable to Shareholders of Clariant Ltd (Gesamt 'Net income/loss' = -41, davon 'Non-controlling interests' = 34, Aktionärsanteil = -75)",
   "abweichungen": [],
   "begruendung": "Ich habe den Clariant Integrated Report 2025 direkt von clariant.com geladen und mit pdftotext ausgelesen. Sales (3'915 Mio.) und der Aktionärsanteil am Konzernergebnis (-75 Mio. = Gesamt -41 Mio. minus Minderheitsanteile 34 Mio.) stimmen exakt und sind bereits korrekt als Aktionärsanteil eingetragen (Regel 5 erfüllt). Die bereits im Datensatz eingearbeitete Korrektur der Mitarbeiterzahl auf die Kopfzahl (10'449, statt der zuvor verwendeten FTE-Zahl 10'281) ist ebenfalls exakt bestätigt ('Total number of employees (head count) 10,449'). Unter den Regeln 5-7 ergeben sich keine weiteren Funde."
- }
+ },
+ "_korrektur": "Beschaeftigte 10'281 -> 10'449: 10'281 sind Vollzeitstellen, der Bericht hebt 10'449 Koepfe hervor (Regel 6)."
 }

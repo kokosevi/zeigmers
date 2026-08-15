@@ -24,5 +24,6 @@
   "profit_zeile": "Konzerngewinn (Erfolgsrechnung Konzern, 295'497 TCHF, 2025 vs. 286'642 TCHF 2024)",
   "abweichungen": [],
   "begruendung": "PDF von lukb.ch heruntergeladen und mit pdftotext durchsucht: Zeilen 'Geschäftsertrag' (690'972) und 'Konzerngewinn' (295'497) stehen wortgleich in der konsolidierten Erfolgsrechnung, unmittelbar vor bzw. am Ende der Rechnung, keine falsche 'Total'-Zeile verwendet. Personalbestand (1'206.2 Vollzeitstellen per Periodenende) und Rechtseinheit 'Luzerner Kantonalbank AG' ebenfalls im Bericht bestätigt."
- }
+ },
+ "_korrektur": "Beschaeftigte 1'206.2 -> 1'206: Vollzeitstellen mit Dezimalstelle gerundet; die Karte zaehlt Personen."
 }

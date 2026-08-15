@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://castlepe.com/download_file/view/c27b927f-e4bb-4f8e-99f1-284cd6817ed2/159",
  "note": "Castle Private Equity AG ist eine reine Investment-Holding (Private-Equity-Dachfonds) ohne operatives Geschäft und ohne Umsatz im üblichen Sinn; ihre Erträge bestehen aus Bewertungsgewinnen/-verlusten auf das Anlageportfolio ('Net gain/(loss) on investments at fair value through profit or loss'), keiner klassischen Umsatzzeile - 'revenue' bleibt deshalb leer. Gewinn = 'Profit/(Loss) for the year after taxes' USD 1'756 Tsd. (Vorjahr: Verlust USD -2'746 Tsd.); Minderheitsanteile am Gewinn betragen laut Bericht ausdrücklich USD 0, der Betrag ist somit vollständig den Aktionären zurechenbar. Die Gesellschaft (Castle Private Equity AG, Pfäffikon SZ, Gemeinde Freienbach) wurde laut eigenem Jahresbericht durch Gründungsurkunde vom 19. Februar 1997 auf unbestimmte Zeit errichtet; die Kotierung an der SIX erfolgte im selben Jahr. Weder die Gesellschaft noch ihre konsolidierten Tochtergesellschaften (Cayman, Irland) beschäftigten per 31.12.2025 und 31.12.2024 Mitarbeitende.",
- "_verification": "Gewinn aus der 'Consolidated Statement of Comprehensive Income' im Annual Report 2025 (Geschäftsjahr 2025): Zeile 'Profit/(Loss) for the year after taxes' USD 1'756 Tsd., davon 'Non-controlling interest' USD 0 und vollständig 'attributable to' den Aktionären. Fehlen einer Umsatzzeile im Konzernabschluss geprüft (nur Erträge/Verluste aus Finanzinstrumenten zu Fair Value). Gründungsdatum (19. Februar 1997) und Fehlen von Mitarbeitenden aus Note 1 ('General Information') desselben testierten Konzernabschlusses."
+ "_verification": "Gewinn aus der 'Consolidated Statement of Comprehensive Income' im Annual Report 2025 (Geschäftsjahr 2025): Zeile 'Profit/(Loss) for the year after taxes' USD 1'756 Tsd., davon 'Non-controlling interest' USD 0 und vollständig 'attributable to' den Aktionären. Fehlen einer Umsatzzeile im Konzernabschluss geprüft (nur Erträge/Verluste aus Finanzinstrumenten zu Fair Value). Gründungsdatum (19. Februar 1997) und Fehlen von Mitarbeitenden aus Note 1 ('General Information') desselben testierten Konzernabschlusses.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Castle Private Equity AG",
+  "revenue_zeile": "",
+  "profit_zeile": "Profit/(Loss) for the year after taxes (davon 'Shareholders' 1'756, 'Non-controlling interest' 0/—)",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Annual Report 2025 (PDF) direkt von castlepe.com geladen: 'Profit/(Loss) for the year after taxes' USD 1'756 Tsd. bestätigt, Aufteilung 'Shareholders 1,756' / 'Non-controlling interest —' bestätigt (vollständig Aktionären zurechenbar). Gründung 'by deed dated 19 February 1997' bestätigt, 'did not employ any employees' bestätigt. Keine Umsatzzeile - leeres revenue-Feld gerechtfertigt, kein Fund."
+ }
 }

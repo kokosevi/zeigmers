@@ -16,5 +16,13 @@
  "fiscal_year": 2026,
  "report_url": "https://www.hbmhealthcare.com/sites/default/files/downloads/news-fileupload/hbm-healthcare-investments-geschaftsbericht-2025-2026.pdf",
  "note": "HBM Healthcare Investments ist eine reine Beteiligungsgesellschaft (Private-Equity-/Venture-Capital-Vehikel) und weist keinen Umsatz im betrieblichen Sinn aus; die Gesamterfolgsrechnung enthält stattdessen 'Ergebnis aus Investitionstätigkeit' (Dividendenertrag aus Beteiligung an der Tochtergesellschaft HBM Healthcare Investments (Cayman) Ltd. plus Nettowertveränderung dieser Beteiligung, zusammen CHF 275.753 Mio. im Geschäftsjahr 2025/2026) - deshalb revenue leer gelassen. Geschäftsjahr endet am 31. März; 2025/2026 = Endjahr 2026. Beschäftigte: Die Gesellschaft selbst hat gemäss Einzelabschluss-Anhang ('Erklärung zu den Vollzeitstellen') im Jahresdurchschnitt unter 1 Vollzeitstelle - das operative Portfoliomanagement wird extern durch die HBM Partners AG als Investitionsberaterin erbracht, eigene Mitarbeiterzahlen der Gruppe werden nicht offengelegt; auf 0 gerundet. Gründungsjahr 2001 aus dem Bericht selbst: indexierte Wertentwicklung 'seit Lancierung ... (12.7.2001 = 100)'.",
- "_verification": "Gewinn aus der 'Gesamterfolgsrechnung' (Geschäftsbericht 2025/2026, konsolidierte Übersicht S. 15/68), Spalte 'Konzernrechnung nach IFRS (geprüft)': Zeile 'Jahresergebnis' = 'Gesamtergebnis' = CHF 271'853 Tsd. (keine gesonderte Minderheitsanteilszeile, Gesellschaft hat keine Tochterunternehmen mit Minderheitsaktionären). Geprüft, dass keine Zeile 'Net sales'/'Umsatz'/'Revenue' im Bericht existiert - stattdessen 'Ergebnis aus Investitionstätigkeit' als Pendant; PDF direkt von hbmhealthcare.com heruntergeladen und Volltext durchsucht."
+ "_verification": "Gewinn aus der 'Gesamterfolgsrechnung' (Geschäftsbericht 2025/2026, konsolidierte Übersicht S. 15/68), Spalte 'Konzernrechnung nach IFRS (geprüft)': Zeile 'Jahresergebnis' = 'Gesamtergebnis' = CHF 271'853 Tsd. (keine gesonderte Minderheitsanteilszeile, Gesellschaft hat keine Tochterunternehmen mit Minderheitsaktionären). Geprüft, dass keine Zeile 'Net sales'/'Umsatz'/'Revenue' im Bericht existiert - stattdessen 'Ergebnis aus Investitionstätigkeit' als Pendant; PDF direkt von hbmhealthcare.com heruntergeladen und Volltext durchsucht.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "HBM Healthcare Investments AG",
+  "revenue_zeile": "",
+  "profit_zeile": "Jahresergebnis / Gesamtergebnis",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Geschäftsbericht 2025/2026 (PDF) direkt von hbmhealthcare.com geladen: 'Jahresergebnis'/'Gesamtergebnis' = TCHF 271'853 mehrfach bestätigt (u.a. konsolidierte Übersicht und Gesamtergebnisrechnung), 'Ergebnis aus Investitionstätigkeit' TCHF 275'753 als Pendant zum Umsatz. Keine Zeile 'Net sales'/'Umsatz'/'Revenue' im Bericht gefunden - leeres revenue-Feld ist gerechtfertigt, kein Fund."
+ }
 }

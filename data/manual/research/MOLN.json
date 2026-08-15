@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.globenewswire.com/news-release/2026/03/12/3255073/0/en/molecular-partners-reports-highlights-and-financial-results-full-year-2025.html",
  "note": "Kein Produktumsatz: Molecular Partners ist klinisch-stufiges Biotech ohne zugelassenes Produkt. FY2025-Umsatz (Contract/Collaboration Revenue) betrug CHF 0 (2024: CHF 5.0 Mio.), daher revenue=0. Beschäftigte als FTE (134.0) ausgewiesen, nicht als Köpfe, auf ganze Zahl gerundet. report_url ist die offizielle, wortgleiche GlobeNewswire-Pressemitteilung des Unternehmens; die investors.molecularpartners.com-Version derselben Meldung war technisch nicht abrufbar (Timeout), Inhalt ist identisch.",
- "_verification": "Umsatz und Gewinn stammen aus der offiziellen Finanzmitteilung 'Molecular Partners Reports Highlights and Financial Results for Full Year 2025' (12.03.2026): Zeile 'revenue'/'no revenue' (2025: CHF 0, 2024: CHF 5.0 Mio.) und 'net loss of CHF 61.7 million' sowie FTE-Angabe 134.0 zum 31.12.2025. Geprüft, dass es sich um Konzernzahlen (total_group) für das volle Geschäftsjahr 2025 handelt und dass kein Produktumsatz vorliegt, da alle bisherigen Erlöse aus Kollaborationsverträgen stammen."
+ "_verification": "Umsatz und Gewinn stammen aus der offiziellen Finanzmitteilung 'Molecular Partners Reports Highlights and Financial Results for Full Year 2025' (12.03.2026): Zeile 'revenue'/'no revenue' (2025: CHF 0, 2024: CHF 5.0 Mio.) und 'net loss of CHF 61.7 million' sowie FTE-Angabe 134.0 zum 31.12.2025. Geprüft, dass es sich um Konzernzahlen (total_group) für das volle Geschäftsjahr 2025 handelt und dass kein Produktumsatz vorliegt, da alle bisherigen Erlöse aus Kollaborationsverträgen stammen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Molecular Partners AG",
+  "revenue_zeile": "Total revenues / Revenues from research and development collaborations (Consolidated statement of comprehensive loss)",
+  "profit_zeile": "Net loss ('the Group recorded a net loss of CHF 61.7 million')",
+  "abweichungen": [],
+  "begruendung": "Ich habe die SEC-6-K-Einreichung vom 12.03.2026 (Annual Report 2025, Exhibit 99.1, CIK 0001745114) direkt von sec.gov geladen. Die konsolidierte Erfolgsrechnung zeigt in der 2025-Spalte keinen Wert bei 'Revenues from research and development collaborations'/'Total revenues' (nur 2024: TCHF 4'970 und 2023: TCHF 7'038 ausgewiesen), textlich bestätigt durch 'In 2025, the Group recognized no revenue, a decrease compared to the previous year'. Der Netto-Verlust wird explizit mit 'net loss of CHF 61.7 million' beziffert. Revenue=0 ist damit korrekt, kein Fund."
+ }
 }

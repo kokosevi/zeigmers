@@ -16,5 +16,14 @@
  "fiscal_year": 2025,
  "report_url": "https://www.nebag.ch/wp-content/uploads/2026/04/nebag_geschaeftsbericht_2025_online.pdf",
  "note": "Gewinn 428'004 CHF in absoluten Franken (profit_unit=1), nicht in Millionen — nebag ist eine kleine Beteiligungsgesellschaft. nebag ag ist eine reine Investment-/Beteiligungsgesellschaft (gemäss IFRS 10 als Investmentgesellschaft von der Konzernrechnungslegungspflicht befreit) ohne operatives Geschäft und ohne Verkaufserlöse; 'revenue' bleibt daher leer. Die Gesamtergebnisrechnung besteht ausschliesslich aus Finanzerträgen, realisierten/nicht realisierten Kursgewinnen und -verlusten sowie Verwaltungsaufwand – kein Umsatz im üblichen Sinn. 'Periodenergebnis'/Gesamtergebnis 2025 = CHF 428'004 (Vorjahr: CHF -5'279'015 Verlust), als profit übernommen. Die administrative Führung ist per Vertrag an die Baryon AG ausgelagert; der Bericht weist keine eigenen Mitarbeitenden der nebag ag aus, daher 'employees' leer.",
- "_verification": "Profit (CHF 428'004, 'Periodenergebnis'/'Gesamtergebnis' 2025) aus der Gesamtergebnisrechnung im Finanzteil des Geschäftsberichts 2025, geprüft gegen die Eigenkapitalveränderungsrechnung (gleicher Wert dort ausgewiesen). Kein Umsatz vorhanden, da die Gesellschaft laut eigener Beschreibung (Kapitel 'Unternehmensstruktur') eine reine Investmentgesellschaft ohne operatives Geschäft ist, deren einzige Ertragsquelle Finanzanlagen sind. Gründungsdatum direkt im Corporate-Governance-Teil desselben Berichts genannt."
+ "_verification": "Profit (CHF 428'004, 'Periodenergebnis'/'Gesamtergebnis' 2025) aus der Gesamtergebnisrechnung im Finanzteil des Geschäftsberichts 2025, geprüft gegen die Eigenkapitalveränderungsrechnung (gleicher Wert dort ausgewiesen). Kein Umsatz vorhanden, da die Gesellschaft laut eigener Beschreibung (Kapitel 'Unternehmensstruktur') eine reine Investmentgesellschaft ohne operatives Geschäft ist, deren einzige Ertragsquelle Finanzanlagen sind. Gründungsdatum direkt im Corporate-Governance-Teil desselben Berichts genannt.",
+ "_korrektur": "profit_unit ergaenzt: Gewinn steht in absoluten Franken, ohne Einheit haette der Bau ihn millionenfach zu gross gezeichnet.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "nebag ag",
+  "revenue_zeile": "",
+  "profit_zeile": "Periodenergebnis / Gesamtergebnis (auch 'Jahresergebnis nach IFRS')",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Geschäftsbericht 2025 (PDF) direkt von nebag.ch geladen: 'Periodenergebnis'/'Gesamtergebnis' = CHF 428'004 mehrfach bestätigt (Gesamtergebnisrechnung, Eigenkapitalnachweis, IFRS-Überleitungstabelle). Gründung '5. August 1996' im Corporate-Governance-Teil bestätigt. Keine Umsatzzeile - leeres revenue-Feld gerechtfertigt, kein Fund."
+ }
 }
