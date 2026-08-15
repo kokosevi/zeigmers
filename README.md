@@ -1,33 +1,53 @@
 # zeigmers
 
-Eine statische 3D-Wirtschaftskarte der Schweiz: zwei Ansichten derselben
-Fläche, nebeneinander gehalten, damit der Unterschied sichtbar wird.
+Eine statische 3D-Wirtschaftskarte der Schweiz, aufgeteilt auf drei Seiten:
+eine Landing ohne eine Zeile JavaScript (`/`) und zwei Kartenseiten, deren
+Kontrast die eigentliche Aussage trägt — die sichtbaren börsenkotierten
+Gesellschaften gegen die tatsächliche Arbeit im ganzen Land.
 
-**Ansicht A** zeigt die börsenkotierten Unternehmen, gesamtschweizerisch:
-**201 der 202 an der SIX kotierten Gesellschaften stehen an ihrem operativen
-Hauptsitz, und alle 201 sind recherchiert** — Umsatz, Gewinn, Beschäftigte,
-Branche, Kerngeschäft, jede Zahl mit Primärquelle und einer unabhängigen
-Gegenprüfung. Die Höhe der Säule ist der Umsatz, in CHF umgerechnet, damit
-Beträge in EUR und USD vergleichbar werden; das Panel zeigt die berichtete
-Zahl im Original. Wie viele Firmen gezeigt werden und wie viele davon
-recherchiert sind, nennt die Legende selbst (siehe „Die Abdeckungsangabe ist
-Teil der Oberfläche").
+**„Börsennotierte Firmen"** (`/firmen/`) zeigt die börsenkotierten
+Gesellschaften, gesamtschweizerisch: **201 der 202 an der SIX kotierten
+Gesellschaften stehen an ihrem operativen Hauptsitz, und alle 201 sind
+recherchiert** — Umsatz, Gewinn, Beschäftigte, Branche, Kerngeschäft, jede
+Zahl mit Primärquelle und einer unabhängigen Gegenprüfung. Die Höhe der Säule
+ist der Umsatz, in CHF umgerechnet, damit Beträge in EUR und USD vergleichbar
+werden; das Panel zeigt die berichtete Zahl im Original. Wie viele
+Gesellschaften gezeigt werden und wie viele davon recherchiert sind, nennt
+die Legende selbst (siehe „Die Abdeckungsangabe ist Teil der Oberfläche").
 
-**Ansicht B** zeigt dieselbe Fläche als 196 extrudierte Gemeindeflächen nach
-Beschäftigten am Arbeitsort, kanton­weit 383'203 Beschäftigte — seit dem
-13. August 2026 in der tatsächlichen Form jeder Gemeinde, nicht mehr als
-Säule an einem Referenzpunkt (siehe unten, «Warum Ansicht B jetzt
-Gemeindeflächen zeigt»). Das ist die Arbeit, die in
-Aargau tatsächlich stattfindet — in Gewerbehallen, Werkstätten, Verwaltungen,
-Landwirtschaftsbetrieben und Läden, deren Umsatzzahlen nirgends veröffentlicht
-werden. Ein früherer Zwischenstand löste das bis auf 17'940 einzelne
-Hektarzellen auf; diese Stufe wurde am 13. August 2026 wieder verworfen (siehe
-unten, «Warum die Gemeindesumme über der offiziellen Zahl liegt») — jede
-Gemeindesumme ist aber weiterhin exakt die Summe dieser Zellen, samt der
-Verzerrung, die das BFS ihnen aus Datenschutzgründen aufzwingt.
+**„Beschäftigte"** (`/beschaeftigte/`) zeigt dieselbe Fläche als Beschäftigte
+am Arbeitsort — national, alle 26 Kantone, nicht mehr nur Aargau:
+**5'876'865 Beschäftigte** (BFS STATENT 2023), zuerst als 26 Kantonssäulen.
+Ein Klick auf einen Kanton betritt ihn und zeigt seine Gemeinden als
+extrudierte Flächen in ihrer tatsächlichen Form, nicht als Säule an einem
+Referenzpunkt (siehe unten, «Warum Ansicht B jetzt Gemeindeflächen zeigt» —
+der Name „Ansicht B" ist historisch, siehe „Die drei Seiten" unten). Das ist
+die Arbeit, die tatsächlich stattfindet — in Gewerbehallen, Werkstätten,
+Verwaltungen, Landwirtschaftsbetrieben und Läden, deren Umsatzzahlen nirgends
+veröffentlicht werden.
 
-Der Kontrast ist die Aussage: acht sichtbare Firmen gegen zehntausende
-unsichtbare Arbeitsplätze.
+Der Kontrast ist die Aussage: 201 sichtbare, börsenkotierte Gesellschaften
+gegen 5'876'865 Beschäftigte im ganzen Land.
+
+## Die drei Seiten
+
+Der Umbau von einer Seite mit Ansichts-Umschalter zu drei eigenständigen
+Seiten mit je einer URL ist der jüngste Schritt dieses Projekts — Spec und
+Implementierungsplan dazu liegen in `docs/superpowers/specs/` und
+`docs/superpowers/plans/` unter dem Datum 2026-08-15. Die drei Seiten:
+
+- **`/`** — Landing, statisches HTML ohne eine Zeile JavaScript: zwei
+  Kacheln mit den wichtigsten Kennzahlen je Kartenseite, gegen die
+  Artefaktdaten geprüft (`src/landing.test.ts`).
+- **`/firmen/`** — Ansicht «Börsennotierte Firmen», oben beschrieben
+  (`src/karte/firmen.ts`).
+- **`/beschaeftigte/`** — Ansicht «Beschäftigte», oben beschrieben
+  (`src/karte/beschaeftigte.ts`).
+
+Beide Kartenseiten teilen sich Kartenaufbau und die Steuerung oben links
+(`src/karte/basis.ts`, `src/ui/nav.ts`); die interne Bezeichnung „Ansicht A"/
+„Ansicht B" aus der Zeit vor der Aufteilung taucht in Kommentaren und
+Abschnittstiteln weiter unten noch auf und bezeichnet dieselben zwei Seiten.
 
 ## Was das hier ist — und was nicht
 
