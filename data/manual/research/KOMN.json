@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "574.2",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "-9.07",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Maschinen und Systeme zur automatisierten Kabelverarbeitung (Crimp-, Schneid- und Abisoliermaschinen, Pruef- und Qualitaetssicherungsmodule) fuer Automobil-, Luftfahrt- und Bahnindustrie, u.a. unter den Marken Komax und Schleuniger.",
+ "products_url": "https://www.komaxgroup.com/en-at/about-komax",
+ "founding_year": "1975",
+ "founding_year_source": "https://www.komaxgroup.com/en/history",
+ "employees": "3167",
+ "fiscal_year": "2025",
+ "report_url": "https://www.komaxgroup.com/file/2026-03-10-gb-komax-2025.pdf",
+ "note": "Verlustjahr: Konzernergebnis nach Steuern (EAT) -7.888 Mio., davon den Aktionaeren der Komax Holding AG zurechenbar -9.070 Mio. (Non-controlling interests dagegen positiv +1.182 Mio.) - eingetragen ist der Aktionaersanteil gemaess Regel 5. Umsatz: die Erfolgsrechnung weist eine Zeile 'Net sales' (574.2 Mio.) UND eine Summe 'Revenues' (580.9 Mio., inkl. 'Other operating income') aus; eingetragen ist die Zeile 'Net sales', nicht die groessere Summe. employees = Headcount 3'167 zum 31.12.2025 (Bericht weist daneben auch FTE 3'061 aus, hier nicht verwendet).",
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated Income Statement'), Komax Group Annual Report 2025, S. 176: Zeile 'Net sales' TCHF 574'203 (2025, Vorjahr 621'990); getrennt davon 'Group earnings after taxes (EAT)' TCHF -7'888, aufgeteilt 'Of which attributable to: Shareholders of Komax Holding AG' TCHF -9'070 und 'Non-controlling interests' TCHF 1'182. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl aus der ESG-Tabelle 'Employees as at 31 December' (Headcount 3'167 vs. FTE 3'061), S. ~230 (ESG-Report-Teil); Gründungsjahr 1975 (Max Koch, Ingenieurbuero Komax) laut komaxgroup.com/en/history, bestätigt durch '50 years Komax'-Jubiläum 2025."
+}

@@ -562,16 +562,17 @@ Die Legende (`src/ui/legend.ts`, `LegendOptions.scopeLabel`) zeigt in Ansicht
 «Börsennotierte Firmen» statt eines Kantonsnamens jetzt:
 
 ```
-135 von 224 kotierten Titeln auf der Karte gezeigt, davon 8 recherchiert · SIX-Stand 14. August 2026
+201 von 224 kotierten Titeln auf der Karte gezeigt, davon 120 recherchiert · SIX-Stand 15. August 2026
 ```
 
 **Zwei Zahlen, nicht eine.** Eine frühere Fassung nannte nur die Recherche-
 Abdeckung („8 von 224 recherchiert"). Die ist wahr, aber allein irreführend:
-wer die Marker auf der Karte zählt, kommt auf 135, nicht auf 224 — die
-übrigen 89 Titel erscheinen **gar nicht**, weil `companies-sync` ihnen keinen
-eindeutigen Zefix-Sitz zuordnen konnte (39 mehrdeutig, 27 ohne Treffer, dazu
-die Titel, die als zweite Handelslinie derselben Gesellschaft zusammengefasst
-wurden, und eine Adresse ohne Geokodierungstreffer; siehe „Sitz je Titel").
+wer die Marker auf der Karte zählt, kommt auf 201, nicht auf 224 — die
+Differenz sind ganz überwiegend Titel, die als Namen-/PS-Aktie oder zweite
+Handelslinie derselben Gesellschaft zusammengefasst wurden (224 Titel → 202
+Gesellschaften, siehe oben), dazu genau **eine** Gesellschaft ohne Sitz:
+„Baloise Swiss Property", ein vertraglicher Immobilienfonds ohne eigene
+Rechtspersönlichkeit (siehe „Domizil im Ausland trotz CH-ISIN").
 Ohne die erste Zahl liesse sich aus der Karte selbst nicht
 ablesen, dass ein Achtel der kotierten Titel fehlt. Beide Zahlen stehen
 deshalb nebeneinander: wie viele überhaupt gezeigt werden, und wie viele
@@ -654,9 +655,11 @@ nachhinken: für die ISIN CH0024666528 nennt SIX «Centiel N», GLEIF noch
 meldet `companies-sync` unter `nameMismatch`, statt sie stillschweigend
 aufzulösen.
 
-Ergebnis: **197 von 202 Gesellschaften platziert** statt 135. 192 Sitze aus
-GLEIF, 5 über den Namensabgleich als Rückfall — der für Titel ohne
-GLEIF-Eintrag bestehen bleibt und deshalb hier weiter dokumentiert ist:
+Ergebnis: **201 von 202 Gesellschaften platziert** statt 135. 192 Sitze aus
+GLEIF, 5 über den Namensabgleich als Rückfall, 4 über die von Hand belegte
+Ausnahmetabelle (`data/manual/seat_overrides.json`, siehe unten). Der
+Namensabgleich bleibt für Titel ohne GLEIF-Eintrag bestehen und ist deshalb
+hier weiter dokumentiert:
 
 Für Titel ohne GLEIF-Eintrag sucht `companies.find_seat()` einen eindeutigen
 Sitz im Zefix-Handelsregister über den LINDAS-SPARQL-Endpunkt — nicht über die
@@ -815,6 +818,19 @@ Kurs ist der **Jahresmittelkurs der Schweizerischen Nationalbank**
 Monate des Geschäftsjahres — ein Jahresmittel passt zu einer Erfolgsrechnung,
 die über das Jahr entsteht, anders als ein Stichtagskurs, der einen Tag
 überbetont. Für 2025: **EUR 0.9371, USD 0.8314** (`etl/src/draufsicht_etl/fx.py`).
+
+**Abweichende Geschäftsjahre bekommen ein rollendes Fenster.** Logitechs
+Geschäftsjahr 2025/26 lief von April 2025 bis März 2026; die CSV führt nur
+das Endjahr 2026, von dem beim Bauen erst sieben Monate vorlagen. Über diese
+sieben zu mitteln hiesse, einen Kurs zu verwenden, der den Zeitraum gar nicht
+abdeckt — 0.79 statt der rund 0.81, die das Geschäftsjahr trafen, also 2.5 %
+zu wenig. Stattdessen nimmt `rate()` die letzten zwölf verfügbaren
+Monatsdurchschnitte (USD/2026: **0.7943**), und `window` hält fest, welches
+Fenster benutzt wurde. Das bleibt eine Näherung: exakt wäre April bis März,
+und dafür müsste die CSV den Monat des Geschäftsjahresendes führen, den heute
+niemand recherchiert. Ein volles Jahr am aktuellen Rand ist näher an jedem
+abweichenden Geschäftsjahr als ein Rumpfjahr — und bleibt eine belegte
+Grösse statt eines geschätzten Kurses.
 
 Beim Bauen fast danebengegangen: der SNB-Datensatz enthält zwei Reihen, `M0`
 (Monatsdurchschnitt) und `M1` (Monatsendkurs). Beide zusammen zu mitteln

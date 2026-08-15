@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": "349.226",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "408.473",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Erwerb, Entwicklung, Vermietung und Bewirtschaftung von Büro- und Geschäftsliegenschaften in Schweizer Wirtschaftszentren (Zürich, Genf, Basel, Bern, Lausanne).",
+ "products_url": "https://www.psp.info/en/portfolio",
+ "founding_year": "1999",
+ "founding_year_source": "https://www.psp.info/index.php?eID=download&t=f&f=16767&token=7c8b4300f74a1d27b7a98512f89a6944724b17b7",
+ "employees": "94",
+ "fiscal_year": "2025",
+ "report_url": "https://www.psp.info/index.php?eID=download&t=f&f=16767&token=7c8b4300f74a1d27b7a98512f89a6944724b17b7",
+ "note": "Als Umsatz wurde der 'Liegenschaftsertrag' (reiner Mietertrag) eingetragen, nicht die Zeile 'Total Betriebsertrag' (593.4 Mio.) der Konzern-Erfolgsrechnung, da diese unrealisierte Bewertungsdifferenzen der Liegenschaften (231.1 Mio.) und Verkaufserfolge enthaelt - keine eigentliche Umsatzgroesse. Reingewinn (408.5 Mio.) enthaelt diese Neubewertungsgewinne dagegen bereits (Reingewinn ohne Liegenschaftserfolge waere 225.4 Mio.); Umsatz und Gewinn sind daher nicht deckungsgleich im Umfang - typisch fuer Immobiliengesellschaften nach IFRS, wo Neubewertungen erfolgswirksam, aber nicht umsatzwirksam sind. Mitarbeitendenzahl 94 ist der Stichtags-Headcount ('Mitarbeitende'); Vollzeitstellen (FTE) betrugen 84.",
+ "_verification": "Umsatz aus der 'Konsolidierten Erfolgsrechnung' (Finanzberichte, S. 56) des Geschaeftsberichts 2025: Zeile 'Liegenschaftsertrag' 349'226 (Tsd. CHF, Spalte 2025). Gewinn aus derselben Erfolgsrechnung, Zeile 'Reingewinn, den Aktionaeren der PSP Swiss Property AG zuzurechnen' 408'473 (Tsd. CHF). Mitarbeitendenzahl aus der Kennzahlentabelle 'Personalbestand', Zeile 'Mitarbeitende' (Anzahl) 94. Gruendungsdatum (28. Juli 1999) aus dem Anhang zur Jahresrechnung der PSP Swiss Property AG (Holding), Abschnitt 'Allgemeine Informationen'. Geprueft: PDF direkt heruntergeladen, alle vier Werte im Volltext an ihrer Quellstelle verifiziert."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "622.940",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "9.372",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung von Convenience-Food, Fleisch- und Wurstwaren sowie Belieferung der Gastronomie unter Schweizer Marken wie Rapelli, Fredag, Le Patron, Pastinella und Spiess.",
+ "products_url": "https://orior.ch/en/brand-portfolio",
+ "founding_year": "1852",
+ "founding_year_source": "https://orior.ch/en/pages/ueber-orior",
+ "employees": "2030",
+ "fiscal_year": "2025",
+ "report_url": "https://cdn.shopify.com/s/files/1/0928/1182/1392/files/ORIOR_AG_Annual_Report_2025.pdf?v=1775844606",
+ "note": "Mitarbeitendenzahl ist die durchschnittliche Anzahl Vollzeitstellen (FTE) im Jahr ('Av. number of employees (FTE)'); der Bericht weist keinen separaten Stichtags-Headcount aus. Vorjahr 2024 war ein Verlustjahr (-35.2 Mio.) durch Sondereffekte; 2025 kehrte die Gruppe in die Gewinnzone zurück.",
+ "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Key figures – 2025 financial year' auf der ersten Innenseite des Annual Report 2025: Zeile 'Net sales' 622'940 (Tsd. CHF) und Zeile 'Net profit attributable to owners of the parent' 9'372 (Tsd. CHF) - bereits explizit als Aktionärsanteil ausgewiesen. Mitarbeitendenzahl aus derselben Tabelle, Zeile 'Av. number of employees (FTE)'. Geprüft: PDF direkt heruntergeladen, alle Werte im Volltext an der Quellstelle verifiziert."
+}

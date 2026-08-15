@@ -19,10 +19,21 @@ die über das Jahr entsteht — anders als ein Stichtagskurs, der einen Tag
 sieht fast gleich aus; beide zusammen zu mitteln ergäbe eine Grösse, die es
 nicht gibt (aufgefallen, weil ein Jahr dann 24 statt 12 Werte hatte).
 
-Ein Geschäftsjahr, das über den Rand der Daten hinausreicht (das laufende),
-wird über die vorhandenen Monate gemittelt — `months` hält fest, über wie
-viele, damit die Karte es offenlegen kann statt so zu tun, als wäre es ein
-volles Jahr.
+Ein Geschäftsjahr, dessen Endjahr im Kalender noch nicht voll ist, bekommt
+ein **rollendes** Fenster: die letzten zwölf verfügbaren Monatsdurchschnitte
+statt der wenigen des angebrochenen Jahres. Logitechs Geschäftsjahr 2025/26
+lief von April 2025 bis März 2026; `fiscal_year` trägt nur das Endjahr 2026,
+von dem beim Bauen erst sieben Monate vorlagen. Über diese sieben zu mitteln
+hiesse, einen Kurs zu verwenden, der den Zeitraum gar nicht abdeckt — hier
+0.79 statt der rund 0.81, die das Geschäftsjahr trafen, also 2.5 % zu wenig.
+`window` hält fest, welches der beiden Fenster benutzt wurde
+(`kalenderjahr` oder `rollend`), `months` wie viele Monate darin lagen.
+
+Das bleibt eine Näherung: exakt wäre das Fenster April bis März, und dafür
+müsste die CSV den Monat des Geschäftsjahresendes führen, den heute niemand
+recherchiert. Ein volles Jahr am aktuellen Rand ist näher an jedem
+abweichenden Geschäftsjahr als ein Rumpfjahr — und bleibt eine belegte
+Grösse statt eines geschätzten Kurses.
 """
 
 from __future__ import annotations
@@ -80,7 +91,7 @@ def rate(currency: str, year: int, monthly: dict[tuple[str, int], list[float]]) 
     Jahr ist das 12; für das laufende weniger, und dann gehört es
     ausgewiesen statt verschwiegen."""
     if currency == "CHF":
-        return {"rate": 1.0, "months": 12}
+        return {"rate": 1.0, "months": 12, "window": "kalenderjahr"}
 
     if currency not in SERIES:
         raise KeyError(
@@ -89,12 +100,30 @@ def rate(currency: str, year: int, monthly: dict[tuple[str, int], list[float]]) 
             f"einen Eintrag in SERIES, keinen geschätzten Kurs."
         )
 
-    values = monthly.get((currency, year))
-    if not values or len(values) < MIN_MONTHS:
+    values = list(monthly.get((currency, year)) or [])
+    window = "kalenderjahr"
+
+    # Angebrochenes Kalenderjahr: mit den Monaten des Vorjahres auf zwölf
+    # auffüllen, von hinten. Ein Geschäftsjahr, das nicht am 31. Dezember
+    # endet, liegt ohnehin quer zum Kalenderjahr — Logitechs 2025/26 lief von
+    # April 2025 bis März 2026, und `fiscal_year` trägt nur das Endjahr 2026,
+    # von dem beim Bauen erst sieben Monate vorlagen. Über diese sieben zu
+    # mitteln hiesse, einen Kurs zu verwenden, der den Zeitraum des
+    # Geschäftsjahres gar nicht abdeckt. Ein volles Jahr, das am aktuellen
+    # Rand endet, ist näher an jedem abweichenden Geschäftsjahr — und bleibt
+    # eine belegte Grösse, kein geschätzter Kurs.
+    if 0 < len(values) < 12:
+        previous = list(monthly.get((currency, year - 1)) or [])
+        if previous:
+            values = previous[-(12 - len(values)):] + values
+            window = "rollend"
+
+    if len(values) < MIN_MONTHS:
         raise LookupError(
             f"SNB-Jahresmittel {currency}/{year} nicht bestimmbar "
-            f"({len(values or [])} Monatswerte, mindestens {MIN_MONTHS} nötig)"
+            f"({len(values)} Monatswerte, mindestens {MIN_MONTHS} nötig)"
         )
 
     _, per_units = SERIES[currency]
-    return {"rate": sum(values) / len(values) / per_units, "months": len(values)}
+    return {"rate": sum(values) / len(values) / per_units,
+            "months": len(values), "window": window}

@@ -457,7 +457,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         elif stats["revenueInChf"]:
             rates = ", ".join(
                 f"{key} {value['rate']:.4f}"
-                + ("" if value["months"] == 12 else f" ({value['months']} Mt.)")
+                + ("" if value.get("window") != "rollend"
+                   else f" (rollend, {value['months']} Mt.)")
                 for key, value in sorted(stats["fxRates"].items())
             )
             print(f"[companies] Höhen in CHF, SNB-Jahresmittel: {rates or 'nur CHF'}")

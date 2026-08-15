@@ -61,3 +61,40 @@ def test_rate_refuses_an_unknown_currency_instead_of_guessing():
     # Karte nirgends zeigen soll.
     with pytest.raises(KeyError, match="GBP"):
         fx.rate("GBP", 2025, {})
+
+
+def test_rate_uses_a_full_twelve_month_window_when_the_year_is_incomplete():
+    """Ein angebrochenes Kalenderjahr ergibt keinen Jahresmittelkurs.
+
+    Logitechs Geschaeftsjahr 2025/26 lief von April 2025 bis Maerz 2026.
+    `fiscal_year` traegt das Endjahr 2026 — von dem zum Bauzeitpunkt erst
+    sieben Monate vorlagen (Januar bis Juli 2026). Der Kurs deckte den
+    Zeitraum des Geschaeftsjahres damit gar nicht ab.
+
+    Statt ueber die wenigen Monate des Endjahres zu mitteln, nimmt `rate()`
+    die letzten ZWOELF verfuegbaren Monatsdurchschnitte — ein volles Jahr,
+    das am aktuellen Rand endet. Das ist naeher an jedem abweichenden
+    Geschaeftsjahr als ein Rumpfjahr und bleibt eine belegte Groesse.
+    """
+    monthly = {
+        ("USD", 2025): [0.90] * 12,
+        ("USD", 2026): [0.70] * 7,
+    }
+    result = fx.rate("USD", 2026, monthly)
+
+    # 5 Monate aus 2025 (0.90) + 7 aus 2026 (0.70) = 12 Monate
+    assert result["months"] == 12
+    assert result["rate"] == pytest.approx((5 * 0.90 + 7 * 0.70) / 12)
+    assert result["window"] == "rollend"
+
+
+def test_rate_marks_a_complete_year_as_such():
+    monthly = {("USD", 2025): [0.80] * 12}
+    result = fx.rate("USD", 2025, monthly)
+    assert result["months"] == 12
+    assert result["window"] == "kalenderjahr"
+
+
+def test_rate_still_refuses_when_even_a_rolling_window_is_too_short():
+    with pytest.raises(LookupError, match="2027"):
+        fx.rate("USD", 2027, {("USD", 2027): [0.79]})
