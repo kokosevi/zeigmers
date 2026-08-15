@@ -66,9 +66,22 @@ const HAUPT_SICHTBARE =
 // Verschoben aus `ui/legend.ts` (Redesign Change 2/3, siehe `ui/legend.ts`
 // für die Begründung): „die Legende trägt, was man zum Lesen braucht, die
 // Eckbox, was man zum Vertrauen braucht" — Quellen- und Währungsangabe
-// gehören zu Letzterem. Wörtlicher Inhalt unverändert, nur der Ort.
+// gehören zu Letzterem.
+//
+// Abschluss-Review, Fund 2 (2026-08-15): der bisherige Wortlaut behauptete
+// „nicht umgerechnet" — das Gegenteil dessen, was die Karte seit der
+// Nationalisierung tut. `layers/visible.ts`s `heightValue()` nimmt
+// `company.revenueChf ?? company.revenue`, und `companies.json`s
+// `stats.revenueInChf` bestätigt es: die Säulenhöhe rechnet in CHF um, das
+// Panel zeigt weiterhin die berichtete Zahl im Original (`ui/panel.ts`,
+// `companyContent`, `company.revenue`/`company.currency` — unverändert). Der
+// verwendete Kurs ist der SNB-Jahresmittelkurs des Geschäftsjahres
+// (Datenwürfel `devkum`, Reihe `M0`; Herleitung und Rundungsfenster in
+// `etl/src/zeigmers_etl/fx.py`).
 const CURRENCY_NOTE =
-  'Umsätze in der jeweiligen Konzernwährung (CHF, EUR, USD), nicht umgerechnet.'
+  'Balkenhöhe: Umsatz in CHF umgerechnet (SNB-Jahresmittelkurs des ' +
+  'Geschäftsjahres) — das Panel zeigt weiterhin die berichtete Zahl in der ' +
+  'jeweiligen Konzernwährung (CHF, EUR, USD).'
 
 // Lizenzpflichtig (STATENT: „Freie Nutzung, Quellenangabe Pflicht"; swisstopo-
 // Geodaten: Nutzungsbedingungen für kostenlose Geodaten, siehe README) —
