@@ -1,5 +1,5 @@
 // Eigenständiges Element statt ein dritter Kindknoten in `#steuerung`
-// (`ui/toggle.ts`): dessen `sync()` iteriert bei jedem Ansichts-/Skalenwechsel
+// (`ui/nav.ts`): dessen `sync()` iteriert bei jedem Ansichts-/Skalenwechsel
 // über *alle* `<button>`-Nachfahren seines Wurzelelements und setzt dort
 // `aria-checked`/`.aktiv` — ein „Zurück"-Knopf als Kind von `#steuerung` würde
 // von dieser Schleife mitbehandelt, obwohl er kein Radio-Button ist (Auftrag:

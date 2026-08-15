@@ -2,7 +2,7 @@ import type { PresentGroups } from '../domain/legendGroups'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
 import { litTopFaceColor } from '../layers/litColor'
 import { OUTLINE_COLOR, UNRESEARCHED_MARKER_COLOR } from '../layers/visible'
-import type { ViewName } from './toggle'
+import type { ViewName } from './nav'
 
 const OUTLINE_LEGEND_TEXT =
   'Balken mit Rand: andere Kennzahl als Nettoumsatz (z. B. Geschäftsertrag einer Bank) — ' +
@@ -38,7 +38,7 @@ const UNIT_LABEL: Record<ViewName, string> = {
 // `renderLegend` unten). `mode`, `vmax`, `ambiguousCells`, `overstatementPct`
 // wurden darum aus `LegendOptions` entfernt statt sie unbenutzt mitzuführen;
 // `main.ts` reicht sie entsprechend nicht mehr durch. Die Skala heisst im
-// Button (`ui/toggle.ts`) und in der Eckbox (`ui/notices.ts`, mit der
+// Button (`ui/nav.ts`) und in der Eckbox (`ui/notices.ts`, mit der
 // ehrlichen Formel) weiterhin «logarithmisch» — die Legende selbst nennt gar
 // keinen Skalenmodus mehr, es gibt hier nichts mehr, das ihn bräuchte.
 export interface LegendOptions {

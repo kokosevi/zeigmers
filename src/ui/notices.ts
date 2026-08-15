@@ -1,4 +1,4 @@
-import type { ViewName } from './toggle'
+import type { ViewName } from './nav'
 
 /** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
  *  welche der zwei Stufen gerade zu sehen ist. `'schweiz'` = 26 Kantonsbalken,
@@ -78,7 +78,7 @@ const FOOTER =
   'Quelle: Bundesamt für Statistik (BFS), Statistik der Unternehmensstruktur (STATENT) 2023 · ' +
   'Gemeindegrenzen: swisstopo, swissBOUNDARIES3D · Basiskarte: swisstopo'
 
-// Redesign Change 5 (2026-08-14): der Skalenschalter (`ui/toggle.ts`) und die
+// Redesign Change 5 (2026-08-14): der Skalenschalter (`ui/nav.ts`) und die
 // Legende nennen den Modus wieder «logarithmisch» — der vertraute Name aus
 // jeder anderen Kartenanwendung, an der Stelle, an der Nutzende navigieren,
 // nicht behaupten. Die Formel dahinter ist unverändert eine Potenzskala

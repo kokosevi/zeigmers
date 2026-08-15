@@ -88,25 +88,43 @@ a:focus-visible, button:focus-visible {
   border-radius: .5rem; padding: .25rem;
   box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
 }
-#steuerung button {
+/* Der Heim-Link steht über den beiden Gruppen, nicht in einer — er ist weder
+   eine Ansicht noch eine Skala, sondern der Weg aus der Karte heraus. */
+#steuerung .marke {
+  color: var(--tinte); text-decoration: none;
+  font-size: .9375rem; font-weight: 600; letter-spacing: -.01em;
+  padding: 0 .25rem;
+}
+
+/* Ansichten sind seit der Aufteilung in zwei Seiten Links, die Höhenskala
+   sind weiterhin Buttons (siehe `ui/nav.ts`) — gleiche Optik, verschiedene
+   Elemente, deshalb beide Selektoren. */
+#steuerung button, #steuerung a.ansicht {
   border: none; background: transparent; color: var(--tinte-leise);
   padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
-  cursor: pointer; font-family: inherit;
+  cursor: pointer; font-family: inherit; text-decoration: none;
+  white-space: nowrap;
 }
-#steuerung button.aktiv { background: var(--tinte); color: var(--grund); }
+#steuerung button.aktiv, #steuerung a.ansicht.aktiv {
+  background: var(--tinte); color: var(--grund);
+}
 
 /* «Zurück zur Schweiz-Übersicht» (Phase 2, nationale Navigation) — nur
-   sichtbar auf der Kantonsstufe von Ansicht «Beschäftigte» (`main.ts`,
-   `renderBackControl`). Eigenständiges Element statt Teil von `#steuerung`
-   (siehe `ui/backControl.ts` für die Begründung); Position von Hand unter die
-   Steuerung gesetzt, wie auch `#panel`s `top: 4.5rem` unten kein hergeleiteter
-   Wert ist, sondern auf die tatsächliche Höhe von `#steuerung` abgestimmt —
-   unverifiziert, ob 5.75rem bei zwei gestapelten `.gruppe`-Zeilen exakt
-   passt (siehe Bericht). Duplication von `#steuerung .gruppe`/`button` ist
-   hier bewusst: derselbe Look, aber ohne die beiden Elemente im selben
+   sichtbar auf der Kantonsstufe von Ansicht «Beschäftigte»
+   (`karte/beschaeftigte.ts`, `renderBackControl`). Eigenständiges Element
+   statt Teil von `#steuerung` (siehe `ui/backControl.ts` für die
+   Begründung); Position von Hand unter die Steuerung gesetzt, wie auch
+   `#panel`s `top: 6.5rem` unten kein hergeleiteter Wert ist, sondern auf die
+   tatsächliche Höhe von `#steuerung` abgestimmt. Seit der Aufteilung in drei
+   Seiten (2026-08-15) ist `#steuerung` durch die Markenzeile um rund 1.9rem
+   höher als zuvor — beide Offsets sind um denselben Betrag mitgewandert
+   (5.75rem → 7.75rem hier, 4.5rem → 6.5rem bei `#panel`); unverifiziert, ob
+   7.75rem bei drei gestapelten Zeilen (Marke, zwei `.gruppe`) exakt passt
+   (siehe Bericht). Duplication von `#steuerung .gruppe`/`button` ist hier
+   bewusst: derselbe Look, aber ohne die beiden Elemente im selben
    DOM-Teilbaum zu verschmelzen. */
 #zurueck-gruppe {
-  position: absolute; top: 5.75rem; left: 1rem;
+  position: absolute; top: 7.75rem; left: 1rem;
   display: flex;
   background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
   border-radius: .5rem; padding: .25rem;
@@ -169,8 +187,8 @@ a:focus-visible, button:focus-visible {
    als tote CSS liegen zu bleiben. */
 
 #panel {
-  position: absolute; right: 1rem; top: 4.5rem;
-  max-width: 21rem; max-height: calc(100vh - 6rem); overflow-y: auto;
+  position: absolute; right: 1rem; top: 6.5rem;
+  max-width: 21rem; max-height: calc(100vh - 8rem); overflow-y: auto;
   background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
   color: var(--tinte);
   border-radius: .5rem; padding: 1rem; font-size: .8125rem; line-height: 1.4;
