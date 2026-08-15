@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.mobimo.ch/api/mobimo/files/gb25_mob_geschaftsbericht_2025_de.pdf?fileId=1f10-81e9-170b5c01-a3e6-0e758609d69d&timestamp=2026-02-12T14:24:40.732Z&storageContext=direct&filename=GB25_MOB_Geschaftsbericht_2025_DE.pdf",
  "note": "Umsatz enthält neben dem Mietertrag (145.5 Mio.) auch Erträge aus Entwicklungen/Verkauf Promotion-Liegenschaften (200.5 Mio.) sowie sonstige Erlöse (7.8 Mio.) - alles zusammen als Zeile 'Umsatzerlöse' in der Konsolidierten Erfolgsrechnung ausgewiesen; der reine Mietertrag allein beträgt 145.5 Mio. Gewinn (192.9 Mio.) enthält einen substanziellen Neubewertungserfolg der Liegenschaften (106.9 Mio.); ohne Neubewertung läge das Ergebnis bei 105.6 Mio. Die Erfolgsrechnung weist keine gesonderten Minderheitsanteile aus, der Gewinn ist somit vollständig den Aktionären zurechenbar. Mitarbeitendenzahl ist der ausgewiesene Kopf-Bestand (180) zum Jahresende, nicht die Vollzeitäquivalente (165.8).",
- "_verification": "Umsatz aus der Zeile 'Umsatzerlöse' (Summe aus 'Ertrag aus Vermietung Liegenschaften', 'Ertrag aus Entwicklungen und Verkauf Promotion (Liegenschaften)' und 'Sonstige Erlöse') der 'Konsolidierten Erfolgsrechnung' im Finanzbericht des Geschäftsberichts 2025: 353'798 TCHF. Gewinn aus derselben Erfolgsrechnung, Zeile 'Gewinn': 192'943 TCHF. Mitarbeitendenzahl aus der Tabelle 'Mitarbeitendenstruktur' (GRI 2-7, 'nach Köpfen'): Total Angestellte 180. Geprüft: PDF direkt heruntergeladen, alle drei Werte im Volltext an ihrer Quellstelle verifiziert."
+ "_verification": "Umsatz aus der Zeile 'Umsatzerlöse' (Summe aus 'Ertrag aus Vermietung Liegenschaften', 'Ertrag aus Entwicklungen und Verkauf Promotion (Liegenschaften)' und 'Sonstige Erlöse') der 'Konsolidierten Erfolgsrechnung' im Finanzbericht des Geschäftsberichts 2025: 353'798 TCHF. Gewinn aus derselben Erfolgsrechnung, Zeile 'Gewinn': 192'943 TCHF. Mitarbeitendenzahl aus der Tabelle 'Mitarbeitendenstruktur' (GRI 2-7, 'nach Köpfen'): Total Angestellte 180. Geprüft: PDF direkt heruntergeladen, alle drei Werte im Volltext an ihrer Quellstelle verifiziert.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Mobimo Holding AG",
+  "revenue_zeile": "Umsatzerlöse (Konsolidierte Erfolgsrechnung)",
+  "profit_zeile": "Gewinn",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen: 'Umsatzerlöse' 353'798 TCHF setzt sich zusammen aus 'Ertrag aus Vermietung Liegenschaften' (145'491), 'Ertrag aus Entwicklungen und Verkauf Promotion (Liegenschaften)' (200'473) und 'Sonstige Erlöse' (7'834) – also NICHT reiner Liegenschaftsertrag, sondern eine Gesamtsumme inklusive Verkaufs-/Entwicklungserlösen; das wurde bereits im note-Feld korrekt offengelegt (reiner Mietertrag: 145.5 Mio.). 'Gewinn' 192'943 TCHF (inkl. Neubewertungserfolg 106.9 Mio.) und Mitarbeitendenzahl 180 (nach Köpfen) ebenfalls exakt bestätigt; alle Werte stammen aus derselben Konzernrechnung 2025."
+ }
 }

@@ -1,0 +1,20 @@
+{
+ "noga_group": "verkehr",
+ "consolidation_basis": "total_group",
+ "revenue": 305.67,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 78.163,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Betrieb von Bergbahnen und Seilbahnen im Jungfraugebiet (u. a. Zahnradbahn zum Jungfraujoch – Top of Europe), ergänzt durch Gastronomie-, Souvenir- und Beherbergungsangebote für Touristen.",
+ "products_url": "https://www.jungfrau.ch/en-gb/corporate/jungfrau-railways/jungfraubahn-holding-ag/",
+ "founding_year": 1894,
+ "founding_year_source": "https://www.jungfrau.ch/de-ch/jungfraujoch-top-of-europe/bau-der-jungfraubahn/",
+ "employees": 919,
+ "fiscal_year": 2025,
+ "report_url": "https://reports.jungfrau.ch/assets/uploads/files/2025/Documents/JungfraubahnHoldingAG_AR2025_EN_WEB.pdf",
+ "note": "Die Konzernerfolgsrechnung führt keine Zeile 'net sales'/'Umsatz'; die oberste Ertragszeile in den 'Key figures' und in der 'Consolidated income statement' heisst 'Operating income' (Total operating income, CHF 305.670 Mio., Summe aus Transportation revenue, Compensation received from government, Sale of energy, Souvenir shops, Catering and accommodation, Service income, Rental income, Other income). Da keine separate 'net sales'-Zeile existiert, wurde revenue_type 'operating_income' gewählt statt 'net_sales'. Gewinn: 'Annual result' CHF 78.188 Mio., davon 'Shareholders of Jungfraubahn Holding AG' CHF 78.163 Mio. (Minderheitsanteile CHF 0.025 Mio.) — Aktionärsanteil eingetragen (Regel 5). Mitarbeitende: Sustainability-Report nennt Kopfzahl 'As at 31 December 2025, the Jungfrau Railway Group had 919 employees' (Stichtag 31.12., Vorjahr 880); daneben weist die Anhangsangabe zu den Personalaufwendungen 'Employees (full-time positions)' 757 (Vorjahr 727) als Jahresdurchschnitt der Vollzeitstellen aus. Gemäss Regel 6 wurde die Kopfzahl (919) eingetragen, FTE-Wert (757) hier vermerkt. Gründungsjahr: Die eigene Unternehmensgeschichte der Jungfraubahnen nennt kein explizites Datum der Firmengründung; als frühestes fassbares Datum wird die Erteilung der Baukonzession an Adolf Guyer-Zeller am 21. Dezember 1894 genannt (Baubeginn 1896, Eröffnung bis Jungfraujoch 1912). Der Geschäftsbericht 2025 spricht von 'a tradition of more than 125 years in Alpine tourism', was mit 1894 als Ausgangspunkt konsistent ist.",
+ "_verification": "Umsatz (Operating income, CHF 305.670 Mio.) und Gewinn (Annual result, davon Aktionärsanteil CHF 78.163 Mio.) stammen aus der 'Consolidated income statement' (Seite 22 des PDF, Abschnitt 'Consolidated financial statements') sowie aus den 'Key figures' auf Seite 4 des Jungfraubahn Holding AG Annual Report 2025 (Geschäftsjahr 1. Januar bis 31. Dezember 2025). Geprüft wurde, dass keine 'net sales'-Zeile existiert (nur Operating income als Summenzeile diverser Ertragsarten), dass der Gewinn dem Aktionärsanteil (nicht dem Gesamtkonzernergebnis inkl. Minderheiten) entspricht, und dass die eingetragene Mitarbeiterzahl die im Bericht ausgewiesene Kopfzahl (919, Sustainability-Kapitel) statt der FTE-Zahl (757, Anhang Personalaufwand) ist."
+}

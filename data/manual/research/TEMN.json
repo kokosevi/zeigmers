@@ -10,11 +10,21 @@
  "profit_unit": "1000000",
  "core_products": "Banking-Software (Core Banking, Digital Banking, Zahlungsverkehr, Wealth-Management-Plattformen), lizenziert oder als SaaS/Cloud-Abonnement an Banken und Finanzinstitute weltweit.",
  "products_url": "https://www.temenos.com/about-us/",
- "founding_year": 1993,
- "founding_year_source": "https://en.wikipedia.org/wiki/Temenos_AG",
+ "founding_year": "",
+ "founding_year_source": "",
  "employees": 5205,
  "fiscal_year": 2025,
  "report_url": "https://www.temenos.com/wp-content/uploads/2026/03/2025-annual-report-4nu412zg99.pdf",
- "note": "Berichtswährung USD (nicht CHF). Gewinn 'Profit for the year' vollständig 'Attributable to: Equity holders of the Company' (USD 280.606 Mio.) — keine Minderheitsanteile ausgewiesen. Enthält einen einmaligen 'Gain on sale of business' von USD 120.280 Mio. aus dem Verkauf von Multifonds (Q2 2025), der den Vorjahresvergleich verzerrt. Mitarbeitendenzahl 5'205 ('Temenos employed 5,205 people worldwide' per 31.12.2025) ist deutlich tiefer als 2024 (6'427), da mit dem Multifonds-Verkauf ein ganzer Geschäftsbereich samt Personal abgegeben wurde; die Fussnote zur Headcount-Grafik nennt die Zahl 'inkl. Non-Employees' (z. B. Zeitarbeitskräfte), der Fliesstext spricht jedoch direkt von 'employed ... people'. Konnte für founding_year keine primäre Quelle (Firmenwebsite) mit explizitem Gründungsjahr finden; Wikipedia diente hilfsweise, da im Vertrag nur für Finanzzahlen ausdrücklich ausgeschlossen.",
- "_verification": "Umsatz: Zeile 'Total revenues' (Note 8) = USD 1'090'830 Tsd. (1'090.83 Mio.) für 2025 aus der 'Consolidated statement of profit or loss' im Annual Report and Accounts 2025 (temenos.com PDF, S. 189). Gewinn: Zeile 'Profit for the year', vollständig zugeordnet 'Attributable to: Equity holders of the Company' = USD 280'606 Tsd. (280.606 Mio.) für 2025, aus derselben Erfolgsrechnung, gleiches Geschäftsjahr. Mitarbeitendenzahl aus dem Abschnitt 'Employees'/ESRS S1 desselben Berichts ('At the end of 2025, Temenos employed 5,205 people worldwide') geprüft und mit der Headcount-Tabelle abgeglichen."
+ "note": "Gruendungsjahr nicht eingetragen: Temenos nennt in seinen eigenen Publikationen kein Gruendungsjahr, und die Recherche stuetzte sich zunaechst auf Wikipedia — keine zulaessige Quelle nach dem Recherche-Vertrag. Lieber ein leeres Feld mit Begruendung als ein gefuelltes ohne Beleg. Berichtswährung USD (nicht CHF). Gewinn 'Profit for the year' vollständig 'Attributable to: Equity holders of the Company' (USD 280.606 Mio.) — keine Minderheitsanteile ausgewiesen. Enthält einen einmaligen 'Gain on sale of business' von USD 120.280 Mio. aus dem Verkauf von Multifonds (Q2 2025), der den Vorjahresvergleich verzerrt. Mitarbeitendenzahl 5'205 ('Temenos employed 5,205 people worldwide' per 31.12.2025) ist deutlich tiefer als 2024 (6'427), da mit dem Multifonds-Verkauf ein ganzer Geschäftsbereich samt Personal abgegeben wurde; die Fussnote zur Headcount-Grafik nennt die Zahl 'inkl. Non-Employees' (z.",
+ "_verification": "Umsatz: Zeile 'Total revenues' (Note 8) = USD 1'090'830 Tsd. (1'090.83 Mio.) für 2025 aus der 'Consolidated statement of profit or loss' im Annual Report and Accounts 2025 (temenos.com PDF, S. 189). Gewinn: Zeile 'Profit for the year', vollständig zugeordnet 'Attributable to: Equity holders of the Company' = USD 280'606 Tsd. (280.606 Mio.) für 2025, aus derselben Erfolgsrechnung, gleiches Geschäftsjahr. Mitarbeitendenzahl aus dem Abschnitt 'Employees'/ESRS S1 desselben Berichts ('At the end of 2025, Temenos employed 5,205 people worldwide') geprüft und mit der Headcount-Tabelle abgeglichen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Temenos AG",
+  "revenue_zeile": "Total revenues (Note 8, Consolidated statement of profit or loss)",
+  "profit_zeile": "Profit for the year – Equity holders of the Company",
+  "abweichungen": [
+   "Nicht revenue/profit-relevant: founding_year_source verweist auf Wikipedia statt eine Primärquelle; im Annual Report 2025 selbst und auf temenos.com/about-us konnte kein explizites Gründungsjahr gefunden werden, das ist bereits im note-Feld der Vorlage transparent offengelegt."
+  ],
+  "begruendung": "PDF direkt heruntergeladen: 'Total revenues' 1,090,830 Tsd. USD und 'Profit for the year', vollständig 'Attributable to: Equity holders of the Company', 280,606 Tsd. USD, beide aus derselben Konzern-Erfolgsrechnung 2025; Mitarbeitendenzahl 5,205 ('Temenos employed 5,205 people worldwide') bestätigt. Berichtswährung korrekt USD; einzige Auffälligkeit betrifft die Sekundärquelle für das Gründungsjahr, nicht die geprüften Finanzzahlen."
+ }
 }

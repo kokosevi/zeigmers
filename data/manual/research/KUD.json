@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": 366.606,
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -42.412,
+ "profit_currency": "USD",
+ "profit_unit": 1000000,
+ "core_products": "Digitale Sicherheitstechnologien: Conditional-Access- und Content-Protection-Lösungen für Pay-TV-Betreiber (Nagra), Cybersicherheitsdienstleistungen (Threat Detection, Managed Security Services) sowie IoT-Sicherheits- und Konnektivitätslösungen.",
+ "products_url": "https://www.nagra.com/company/about-us",
+ "founding_year": 1951,
+ "founding_year_source": "https://www.nagra.com/sites/default/files/2026-03/KG_2025_Annual_%20Report.pdf",
+ "employees": 1599,
+ "fiscal_year": 2025,
+ "report_url": "https://www.nagra.com/sites/default/files/2026-03/KG_2025_Annual_%20Report.pdf",
+ "note": "Kudelski berichtet in USD (Berichtswährung gemäss Konzernabschluss, keine Umrechnung). Umsatz: Die Konzernerfolgsrechnung zeigt 'Revenues' USD 366.606 Mio. und separat 'Other operating income' USD 4.405 Mio., zusammen 'Total revenues and other operating income' USD 371.011 Mio.; gemäss Regel 7 wurde die reine Zeile 'Revenues' eingetragen, nicht die Summenzeile inkl. 'Other operating income' (Segmentberichterstattung Core Digital Security/Cybersecurity/IoT führt durchgängig 'net revenues' ohne die sonstigen Erträge). Gewinn: 'Net income for the period' war 2025 ein Konzernverlust von USD -40.163 Mio.; davon entfallen auf 'Equity holders of the company' USD -42.412 Mio. und auf 'Non-controlling interests' USD +2.249 Mio. Eingetragen wurde gemäss Regel 5 der Aktionärsanteil (-42.412 Mio.), der stärker negativ ist als das Gesamtergebnis, weil die Minderheitsanteile 2025 positiv beitrugen. Konsolidierungsbasis: Im Geschäftsjahr 2025 gab es keine 'discontinued operations' (Zeile 'Net result from discontinued operations' = 0); 2024 enthielt diese Zeile einen einmaligen Veräusserungsgewinn von USD 161.7 Mio. aus einem 2024 verkauften Geschäftsbereich, der aber das Geschäftsjahr 2025 nicht betrifft. Mitarbeitende: Der Bericht nennt ausschliesslich 'Full-Time Equivalents (FTEs)', 1'599 zum Jahresende 2025 (Vorjahr 1'774; Reduktion um 175 FTE); eine separate Kopfzahl wird nicht ausgewiesen, daher wurde gemäss Regel 6 die FTE-Zahl eingetragen.",
+ "_verification": "Umsatz ('Revenues', USD 366.606 Mio.) und Konzernverlust mit Aktionärsanteil ('Net income for the period', davon 'Equity holders of the company' USD -42.412 Mio.) stammen aus der 'Consolidated income statement' (Seite 98 des PDF, Abschnitt 'Consolidated financial statements 2025') des Kudelski Group Annual Report 2025, Geschäftsjahr 1. Januar bis 31. Dezember 2025. Geprüft wurde, dass die Zeile 'Revenues' (nicht 'Total revenues and other operating income') als Umsatz verwendet wird, dass 2025 keine discontinued operations vorliegen (im Unterschied zum Vorjahr 2024), und dass der eingetragene Verlust dem Aktionärsanteil statt dem Gesamtkonzernergebnis entspricht. Gründungsjahr 1951 direkt aus der Zeitleiste 'Historical Milestones' im selben Geschäftsbericht ('1951 — Stefan Kudelski founds the company')."
+}

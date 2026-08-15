@@ -1,0 +1,19 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 661.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -8.0,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Feintool entwickelt und fertigt Feinschneid- und Umformtechnik sowie gestanzte Elektroblech-Komponenten (u. a. Statoren/Rotoren-Stanzpakete für Elektromotoren) vor allem für die Automobilindustrie und stellt zudem die dafür benötigten Feinschneidpressen und Werkzeuge her.",
+ "products_url": "https://www.feintool.com/company/",
+ "founding_year": 1959,
+ "founding_year_source": "https://www.feintool.com/company/history/ (eigene Firmengeschichte-Seite: 1959 Gründung von Hügi & Bösch in Biberist, im Gründungsjahr Bau der ersten funktionsfähigen mechanischen Feinschneidpresse; 1960 Umzug nach Lyss und Umbenennung in Feintool)",
+ "employees": 2851,
+ "fiscal_year": 2025,
+ "report_url": "https://www.feintool.com/wp-content/uploads/2026/02/Annual_Report_2025.pdf",
+ "note": "Net sales 661,390 Tsd. CHF laut konsolidierter Erfolgsrechnung (Seite 'Income statement'), gerundet 661.4 Mio. CHF in Kennzahlentabelle. Gewinn = 'Net result attributable to Feintool shareholders' = -8,024 Tsd. CHF (Verlust), keine gesonderte Minderheitsanteilszeile ausgewiesen. Employees = Headcount zum 31.12.2025 exkl. 89 Lernende/Trainees (Bericht nennt ausdrücklich 'Group has a headcount of 2 851')."
+}

@@ -1,0 +1,19 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 220.6,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -111.7,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Idorsia entwickelt und vermarktet niedermolekulare Arzneimittel; verkauft werden aktuell die eigenen Medikamente QUVIVIQ (Daridorexant, gegen Schlafstörungen) und TRYVIO/JERAYGO (Aprocitentan, gegen therapieresistenten Bluthochdruck), ergänzt durch Vertrags-/Kollaborationserlöse aus auspartnerten Pipeline-Wirkstoffen.",
+ "products_url": "https://www.idorsia.com/our-innovation/portfolio/daridorexant.html",
+ "founding_year": 2017,
+ "founding_year_source": "Idorsia Annual Report 2025, Governance-Teil (Lebenslauf Jean-Paul Clozel): 'Founder of Idorsia in 2017 and CEO 2017–2024' (https://www.idorsia.com/dam/jcr:661f2eb2-71c7-4d59-8b66-f47ba10aefc2/2025_idorsia-annual-report.pdf)",
+ "employees": 487,
+ "fiscal_year": 2025,
+ "report_url": "https://www.idorsia.com/dam/jcr:661f2eb2-71c7-4d59-8b66-f47ba10aefc2/2025_idorsia-annual-report.pdf",
+ "note": "Idorsia hat echten Produktumsatz (kein reines Pre-Revenue-Biotech): 'Product sales' 141.7 Mio. CHF (überwiegend QUVIVIQ) + 'Contract revenue' 78.9 Mio. CHF (Kollaborationen/Meilensteine) = 'Total net revenue' 220.584 Mio. CHF, Konsolidierte Erfolgsrechnung (US GAAP) im Financial-Report-Teil. Gewinn = 'Net income (loss) attributable to Idorsia's shareholders' = -111,696 Tsd. CHF (US GAAP), identisch mit Konzern-Nettoverlust, keine Minderheitsanteile ausgewiesen. Der Bericht zeigt zusätzlich 'Non-GAAP'-Kennzahlen (Net revenue 214 Mio., Net loss -118 Mio.) auf S. vorne, die wir bewusst NICHT verwenden, da revenue_type/profit auf die testierte GAAP-Konzernrechnung gestützt sein sollen. Employees = 487 (Headcount, permanente Mitarbeitende per 31.12.2025, GRI-Tabelle im Sustainability-Teil des Berichts)."
+}

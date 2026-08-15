@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://implenia.com/fileadmin/implenia.com/finanzpublikationen_und_praesentationen/2025/FinPub/Implenia-Annual-Report-2025-DE.pdf",
  "note": "Gewinn (83.6 Mio.) ist der Aktionaersanteil ('Zuzurechnen auf: Aktionaere der Implenia AG'); das Konzernergebnis inkl. nicht beherrschender Anteile betraegt 84.65 Mio. (davon 1.012 Mio. nicht beherrschende Anteile). employees = Vollzeitstellen (FTE; per 31.12.), der Bericht weist ausschliesslich FTE aus, keine Kopfzahl.",
- "_verification": "Konsolidierte Erfolgsrechnung, Implenia Annual Report 2025 (Konzernrechnung der Implenia Gruppe), S. 142: Zeile 'Konzernumsatz' TCHF 3'474'545 (1.1.-31.12.2025); darunter 'Konzernergebnis' TCHF 84'650, aufgeteilt in 'Zuzurechnen auf: Aktionaere der Implenia AG' TCHF 83'638 und 'Nicht beherrschende Anteile' TCHF 1'012. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis (Gesamtkonzern). Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl 8'346 aus der Kennzahlentabelle ('Mitarbeitende (FTE; per 31.12.)', S. 24 'Kennzahlen der Gruppe') bestätigt, gleiche Zahl auch in der 5-Jahres-Übersicht als 'Vollzeitstellen (FTE; per 31.12.)'; Gründungsjahr 2006 (Fusion Zschokke/Batigroup) laut firmeneigener Geschichte-Seite implenia.com/ueber-uns/geschichte/."
+ "_verification": "Konsolidierte Erfolgsrechnung, Implenia Annual Report 2025 (Konzernrechnung der Implenia Gruppe), S. 142: Zeile 'Konzernumsatz' TCHF 3'474'545 (1.1.-31.12.2025); darunter 'Konzernergebnis' TCHF 84'650, aufgeteilt in 'Zuzurechnen auf: Aktionaere der Implenia AG' TCHF 83'638 und 'Nicht beherrschende Anteile' TCHF 1'012. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis (Gesamtkonzern). Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl 8'346 aus der Kennzahlentabelle ('Mitarbeitende (FTE; per 31.12.)', S. 24 'Kennzahlen der Gruppe') bestätigt, gleiche Zahl auch in der 5-Jahres-Übersicht als 'Vollzeitstellen (FTE; per 31.12.)'; Gründungsjahr 2006 (Fusion Zschokke/Batigroup) laut firmeneigener Geschichte-Seite implenia.com/ueber-uns/geschichte/.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Implenia AG",
+  "revenue_zeile": "Konzernumsatz (Konsolidierte Erfolgsrechnung)",
+  "profit_zeile": "Konzernergebnis – Aktionäre der Implenia AG",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen: Konsolidierte Erfolgsrechnung zeigt 'Konzernumsatz' 3'474'545 TCHF und 'Konzernergebnis' 84'650 TCHF, davon 'Aktionäre der Implenia AG' 83'638 TCHF (NCI 1'012 TCHF); Mitarbeitendenzahl 'Vollzeitstellen (FTE; per 31.12.)' 8'346 bestätigt. Beide Kennzahlen stammen aus derselben Erfolgsrechnung für den Gesamtkonzern 2025, keine Abweichungen gefunden."
+ }
 }

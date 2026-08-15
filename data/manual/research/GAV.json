@@ -1,0 +1,19 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 136.9,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 1.8,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Carlo Gavazzi entwickelt und fertigt elektronische Steuerungskomponenten – Sensoren, Halbleiterrelais, Energiezähler und -analysegeräte, Überwachungsrelais, Softstarter, Frequenzumrichter, Zeitrelais sowie Sicherheits- und Stromversorgungsgeräte – für die industrielle und Gebäudeautomation.",
+ "products_url": "https://www.carlogavazzi.com/en/group-profile/at-a-glance.html",
+ "founding_year": 1931,
+ "founding_year_source": "https://www.carlogavazzi.com/en/group-profile/history.html (eigene Firmengeschichte-Seite: '1931 Foundation of the company in Milan')",
+ "employees": 1053,
+ "fiscal_year": 2026,
+ "report_url": "https://www.carlogavazzi.com/files/media/files/ca0a102d7e9262bc1938e777d8e7df78/2025-2026_EN-Annual-report-Carlo-Gavazzi.pdf",
+ "note": "Geschäftsjahr endet am 31. März; verwendet wird das Geschäftsjahr 2025/26 (1. April 2025 – 31. März 2026), fiscal_year als Endjahr = 2026. Umsatzzeile im Bericht heisst 'Revenue from sale of goods' (136,937 Tsd. CHF, konsolidierte Erfolgsrechnung 'for the years ended March 31'), nicht wörtlich 'Net sales', aber die einzige Umsatzzeile der Gruppe. Net profit attributable to owners of Carlo Gavazzi Holding AG = 1,824 Tsd. CHF; Bericht bestätigt, dass in den dargestellten Jahren keine Minderheitsanteile (non-controlling interests) bestehen. Employees = 'Number of employees (average)' aus der Fünfjahresübersicht = 1,053 (Durchschnitt über das Geschäftsjahr; keine gesonderte Kopf-/FTE-Angabe im Bericht gefunden)."
+}

@@ -1,0 +1,19 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "continuing_operations",
+ "revenue": 4135.6,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 182.7,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Galenica betreibt ein Netzwerk von Apotheken in der Schweiz, beliefert Apotheken, Arztpraxen und Spitäler im Grosshandel mit Arzneimitteln und Gesundheitsprodukten (u. a. über Galexis, Alloga, Voigt) und bietet ergänzend Labordiagnostik sowie digitale Gesundheitsdienstleistungen an.",
+ "products_url": "https://www.galenica.com/en/ueber-galenica/ueber-galenica.php",
+ "founding_year": 1927,
+ "founding_year_source": "https://hls-dhs-dss.ch/de/articles/041978/ (Historisches Lexikon der Schweiz: Gründung 1927 als Collaboration Pharmaceutique SA in Clarens, 1932 Umbenennung in Galenica AG und Sitzverlegung nach Bern). Auf der eigenen Firmenwebsite (galenica.com) konnte trotz Suche keine Geschichte-Seite mit Gründungsjahr mehr gefunden werden (Link verweist inzwischen auf andere Seite).",
+ "employees": 8427,
+ "fiscal_year": 2025,
+ "report_url": "https://report.galenica.com/ar25/app/uploads/Galenica-Annual-report-2025.pdf",
+ "note": "Konzern weist zusätzlich Profit inkl. discontinued operations aus: Net profit attributable to shareholders of Galenica Ltd. (Total, inkl. discontinued operations) = CHF 181.1 Mio. Wir verwenden 'Profit from continuing operations - attributable to shareholders of Galenica Ltd.' = CHF 182.7 Mio. (thousand CHF 182,705), da Net sales (CHF 4,135.6 Mio.) ebenfalls auf continuing-operations-Basis berichtet wird (separate discontinued-operations-Zeile erst unterhalb EBT). Employees = Headcount am 31.12.2025 (8,427); Report nennt zusätzlich FTE-Wert 6,558."
+}

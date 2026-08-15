@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 850.4,
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 41.6,
+ "profit_currency": "EUR",
+ "profit_unit": 1000000,
+ "core_products": "Automatisierte Lager- und Materialflusssysteme für die Intralogistik (dynamische Lagerlift- und Umlaufregalsysteme, Multi-Shuttle-Systeme, automatisierte Hochregallager sowie AutoStore-Partnerlösungen) inklusive zugehöriger Software und Life-Cycle-Services.",
+ "products_url": "https://www.kardex.com/en-gb/company_people/about-kardex/corporate-profile",
+ "founding_year": "",
+ "founding_year_source": "",
+ "employees": 2957,
+ "fiscal_year": 2025,
+ "report_url": "https://investors.kardex.com/media/document/8e216400-0135-4101-96ea-14e7aeccc6b4/assets/Kardex_Annual_Report_2025.pdf",
+ "note": "Kardex bilanziert nach Swiss GAAP FER und berichtet in EUR (nicht CHF); das ist die im Bericht ausgewiesene Berichtswährung, keine Umrechnung. Mitarbeitende: Der Bericht weist im gesamten Dokument (Kennzahlen, Kardex at a glance, Segmentberichte) ausschliesslich 'Employees (FTE)' aus (Konzern 2025: 2'957, Vorjahr 2'678); eine separate Kopfzahl wird nirgends genannt, daher wurde gemäss Regel 6 die FTE-Zahl eingetragen. Gründungsjahr leer gelassen: Die eigenen Kardex-Webseiten (Corporate Profile, Unternehmensseite) nennen kein einheitliches Gründungsjahr der Kardex Holding AG bzw. des Konzerns; die Unternehmensgeschichte ist über mehrere Zäsuren verteilt (US-Wurzeln der Marke Kardex ab 1898/1915, Neugründung der heutigen Kardex AG 1977, Börsenkotierung an der SIX seit 1989), ohne dass der Geschäftsbericht 2025 selbst ein Gründungsjahr nennt. Der einmalige, nicht liquiditätswirksame Wertberichtigungseffekt von rund EUR 39 Mio. im Zusammenhang mit der Akquisition von Rocket Solution GmbH erklärt den Rückgang des Jahresergebnisses gegenüber dem Vorjahr; er betrifft dieselbe konsolidierte Rechnung (total_group) und wurde nicht als 'discontinued operations' separat ausgewiesen.",
+ "_verification": "Nettoumsatz (Net revenues, EUR 850.4 Mio.) und Jahresergebnis mit Aktionärsanteil (Result for the period, 'Attributable to: Shareholders of Kardex Holding AG', EUR 41.6 Mio., gegenüber Non-controlling interests EUR 0.2 Mio.) stammen aus der 'Consolidated income statement' (Seite 86 des Kardex Annual Report 2025, Abschnitt 'Consolidated financial statements'), Geschäftsjahr 1. Januar bis 31. Dezember 2025 gegen Vorjahr 2024. Geprüft wurde, dass die Zeile 'Net revenues' (nicht eine Summenzeile aus mehreren Ertragsarten) verwendet wurde, dass der Gewinn dem Aktionärsanteil statt dem Gesamtkonzernergebnis inkl. Minderheiten entspricht, und dass Segmentberichterstattung (Automated Products, Standardized Systems) durchgängig dieselbe Zeile 'Net revenues' als Umsatzgrösse führt. Mitarbeiterzahl (2'957) als 'Employees (FTE)' aus den 'Key figures' (Seite 6) gegen die einzige im Bericht vorkommende Personalgrösse abgeglichen; eine Kopfzahl wird im Bericht nicht separat ausgewiesen."
+}

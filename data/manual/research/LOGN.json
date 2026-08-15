@@ -16,5 +16,13 @@
  "fiscal_year": "2026",
  "report_url": "https://www.sec.gov/Archives/edgar/data/1032975/000103297526000021/logi-20260331.htm",
  "note": "Geschäftsjahr endet am 31. März. Mitarbeitendenzahl laut 10-K: 'approximately 7,300 persons' (inkl. indirekt über Personaldienstleister Beschäftigte, davon rund 2'300 im Werk Suzhou), Stichtag 31.03.2026; keine genauere Zahl im Bericht ausgewiesen. Net income enthält keinen separat ausgewiesenen Minderheitenanteil (Konzern ist im Wesentlichen vollkonsolidiert ohne wesentliche NCI).",
- "_verification": "Umsatz ('Total Net Sales', Zeile in der Konzern-Erfolgsrechnung/Supplemental Financial Information) und Net income (GAAP) stammen beide aus dem Form 10-K für das am 31.03.2026 endende Geschäftsjahr (identisch mit den Zahlen der Q4/FY26-Pressemitteilung); Mitarbeitendenzahl stammt aus Item 1 'Human Capital Resources' desselben 10-K. Geprüft: Zahlen direkt aus dem SEC-Filing extrahiert (nicht aus einer Sekundärquelle), Konsistenz zwischen 10-K-Volltext und Pressemitteilung verglichen."
+ "_verification": "Umsatz ('Total Net Sales', Zeile in der Konzern-Erfolgsrechnung/Supplemental Financial Information) und Net income (GAAP) stammen beide aus dem Form 10-K für das am 31.03.2026 endende Geschäftsjahr (identisch mit den Zahlen der Q4/FY26-Pressemitteilung); Mitarbeitendenzahl stammt aus Item 1 'Human Capital Resources' desselben 10-K. Geprüft: Zahlen direkt aus dem SEC-Filing extrahiert (nicht aus einer Sekundärquelle), Konsistenz zwischen 10-K-Volltext und Pressemitteilung verglichen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Logitech International S.A.",
+  "revenue_zeile": "Net sales (Consolidated Statements of Operations, Form 10-K FY2026)",
+  "profit_zeile": "Net income",
+  "abweichungen": [],
+  "begruendung": "10-K direkt von sec.gov (mit deklariertem User-Agent) heruntergeladen: 'Net sales $4,840,761' und 'Net income $711,187' (Tsd. USD) für das am 31.03.2026 endende Geschäftsjahr, konsistent mit 'As of March 31, 2026, we employed approximately 7,300 persons'. Berichtswährung ist USD (nicht CHF) und Geschäftsjahr läuft April–März, beides korrekt so übernommen; Legal Entity 'LOGITECH INTERNATIONAL S.A.' wie im Dokument angegeben."
+ }
 }
