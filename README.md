@@ -4,7 +4,7 @@ Eine statische 3D-Wirtschaftskarte der Schweiz: zwei Ansichten derselben
 Fläche, nebeneinander gehalten, damit der Unterschied sichtbar wird.
 
 **Ansicht A** zeigt die börsenkotierten Unternehmen, gesamtschweizerisch:
-**201 der 224 an der SIX kotierten Gesellschaften stehen an ihrem operativen
+**201 der 202 an der SIX kotierten Gesellschaften stehen an ihrem operativen
 Hauptsitz, und alle 201 sind recherchiert** — Umsatz, Gewinn, Beschäftigte,
 Branche, Kerngeschäft, jede Zahl mit Primärquelle und einer unabhängigen
 Gegenprüfung. Die Höhe der Säule ist der Umsatz, in CHF umgerechnet, damit

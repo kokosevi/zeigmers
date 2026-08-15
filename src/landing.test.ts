@@ -42,7 +42,7 @@ const de = new Intl.NumberFormat('de-CH', { maximumFractionDigits: 0 })
 describe('Landing-Kennzahlen', () => {
   it('nennt die Firmenzahlen genau so, wie companies.json sie ausweist', () => {
     const { count, totalListed } = companies.stats
-    expect(HTML).toContain(`${count} von ${totalListed} an der SIX kotierten Gesellschaften`)
+    expect(HTML).toContain(`${count} von ${totalListed} kotierten Titeln`)
   })
 
   it('behauptet nur dann "alle recherchiert", wenn auch alle recherchiert sind', () => {
