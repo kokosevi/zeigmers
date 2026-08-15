@@ -39,8 +39,8 @@ const BLANK_STYLE: StyleSpecification = {
 // Aargau allein. `center`/`zoom` unten sind deshalb nur noch ein grober,
 // schweizweiter Platzhalter für den Moment zwischen `new maplibregl.Map(...)`
 // (die synchron irgendeine Kamera braucht) und dem ersten `frameBounds()`-
-// Aufruf in `main.ts`, der die tatsächliche Schweiz-Rahmung aus den 26
-// geladenen Kantonsgeometrien herleitet (`domain/bounds.ts`,
+// Aufruf in `karte/basis.ts`s `createBasis()`, der die tatsächliche Schweiz-
+// Rahmung aus den 26 geladenen Kantonsgeometrien herleitet (`domain/bounds.ts`,
 // `boundsOfGeometries`) — dieser zweite Schritt läuft mit `instant: true`
 // (siehe `frameBounds` unten), der Platzhalter ist also nie sichtbar länger
 // als die Ladezeit von `ch_kantone.geojson`. `pitch`/`bearing` bleiben die
@@ -73,10 +73,12 @@ function prefersReducedMotion(): boolean {
 
 // map.ts ist die einzige Stelle, die den vollen maplibregl.Map-Zustand kennt
 // (siehe Task 11) — MapHandle gibt bewusst nur schmale Callbacks nach aussen,
-// nie die Karteninstanz selbst, sonst könnte main.ts (oder jeder andere
-// Aufrufer) den viewState direkt anfassen.
+// nie die Karteninstanz selbst, sonst könnte `karte/basis.ts` (oder jeder
+// andere Aufrufer) den viewState direkt anfassen.
 //
-// `onZoom`/`getZoom` gehörten bis 2026-08-13 dazu — main.ts brauchte den Zoom
+// `onZoom`/`getZoom` gehörten bis 2026-08-13 dazu — der damalige, noch
+// ungeteilte Seiteneinstieg (heute aufgeteilt in `karte/basis.ts`,
+// `karte/firmen.ts`, `karte/beschaeftigte.ts`) brauchte den Zoom
 // ausschliesslich für die LOD-Überblendung zwischen Kanton-, Gemeinde- und
 // Hektarstufe (siehe README). Mit deren Entfernung hat niemand mehr einen
 // Aufrufer für Zoom-Callbacks; sie sind entfernt statt als toter Code auf

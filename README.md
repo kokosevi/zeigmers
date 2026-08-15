@@ -142,7 +142,8 @@ Ansicht B hiess bis zum 13. August 2026 «Die Vielen». Der Name ist auf
 «Beschäftigte» geändert — passend zu Ansicht A, deren Name «Die Sichtbaren»
 unverändert bleibt, und zur Einheit, die die Legende ohnehin schon zeigte
 (`UNIT_LABEL` in `src/ui/legend.ts`). Der interne Schlüssel wurde mit
-umbenannt, `'viele'` → `'beschaeftigte'` (`src/ui/toggle.ts` und alle
+umbenannt, `'viele'` → `'beschaeftigte'` (in der damaligen Datei für den
+Ansichts-Umschalter, seither in `src/ui/nav.ts` aufgegangen, und allen
 Verwendungsstellen) — ein Anzeigename, der nicht mehr zu seinem internen
 Schlüssel passt, ist genau die Art Drift, die die nächste Leserin in die Irre
 führt.
@@ -524,8 +525,8 @@ stichprobenartig.
 **Rückwärtskompatibilität fürs Frontend.** `src/` wurde für diese Phase nicht
 angefasst (Vorgabe: „this phase produces data only"). Damit die bestehende
 Karte unverändert gegen Aargau weiterläuft, behält `meta.json` exakt die
-Felder, die `src/data/loader.ts`s `Meta`-Interface und `src/main.ts`
-(`loadMeta()`) lesen — `canton.{code,bfs_nr,name}`, `year`, `levels` — bei;
+Felder, die `src/data/loader.ts`s `Meta`-Interface und `loadMeta()` (heute
+`src/karte/basis.ts`) lesen — `canton.{code,bfs_nr,name}`, `year`, `levels` — bei;
 `cantons` ist ein reines Zusatzfeld, das die bestehende Karte ignoriert (ein
 zusätzliches Feld in einem JSON-Objekt bricht kein `as Meta`-Cast). Die
 Karte fragt weiterhin nur `ag_*`-Dateien an (aus `meta.canton.code`), die
@@ -1048,7 +1049,7 @@ Mit Phase 1 baut das ETL immer alle 26 Kantone — ein Kantonswechsel ändert
 nicht mehr, **was** gebaut wird, sondern nur noch, welchen der bereits
 gebauten 26 Kantone die Karte beim Start zeigt. `CANTON` in
 `etl/src/zeigmers_etl/config.py` bedeutet seither: der Startkanton der
-Karte (`meta.canton`, gelesen in `src/main.ts`) — nicht mehr, welche Gemeinden
+Karte (`meta.canton`, gelesen in `src/karte/basis.ts`) — nicht mehr, welche Gemeinden
 und Grenzen das ETL berechnet. Bis Phase 3 hing auch der Pfad der Firmen-CSV
 (`companies.csv_path()`) an `CANTON`; seit die CSV national ist (siehe „Phase
 3" unten), ist `companies.csv_path()` von `CANTON` unabhängig.
@@ -1071,7 +1072,7 @@ Danach `npm run build:data` laufen lassen (schreibt vor allem ein neues
 `meta.json` und `companies.json` — die 26 Gemeinde-/Grenzen-Pakete ändern
 sich dabei nicht, ausser ein neuer STATENT-/swissBOUNDARIES3D-Jahrgang
 verändert ihren Inhalt). Das Frontend liest den Kantons-Code und -Namen
-weiterhin selbst aus `public/data/meta.json` (`src/main.ts`, per
+weiterhin selbst aus `public/data/meta.json` (`src/karte/basis.ts`, per
 `loadMeta()`) — die Artefakt-Dateinamen (`<code>_gemeinde.*`), der
 Fenstertitel und der Titel des Kantonspanels folgen also ohne weitere
 Codeänderung.

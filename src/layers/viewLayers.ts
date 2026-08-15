@@ -37,7 +37,8 @@ export const KANTONE_BARS_LAYER_ID = 'kantone-saeulen'
 
 /** Alles, was ein betretener Kanton für Ansicht «Beschäftigte» braucht, einmal
  *  geladen und aus den beiden Rohdateien (`<code>_gemeinde.{json,bin}`,
- *  `<code>_boundaries.geojson`) abgeleitet — siehe `main.ts`, `cantonCache`. */
+ *  `<code>_boundaries.geojson`) abgeleitet — siehe `karte/beschaeftigte.ts`,
+ *  `cantonCache`. */
 export interface CantonEntry {
   code: string
   name: string
@@ -53,9 +54,9 @@ export interface CantonEntry {
  *  bfs_nr auf — dieselbe `gemeindeIdx` → Metadaten-Indirektion wie
  *  `ui/panel.ts`s `municipalityName`, nur über `meta.kantone` statt
  *  `meta.gemeinden` (siehe `data/loader.ts`, `LevelMeta.kantone`). Exportiert:
- *  `main.ts` braucht dieselbe Auflösung in `enterCanton`, um Code/bfs_nr der
- *  angeklickten Zeile zu bestimmen, nicht nur beim Bauen des Hover-Labels
- *  hier. */
+ *  `karte/beschaeftigte.ts` braucht dieselbe Auflösung in `enterCanton`, um
+ *  Code/bfs_nr der angeklickten Zeile zu bestimmen, nicht nur beim Bauen des
+ *  Hover-Labels hier. */
 export function kantonRowInfo(
   kantone: Level,
   index: number,
@@ -101,13 +102,14 @@ export type ViewLayersInput =
       onShowMunicipalityPanel: (level: Level, index: number) => void
     })
 
-/** Baut genau die Layer-Liste, die `main.ts` an `handle.setLayers()`
- *  übergibt — als eigenständige, DOM-freie Funktion (kein `fetch`, kein
- *  `document`), damit sich die id-Eindeutigkeit über alle Kombinationen aus
- *  `view`/`level` ohne Browser prüfen lässt (`viewLayers.test.ts`). Enthält
- *  dieselbe Verteidigung wie zuvor in `main.ts`s `render()`: Kantonsstufe
- *  ohne geladenen Kanton (sollte nicht vorkommen, siehe `main.ts`) fällt auf
- *  die Schweiz-Stufe zurück statt eine leere oder falsche Liste zu bauen. */
+/** Baut genau die Layer-Liste, die die Seiten (`karte/firmen.ts`,
+ *  `karte/beschaeftigte.ts`) an `handle.setLayers()` übergeben — als
+ *  eigenständige, DOM-freie Funktion (kein `fetch`, kein `document`), damit
+ *  sich die id-Eindeutigkeit über alle Kombinationen aus `view`/`level` ohne
+ *  Browser prüfen lässt (`viewLayers.test.ts`). Enthält dieselbe
+ *  Verteidigung wie in `karte/beschaeftigte.ts`s `render()`: Kantonsstufe
+ *  ohne geladenen Kanton (sollte nicht vorkommen, siehe dort) fällt auf die
+ *  Schweiz-Stufe zurück statt eine leere oder falsche Liste zu bauen. */
 export function buildViewLayers(input: ViewLayersInput): LayersList {
   const { mode, cantonsGeo, activeBfsNr, cantonBorderLayer } = input
   const cantonsLayer = buildCantonsLayer({ data: cantonsGeo, activeBfsNr })

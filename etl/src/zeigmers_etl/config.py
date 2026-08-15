@@ -2,12 +2,19 @@
 
 Seit der Ausweitung auf die ganze Schweiz (Phase 1, 2026-08-14) baut das ETL
 IMMER alle 26 Kantone und alle Gemeinden — `CANTON` steuert das nicht mehr.
-`CANTON` bedeutet jetzt nur noch: welcher Kanton ist im Frontend beim Start
-aktiv/hervorgehoben (`meta.canton`, gelesen in `src/main.ts`) und unter
-welchem Pfad liegt die (bislang einzige) Firmen-CSV (`companies.csv_path()`).
-Ein Wechsel des Startkantons ändert an den ETL-Artefakten nichts mehr ausser
-`meta.json`s `canton`-Feld und `companies.json` — siehe README, Abschnitt
-"Kantonswechsel".
+`CANTON` bedeutet seither nur noch: welcher Kanton der Startkanton ist, den
+`meta.canton` dem Frontend mitgibt (gelesen in `src/karte/basis.ts`s
+`loadMeta()`; in Ansicht «Beschäftigte», `src/karte/beschaeftigte.ts`, als
+Vorbelegung für den Panel-Titel verwendet, siehe `src/ui/panel.ts`). Auf der
+Karte selbst hebt `meta.canton` seit der Nationalisierung (Phase 3) keinen
+Kanton mehr hervor — Ansicht «Börsennotierte Firmen» markiert keinen Kanton
+mehr, Ansicht «Beschäftigte» markiert stattdessen den zuletzt betretenen
+(`src/layers/cantons.ts`, `activeBfsNr`). Und unter welchem Pfad die
+Firmen-CSV liegt (`companies.csv_path()`): das hängt seit Phase 3 ebenfalls
+nicht mehr an `CANTON` — sie ist eine einzige nationale Datei (siehe
+`companies.csv_path()`-Dokumentation). Ein Wechsel des Startkantons ändert an
+den ETL-Artefakten nichts mehr ausser `meta.json`s `canton`-Feld — siehe
+README, Abschnitt "Kantonswechsel".
 """
 
 from pathlib import Path

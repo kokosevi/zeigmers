@@ -10,9 +10,10 @@ import { MAP_MATERIAL } from './material'
 // Redesign-Vorgabe (2026-08-14): 12'000 → 3'000. Der höchste Balken (Aarau)
 // lag bei 21 % der Kantonsbreite, die Referenz liegt eher bei 5 % — ein
 // Machbarkeitsnachweis, keine Skyline. `vmax` (Gemeindemaximum, aus
-// `main.ts`) und die aktive Höhenskala (`domain/scale.ts`) sind unverändert,
-// nur die Decke zieht sich zusammen; relative Höhen zwischen Gemeinden
-// bleiben exakt erhalten (siehe `domain/scale.ts`, `computeElevations`).
+// `karte/beschaeftigte.ts`) und die aktive Höhenskala (`domain/scale.ts`)
+// sind unverändert, nur die Decke zieht sich zusammen; relative Höhen
+// zwischen Gemeinden bleiben exakt erhalten (siehe `domain/scale.ts`,
+// `computeElevations`).
 export const MAX_BAR_HEIGHT_M = 3000
 
 /** Jedes Feature trägt nur den Zeilenindex — Höhe und Farbe werden per
@@ -40,7 +41,7 @@ export interface LayerOptions {
   /** Change 4 (Hover): feuert bei jedem `onHover`-Event mit dem Zeilenindex
    *  (oder `null`, wenn die Maus keine Fläche mehr trifft) plus Bildschirm-
    *  koordinaten. Bleibt bewusst ohne Namensauflösung — welcher Index zu
-   *  welchem Gemeindenamen gehört, weiss `main.ts`/`ui/panel.ts`
+   *  welchem Gemeindenamen gehört, weiss `layers/viewLayers.ts`/`ui/panel.ts`
    *  (`municipalityName`), nicht dieser reine Layer-Baustein. Die Farb-
    *  änderung selbst läuft über `autoHighlight`/`highlightColor` unten,
    *  ohne dass dieser Callback je einen Layer- oder Datenrebuild auslöst. */
@@ -199,8 +200,13 @@ export function buildMunicipalityLayer(
 const MUNICIPALITY_BORDER_COLOR: [number, number, number, number] = [168, 182, 198, 130] // --land-kante, reduzierte Deckkraft
 const MUNICIPALITY_BORDER_WIDTH_PX = 0.6
 
-/** Nur für Ansicht B («Börsennotierte Firmen») gebaut, einmalig in `main.ts` —
- *  die Geometrie hängt weder von `vmax` noch von `mode` ab, ein Cache wie bei
+/** Nur für Ansicht «Beschäftigte» gebaut, einmalig beim Betreten eines
+ *  Kantons in `karte/beschaeftigte.ts` (`loadCantonEntry`) — die Bezeichnung
+ *  „Ansicht B («Börsennotierte Firmen»)" stand hier bis zum Abschluss-Review
+ *  vertauscht: «Börsennotierte Firmen» ist Ansicht A (`ui/nav.ts`,
+ *  `ViewName`), diese Funktion baut Gemeindegrenzen und wird ausschliesslich
+ *  von der Beschäftigten-Seite aufgerufen (siehe Aufrufer oben). Die
+ *  Geometrie hängt weder von `vmax` noch von `mode` ab, ein Cache wie bei
  *  `buildMunicipalityLayer` ist hier unnötig. */
 export function buildMunicipalityBorderLayer(
   geometries: Geometry[],

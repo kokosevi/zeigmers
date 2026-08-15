@@ -23,8 +23,9 @@ function box(): { group: HTMLElement; button: HTMLButtonElement } {
 }
 
 /** Nur sichtbar auf der Kantonsstufe von Ansicht «Beschäftigte» (siehe
- *  `main.ts`) — dort ist es der einzige Weg zurück zur Schweiz-Übersicht neben
- *  Escape (`main.ts`, `keydown`-Listener). `onBack` wird bei jedem Aufruf neu
+ *  `karte/beschaeftigte.ts`) — dort ist es der einzige Weg zurück zur
+ *  Schweiz-Übersicht neben Escape (`karte/beschaeftigte.ts`,
+ *  `keydown`-Listener). `onBack` wird bei jedem Aufruf neu
  *  zugewiesen (Property, nicht `addEventListener`): eine Neuzuweisung ersetzt
  *  den vorigen Handler, statt Listener über Renders hinweg anzuhäufen. */
 export function renderBackControl(visible: boolean, onBack: () => void): void {

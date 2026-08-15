@@ -21,7 +21,8 @@ export interface PresentGroups {
 
 /** Läuft einmal über eine Liste von Gruppen-Indizes (ein Gemeinde-`noga`-Array
  *  oder die aus `Company[]` abgeleiteten effektiven Indizes, siehe
- *  `main.ts`) und bestimmt, welche Gruppen mindestens einmal vorkommen.
+ *  `karte/firmen.ts`/`karte/beschaeftigte.ts`) und bestimmt, welche Gruppen
+ *  mindestens einmal vorkommen.
  *  `NOGA_UNKNOWN_INDEX` (255) zählt gesondert als `hasUnknown`, nicht als
  *  eigener Eintrag in `indices` — die Legende zeigt "nicht bestimmbar" separat
  *  als grauen Eintrag, nicht als zwölfte Branche. */

@@ -42,8 +42,8 @@ export interface PanelContent {
 
 // Titel der Kantonszelle (Ansicht B, Kantonstufe). Default nur ein Fallback
 // für Aufrufe ohne vorheriges configureCanton() (z. B. Tests); im Betrieb
-// überschreibt main.ts das beim Start mit `meta.canton.name` aus
-// /data/meta.json — ein Kantonswechsel braucht hier keine Codeänderung.
+// überschreibt `karte/beschaeftigte.ts` das beim Start mit `meta.canton.name`
+// aus /data/meta.json — ein Kantonswechsel braucht hier keine Codeänderung.
 let cantonName = 'Aargau'
 
 /** Einmal beim Start mit dem Namen des aktuell konfigurierten Kantons
@@ -59,8 +59,8 @@ function groupLabel(level: Level, groupIndex: number): string {
 /** Change 4 (Hover): löst den Gemeindenamen für eine Zeile auf, ohne das
  *  volle Panel zu bauen — dieselbe `gemeindeIdx`/`gemeinden`-Auflösung wie in
  *  `aggregateCellContent`, aber als eigener, leichter Export, weil die
- *  Hover-Beschriftung (`main.ts`, `ui/hoverLabel.ts`) nur den Namen braucht,
- *  keine Verteilung, keine Obergrenzen-Notiz. */
+ *  Hover-Beschriftung (`layers/viewLayers.ts`, `ui/hoverLabel.ts`) nur den
+ *  Namen braucht, keine Verteilung, keine Obergrenzen-Notiz. */
 export function municipalityName(level: Level, index: number): string | null {
   const { gemeindeIdx } = level.arrays
   const gemeinden = level.meta.gemeinden

@@ -49,8 +49,8 @@ export interface LevelMeta {
    *  „die Zeilen-Metadaten" jedes Level-Artefakts unter dem Namen der
    *  jeweiligen Ebene — `gemeinden` bei `level: 'gemeinde'`, `kantone` bei
    *  `level: 'kantone'`). `data/boundaries.ts` (`joinCantonGeometry`) und
-   *  `main.ts` lesen daraus Kantonsname und -kürzel für Hover, Titel und den
-   *  Artefakt-Dateipräfix eines betretenen Kantons. */
+   *  `karte/beschaeftigte.ts` lesen daraus Kantonsname und -kürzel für
+   *  Hover, Titel und den Artefakt-Dateipräfix eines betretenen Kantons. */
   kantone?: {
     bfsNr: number
     code: string

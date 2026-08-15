@@ -14,10 +14,13 @@ import { MAP_MATERIAL } from './material'
 const LAND_FILL: [number, number, number, number] = [207, 216, 227, 255] // --land
 const LAND_LINE: [number, number, number, number] = [168, 182, 198, 220] // --land-kante
 
-// Der konfigurierte Kanton (aus meta.json, siehe main.ts) sticht durch eine
-// hellere Füllfarbe hervor — „ein Schatten heller, damit er sich hebt"
-// (Auftrag) — nicht mehr durch einen zusätzlichen Rand oder eine zweite
-// Farbfamilie: die Differenzierung bleibt innerhalb derselben kühlen Palette.
+// Der hervorgehobene Kanton sticht durch eine hellere Füllfarbe hervor —
+// „ein Schatten heller, damit er sich hebt" (Auftrag) — nicht mehr durch
+// einen zusätzlichen Rand oder eine zweite Farbfamilie: die Differenzierung
+// bleibt innerhalb derselben kühlen Palette. Welcher Kanton das ist, ist
+// seit der Nationalisierung nicht mehr `meta.json`s konfigurierter
+// Startkanton, sondern der auf der Kantonsstufe von Ansicht «Beschäftigte»
+// betretene (siehe `CantonsLayerOptions.activeBfsNr` unten).
 const AARGAU_FILL: [number, number, number, number] = [221, 229, 238, 255] // --aargau
 
 // Leichte Extrusion aller 26 Kantone (Redesign-Vorgabe: „Switzerland reads as
@@ -33,12 +36,15 @@ export const CANTON_ELEVATION_M = 300
 export interface CantonsLayerOptions {
   data: BoundaryFeatureCollection
   /** Welcher der 26 Kantone hervorgehoben wird — in Ansicht «Börsennotierte
-   *  Firmen» weiterhin `meta.canton.bfs_nr` (Aargau, siehe `main.ts`), in
-   *  Ansicht «Beschäftigte» auf der Kantonsstufe der gerade betretene Kanton.
-   *  `null` auf der Schweiz-Stufe von Ansicht «Beschäftigte» (Phase 2): dort
-   *  ist kein einzelner Kanton „aktiv" — alle 26 sind gleichrangig Inhalt
-   *  (die Balken darüber, siehe `layers/many.ts`), nicht Hintergrund mit
-   *  einem hervorgehobenen Ausnahme-Kanton. */
+   *  Firmen» seit der Nationalisierung (Phase 3) nie: `karte/firmen.ts`
+   *  übergibt durchgehend `null`, kein einzelner Kanton ist dort mehr
+   *  ausgezeichnet (Abschluss-Review: dieser Kommentar behauptete bis dahin
+   *  fälschlich, es bliebe `meta.canton.bfs_nr`/Aargau). In Ansicht
+   *  «Beschäftigte» (`karte/beschaeftigte.ts`) auf der Kantonsstufe der
+   *  gerade betretene Kanton, sonst ebenfalls `null` — auf der Schweiz-Stufe
+   *  (Phase 2) ist kein einzelner Kanton „aktiv" — alle 26 sind gleichrangig
+   *  Inhalt (die Balken darüber, siehe `layers/many.ts`), nicht Hintergrund
+   *  mit einem hervorgehobenen Ausnahme-Kanton. */
   activeBfsNr: number | null
 }
 
@@ -82,10 +88,11 @@ export function buildCantonsLayer({
  *  `stroked` auf der extrudierten Fläche wirkungslos war. Auf Plattenhöhe
  *  gehoben (`withBaseElevation`), damit der Rand am oberen, sichtbaren Rand
  *  der Platte liegt statt an ihrer Grundfläche bei z=0. Muss in **beiden**
- *  Ansichten gezeichnet werden (Auftrag) — `main.ts` baut sie deshalb einmal
- *  und reiht sie in beide `setLayers()`-Aufrufe ein, wie `buildCantonsLayer`
- *  selbst. Farbe/Breite unverändert gegenüber dem früheren (nie gezeichneten)
- *  Versuch: `--land-kante` bei praktisch voller Deckkraft, 1.2px — deutlich
+ *  Ansichten gezeichnet werden (Auftrag) — `karte/basis.ts`s `createBasis()`
+ *  baut sie deshalb einmal, beide Seiten reihen sie in ihren eigenen
+ *  `setLayers()`-Aufruf ein, wie `buildCantonsLayer` selbst. Farbe/Breite
+ *  unverändert gegenüber dem früheren (nie gezeichneten) Versuch:
+ *  `--land-kante` bei praktisch voller Deckkraft, 1.2px — deutlich
  *  kräftiger als die Gemeindegrenzen in `layers/many.ts`
  *  (`buildMunicipalityBorderLayer`), die dieser Linie optisch untergeordnet
  *  bleiben sollen. */

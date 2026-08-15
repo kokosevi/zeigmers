@@ -186,10 +186,10 @@ def test_ch_kantone_sum_is_the_national_total(kantone_artifact):
 
 
 def test_meta_json_stays_backwards_compatible_for_the_frontend(meta):
-    # `src/data/loader.ts`s `Meta`-Interface und `src/main.ts` lesen nur
-    # `meta.canton.{code,bfs_nr,name}`, `meta.year`, `meta.levels` — diese
-    # Felder müssen exakt in dieser Form bestehen bleiben, ohne dass `src/`
-    # angefasst werden muss (siehe Aufgabenstellung).
+    # `src/data/loader.ts`s `Meta`-Interface und `src/karte/basis.ts` (dessen
+    # `loadMeta()`) lesen nur `meta.canton.{code,bfs_nr,name}`, `meta.year`,
+    # `meta.levels` — diese Felder müssen exakt in dieser Form bestehen
+    # bleiben, ohne dass `src/` angefasst werden muss (siehe Aufgabenstellung).
     assert meta["canton"] == {"code": "AG", "bfs_nr": 19, "name": "Aargau"}
     assert meta["year"] == config.STATENT_YEAR
     assert "gemeinde" in meta["levels"]

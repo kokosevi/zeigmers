@@ -96,8 +96,9 @@ function joinGeometry(
 
 /** Ordnet jeder Zeile der Gemeindestufe ihre Polygongeometrie zu, per
  *  `bfs_nr` aus `level.meta.gemeinden`. Der Join passiert bewusst einmal beim
- *  Laden (siehe `main.ts`), nicht bei jedem Render: `many.ts` bekommt das
- *  Ergebnis fertig und bleibt dadurch weiterhin eine reine
+ *  Laden (siehe `karte/beschaeftigte.ts`, `loadCantonEntry`), nicht bei
+ *  jedem Render: `many.ts` bekommt das Ergebnis fertig und bleibt dadurch
+ *  weiterhin eine reine
  *  `(daten, uiState) → Layer`-Funktion ohne eigene Join-Logik über zwei
  *  Artefakte hinweg. */
 export function joinMunicipalityGeometry(

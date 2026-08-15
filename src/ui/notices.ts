@@ -2,7 +2,8 @@ import type { ViewName } from './nav'
 
 /** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
  *  welche der zwei Stufen gerade zu sehen ist. `'schweiz'` = 26 Kantonsbalken,
- *  `'kanton'` = die Gemeinden des betretenen Kantons (siehe `main.ts`). */
+ *  `'kanton'` = die Gemeinden des betretenen Kantons (siehe
+ *  `karte/beschaeftigte.ts`). */
 export type NoticeLevel = 'schweiz' | 'kanton'
 
 /** Pflichthinweis je Ansicht — muss ohne Interaktion sichtbar bleiben (siehe
@@ -37,8 +38,9 @@ const ROUNDING_KANTON =
   'in unterschiedlichem Ausmass. Genauer Betrag je Gemeinde: Klick-Panel.'
 
 // Kein Klick-Panel auf dieser Stufe (ein Klick auf einen Kantonsbalken
-// betritt den Kanton, siehe `main.ts`, statt ein Panel zu öffnen) — der
-// Verweis darauf ersetzt durch einen Verweis auf den nächsten Schritt.
+// betritt den Kanton, siehe `karte/beschaeftigte.ts`, statt ein Panel zu
+// öffnen) — der Verweis darauf ersetzt durch einen Verweis auf den nächsten
+// Schritt.
 const ROUNDING_SCHWEIZ =
   `${ROUNDING_MECHANISM} Die Kantonssummen hier sind deshalb ebenfalls etwas ` +
   'zu hoch, je nach Kanton unterschiedlich stark. Details je Gemeinde: nach ' +
@@ -153,8 +155,9 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
  *  `level` (Phase 2): nur bei `view === 'beschaeftigte'` gelesen — welche der
  *  zwei Stufen den passenden Rundungs-/Flächenhinweis braucht (siehe
  *  `HAUPT_BESCHAEFTIGTE` oben). Bei `view === 'sichtbare'` bedeutungslos, aber
- *  Pflichtparameter statt optional: ein main.ts, das ihn vergisst, soll ein
- *  Typfehler sein, kein still falscher Text zur Laufzeit. */
+ *  Pflichtparameter statt optional: ein Seiteneinstieg (`karte/firmen.ts`,
+ *  `karte/beschaeftigte.ts`), der ihn vergisst, soll ein Typfehler sein,
+ *  kein still falscher Text zur Laufzeit. */
 export function renderNotices(view: ViewName, level: NoticeLevel): void {
   let box = document.getElementById('hinweis')
   if (!box) {
@@ -175,7 +178,8 @@ export function renderNotices(view: ViewName, level: NoticeLevel): void {
   // Nur auf der Kantonsstufe: die «Beschäftigte je Einwohner»-Zeile, die
   // dieser Hinweis erklärt, steht ausschliesslich im Gemeinde-Klick-Panel
   // (`ui/panel.ts`) — auf der Schweiz-Stufe öffnet ein Klick keinen Panel
-  // (er betritt den Kanton, siehe `main.ts`), die Zeile erscheint dort nie.
+  // (er betritt den Kanton, siehe `karte/beschaeftigte.ts`), die Zeile
+  // erscheint dort nie.
   if (view === 'beschaeftigte' && level === 'kanton') {
     box.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
   }
