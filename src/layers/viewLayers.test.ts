@@ -116,23 +116,36 @@ const COMPANIES: CompanyData = {
 
 const CANTON_BORDER_LAYER = buildCantonBorderLayer({ data: CANTONS_GEO })
 
-function baseInput(overrides: Partial<Parameters<typeof buildViewLayers>[0]> = {}) {
+const BASIS = {
+  mode: 'logarithmisch' as const,
+  cantonsGeo: CANTONS_GEO,
+  activeBfsNr: null,
+  cantonBorderLayer: CANTON_BORDER_LAYER,
+}
+
+function beschaeftigteInput(
+  overrides: { level?: 'schweiz' | 'kanton'; activeCanton?: CantonEntry | null } = {},
+) {
   return {
+    ...BASIS,
     view: 'beschaeftigte' as const,
     level: 'schweiz' as const,
-    mode: 'logarithmisch' as const,
-    cantonsGeo: CANTONS_GEO,
-    activeBfsNr: null,
-    cantonBorderLayer: CANTON_BORDER_LAYER,
     kantone: kantoneLevel(),
     cantonGeometries: [SWITZERLAND_POLYGON, SWITZERLAND_POLYGON],
     kantoneVmax: 1000,
-    activeCanton: null,
-    companies: COMPANIES,
+    activeCanton: null as CantonEntry | null,
     onEnterCanton: () => {},
     onShowMunicipalityPanel: () => {},
-    onShowCompanyPanel: () => {},
     ...overrides,
+  }
+}
+
+function firmenInput() {
+  return {
+    ...BASIS,
+    view: 'sichtbare' as const,
+    companies: COMPANIES,
+    onShowCompanyPanel: () => {},
   }
 }
 
@@ -153,16 +166,25 @@ function idsOf(layers: readonly unknown[]): string[] {
 
 describe('buildViewLayers', () => {
   it.each([
-    ['Beschäftigte · Schweiz', baseInput()],
-    ['Beschäftigte · Kanton', baseInput({ level: 'kanton', activeCanton: cantonEntry() })],
-    ['Börsennotierte Firmen', baseInput({ view: 'sichtbare' })],
+    ['Beschäftigte · Schweiz', beschaeftigteInput()],
+    ['Beschäftigte · Kanton', beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() })],
+    ['Börsennotierte Firmen', firmenInput()],
   ] as const)('assigns unique deck.gl layer ids — %s', (_label, input) => {
     const ids = idsOf(buildViewLayers(input))
     expect(new Set(ids).size).toBe(ids.length)
   })
 
   it('falls back to the Switzerland level when level is "kanton" but no canton is loaded', () => {
-    const ids = idsOf(buildViewLayers(baseInput({ level: 'kanton', activeCanton: null })))
+    const ids = idsOf(buildViewLayers(beschaeftigteInput({ level: 'kanton', activeCanton: null })))
     expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  // Neu: die Union ist der Grund für diesen Umbau — sie muss die
+  // Beschäftigten-Variante ohne `companies` tatsächlich akzeptieren, sonst
+  // könnte die Beschäftigten-Seite die 320 KB nicht einsparen.
+  it('builds the Beschäftigte view without any company data', () => {
+    const input = beschaeftigteInput()
+    expect('companies' in input).toBe(false)
+    expect(idsOf(buildViewLayers(input)).length).toBeGreaterThan(0)
   })
 })

@@ -222,24 +222,36 @@ async function start() {
     document.title = documentTitle()
 
     handle.setLayers(
-      buildViewLayers({
-        view,
-        level,
-        mode,
-        cantonsGeo,
-        activeBfsNr: activeHighlightBfsNr(),
-        cantonBorderLayer,
-        kantone,
-        cantonGeometries,
-        kantoneVmax,
-        activeCanton,
-        companies,
-        onEnterCanton: (index) => {
-          enterCanton(index).catch(reportNavigationError('Kanton konnte nicht geladen werden'))
-        },
-        onShowMunicipalityPanel: showMunicipalityPanel,
-        onShowCompanyPanel: showCompanyPanel,
-      }),
+      buildViewLayers(
+        view === 'sichtbare'
+          ? {
+              view,
+              mode,
+              cantonsGeo,
+              activeBfsNr: activeHighlightBfsNr(),
+              cantonBorderLayer,
+              companies,
+              onShowCompanyPanel: showCompanyPanel,
+            }
+          : {
+              view,
+              mode,
+              cantonsGeo,
+              activeBfsNr: activeHighlightBfsNr(),
+              cantonBorderLayer,
+              level,
+              kantone,
+              cantonGeometries,
+              kantoneVmax,
+              activeCanton,
+              onEnterCanton: (index) => {
+                enterCanton(index).catch(
+                  reportNavigationError('Kanton konnte nicht geladen werden'),
+                )
+              },
+              onShowMunicipalityPanel: showMunicipalityPanel,
+            },
+      ),
     )
 
     renderLegend({

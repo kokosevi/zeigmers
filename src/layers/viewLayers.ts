@@ -8,7 +8,6 @@ import type { NoticeLevel } from '../ui/notices'
 import { formatNumber } from '../ui/format'
 import { hideHoverLabel, showHoverLabel } from '../ui/hoverLabel'
 import { municipalityName } from '../ui/panel'
-import type { ViewName } from '../ui/toggle'
 import { buildCantonBorderLayer, buildCantonsLayer } from './cantons'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
 import {
@@ -67,22 +66,40 @@ export function kantonRowInfo(
   return entries[gemeindeIdx[index] ?? -1]
 }
 
-export interface ViewLayersInput {
-  view: ViewName
-  level: NoticeLevel
+/** In beiden Ansichten gebraucht: die Basiskarte und die Höhenskala. */
+interface ViewLayersBasis {
   mode: ScaleMode
   cantonsGeo: BoundaryFeatureCollection
   activeBfsNr: number | null
   cantonBorderLayer: ReturnType<typeof buildCantonBorderLayer>
-  kantone: Level
-  cantonGeometries: Geometry[]
-  kantoneVmax: number
-  activeCanton: CantonEntry | null
-  companies: CompanyData
-  onEnterCanton: (index: number) => void
-  onShowMunicipalityPanel: (level: Level, index: number) => void
-  onShowCompanyPanel: (company: Company) => void
 }
+
+/** Seit der Aufteilung in zwei Seiten (2026-08-15) ist `view` keine
+ *  umschaltbare Zustandsvariable mehr, sondern eine Eigenschaft der Seite —
+ *  jede Seite ruft `buildViewLayers` mit genau einer der beiden Varianten auf.
+ *  Als Union statt als ein Interface mit optionalen Feldern, weil die
+ *  Beschäftigten-Seite `companies.json` (320 KB) gar nicht mehr lädt: mit
+ *  `companies?: CompanyData` bräuchte der Firmen-Zweig unten einen Guard, den
+ *  kein Aufrufer je auslösen kann — toter Code, der behauptet, ein Zustand sei
+ *  möglich, den der Bau der Seiten ausschliesst. Über `view` unterschieden
+ *  verengt TypeScript stattdessen von selbst, und der Compiler erzwingt, dass
+ *  jede Seite genau das übergibt, was ihre Ansicht braucht. */
+export type ViewLayersInput =
+  | (ViewLayersBasis & {
+      view: 'sichtbare'
+      companies: CompanyData
+      onShowCompanyPanel: (company: Company) => void
+    })
+  | (ViewLayersBasis & {
+      view: 'beschaeftigte'
+      level: NoticeLevel
+      kantone: Level
+      cantonGeometries: Geometry[]
+      kantoneVmax: number
+      activeCanton: CantonEntry | null
+      onEnterCanton: (index: number) => void
+      onShowMunicipalityPanel: (level: Level, index: number) => void
+    })
 
 /** Baut genau die Layer-Liste, die `main.ts` an `handle.setLayers()`
  *  übergibt — als eigenständige, DOM-freie Funktion (kein `fetch`, kein
@@ -92,26 +109,30 @@ export interface ViewLayersInput {
  *  ohne geladenen Kanton (sollte nicht vorkommen, siehe `main.ts`) fällt auf
  *  die Schweiz-Stufe zurück statt eine leere oder falsche Liste zu bauen. */
 export function buildViewLayers(input: ViewLayersInput): LayersList {
-  const {
-    view,
-    level,
-    mode,
-    cantonsGeo,
-    activeBfsNr,
-    cantonBorderLayer,
-    kantone,
-    cantonGeometries,
-    kantoneVmax,
-    activeCanton,
-    companies,
-    onEnterCanton,
-    onShowMunicipalityPanel,
-    onShowCompanyPanel,
-  } = input
-
+  const { mode, cantonsGeo, activeBfsNr, cantonBorderLayer } = input
   const cantonsLayer = buildCantonsLayer({ data: cantonsGeo, activeBfsNr })
 
-  if (view === 'beschaeftigte' && level === 'kanton' && activeCanton) {
+  // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
+  // auf einen einzelnen, vorher geladenen Kanton) — zwei Layer, nicht eine:
+  // Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
+  // flache neutrale Marker für alle übrigen kotierten Titel
+  // (`buildUnresearchedCompanyLayer`, Kontext — siehe `layers/visible.ts`).
+  if (input.view === 'sichtbare') {
+    const { companies, onShowCompanyPanel } = input
+    return [
+      cantonsLayer,
+      cantonBorderLayer,
+      buildCompanyLayer(companies, mode, onShowCompanyPanel),
+      buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, (company, x, y) => {
+        if (!company) return hideHoverLabel()
+        showHoverLabel(company.name, x, y)
+      }),
+    ]
+  }
+
+  const { level, kantone, cantonGeometries, kantoneVmax, activeCanton } = input
+
+  if (level === 'kanton' && activeCanton) {
     const entry = activeCanton
     return [
       cantonsLayer,
@@ -123,7 +144,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
         mode,
         opacity: 1,
         visible: true,
-        onClick: (index) => onShowMunicipalityPanel(entry.gemeinde, index),
+        onClick: (index) => input.onShowMunicipalityPanel(entry.gemeinde, index),
         onHover: (index, x, y) => {
           if (index === null) return hideHoverLabel()
           const name = municipalityName(entry.gemeinde, index)
@@ -134,43 +155,26 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     ]
   }
 
-  if (view === 'beschaeftigte') {
-    // Deckt sowohl `level === 'schweiz'` als auch den Verteidigungsfall
-    // (`level === 'kanton'` ohne `activeCanton`) ab.
-    return [
-      cantonsLayer,
-      cantonBorderLayer,
-      buildMunicipalityLayer(KANTONE_BARS_LAYER_ID, {
-        level: kantone,
-        geometries: cantonGeometries,
-        vmax: kantoneVmax,
-        mode,
-        opacity: 1,
-        visible: true,
-        onClick: onEnterCanton,
-        onHover: (index, x, y) => {
-          if (index === null) return hideHoverLabel()
-          const info = kantonRowInfo(kantone, index)
-          if (!info) return hideHoverLabel()
-          const value = kantone.arrays.values[index] ?? 0
-          showHoverLabel(`${info.name} · ${formatNumber(value)} Beschäftigte`, x, y)
-        },
-      }),
-    ]
-  }
-
-  // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
-  // auf einen einzelnen, vorher geladenen Kanton) — zwei Layer, nicht eine:
-  // Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
-  // flache neutrale Marker für alle übrigen kotierten Titel
-  // (`buildUnresearchedCompanyLayer`, Kontext — siehe `layers/visible.ts`).
+  // Deckt sowohl `level === 'schweiz'` als auch den Verteidigungsfall
+  // (`level === 'kanton'` ohne `activeCanton`) ab.
   return [
     cantonsLayer,
     cantonBorderLayer,
-    buildCompanyLayer(companies, mode, onShowCompanyPanel),
-    buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, (company, x, y) => {
-      if (!company) return hideHoverLabel()
-      showHoverLabel(company.name, x, y)
+    buildMunicipalityLayer(KANTONE_BARS_LAYER_ID, {
+      level: kantone,
+      geometries: cantonGeometries,
+      vmax: kantoneVmax,
+      mode,
+      opacity: 1,
+      visible: true,
+      onClick: input.onEnterCanton,
+      onHover: (index, x, y) => {
+        if (index === null) return hideHoverLabel()
+        const info = kantonRowInfo(kantone, index)
+        if (!info) return hideHoverLabel()
+        const value = kantone.arrays.values[index] ?? 0
+        showHoverLabel(`${info.name} · ${formatNumber(value)} Beschäftigte`, x, y)
+      },
     }),
   ]
 }
