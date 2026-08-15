@@ -221,18 +221,24 @@ export function buildCompanyLayer(
 // Klein, neutral, flach — bewusst kein Bezug zu irgendeiner Höhe oder
 // Branchenfarbe: eine unrecherchierte Firma zeigt nur, DASS sie kotiert ist
 // und WO ihr Sitz liegt, nicht WIE gross sie ist (das wüssten wir nicht,
-// ohne es zu behaupten). Ein einzelner grauer Ton für alle ~216 Titel, klar
-// unterscheidbar von den Branchenfarben der acht recherchierten Balken.
+// ohne es zu behaupten). Ein einzelner grauer Ton für platzierte, aber
+// unrecherchierte Titel (`researched=false`) — klar unterscheidbar von den
+// Branchenfarben der recherchierten Balken. Re-Review (2026-08-15): heute
+// (`stats.count === stats.researched === 201`) zeichnet dieser Layer keinen
+// einzigen Marker; er greift automatisch, sobald ein künftiger SIX-Sync
+// platzierte, aber noch unrecherchierte Titel hinzufügt (siehe
+// `companies.json`, `stats`).
 /** Untergrenze für die Höhe einer Firmensäule.
  *
- *  Mit 187 echten Umsätzen spannt Ansicht A einen Faktor von rund 325'000 —
- *  Nestlé mit 89.5 Mrd. CHF gegen Xlife Sciences mit 0.28 Mio. Am unteren
- *  Ende ergibt die Skala Höhen von 75 und 105 m, also WENIGER als die 300 m
- *  hohe Kantonsplatte: diese Firmen wären auf der Karte nicht vorhanden,
- *  obwohl sie recherchiert sind und einen belegten Umsatz tragen — derselbe
- *  Fehler, der die flachen Marker unsichtbar machte.
+ *  Mit 188 echten Umsätzen (`stats.withRevenue`) spannt Ansicht «Börsennotierte
+ *  Firmen» einen Faktor von rund 325'000 — Nestlé mit 89.5 Mrd. CHF gegen
+ *  Xlife Sciences mit 0.28 Mio. Am unteren Ende ergibt die Skala Höhen von 75
+ *  und 105 m, also WENIGER als die 300 m hohe Kantonsplatte: diese Firmen
+ *  wären auf der Karte nicht vorhanden, obwohl sie recherchiert sind und
+ *  einen belegten Umsatz tragen — derselbe Fehler, der die flachen Marker
+ *  unsichtbar machte.
  *
- *  Neun Säulen (alle unter 18 Mio. CHF Umsatz) sitzen deshalb auf dieser
+ *  Elf Säulen (alle unter rund 19 Mio. CHF Umsatz) sitzen deshalb auf dieser
  *  Schwelle. Ihre Höhe bildet den Umsatz dort nicht mehr ab, sondern nur
  *  noch, DASS es die Firma gibt — bei diesen Grössen unterscheidet das Auge
  *  75 von 105 Metern ohnehin nicht. Die Legende sagt es, und das Panel nennt
@@ -281,17 +287,19 @@ export function buildUnresearchedCompanyLayer(
     // Auf der OBERSEITE der Kantonsplatte, nicht auf Höhe null. Die Platte
     // ist auf `CANTON_ELEVATION_M` extrudiert; ein flacher Marker bei z=0
     // liegt darunter und ist unsichtbar. Die Säulen fiel das nicht auf —
-    // sie ragen mit tausenden Metern hindurch —, die 189 Marker dagegen
-    // waren vollständig begraben, und die Karte sah aus, als gäbe es nur
-    // die acht Aargauer Firmen.
+    // sie ragen mit tausenden Metern hindurch —, die unrecherchierten Marker
+    // dagegen waren vollständig begraben, und die Karte sah aus, als gäbe es
+    // nur die acht Aargauer Firmen (Re-Review 2026-08-15: die genaue Anzahl
+    // der damals betroffenen Marker liess sich nicht mehr verlässlich
+    // belegen, deshalb hier ohne Zahl statt falsch-präzise).
     getPosition: (c) => [c.lon, c.lat, CANTON_ELEVATION_M],
     getRadius: UNRESEARCHED_MARKER_RADIUS_M,
     radiusUnits: 'meters',
     // Ohne diese Schranken schrumpft ein in Metern angegebener Marker beim
     // Herauszoomen mit der Karte: auf der Schweiz-Ansicht wurden aus 350 m
-    // Radius rund zwei Bildpunkte — die 189 Marker waren gezeichnet, aber
-    // nicht zu sehen, und die Karte wirkte, als gäbe es nur die acht
-    // Aargauer Säulen. Die Obergrenze verhindert das Gegenteil: beim
+    // Radius rund zwei Bildpunkte — die unrecherchierten Marker waren
+    // gezeichnet, aber nicht zu sehen, und die Karte wirkte, als gäbe es nur
+    // die acht Aargauer Säulen. Die Obergrenze verhindert das Gegenteil: beim
     // Hineinzoomen auf eine Stadt sollen die Punkte nicht zu Flecken
     // wachsen, die die Säulen daneben verdecken.
     radiusMinPixels: UNRESEARCHED_MARKER_MIN_PX,
