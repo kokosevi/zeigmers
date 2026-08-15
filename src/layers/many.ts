@@ -201,13 +201,16 @@ const MUNICIPALITY_BORDER_COLOR: [number, number, number, number] = [168, 182, 1
 const MUNICIPALITY_BORDER_WIDTH_PX = 0.6
 
 /** Nur für Ansicht «Beschäftigte» gebaut, einmalig beim Betreten eines
- *  Kantons in `karte/beschaeftigte.ts` (`loadCantonEntry`) — die Bezeichnung
- *  „Ansicht B («Börsennotierte Firmen»)" stand hier bis zum Abschluss-Review
- *  vertauscht: «Börsennotierte Firmen» ist Ansicht A (`ui/nav.ts`,
- *  `ViewName`), diese Funktion baut Gemeindegrenzen und wird ausschliesslich
- *  von der Beschäftigten-Seite aufgerufen (siehe Aufrufer oben). Die
- *  Geometrie hängt weder von `vmax` noch von `mode` ab, ein Cache wie bei
- *  `buildMunicipalityLayer` ist hier unnötig. */
+ *  Kantons in `karte/beschaeftigte.ts` (`loadCantonEntry`) — dieser Kommentar
+ *  nannte die Funktion bis zum Abschluss-Review fälschlich für «Börsennotierte
+ *  Firmen» bestimmt (Re-Review 2026-08-15: auch der A/B-Verweis, mit dem die
+ *  Korrektur zuerst belegt wurde, traf nicht zu — `ui/nav.ts`s `ViewName`
+ *  kennt kein A/B; mit drei benannten Seiten hat die alte A/B-Zuordnung
+ *  ohnehin keinen Bezugspunkt in der Oberfläche mehr, siehe README, Abschnitt
+ *  „Die drei Seiten"). Diese Funktion baut Gemeindegrenzen und wird
+ *  ausschliesslich von der Beschäftigten-Seite aufgerufen (siehe Aufrufer
+ *  oben). Die Geometrie hängt weder von `vmax` noch von `mode` ab, ein Cache
+ *  wie bei `buildMunicipalityLayer` ist hier unnötig. */
 export function buildMunicipalityBorderLayer(
   geometries: Geometry[],
 ): GeoJsonLayer<Record<string, never>> {
