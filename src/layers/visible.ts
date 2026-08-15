@@ -93,8 +93,10 @@ export interface CompanyData {
      *  Berichtswährungen zurück — halb umgerechnet stünden zwei Massstäbe
      *  nebeneinander, ohne dass man es sieht. */
     revenueInChf: boolean
-    /** Anzahl Zeilen mit `researched=yes` — der Zähler der Abdeckungsangabe
-     *  ("8 von 224 kotierten Gesellschaften recherchiert"). */
+    /** Anzahl Zeilen mit `researched=yes` — der Zähler in der
+     *  Abdeckungsangabe (Beispiel: „201 Gesellschaften von 224 kotierten
+     *  SIX-Titeln auf der Karte gezeigt, davon 201 recherchiert", siehe
+     *  `karte/firmen.ts`, `coverageLabel`). */
     researched: number
     /** Nenner derselben Angabe: live von SIX abgefragte Gesamtzahl kotierter
      *  Titel (`companies.fetch_six_titles()`), nicht die Zeilenzahl der CSV —
@@ -199,8 +201,8 @@ export function buildCompanyLayer(
     // Redesign (2026-08-14): dasselbe Material wie die Kantons-/Gemeinde-
     // flächen (`layers/material.ts`), damit beide Ansichten unter demselben
     // Licht (`layers/lighting.ts`) konsistent wirken, statt Ansicht A flach
-    // schattiert gegen ein beleuchtetes Ansicht B zu stellen. Nur acht Säulen
-    // — der Mehraufwand ist irrelevant.
+    // schattiert gegen ein beleuchtetes Ansicht B zu stellen. Rund 200
+    // Säulen (seit Phase 3, national) — der Mehraufwand bleibt irrelevant.
     material: MAP_MATERIAL,
     pickable: true,
     getPosition: (c) => [c.lon, c.lat],

@@ -37,18 +37,20 @@ const UNIT_LABEL: Record<ViewName, string> = {
 // Mehrdeutigkeits-Zeile stehen hier noch — beide sind entfallen (siehe
 // `renderLegend` unten). `mode`, `vmax`, `ambiguousCells`, `overstatementPct`
 // wurden darum aus `LegendOptions` entfernt statt sie unbenutzt mitzuführen;
-// `main.ts` reicht sie entsprechend nicht mehr durch. Die Skala heisst im
-// Button (`ui/nav.ts`) und in der Eckbox (`ui/notices.ts`, mit der
-// ehrlichen Formel) weiterhin «logarithmisch» — die Legende selbst nennt gar
-// keinen Skalenmodus mehr, es gibt hier nichts mehr, das ihn bräuchte.
+// die Seiten (`karte/firmen.ts`, `karte/beschaeftigte.ts`) reichen sie
+// entsprechend nicht mehr durch. Die Skala heisst im Button (`ui/nav.ts`)
+// und in der Eckbox (`ui/notices.ts`, mit der ehrlichen Formel) weiterhin
+// «logarithmisch» — die Legende selbst nennt gar keinen Skalenmodus mehr, es
+// gibt hier nichts mehr, das ihn bräuchte.
 export interface LegendOptions {
   view: ViewName
   year: number
   /** Welche Branchengruppen (und ob "nicht bestimmbar") in der aktuellen
-   *  Ansicht überhaupt vorkommen (Finding 2c) — von `main.ts` aus den
-   *  tatsächlichen Rohdaten abgeleitet (`domain/legendGroups.ts`), nicht
-   *  hartcodiert, damit ein Kantons- oder Jahreswechsel automatisch die
-   *  richtige Teilmenge zeigt. */
+   *  Ansicht überhaupt vorkommen (Finding 2c) — von den Seiten
+   *  (`karte/firmen.ts`, `karte/beschaeftigte.ts`) aus den tatsächlichen
+   *  Rohdaten abgeleitet (`domain/legendGroups.ts`), nicht hartcodiert,
+   *  damit ein Kantons- oder Jahreswechsel automatisch die richtige
+   *  Teilmenge zeigt. */
   presentGroups: PresentGroups
   /** Kontext-Zusatz neben `UNIT_LABEL` in der Legenden-Titelzeile.
    *
@@ -56,18 +58,17 @@ export interface LegendOptions {
    *    `undefined`, alle 26, kein Einzelname nötig — Phase 2, nationale
    *    Navigation).
    *  - Ansicht «Börsennotierte Firmen» (seit Phase 3 national): die
-   *    Abdeckungsangabe — ZWEI Zahlen, nicht nur eine ("127 von 224
-   *    kotierten Titeln auf der Karte gezeigt, davon 8 recherchiert ·
-   *    SIX-Stand …", aus `companies.json`s `stats` berechnet, siehe
-   *    `main.ts`). Eine Zahl allein ("8 von 224 recherchiert") wäre
-   *    unvollständig: eine Leserin, die die Marker auf der Karte zählt,
-   *    sähe eine andere Zahl (die platzierten Marker, `stats.count`) als
-   *    224 — Titel ohne eindeutigen Zefix-Sitz erscheinen gar nicht auf der
+   *    Abdeckungsangabe — ZWEI Zahlen, nicht nur eine (Beispiel, Stand
+   *    15. August 2026: „201 Gesellschaften von 224 kotierten SIX-Titeln auf
+   *    der Karte gezeigt, davon 201 recherchiert · SIX-Stand …", aus
+   *    `companies.json`s `stats` berechnet, siehe `karte/firmen.ts`,
+   *    `coverageLabel`). Eine Zahl allein ("201 recherchiert") wäre
+   *    unvollständig: eine Leserin, die die Marker auf der Karte zählt, sähe
+   *    `stats.count` (die platzierten Marker), nicht `stats.totalListed` —
+   *    ein SIX-Titel ohne eindeutigen Zefix-Sitz erscheint gar nicht auf der
    *    Karte. Das ist Teil der Oberfläche, nicht nur der README: ohne diese
-   *    Zeile liesse sich aus der Karte selbst weder ablesen, dass acht
-   *    Säulen einen winzigen Ausschnitt aller kotierten Unternehmen zeigen,
-   *    noch dass ein Teil der kotierten Titel überhaupt nicht auf der Karte
-   *    erscheint. */
+   *    Zeile liesse sich aus der Karte selbst nicht ablesen, dass ein Teil
+   *    der kotierten Titel überhaupt nicht auf der Karte erscheint. */
   scopeLabel?: string
 }
 
