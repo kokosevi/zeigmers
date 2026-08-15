@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "total_group",
+ "revenue": 496.642,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 15.269,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Grosshandel und Service für Heizungs-, Lüftungs-, Klima- und Sanitärtechnik (Haustechnik) für Installateure und Fachbetriebe in der Schweiz.",
+ "products_url": "https://www.meiertobler.ch/de/ueber-uns/unternehmen",
+ "founding_year": 1937,
+ "founding_year_source": "https://www.meiertobler.ch (Fusslogo/Claim 'Service and quality since 1937'; Firmenursprung geht auf die von Walter Meier 1937 gegründete Werkzeugmaschinenfirma zurück)",
+ "employees": 1264,
+ "fiscal_year": 2025,
+ "report_url": "https://assets.ctfassets.net/55zoubyadgjo/7mExYG0LQp8JBDvfmM6zsX/ba3c641640e92180ec58c3d3188089cb/2025-Gesch%C3%A4ftsbericht_Meier_Tobler.pdf",
+ "note": "Mitarbeitendenzahl 1'264 ist im Geschäftsbericht ausdrücklich als 'Anzahl Mitarbeitende (Vollzeitstellen)' ausgewiesen, keine Köpfe. Keine gesonderte Minderheitsanteile-Zeile im Konzernabschluss gefunden; Konzerngewinn daher als vollständig den Aktionären zurechenbar eingetragen. Die heutige Meier Tobler Group AG entstand 2018 durch Fusion von Meier Tobler Holding und Tobler Haustechnik; das Gründungsjahr 1937 bezieht sich auf die älteste Vorgängerfirma.",
+ "_verification": "Umsatz ('Nettoumsatz' CHF 496'642 Tsd., Notenanhang 'UMSATZERLÖSE, NETTO': Summe aus Handel CHF 380'787 Tsd. und Dienstleistungen CHF 112'746 Tsd. sowie Vermietung CHF 489 Tsd.) und Gewinn ('Konzerngewinn' CHF 15'269 Tsd.) stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 der Meier Tobler Group AG. Geprüft, dass die Zeile 'Nettoumsatz' (nicht Bruttoumsatz) verwendet wurde und dass keine Minderheitsanteile den Konzerngewinn schmälern (keine entsprechende Zeile im Abschluss)."
+}

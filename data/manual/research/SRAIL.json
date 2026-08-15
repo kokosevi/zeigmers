@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://a.storyblok.com/f/269997/x/518f589306/annual-report_2025_en.pdf",
  "note": "Gewinn: 'Profit for the year' (Gesamtkonzern) betrug CHF 100,664 Tsd., davon 'thereof attributable to shareholders of Stadler Rail AG' CHF 88,024 Tsd. und 'thereof attributable to minority interests' CHF 12,640 Tsd. — eingetragen ist der Aktionärsanteil (88.024 Mio.). Beschäftigte: 'Number of employees total' (ESRS-Sozialbericht, auf Kopfzahl/Headcount-Basis) = 18'343 zum 31.12.2025 verwendet; die Kennzahlenübersicht nennt daneben separat den Durchschnitt 'Ø FTE 2025' = 17'119 — gemäss Vertrag wird die Kopfzahl bevorzugt.",
- "_verification": "Umsatz ('Net revenue' CHF 3,679,250 Tsd.) und Gewinn ('Profit for the year, thereof attributable to shareholders of Stadler Rail AG' CHF 88,024 Tsd.) stammen aus der konsolidierten Erfolgsrechnung im Stadler Annual Report 2025 (Konsolidierte Jahresrechnung, S. 182f.), beide für das Geschäftsjahr 2025 auf Konzernebene. Geprüft: gleiches Geschäftsjahr, gleicher Konsolidierungskreis, Gewinnzeile korrekt als Aktionärsanteil (nicht Gesamtkonzernergebnis inkl. Minderheiten) gewählt, Beschäftigtenzahl im selben Bericht als Headcount (nicht FTE) identifiziert."
+ "_verification": "Umsatz ('Net revenue' CHF 3,679,250 Tsd.) und Gewinn ('Profit for the year, thereof attributable to shareholders of Stadler Rail AG' CHF 88,024 Tsd.) stammen aus der konsolidierten Erfolgsrechnung im Stadler Annual Report 2025 (Konsolidierte Jahresrechnung, S. 182f.), beide für das Geschäftsjahr 2025 auf Konzernebene. Geprüft: gleiches Geschäftsjahr, gleicher Konsolidierungskreis, Gewinnzeile korrekt als Aktionärsanteil (nicht Gesamtkonzernergebnis inkl. Minderheiten) gewählt, Beschäftigtenzahl im selben Bericht als Headcount (nicht FTE) identifiziert.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Stadler Rail AG",
+  "revenue_zeile": "Net revenue",
+  "profit_zeile": "Profit for the year - thereof attributable to shareholders of Stadler Rail AG",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Stadler Rail Annual Report 2025 (PDF, storyblok.com) selbst heruntergeladen und per pdftotext im Volltext durchsucht: konsolidierte Erfolgsrechnung zeigt 'Net revenue' 3'679'250 TCHF (=3'679.25 Mio.) und 'Profit for the year', davon 'thereof attributable to shareholders of Stadler Rail AG' 88'024 TCHF - beide exakt wie im Eintrag. Auch der Abschnitt 'Changes in the scope of consolidation' zeigt nur unkritische Neugründungen/eine konzerninterne Fusion (Rheintal AG in Bussnang AG), keine Änderung, die Umsatz und Gewinn unterschiedlichen Konsolidierungskreisen zuordnen würde."
+ }
 }

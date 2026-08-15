@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 15.52,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": 7.41,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Finanzdienstleistungen (Fondsmanagement, Corporate-Finance-/M&A-Beratung), Immobilienprojektentwicklung und -verwaltung sowie Beteiligungen an Unternehmen (u. a. 29.2% an Norinvest Holding SA, Muttergesellschaft der Banque Cramer & Cie SA).",
+ "products_url": "https://valartisgroup.ch",
+ "founding_year": 1988,
+ "founding_year_source": "https://www.moneyhouse.ch/de/company/valartis-group-ag-4271008751 ('Valartis Group AG ... Die Firma wurde am 30.03.1988 ... gegründet'); im Geschäftsbericht selbst kein eigenes Gründungsdatum der Valartis Group AG genannt (nur 1984 für die Beteiligung Norinvest Holding SA).",
+ "employees": 36,
+ "fiscal_year": 2025,
+ "report_url": "https://valartisgroup.ch/wp-content/uploads/2026/03/valartis_group_ar_2025_en.pdf",
+ "note": "Finanzgruppe, daher revenue_type = operating_income: 'Total operating income' CHF 15.520 Mio. (Key Figures, S. 1 des Berichts), zusammengesetzt aus Income from management services, Income from investment property, Share of results of associated companies und Other income/(expense). Gewinn = 'Net result attributable to shareholders of Valartis Group AG' CHF 7.410 Mio. (Konzerngewinn insgesamt CHF 7.428 Mio., davon CHF 0.018 Mio. Minderheitsanteile). Beschäftigte: Bericht weist nur Vollzeitstellen aus ('Staff (full-time equivalents, FTE)': 35.5), keine Kopfzahl; auf ganze Zahl gerundet (36).",
+ "_verification": "Umsatz und Gewinn stammen von Seite 1 (Key Figures) sowie aus der Konsolidierten Erfolgsrechnung (S. 38 laut Inhaltsverzeichnis) des Valartis Group Annual Report 2025 (PDF), geprüft gegen die im Fliesstext wiederholten Zahlen ('the Group reported a net profit of CHF 7.4 million', 'Total operating income ... 15,520'). Beide Zahlen entstammen derselben konsolidierten Rechnung, gleiches Geschäftsjahr 2025, gleicher Konsolidierungskreis (kein discontinued business). Gründungsjahr über Moneyhouse-Handelsregisterauszug verifiziert, da der Geschäftsbericht selbst keine eigene Gründungsangabe für die Valartis Group AG enthält."
+}

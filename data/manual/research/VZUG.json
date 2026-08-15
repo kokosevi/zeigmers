@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.vzug.com/medias/sys_master/root/h6d/hb6/11182433599518/VZUG_Jahresbericht_2025_DE/VZUG-Jahresbericht-2025-DE.pdf",
  "note": "Konzernergebnis 2025 CHF 6.8 Mio. (6'830 TCHF) ist in der Erfolgsrechnung als einzige Ergebniszeile ausgewiesen, keine Minderheitsanteile erwähnt - vollständig den Aktionären der V-ZUG Holding AG zurechenbar. Beschäftigte: nur Vollzeitäquivalente (FTE) ausgewiesen, 2'078 per 31.12.2025 (Mehrjahreskennzahlen); an anderer Stelle im Bericht wird die Belegschaft gerundet mit 'rund 2'100 Mitarbeitende' beschrieben, dafür wurde die exakte FTE-Zahl verwendet.",
- "_verification": "Umsatz (Nettoerlös CHF 567.4 Mio. bzw. 567'448 TCHF, FY2025) aus der Konsolidierten Erfolgsrechnung des V-ZUG Geschäftsberichts 2025 (Finanzbericht S. 84, Zeile 'Nettoerlös'), bestätigt durch die Mehrjahreskennzahlen-Tabelle. Gewinn (Konzernergebnis CHF 6.8 Mio.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/Geschäftsjahr; Beschäftigte (2'078 FTE per 31.12.2025) aus der Mehrjahreskennzahlen-Tabelle 'Cash Flow / Investitionen / Mitarbeitende' desselben Berichts."
+ "_verification": "Umsatz (Nettoerlös CHF 567.4 Mio. bzw. 567'448 TCHF, FY2025) aus der Konsolidierten Erfolgsrechnung des V-ZUG Geschäftsberichts 2025 (Finanzbericht S. 84, Zeile 'Nettoerlös'), bestätigt durch die Mehrjahreskennzahlen-Tabelle. Gewinn (Konzernergebnis CHF 6.8 Mio.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/Geschäftsjahr; Beschäftigte (2'078 FTE per 31.12.2025) aus der Mehrjahreskennzahlen-Tabelle 'Cash Flow / Investitionen / Mitarbeitende' desselben Berichts.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "V-ZUG Holding AG",
+  "revenue_zeile": "Nettoerlös",
+  "profit_zeile": "Konzernergebnis",
+  "abweichungen": [],
+  "begruendung": "Ich habe den V-ZUG Geschäftsbericht 2025 selbst heruntergeladen und per pdftotext durchsucht: 'Nettoerlös' CHF 567'448 Tsd. (=567.4 Mio.) und 'Konzernergebnis' CHF 6'830 Tsd. (=6.8 Mio.) für 2025 stimmen exakt, beide aus derselben konsolidierten Erfolgsrechnung ohne separate Minderheitsanteilszeile. Mitarbeitende 2'078 als FTE per 31.12.2025 bestätigt."
+ }
 }

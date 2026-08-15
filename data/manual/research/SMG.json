@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://ir.swissmarketplace.group/media/document/1ade1d66-57cf-4ec5-8300-60b6f9dec172/assets/SMG-Annual-Report-2025.pdf",
  "note": "Mitarbeitende: 859 Full-Time Equivalents (FTE) per 31.12.2025 laut Abschnitt 'Employees and Organisation' (S. 8/9) bzw. Note 2.1; der Bericht weist keine separate Kopfzahl aus. Konzernabschluss ist erster IFRS-Konzernabschluss der neu für den Börsengang (September 2025) gegründeten Holding SMG Swiss Marketplace Group Holding AG; die operative Gruppe besteht laenger, daher 'total_group' auf Basis des vorgelegten Konzernabschlusses 2025/2024.",
- "_verification": "Umsatz (Revenue 331'989 TCHF) und Gewinn (Profit after tax, of which attributable to owners of the parent company: 67'694 TCHF) stammen beide aus der 'Consolidated Statement of Comprehensive Income' auf Seite 78 des SMG Annual Report 2025 fuer das Geschaeftsjahr 2025. Geprueft wurde, dass beide Zahlen aus derselben Konzernrechnung (2025 Spalte) stammen und die Gewinnzahl explizit der Aktionaersanteil ('attributable to owners of the parent company') ist, nicht der Gesamtkonzerngewinn inkl. Minderheitsanteile (68'027 TCHF)."
+ "_verification": "Umsatz (Revenue 331'989 TCHF) und Gewinn (Profit after tax, of which attributable to owners of the parent company: 67'694 TCHF) stammen beide aus der 'Consolidated Statement of Comprehensive Income' auf Seite 78 des SMG Annual Report 2025 fuer das Geschaeftsjahr 2025. Geprueft wurde, dass beide Zahlen aus derselben Konzernrechnung (2025 Spalte) stammen und die Gewinnzahl explizit der Aktionaersanteil ('attributable to owners of the parent company') ist, nicht der Gesamtkonzerngewinn inkl. Minderheitsanteile (68'027 TCHF).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "SMG Swiss Marketplace Group Holding AG",
+  "revenue_zeile": "Revenue",
+  "profit_zeile": "Profit after tax - of which attributable to owners of the parent company",
+  "abweichungen": [],
+  "begruendung": "Ich habe den SMG Annual Report 2025 selbst heruntergeladen und per pdftotext durchsucht: 'Revenue' 331'989 TCHF und 'Profit after tax' gesamt 68'027 TCHF, davon 'attributable to owners of the parent company' 67'694 TCHF - beide Werte stimmen exakt mit dem Eintrag überein, korrekt der Aktionärsanteil gewählt (nicht die 68'027 TCHF Gesamtsumme inkl. Minderheiten)."
+ }
 }

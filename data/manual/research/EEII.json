@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": -1349677,
+ "profit_currency": "CHF",
+ "profit_unit": 1,
+ "core_products": "Reine Investment-Holding ohne operatives Geschäft; hielt bis April 2025 eine Restposition Gazprom-Aktien (aus dem früheren GUS-Fokus) und hält seither nur noch liquide Mittel. Die Gesellschaft plant eine Reverse-Takeover-Übernahme der Jubin Frères S.A. (Westschweizer Tankstellen- und Treibstoff-Vertriebsnetz), die per Bilanzstichtag 31.12.2025 noch nicht vollzogen war.",
+ "products_url": "https://eeii.ch/",
+ "founding_year": 1997,
+ "founding_year_source": "https://eeii.ch/fileadmin/Annual_Report_2025_en_20260430_22h16_Final.pdf",
+ "employees": 0,
+ "fiscal_year": 2025,
+ "report_url": "https://eeii.ch/fileadmin/Annual_Report_2025_en_20260430_22h16_Final.pdf",
+ "note": "EEII AG ist ein reines Beteiligungsvehikel (Investment-Holding) ohne operatives Geschäft und ohne Umsatz im üblichen Sinn: Per 31.12.2025 hielt die Gesellschaft ausser Bankguthaben keine Investments mehr ('did not hold any investments other than cash'); die IFRS-Erfolgsrechnung weist entsprechend keine Umsatzzeile aus, nur Zinserträge/Wechselkurseffekte von netto CHF -1'741 und Verwaltungskosten. 'revenue' bleibt daher leer. Gewinn = IFRS 'Net (loss) after tax / Total comprehensive (loss)' 2025, keine Minderheitsanteile (100% Einzelgesellschaft, keine Tochtergesellschaften). Note: Der Brief an die Aktionäre nennt einen 'net loss of CHF 1,357,889'; die testierte IFRS-Erfolgsrechnung selbst weist CHF 1'349'677 aus - die testierte Zahl aus der Erfolgsrechnung wurde übernommen. Die Gesellschaft hatte 2025 keine Mitarbeitenden ('the Company had no employees'). Gegründet am 29. August 1997 als Schweizer Aktiengesellschaft (frühere Anlagestrategie: Ehemalige Sowjetunion).",
+ "_verification": "Geprüft im 'EEII AG Annual Report 2025' (IFRS-Teil): Statement of profit or loss zeigt keine Umsatz-/Ertragszeile (nur 'Net operating (loss)' aus Zins/FX von CHF -1'741) und 'Net (loss) after tax / Total comprehensive (loss)' von CHF -1'349'677 (Vorjahr -950'200) für das am 31.12.2025 endende Jahr; Note 1 nennt Gründungsdatum 29. August 1997 und 'no employees'. Gegengeprüft mit der Statement of Changes in Equity (identischer Verlustbetrag) und mit dem Statutory-Teil, der dieselbe Erklärung ('no revenue in the usual sense', reine Holding ohne Investments) stützt."
+}

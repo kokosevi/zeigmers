@@ -5,7 +5,7 @@
  "revenue_currency": "CHF",
  "revenue_type": "net_sales",
  "revenue_unit": "1000000",
- "profit": 294.7,
+ "profit": "292.8",
  "profit_currency": "CHF",
  "profit_unit": "1000000",
  "core_products": "Pumpen, Misch- und Trenntechnik sowie Oberflächentechnik (thermisches Spritzen, Beschichtungen) für Energie-, Prozess- und Wasserindustrie.",
@@ -15,6 +15,16 @@
  "employees": 13526,
  "fiscal_year": 2025,
  "report_url": "https://report.sulzer.com/ar25/en/financial-review",
- "note": "Mitarbeitendenzahl laut Sulzer-Kennzahlenseite als Vollzeitstellen (FTE) ausgewiesen, nicht als Köpfe.",
- "_verification": "Umsatz (Sales, CHF 3'555.4 Mio.) und Nettogewinn (Net income, CHF 294.7 Mio.) stammen von der Financial-Review-Seite des Sulzer Annual Report 2025 (report.sulzer.com/ar25) sowie der zugehörigen Kennzahlenseite (our-key-figures), die dieselbe Nettogewinnzahl und EPS von CHF 8.68 bestätigt. Geprüft, dass die Zeile 'Sales' (nicht eine Summenzeile) verwendet wurde und dass Mitarbeitendenzahl als FTE gekennzeichnet ist."
+ "note": "Gewinn ist die Zeile 'attributable to shareholders of Sulzer Ltd' (292.8 Mio.), nicht das Konzernergebnis 'Net income' (294.7 Mio.); die Differenz von 1.9 Mio. sind Minderheitsanteile. Mitarbeitendenzahl laut Sulzer-Kennzahlenseite als Vollzeitstellen (FTE) ausgewiesen, nicht als Köpfe.",
+ "_verification": "Umsatz (Sales, CHF 3'555.4 Mio.) und Nettogewinn (Net income, CHF 294.7 Mio.) stammen von der Financial-Review-Seite des Sulzer Annual Report 2025 (report.sulzer.com/ar25) sowie der zugehörigen Kennzahlenseite (our-key-figures), die dieselbe Nettogewinnzahl und EPS von CHF 8.68 bestätigt. Geprüft, dass die Zeile 'Sales' (nicht eine Summenzeile) verwendet wurde und dass Mitarbeitendenzahl als FTE gekennzeichnet ist.",
+ "_pruefung": {
+  "verdict": "abweichung",
+  "legal_name_im_bericht": "Sulzer Ltd",
+  "revenue_zeile": "Sales",
+  "profit_zeile": "Net income (total group, includes non-controlling interests)",
+  "abweichungen": [
+   "Die eingetragene Gewinnzahl 294.7 Mio. ist das Konzern-'Net income' inkl. CHF 1.9 Mio. Minderheitsanteilen; die konsolidierte Erfolgsrechnung weist separat 'thereof attributable to shareholders of Sulzer Ltd' mit CHF 292.8 Mio. aus, was die im gesamten Projekt sonst konsequent verwendete Aktionärsanteil-Konvention gewesen wäre (vgl. SRAIL, SWON, SMG, STGN, PEAN, ZUBN, WIHN in dieser Prüfrunde)."
+  ],
+  "begruendung": "Ich habe die offizielle Sulzer-Geschäftsbericht-Website report.sulzer.com/ar25 (Financial Review und Consolidated Income Statement) unabhängig abgerufen: Sales CHF 3'555.4 Mio. und Net income CHF 294.7 Mio. für 2025 stimmen als Summenzeilen mit dem Eintrag überein, jedoch zeigt die Erfolgsrechnung eine Aufteilung in 'attributable to shareholders of Sulzer Ltd' (292.8) und 'attributable to non-controlling interests' (1.9), die im Eintrag nicht erwähnt und nicht verwendet wurde."
+ }
 }

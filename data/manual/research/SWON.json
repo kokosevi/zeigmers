@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://report.softwareone.com/ar25/app/uploads/SWO-Annual-Report-2025-en.pdf",
  "note": "Gewinn: 'Profit/(loss) for the period' war CHF 1.4 Mio. (Gesamtkonzern inkl. Minderheitsanteile aus der Crayon-Übernahme), davon 'Owners of the parent' CHF 0.9 Mio. und 'Non-controlling interest' CHF 0.5 Mio. — eingetragen ist der Aktionärsanteil (0.9). Umsatz: als 'Total revenue' (IFRS-Konzernzahl CHF 1'243.4 Mio.) übernommen, nicht die 'Like-for-like combined'-Pro-forma-Zahl (CHF 1'518.2 Mio., inkl. Crayon für das ganze Jahr gerechnet). Beschäftigte: Headcount 12'973 verwendet (der Bericht weist zusätzlich 12'712 FTE aus; gemäss Vertrag wird die Kopfzahl bevorzugt). Gründung: Vorläuferfirma 'Softwarepipeline' 2000 in Zürich gegründet; übernahm 2006 die US-Firma 'SoftwareONE' (gegründet 1985) und deren Namen — als founding_year wird die Gründung der heutigen Gruppe (2000) verwendet.",
- "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Consolidated IFRS figures / Key figures Group' im SoftwareOne Annual Report 2025 (Zeilen 'Total revenue' CHF 1'243.4 Mio. und 'Profit/(loss) for the period attributable to: Owners of the parent' CHF 0.9 Mio., beide FY2025, Konzernebene). Geprüft: gleiches Geschäftsjahr, gleicher Konsolidierungskreis (inkl. Crayon-Akquisition per 2.7.2025), Umsatzzeile heisst im Bericht exakt 'Total revenue' (nicht die separat ausgewiesene Pro-forma-Kombinationszahl), Beschäftigtenzahl im selben Bericht als Headcount vs. FTE gegenübergestellt."
+ "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Consolidated IFRS figures / Key figures Group' im SoftwareOne Annual Report 2025 (Zeilen 'Total revenue' CHF 1'243.4 Mio. und 'Profit/(loss) for the period attributable to: Owners of the parent' CHF 0.9 Mio., beide FY2025, Konzernebene). Geprüft: gleiches Geschäftsjahr, gleicher Konsolidierungskreis (inkl. Crayon-Akquisition per 2.7.2025), Umsatzzeile heisst im Bericht exakt 'Total revenue' (nicht die separat ausgewiesene Pro-forma-Kombinationszahl), Beschäftigtenzahl im selben Bericht als Headcount vs. FTE gegenübergestellt.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "SoftwareOne Holding AG",
+  "revenue_zeile": "Total revenue",
+  "profit_zeile": "Profit/(loss) for the period - Owners of the parent",
+  "abweichungen": [],
+  "begruendung": "Ich habe den SoftwareOne Annual Report 2025 selbst heruntergeladen und per pdftotext durchsucht: 'Total revenue' 1'243.4 Mio. (nicht die separat ausgewiesene Pro-forma-Zahl 'Total revenue' 1'518.2 Mio. inkl. Crayon Vollzeit-Effekt) und 'Profit/(loss) for the period' gesamt 1.4 Mio., davon 'Owners of the parent' 0.9 Mio. und 'Non-controlling interest' 0.5 Mio. - beide Werte exakt wie im Eintrag, korrekt der Aktionärsanteil gewählt."
+ }
 }

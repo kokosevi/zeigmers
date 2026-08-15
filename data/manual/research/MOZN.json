@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "continuing_operations",
+ "revenue": 274.168,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 27.35,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Handel mit Mobiltelefonen/Smartphones und Zubehör über Filialen und E-Commerce, Mobilfunk-Abonnements als Wiederverkäufer (MVNO-Marken TalkTalk und Digital Republic) sowie Reparatur und Wiederverkauf aufbereiteter Occasion-Smartphones (Marke jusit) im Schweizer Markt.",
+ "products_url": "https://www.mobilezoneholding.ch/de/ueber-uns/mobilezone-im-ueberblick.html",
+ "founding_year": 2000,
+ "founding_year_source": "https://www.mobilezone.ch/assets/cms/persistent/88df64891b578bb3e77b2ae2710017381d8d9549/mobilezone_GB2025_DE.pdf (Geschäftsbericht 2025, S. 4: 'eines der bedeutsamsten Jahre in der 26-jährigen Unternehmensgeschichte' — publiziert März 2026, ergibt Gründung um 2000)",
+ "employees": 616,
+ "fiscal_year": 2025,
+ "report_url": "https://www.mobilezone.ch/assets/cms/persistent/88df64891b578bb3e77b2ae2710017381d8d9549/mobilezone_GB2025_DE.pdf",
+ "note": "mobilezone hat das deutsche Geschäft Ende Dezember 2025 verkauft (Closing 29.12.2025). Alle Kennzahlen im Geschäftsbericht 2025 (Kennzahlen-Tabelle S. 8) beziehen sich ausdrücklich nur auf die 'fortgeführten Aktivitäten in der Schweiz' — Konzernzahlen inkl. Deutschland werden nur noch als 'bereinigt um Sondereffekte' ausgewiesen (z. B. Konzernumsatz 'gesamt' bereinigt CHF 921 Mio., davon 70% Deutschland, Konzerngewinn bereinigt CHF 39.6 Mio.) und sind daher nicht direkt mit dem unbereinigten Vorjahr vergleichbar; für die Karte wurde deshalb die saubere, unbereinigte Schweiz-Zahlenreihe (continuing_operations) verwendet. Personalbestand 616 ist 'auf Vollzeitbasis' (FTE) per 31.12.2025, keine Kopfzahl ausgewiesen (Periodendurchschnitt wäre 625 FTE inkl. 142 Lernende).",
+ "_verification": "Nettoumsatz (CHF 274'168 Tsd.) und Konzerngewinn (CHF 27'350 Tsd.) stammen aus der Tabelle 'Kennzahlen' auf Seite 8 des Geschäftsberichts 2025 (fortgeführte Aktivitäten Schweiz, nicht bereinigt); Personalbestand von Seite 8/9 derselben Tabelle. Geprüft, dass Umsatz- und Gewinnzeile aus derselben Kennzahlentabelle für dasselbe Geschäftsjahr 2025 und denselben Konsolidierungskreis (fortgeführtes Schweizer Geschäft) stammen, und dass es sich um die unbereinigten (nicht 'bereinigt um Sondereffekte') Werte handelt."
+}

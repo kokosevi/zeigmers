@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.sec.gov/Archives/edgar/data/1738699/000110465926053033/tmb-20251231x20f.htm",
  "note": "Konzern weist einen Nettoverlust aus: 'Net loss attributable to WISeKey International Holding Ltd' USD -6.072 Mio. (2025); der gesamte Konzernverlust inkl. nicht beherrschender Anteile (v. a. der mehrheitlich konsolidierten Tochter SEALSQ Corp) betrug USD -38.154 Mio., davon USD -32.082 Mio. Minderheitsanteile - nicht eingetragen. Berichtswährung USD (WISeKey berichtet nach US-GAAP bei der SEC, nicht in CHF). Beschäftigte: 202 Personen (Headcount) per 31.12.2025 gemäss Abschnitt 'Employees' des 20-F ('WISeKey had 202 employees, of which 33 were located in Switzerland and 160 were located in France').",
- "_verification": "Umsatz (Net sales USD 19'289 Tsd., FY2025) aus der Konzern-Erfolgsrechnung im Form 20-F für das Geschäftsjahr 2025 (Zeile 'Net sales', Abschnitt 'Results of Operations' und Konzernabschluss-Anhang), Umsatzwachstum +62% ggü. Vorjahr bestätigt. Gewinn ('Net loss attributable to WISeKey International Holding Ltd', USD -6.072 Mio.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/Geschäftsjahr wie der Umsatz, getrennt von den Minderheitsanteilen ausgewiesen; Beschäftigte (202 Headcount) aus dem Abschnitt 'Employees' desselben 20-F-Berichts."
+ "_verification": "Umsatz (Net sales USD 19'289 Tsd., FY2025) aus der Konzern-Erfolgsrechnung im Form 20-F für das Geschäftsjahr 2025 (Zeile 'Net sales', Abschnitt 'Results of Operations' und Konzernabschluss-Anhang), Umsatzwachstum +62% ggü. Vorjahr bestätigt. Gewinn ('Net loss attributable to WISeKey International Holding Ltd', USD -6.072 Mio.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/Geschäftsjahr wie der Umsatz, getrennt von den Minderheitsanteilen ausgewiesen; Beschäftigte (202 Headcount) aus dem Abschnitt 'Employees' desselben 20-F-Berichts.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "WISeKey International Holding AG (englische Übersetzung im selben Bericht: WISeKey International Holding Ltd)",
+  "revenue_zeile": "Net sales / Total net sales",
+  "profit_zeile": "Net loss attributable to WISeKey International Holding Ltd",
+  "abweichungen": [],
+  "begruendung": "Ich habe das SEC-Formular 20-F für FY2025 direkt von sec.gov heruntergeladen und im Volltext durchsucht: 'Net sales' USD 19'289 Tsd. und 'Net loss attributable to WISeKey International Holding Ltd' USD -6'072 Tsd. stimmen exakt; der Gesamtkonzernverlust inkl. Minderheitsanteilen (v.a. SEALSQ) betrug -38'154 Tsd., davon -32'082 Tsd. Minderheitsanteile, was den im Eintrag genannten Werten entspricht. Der Registrant firmiert offiziell als 'WISeKey International Holding AG', 'Ltd' ist die im selben Bericht verwendete englische Übersetzung derselben Rechtsform - kein Fund. Mitarbeitende 202 (Kopfzahl) bestätigt."
+ }
 }

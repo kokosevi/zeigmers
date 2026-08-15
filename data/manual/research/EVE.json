@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": -0.6527,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Kein operatives Geschäft: Kapitalgesellschaft ohne Mitarbeitende, die seit dem Verkauf der operativen Tochter Evolva AG (Fermentations-Inhaltsstoffe) Ende 2023 nur noch liquide Mittel/Wertschriften hält und nach neuen Akquisitionszielen sucht.",
+ "products_url": "https://evonextholdings.com/about/",
+ "founding_year": 1997,
+ "founding_year_source": "https://www.moneyhouse.ch/de/company/evonext-holdings-sa-20066955511/timeline (Handelsregisterauszug: 'foundingDate: 1997-08-18'); ursprünglich als Evolva Holding SA eingetragen, 2025 in EvoNext Holdings SA umbenannt.",
+ "employees": 0,
+ "fiscal_year": 2025,
+ "report_url": "https://evonextholdings.com/app/uploads/2026/04/2025-12-EvoNext-Holdings-SA-Annual-Report-2025.pdf",
+ "note": "EvoNext Holdings SA (vormals Evolva Holding SA) hat seit dem Verkauf der operativen Tochtergesellschaft Evolva AG per 28.12.2023 kein operatives Geschäft mehr und erzielt keinerlei Umsatz ('the Company ceased operations and no longer has any revenue'; 'Total Revenue: - / -'); 'revenue' bleibt daher leer. Die Gesellschaft hat keine Mitarbeitenden ('EvoNext had no employees' zum 31.12.2025 und 31.12.2024). Ergebnis 2025: Nettoverlust CHF 652.7 Tsd. (2024: Gewinn CHF 1'043.8 Tsd., v. a. aus einem einmaligen Gewinn aus dem Verkauf von Evolva AG), getrieben durch einmalige Transaktions-/Suchkosten für neue Akquisitionsziele.",
+ "_verification": "Profit (Nettoverlust CHF -652.7 Tsd. für 2025) aus der konsolidierten Erfolgsrechnung ('Net profit / (loss) for the period') im Annual Report 2025, identisch mit dem Wert im separaten Statutory-Abschluss ('Net loss for the year 2025: (652.7)'), geprüft gegen die Segmentangabe (Abschnitt 4: 'the Company ceased operations and no longer has any revenue', Abschnitt 'Total Revenue - -'). Keine Umsatzzahl vorhanden, da die Gesellschaft seit dem Verkauf ihres operativen Geschäfts 2023 eine reine Cash-Holding ohne Geschäftstätigkeit und ohne Mitarbeitende ist (mehrfach im Bericht bestätigt)."
+}

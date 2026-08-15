@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "161.668",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "18.294",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung und Vertrieb von Medizinprodukten fuer Wundversorgung & Erste Hilfe, Risikopraevention, Inkontinenzmanagement und Desinfektion, fuer Spitaeler, Pflegeheime, Spitex, Apotheken und Drogerien.",
+ "products_url": "https://www.ivf.hartmann.info/de-CH/wissen-news/investor-relations/finanzinformationen",
+ "founding_year": "1871",
+ "founding_year_source": "Jahresabschluss 2025 der IVF HARTMANN GRUPPE (Bilanzmedienkonferenz-Praesentation, 03.03.2026), Folie 'IVF HARTMANN - Ein verlaesslicher Partner, der verbindet!': 'Von der ersten Internationalen Verbandstoff­fabrik der Welt... 1871'.",
+ "employees": "316",
+ "fiscal_year": "2025",
+ "report_url": "https://assets-eu-01.kc-usercontent.com/0ccaa724-4792-0104-cc7f-79864f229134/f1d1dfff-6755-4614-bb94-770b7eaa7020/Jahresabschluss%202025_IVF%20HARTMANN%20GRUPPE_Website.pdf",
+ "note": "Primaerquelle ist die offizielle Praesentation 'Jahresabschluss 2025 der IVF HARTMANN GRUPPE' zur Bilanzmedienkonferenz vom 3.3.2026, veroeffentlicht auf der eigenen Investor-Relations-CMS-Infrastruktur des Unternehmens (verlinkt von https://www.ivf.hartmann.info/de-CH/wissen-news/investor-relations/finanzinformationen); die eigentliche IR-Webseite ist eine JavaScript-Single-Page-App, deren Inhalte serverseitig nicht auslesbar sind, weshalb direkt der PDF-Asset-Link verwendet wurde. Ein separater, laengerer 'Geschaeftsbericht' mit vollstaendigem testierten Konzernabschluss war ueber die zugaengliche Website nicht auffindbar; diese Praesentation enthaelt jedoch testierte Kennzahlen (Umsatzerloese, EBIT, Konzerngewinn, Bilanzsumme, Eigenkapital, Mitarbeitende) fuer das Geschaeftsjahr 2025. Keine Hinweise auf Minderheitsanteile gefunden, Konzerngewinn wird als Gesamtkonzernergebnis ausgewiesen. Mitarbeitende: 316 (Kopfzahl 'Anzahl Mitarbeitende', Vorjahr 303); der Bericht spezifiziert nicht explizit Koepfe vs. FTE.",
+ "_verification": "Umsatz (Umsatzerloese 161'668 TCHF) und Gewinn (Konzerngewinn 18'294 TCHF) stammen beide aus der Tabelle 'Kennzahlen' (Seite 'Bilanzmedienkonferenz 2026', in TCHF, Spalte 2025) derselben Praesentation. Geprueft wurde, dass beide Zahlen aus demselben Geschaeftsjahr 2025 und derselben Uebersichtstabelle stammen; die Mitarbeiterzahl (316) stammt aus derselben Tabelle direkt unterhalb der Finanzkennzahlen."
+}

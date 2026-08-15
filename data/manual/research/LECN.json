@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 17.357,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -67.672,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung und Herstellung von Lithium-Ionen-Batteriesystemen für Elektromobilität (Busse, Lastwagen, Schiffe, Bahnfahrzeuge) und stationäre Energiespeicherung.",
+ "products_url": "https://www.leclanche.com",
+ "founding_year": 1909,
+ "founding_year_source": "Konsolidierter Geschäftsbericht 2024, S. 143, Abschnitt 3.1 'Corporate Information': 'LECLANCHE SA (the \"Company\") was incorporated in Yverdon-les-Bains (Switzerland) as a Swiss limited company on 3 August 1909 with the Register of Commerce of the Canton of Vaud.'",
+ "employees": 372,
+ "fiscal_year": 2024,
+ "report_url": "https://www.leclanche.com/wp-content/uploads/2025/06/2025-06-30-Leclanche-2024-Consolidated-Annual-Report.pdf",
+ "note": "Der SIX-Ticker LECN gehört formal zur börsenkotierten Muttergesellschaft 'LECLANCHE SA' (Sitz Yverdon-les-Bains); 'Leclanché E-Mobility SA' ist eine am 13./16.12.2021 gegründete, zu 100% von LECLANCHE SA gehaltene operative Tochtergesellschaft für das E-Mobility-Geschäft (S. 144 des Berichts). Es gibt keine Hinweise auf eine Umbenennung der Muttergesellschaft in 'Leclanché E-Mobility SA' (auch nicht im Protokoll der ausserordentlichen GV vom 22.07.2026); die hier eingetragenen Zahlen sind die konsolidierten Konzernzahlen der Leclanché-Gruppe (LECN), deren operatives Geschäft heute im Wesentlichen von Leclanché E-Mobility SA getragen wird. Für das Geschäftsjahr 2025 war zum Recherchezeitpunkt (Aug. 2026) trotz angekündigtem Publikationsdatum 31.07.2026 noch kein Geschäftsbericht auf der Firmenwebsite auffindbar; verwendet wurden daher die Zahlen des Geschäftsjahres 2024. Beschäftigte: Bericht nennt nur Vollzeitäquivalente (FTE) 372 per 31.12.2024, keine Kopfzahl.",
+ "_verification": "Umsatz ('Revenue from contracts with customers' kCHF 17'357) und Verlust ('Loss attributable to equity holders of the parent' kCHF -67'672) stammen beide aus der Konsolidierten Erfolgsrechnung (Consolidated Income Statement, S. 58) desselben Konzernabschlusses für das Geschäftsjahr 2024, keine Continuing/Discontinued-Aufteilung ausgewiesen. Geprüft gegen die separate Aussage im Lagebericht ('customer revenue reaching kCHF 17'357'). Die Zahlen der Einzelabschlussrechnung der Holding LECLANCHE SA allein (S. 142, 'Sales of goods and services' kCHF 5'686) wurden bewusst NICHT verwendet, da sie nur die statutarische Muttergesellschaft ohne Tochtergesellschaften betreffen."
+}

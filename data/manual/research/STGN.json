@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://starragtornos.com/media/annual_report_2025_-_starragtornos_group_ag.pdf",
  "note": "Mitarbeitende: 1'814 Vollzeitstellen (full-time equivalents) am Jahresende 2025 laut Management Report (Abschnitt 'Number of employees', S. 17); Durchschnitt im Jahr waren 1'881 FTE. Der Bericht nennt keine separate Kopfzahl. Gewinn ist vollstaendig den Aktionaeren zurechenbar (kein Minderheitsanteil ausgewiesen).",
- "_verification": "Umsatz (Net sales 442'086 TCHF) und Gewinn (Net profit 5'344 TCHF, davon 'attributable to shareholders of the company' 5'344 TCHF) stammen beide aus der 'Consolidated Income Statement' auf Seite 114 des StarragTornos Annual Report 2025, Spalte 01.01.-31.12.2025. Geprueft wurde, dass beide Zahlen aus derselben Konzernrechnung stammen und dass der ausgewiesene Nettogewinn vollstaendig den Aktionaeren zugerechnet wird (keine Minderheitsanteile in der Zeile 'Thereof: attributable to shareholders of the company')."
+ "_verification": "Umsatz (Net sales 442'086 TCHF) und Gewinn (Net profit 5'344 TCHF, davon 'attributable to shareholders of the company' 5'344 TCHF) stammen beide aus der 'Consolidated Income Statement' auf Seite 114 des StarragTornos Annual Report 2025, Spalte 01.01.-31.12.2025. Geprueft wurde, dass beide Zahlen aus derselben Konzernrechnung stammen und dass der ausgewiesene Nettogewinn vollstaendig den Aktionaeren zugerechnet wird (keine Minderheitsanteile in der Zeile 'Thereof: attributable to shareholders of the company').",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "StarragTornos Group AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Net profit - thereof attributable to shareholders of the company",
+  "abweichungen": [],
+  "begruendung": "Ich habe den StarragTornos Group AG Annual Report 2025 selbst heruntergeladen und per pdftotext durchsucht: 'Net sales' 442'086 TCHF und 'Net profit' 5'344 TCHF (vollständig 'attributable to shareholders of the company', keine Minderheitsanteile) stimmen exakt aus derselben konsolidierten Erfolgsrechnung. Mitarbeitende 1'814 FTE am Jahresende bestätigt."
+ }
 }

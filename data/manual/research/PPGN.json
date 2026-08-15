@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 389.327,
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -21.169,
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Auftragsentwicklung und -herstellung (CDMO) von Peptid-Wirkstoffen für Pharma- und Biotech-Kunden, insbesondere für Stoffwechselerkrankungen (u. a. GLP-1-Präparate).",
+ "products_url": "https://www.polypeptide.com/about-us/",
+ "founding_year": 1952,
+ "founding_year_source": "https://www.polypeptide.com/about-us/",
+ "employees": 1395,
+ "fiscal_year": 2025,
+ "report_url": "https://www.polypeptide.com/wp-content/uploads/2022/09/PolyPeptide_FY-2025_Media-release.pdf",
+ "note": "Mitarbeitendenzahl 1'395 ist ein Durchschnitt der Vollzeitstellen ('Employees (# of FTEs, average)'), keine Köpfe und kein Stichtagswert. Ergebnis 2025 ist ein Verlust ('Result for the year' EUR -21.169 Mio.); keine Hinweise auf Minderheitsanteile in der Mitteilung gefunden, daher als vollständig zurechenbar eingetragen.",
+ "_verification": "Umsatz ('Revenue' kEUR 389'327) und Ergebnis ('Result for the year' kEUR -21'169) stammen aus der Tabelle 'Key figures' der Ad-hoc-Medienmitteilung 'PolyPeptide delivers strong revenue growth and marked improvement in profitability' vom 12.3.2026 (polypeptide.com). Geprüft, dass die Zeile 'Revenue' (nicht EBITDA oder EBIT) sowie 'Result for the year' (nicht eine EPS- oder Non-IFRS-Grösse) verwendet wurden, beide für dasselbe Geschäftsjahr 2025 auf Konzernebene."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": 428004,
+ "profit_currency": "CHF",
+ "profit_unit": "1",
+ "core_products": "Reine Investmentgesellschaft (keine operative Geschäftstätigkeit): hält und verwaltet ein Wertschriftenportfolio aus mehrheitlich nicht an der SIX Swiss Exchange kotierten Schweizer Unternehmen (OTC-/Berner-Börse-Titel) sowie Small-/Mid-Cap-Titeln der SIX Swiss Exchange.",
+ "products_url": "https://www.nebag.ch",
+ "founding_year": 1996,
+ "founding_year_source": "https://www.nebag.ch/wp-content/uploads/2026/04/nebag_geschaeftsbericht_2025_online.pdf, Corporate-Governance-Kapitel, Abschnitt 1.1: 'Die nebag ag wurde am 5. August 1996 gegründet und als Investmentgesellschaft in Form einer Aktiengesellschaft nach schweizerischem Recht errichtet.'",
+ "employees": "",
+ "fiscal_year": 2025,
+ "report_url": "https://www.nebag.ch/wp-content/uploads/2026/04/nebag_geschaeftsbericht_2025_online.pdf",
+ "note": "Gewinn 428'004 CHF in absoluten Franken (profit_unit=1), nicht in Millionen — nebag ist eine kleine Beteiligungsgesellschaft. nebag ag ist eine reine Investment-/Beteiligungsgesellschaft (gemäss IFRS 10 als Investmentgesellschaft von der Konzernrechnungslegungspflicht befreit) ohne operatives Geschäft und ohne Verkaufserlöse; 'revenue' bleibt daher leer. Die Gesamtergebnisrechnung besteht ausschliesslich aus Finanzerträgen, realisierten/nicht realisierten Kursgewinnen und -verlusten sowie Verwaltungsaufwand – kein Umsatz im üblichen Sinn. 'Periodenergebnis'/Gesamtergebnis 2025 = CHF 428'004 (Vorjahr: CHF -5'279'015 Verlust), als profit übernommen. Die administrative Führung ist per Vertrag an die Baryon AG ausgelagert; der Bericht weist keine eigenen Mitarbeitenden der nebag ag aus, daher 'employees' leer.",
+ "_verification": "Profit (CHF 428'004, 'Periodenergebnis'/'Gesamtergebnis' 2025) aus der Gesamtergebnisrechnung im Finanzteil des Geschäftsberichts 2025, geprüft gegen die Eigenkapitalveränderungsrechnung (gleicher Wert dort ausgewiesen). Kein Umsatz vorhanden, da die Gesellschaft laut eigener Beschreibung (Kapitel 'Unternehmensstruktur') eine reine Investmentgesellschaft ohne operatives Geschäft ist, deren einzige Ertragsquelle Finanzanlagen sind. Gründungsdatum direkt im Corporate-Governance-Teil desselben Berichts genannt."
+}

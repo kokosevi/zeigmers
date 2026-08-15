@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://reports.zueblin.ch/24-25/ar/app/uploads/Zueblin_Geschaeftsbericht_24-25_de.pdf",
  "note": "Geschäftsjahr läuft vom 1.4. bis 31.3.; Zahlen für 2024/25 (Endjahr 2025) verwendet. Umsatz = Zeile 'Mietertrag' aus der konsolidierten Erfolgsrechnung (CHF 9'431 Tsd.). Konzerngewinn CHF 8'685 Tsd. enthält eine positive Marktwertveränderung der Liegenschaften von CHF 5'838 Tsd.; keine Minderheitsanteile ausgewiesen. Beschäftigte: nur 4 Personen (Konzern beschäftigt keine eigene Hausverwaltung, sondern lässt die Liegenschaften durch Dritte bewirtschaften) - Kopfzahl gemäss Bericht ('Per 31. März 2025 beschäftigt die Gruppe 4 Mitarbeitende'). Gründungsjahr leer gelassen: In Geschäftsbericht, Investor-Relations- und Unternehmensseiten von Zueblin/zueblin.ch wurde keine Angabe zum Gründungs- oder Handelsregister-Eintragungsjahr der Zueblin Immobilien Holding AG gefunden; ohne eigene Firmenquelle wurde bewusst keine Zahl geschätzt.",
- "_verification": "Umsatz (Mietertrag CHF 9'431 Tsd., Geschäftsjahr 1.4.2024-31.3.2025) aus der Konsolidierten Erfolgsrechnung im Geschäftsbericht 2024/25 der Zueblin Immobilien Holding AG (Finanzbericht-Teil), oberste Ertragszeile vor Liegenschaftsaufwand und Unterhalt. Gewinn ('Konzerngewinn' CHF 8'685 Tsd.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/gleiches Geschäftsjahr wie der Umsatz (inkl. Marktwertveränderung der Liegenschaften als Teil des EBIT). Beschäftigte (4 Personen) aus dem Konzernanhang zum Personalaufwand desselben Berichts, mit Vorjahresvergleich (31.3.2024: ebenfalls 4)."
+ "_verification": "Umsatz (Mietertrag CHF 9'431 Tsd., Geschäftsjahr 1.4.2024-31.3.2025) aus der Konsolidierten Erfolgsrechnung im Geschäftsbericht 2024/25 der Zueblin Immobilien Holding AG (Finanzbericht-Teil), oberste Ertragszeile vor Liegenschaftsaufwand und Unterhalt. Gewinn ('Konzerngewinn' CHF 8'685 Tsd.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/gleiches Geschäftsjahr wie der Umsatz (inkl. Marktwertveränderung der Liegenschaften als Teil des EBIT). Beschäftigte (4 Personen) aus dem Konzernanhang zum Personalaufwand desselben Berichts, mit Vorjahresvergleich (31.3.2024: ebenfalls 4).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Züblin Immobilien Holding AG",
+  "revenue_zeile": "Mietertrag (Total Mietertrag)",
+  "profit_zeile": "Gewinn der Aktionäre der Züblin Immobilien Holding AG",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Züblin Geschäftsbericht 2024/25 selbst heruntergeladen und per pdftotext durchsucht: 'Total Mietertrag' 9'431 TCHF und 'Gewinn' 8'685 TCHF (explizit als 'Gewinn der Aktionäre der Züblin Immobilien Holding AG' ausgewiesen, keine Minderheitsanteile) stimmen exakt; darin enthaltene Marktwertveränderung der Anlageliegenschaften CHF 5'838 Tsd. bestätigt. Mitarbeitende: 4 Personen per 31.3.2025 bestätigt."
+ }
 }

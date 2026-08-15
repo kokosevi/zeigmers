@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": -14027,
+ "profit_currency": "EUR",
+ "profit_unit": 1000,
+ "core_products": "Direkte und indirekte Beteiligungen an Private-Equity-Fonds, Infrastruktur- und Private-Debt-Vehikeln sowie Wachstumsunternehmen; reine Investmentgesellschaft ohne operatives Geschäft.",
+ "products_url": "https://www.peh.ch/de/portrait/profile/",
+ "founding_year": "",
+ "founding_year_source": "",
+ "employees": 0,
+ "fiscal_year": 2026,
+ "report_url": "https://www.peh.ch/media/document/ac481cdd-2327-41bc-9857-81b8e9c58548/assets/PEH_Annual_Report_2026.pdf",
+ "note": "Private Equity Holding AG ist ein reines Beteiligungsvehikel (Private-Equity-Dachfonds-Struktur) ohne operatives Geschäft und ohne Umsatz im klassischen Sinn - revenue bleibt daher leer. Der Bericht enthält zwei parallele Abschlüsse: (1) 'IFRS Financial Statements' (EUR, S. 11-37) mit 'Statement of Comprehensive Income', dominiert von 'Net gains/(losses) from investments in the non-consolidated Subsidiary at fair value through profit or loss' (-12'550 TEUR); und (2) 'Financial Statements' nach Schweizer Recht/OR (CHF, S. 44-52) mit einer 'Income Statement' auf Basis Anschaffungskosten (Total income 2'379 TCHF, Profit 515 TCHF). Keine der beiden enthält eine Zeile, die net_sales oder operating_income entspricht - beide bestehen aus Kapitalgewinnen/-verlusten, Dividenden-/Zinserträgen und Fremdwährungseffekten. Als Gewinn wurde die im Bericht prominent kommunizierte IFRS-Zahl gewählt: 'Total comprehensive income/(loss) for the period attributable to equity holders of the Company' EUR -14'027 Tsd. (Vorjahr +9'678 Tsd.), identisch mit der im Chairman's Letter genannten Headline-Zahl ('comprehensive result of EUR -14.0m'); explizit den Aktionären zurechenbar (Formulierung des Berichts), Minderheitsanteil (1% an der Tochtergesellschaft) besteht erst seit 30.12.2025 und ist in dieser Zahl bereits abgegrenzt. Die abweichende, deutlich positive CHF-Zahl (515 TCHF) aus dem separaten Einzelabschluss nach Schweizer Recht wurde bewusst NICHT verwendet, da sie einer anderen Rechnungslegungsbasis (Anschaffungskosten statt Fair Value) entstammt und mit der IFRS-Zahl nicht direkt vergleichbar ist. Geschäftsjahr läuft vom 1.4. bis 31.3.; als fiscal_year das Endjahr 2026 eingetragen. Beschäftigte: 0 - der Bericht stellt explizit fest, dass die Gesellschaft keine eigenen Mitarbeitenden hat ('the Company had no employees'); operative Führung erfolgt extern durch Amundi Alpha Associates AG. Gründungsjahr leer gelassen: Weder der Geschäftsbericht noch die Unternehmensseite peh.ch nennen ein Gründungsjahr; im Handelsregisterauszug (Zefix) war die vollständige Eintragungshistorie nicht abrufbar (nur Mutationen ab 2016 einsehbar), sodass ohne belastbare eigene Quelle keine Zahl eingetragen wurde. Bekannt ist lediglich, dass die Namenaktien seit dem 18. Januar 1999 an der SIX Swiss Exchange kotiert sind.",
+ "_verification": "IFRS 'Statement of Comprehensive Income' im Annual Report 2025/26 (S. 12): Zeile 'Total comprehensive income/(loss) for the period attributable to equity holders of the Company' EUR -14'027 Tsd. für die Periode 1.4.2025-31.3.2026 (Vorjahr 9'678), abgeglichen mit der Headline-Zahl im Chairman's Letter (EUR -14.0m) und der Key-Figures-Tabelle. Zusätzlich die parallele Erfolgsrechnung nach Schweizer Recht (S. 46f., 'Income Statement of Private Equity Holding AG') geprüft: 'Total income' 2'379 TCHF, 'Profit' 515 TCHF - bewusst nicht verwendet, da andere Rechnungslegungsgrundlage. Beides per pdftotext-Volltextsuche im heruntergeladenen PDF verifiziert; keine als Umsatz/net_sales oder operating_income klassifizierbare Zeile in beiden Abschlüssen gefunden, daher revenue explizit leer gelassen. Mitarbeiterangabe ('no employees') aus Note 1 'Company Information'/'Reporting entity' desselben Berichts. Gründungsjahr über Zefix-Handelsregisterabfrage (CHE-104.406.927) versucht zu verifizieren, jedoch nur Mutationen ab 2016 zugänglich - keine Eintragung des Gründungsdatums selbst gefunden."
+}

@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.swissquote.com/en/api/internal/media/get-media?filename=2026-03/Annual%20Report%20full%20report_18.03.2026_vFINAL.pdf",
  "note": "Swissquote ist eine Bank/Online-Finanzdienstleisterin: Umsatzzeile ist 'Operating income' (CHF 724,224,616 = 724.2 Mio.) statt Nettoumsatz, revenue_type=operating_income. 'Net profit' (CHF 366,392,439 = 366.4 Mio.) wird ohne separaten Minderheitsanteil ausgewiesen (Yuh Ltd wurde 2025 vollständig übernommen, keine Non-controlling-interest-Zeile in der Erfolgsrechnung), daher vollständig als Aktionärsanteil verwendet. Beschäftigte: Bericht schreibt ausdrücklich '1,448 employees (full-time equivalent)' zum 31.12.2025 — es handelt sich um FTE, nicht Köpfe; eine separate Kopfzahl wird nicht ausgewiesen. Gründungsjahr 1996 aus dem Abschnitt 'Scope of operations' im selben Geschäftsbericht ('The Swissquote financial platform is founded', 1996).",
- "_verification": "Umsatz und Gewinn stammen aus der konsolidierten Erfolgsrechnung im Swissquote Annual Report 2025 (Finanzteil, S. 50): Zeile 'Operating income' (CHF 724,224,616) und Endzeile 'Net profit' (CHF 366,392,439), beide für das Geschäftsjahr 2025 auf Konzernebene. Geprüft: als Bank korrekt operating_income statt net_sales verwendet (Falle 1), Gewinnzeile ohne Minderheitsanteile (Yuh vollständig konsolidiert seit 2025), Beschäftigtenangabe im selben Bericht ausdrücklich als FTE gekennzeichnet."
+ "_verification": "Umsatz und Gewinn stammen aus der konsolidierten Erfolgsrechnung im Swissquote Annual Report 2025 (Finanzteil, S. 50): Zeile 'Operating income' (CHF 724,224,616) und Endzeile 'Net profit' (CHF 366,392,439), beide für das Geschäftsjahr 2025 auf Konzernebene. Geprüft: als Bank korrekt operating_income statt net_sales verwendet (Falle 1), Gewinnzeile ohne Minderheitsanteile (Yuh vollständig konsolidiert seit 2025), Beschäftigtenangabe im selben Bericht ausdrücklich als FTE gekennzeichnet.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Swissquote Group Holding Ltd",
+  "revenue_zeile": "Operating income / Total operating income",
+  "profit_zeile": "Net profit",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Swissquote Annual Report 2025 selbst heruntergeladen und per pdftotext durchsucht: 'Operating income' CHF 724'224'616 (=724.2 Mio.) und 'Net profit' CHF 366'392'439 (=366.4 Mio.) fuer 2025 stimmen exakt. Als Bank korrekt operating_income statt net_sales verwendet (Falle 1); keine 'non-controlling interest'-Zeile in der Erfolgsrechnung gefunden (Yuh seit 4.7.2025 voll konsolidiert), Gewinn somit zurecht ohne Minderheitsabzug eingetragen (Regel 7); Mitarbeitende 1'448 explizit als 'full-time equivalent' bestaetigt."
+ }
 }

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 747.34,
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 30.26,
+ "profit_currency": "EUR",
+ "profit_unit": 1000000,
+ "core_products": "Entwicklung, Produktion und Vertrieb von Industrie- und Elektronikgehäusen (Enclosure Systems), industriellen Komponenten wie Linearantriebe, Steckverbinder, Schalter und Messtechnik (Industrial Components) sowie elektrisch verstellbaren Antriebs- und Beschlagsystemen für Möbel und Pflegebetten (DewertOkin Technology Group).",
+ "products_url": "https://group.phoenix-mecano.com/de/geschaeftsberichte/2025/geschaeftsentwicklung-gruppe-sparten",
+ "founding_year": 1975,
+ "founding_year_source": "https://group.phoenix-mecano.com/de/gruppe/geschichte/",
+ "employees": 7642,
+ "fiscal_year": 2025,
+ "report_url": "https://group.phoenix-mecano.com/fileadmin/user_upload/pdf/de/Geschaeftsberichte/2025/Phoenix-Mecano-Finanzbericht-2025-de.pdf",
+ "note": "Berichtswährung ist EUR (nicht CHF), obwohl die Aktien an der SIX kotiert sind. Verwendet wurde die Zeile 'Nettoerlöse' (EUR 747.34 Mio.) aus der konsolidierten Erfolgsrechnung, nicht der höhere 'Bruttoumsatz' (EUR 757.3 Mio., im Kennzahlenblatt und Aktionärsbrief prominent genannt), da die Erfolgsrechnung explizit zwischen Brutto- und Nettoerlösen unterscheidet. Konzerngewinn (Periodenergebnis) betrug insgesamt EUR 31.79 Mio., davon EUR 30.26 Mio. den Aktionären der Muttergesellschaft zurechenbar (Rest: Minderheitsanteile EUR 1.53 Mio.) — eingetragen wurde der Aktionärsanteil. Beschäftigtenzahl 7'642 ist 'Personalbestand (per Stichtag)' zum 31.12.2025; der Bericht differenziert nicht explizit zwischen Köpfen und Vollzeitäquivalenten.",
+ "_verification": "Nettoerlöse (EUR 747'340 Tsd.) und Periodenergebnis mit Aufteilung auf Aktionäre der Muttergesellschaft (EUR 30'260 Tsd.) und Minderheitsgesellschafter (EUR 1'530 Tsd.) stammen aus der 'Konsolidierten Erfolgsrechnung 2025' auf Seite 49 des Finanzberichts 2025 (Teil des Geschäftsberichts 2025 der Phoenix Mecano AG). Beschäftigtenzahl aus Seite 7 des Geschäftsberichts ('Weltweites Engagement / Mitarbeiterkennziffern auf einen Blick'). Geprüft, dass Umsatz- und Gewinnzeile aus derselben Konzernrechnung für dasselbe Geschäftsjahr 2025 stammen und keine Trennung nach fortgeführtem/aufgegebenem Geschäft vorliegt."
+}
