@@ -228,6 +228,19 @@ HTML genannten Zahlen gegen die Artefakte prüft. Weil `npm run build` in
 Datenlage nicht unbemerkt an der Landing vorbei: der Test schlägt fehl, statt
 dass die Seite still eine falsche Zahl zeigt.
 
+> **Korrekturnotiz (Abschluss-Review vor Go-Live, Fund 3, 15. August 2026):**
+> Der Absatz oben war zum Zeitpunkt, an dem er geschrieben wurde, falsch.
+> `netlify.toml`s Build-Kommando rief bis dahin nur `npm run build` auf, und
+> `package.json`s `build`-Skript lautete `tsc --noEmit && vite build` — ohne
+> `npm test`. Vitest lief im Deploy-Pfad also nie; ein künftiger Daten-Sync
+> mit neuen Zahlen hätte die veralteten Landing-Zahlen ausgeliefert, ohne dass
+> etwas rot geworden wäre — genau das Szenario, gegen das `src/landing.test.ts`
+> geschrieben wurde (derselbe Fehlschluss stand wortgleich in dessen
+> Kopfkommentar). Behoben: `netlify.toml`s Build-Kommando lautet jetzt
+> `npm test && npm run build`; `npm run build` selbst blieb unverändert, damit
+> lokale Entwicklung nicht zusätzlich die Testsuite mitschleppt. Der Absatz
+> oben ist damit nachträglich wahr geworden, nicht von Anfang an.
+
 Das ist kein theoretisches Risiko. Das README nennt aktuell „201 der 202 an der
 SIX kotierten Gesellschaften"; die Artefaktdaten sagen `totalListed: 224`. Die
 Landing übernimmt die Zahl aus den Daten, und das README wird bei der

@@ -1,5 +1,15 @@
 [build]
-  command = "npm run build"
+  # `npm test` läuft vor dem eigentlichen Build, nicht nur daneben in CI:
+  # src/landing.test.ts prüft die auf der Landing hartkodierten Kennzahlen
+  # gegen public/data/*.json und soll den Deploy stoppen, sobald beide
+  # auseinanderlaufen (siehe Testkommentar dort). `npm run build` allein
+  # (tsc --noEmit && vite build, package.json) führt keine Vitest-Suite aus —
+  # ohne dieses vorgeschaltete `npm test` wäre dieser Schutz nur auf dem
+  # lokalen Rechner scharf, nie im tatsächlichen Deploy-Pfad (Abschluss-Review
+  # vor dem ersten öffentlichen Go-Live, Fund 3). `npm run build` selbst bleibt
+  # unverändert, damit lokale Entwicklung (`npm run build` von Hand) nicht
+  # zusätzlich die Testsuite mitschleppt.
+  command = "npm test && npm run build"
   publish = "dist"
 
 [build.environment]
