@@ -1104,3 +1104,45 @@ def test_build_artifact_treats_a_reported_zero_revenue_as_a_placeholder_bar():
     entry = artifact["companies"][0]
     assert entry["revenue"] == 0.0, "die berichtete Null bleibt in den Daten"
     assert entry["placeholder"] is True, "aber sie traegt keine Hoehenaussage"
+
+
+def test_build_artifact_separates_companies_that_share_exact_coordinates():
+    """Zwei Saeulen am selben Punkt: die hoehere verdeckt die niedrigere ganz.
+
+    Vier Adressen tragen je zwei kotierte Gesellschaften — Metall Zug und
+    V-ZUG teilen sich die Industriestrasse 66 in Zug, AEVIS und Infracore
+    die Rue Georges-Jordil 4 in Fribourg. Gezeichnet am identischen Punkt
+    ist die kleinere Firma weder zu sehen noch anzuklicken: sie existiert
+    auf der Karte, aber niemand findet sie.
+
+    Sie werden deshalb auf einem kleinen Kreis um den echten Punkt verteilt.
+    Der Versatz ist mit `POSITION_SPREAD_M` weit unterhalb der Aufloesung,
+    in der die Karte etwas aussagt (Gemeinden), und steht als
+    `positionAdjusted` in der Zeile — verschoben, aber nicht verschwiegen.
+    """
+    rows = [
+        _row(six_symbol="A", uid="CHE-1", isin="CH0000000001",
+             lon="8.5", lat="47.2", name="Erste AG"),
+        _row(six_symbol="B", uid="CHE-2", isin="CH0000000002",
+             lon="8.5", lat="47.2", name="Zweite AG"),
+        _row(six_symbol="C", uid="CHE-3", isin="CH0000000003",
+             lon="9.0", lat="46.0", name="Allein AG"),
+    ]
+    artifact = companies.build_artifact(rows, noga.load_table())
+    by_name = {c["name"]: c for c in artifact["companies"]}
+
+    assert (by_name["Erste AG"]["lon"], by_name["Erste AG"]["lat"]) != \
+           (by_name["Zweite AG"]["lon"], by_name["Zweite AG"]["lat"])
+    assert by_name["Erste AG"]["positionAdjusted"] == companies.POSITION_SPREAD_M
+    assert by_name["Zweite AG"]["positionAdjusted"] == companies.POSITION_SPREAD_M
+    assert by_name["Allein AG"]["positionAdjusted"] is None, (
+        "eine Firma ohne Nachbarn behaelt ihre exakte Position"
+    )
+    assert by_name["Allein AG"]["lon"] == 9.0
+
+
+def test_build_artifact_keeps_the_spread_small_enough_to_stay_in_the_municipality():
+    # 150 m verschieben eine Firma nicht in eine andere Gemeinde; sie machen
+    # sie nur sichtbar. Waere der Versatz gross, waere die Aussage der Karte
+    # ("hier sitzt diese Firma") beschaedigt.
+    assert companies.POSITION_SPREAD_M <= 200

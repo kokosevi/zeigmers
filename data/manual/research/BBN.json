@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://report.bellevue.ch/2025/en/consolidated-income-statement",
  "note": "Bank/Vermögensverwalter, daher kein Umsatz im engeren Sinn; Geschäftsertrag (\"Total operating income\"/\"Income\") als Gegenstück verwendet, Zeile ist im Bericht ausdrücklich so benannt und deckt sich mit der Summe aus Revenues from asset management services (52.596), Income from financial investments (0.560) und Net other income (-0.588). Mitarbeitende laut Bericht 72.8 FTE (Stichtag 31.12.2025), auf 73 gerundet. Group net profit ist bereits der volle den Aktionären zurechenbare Gewinn, keine Minderheitsanteile ausgewiesen.",
- "_verification": "Umsatz (Geschäftsertrag) und Gewinn stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 (report.bellevue.ch/2025/en/consolidated-income-statement): Zeile \"Income\"/\"Total operating income\" CHF 52'568 Tsd. und \"Group net profit\" CHF 1'886 Tsd., beide für Geschäftsjahr 2025 im Vergleich zu 2024. Geprüft, dass die Teilkomponenten (Asset-Management-Erträge, Finanzanlagenerträge, sonstige Nettoerträge) sich zur Gesamtsumme addieren und dass es sich um die vom Unternehmen selbst so benannte Ertragszeile handelt (kein Fall wie Partners Group, da keine gesondert abgegrenzten Nicht-Ertragskomponenten enthalten sind)."
+ "_verification": "Umsatz (Geschäftsertrag) und Gewinn stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 (report.bellevue.ch/2025/en/consolidated-income-statement): Zeile \"Income\"/\"Total operating income\" CHF 52'568 Tsd. und \"Group net profit\" CHF 1'886 Tsd., beide für Geschäftsjahr 2025 im Vergleich zu 2024. Geprüft, dass die Teilkomponenten (Asset-Management-Erträge, Finanzanlagenerträge, sonstige Nettoerträge) sich zur Gesamtsumme addieren und dass es sich um die vom Unternehmen selbst so benannte Ertragszeile handelt (kein Fall wie Partners Group, da keine gesondert abgegrenzten Nicht-Ertragskomponenten enthalten sind).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Bellevue Group AG",
+  "revenue_zeile": "Total Operating Income",
+  "profit_zeile": "Group Net Profit",
+  "abweichungen": [],
+  "begruendung": "report.bellevue.ch/2025/en/consolidated-income-statement direkt geöffnet: 'Total Operating Income' CHF 52'568 Tsd. (= Revenues from asset management services 52'596 + Income from financial investments 560 + Net other income -588) und 'Group Net Profit' CHF 1'886 Tsd. stimmen exakt. Falle 1/Regel 7 gezielt geprüft: die Zeile ist die tatsächliche, vom Unternehmen selbst so benannte Ertragssumme ohne sachfremde Zusatzposten (kein Fall wie bei Partners Group), und es wird keine separate Non-controlling-interests-Zeile ausgewiesen, sodass der volle Gewinn den Aktionären zusteht."
+ }
 }

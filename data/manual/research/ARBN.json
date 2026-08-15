@@ -20,9 +20,9 @@
  "_pruefung": {
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Arbonia AG",
-  "revenue_zeile": "Net revenues, continuing operations (Consolidated Income Statement / Segmentnote, S. ~7 und Notes: 624,517 TCHF)",
-  "profit_zeile": "Group result from continuing operations ('Group earnings from continuing operations after non-controlling interests' = -9,766 TCHF)",
+  "revenue_zeile": "Net revenues (Continuing operations)",
+  "profit_zeile": "Group result from continuing operations",
   "abweichungen": [],
-  "begruendung": "Ich habe den Arbonia Annual Report 2025 direkt von arbonia.com geladen und mit pdftotext ausgelesen. Net revenues (624.517 Mio.) und Group result from continuing operations (-9.766 Mio.) stimmen exakt; letzteres ist im Bericht explizit als Betrag 'after non-controlling interests' ausgewiesen, erfüllt also Regel 5. Employees (3'878) ist die einzige verfügbare Kennzahl ('Average headcount in FTE'); eine Kopfzahl-Alternative existiert nicht, da laut Bericht 'Arbonia AG does not employ any staff' (nur die operativen Tochtergesellschaften), FTE ist also gemäss Regel 6 korrekt die einzig mögliche Wahl. Gründungsjahr 1874 (Forster-Kupferschmiede) ebenfalls im Bericht bestätigt."
+  "begruendung": "Annual Report 2025 (Consolidated Income Statement, mit pdftotext gelesen) zeigt 'Net revenues 624,517' und 'Group result from continuing operations -9,766', getrennt von 'Group result from discontinued operations after taxes 141,633' und Gesamt-'Group result 131,867' (davon 100% 'Shareholders of Arbonia AG', keine Minderheitsanteile im Konzern). Umsatz und Gewinn stammen konsistent aus demselben Konsolidierungskreis (continuing operations), Falle 2/3 korrekt vermieden."
  }
 }

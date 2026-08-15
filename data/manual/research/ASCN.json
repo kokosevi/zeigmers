@@ -20,9 +20,9 @@
  "_pruefung": {
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Ascom Holding AG",
-  "revenue_zeile": "Net revenue (Consolidated Income Statement, Note 18: 292.1 Mio.)",
-  "profit_zeile": "Group profit for the period attributable to owners of the parent (= Group profit for the period gesamt, keine Minderheitsanteile vorhanden)",
+  "revenue_zeile": "Net revenue",
+  "profit_zeile": "Group profit for the period attributable to owners of the parent",
   "abweichungen": [],
-  "begruendung": "Ich habe den Ascom Annual Report 2025 direkt von ascom.com geladen und mit pdftotext ausgelesen. Net revenue (292.1 Mio.) und Group profit for the period (15.1 Mio., vollständig 'attributable to owners of the parent', keine Non-controlling-interests-Zeile vorhanden) stimmen exakt. Employees (1'358) ist exakt die Zahl aus der offiziellen 5-Jahres-Kennzahlentabelle ('Number of employees (FTEs)', Stand 31.12.2025); eine im Bericht separat genannte Zahl von 1'423 bezieht sich auf einen abweichenden Sustainability-Berichtszeitraum (31.7.2025) und ist keine Alternative zur Jahresendzahl. Eine Kopfzahl-Alternative zur FTE-Zahl wurde im Bericht nicht gefunden, FTE ist also nach Regel 6 richtig. Gründungsjahr 1987 stammt korrekt aus einer separaten Quelle, da der Geschäftsbericht selbst keine Gründungsangabe enthält (Note dazu bereits korrekt im Datensatz)."
+  "begruendung": "Annual Report 2025 (Consolidated income statement, mit pdftotext gelesen) bestätigt 'Net revenue CHF 292.1 million' und 'Group profit for the period attributable to owners of the parent CHF 15.1 million' identisch mehrfach im Bericht. Mitarbeiterzahl 1'358 stimmt mit der Kennzahlentabelle 'Number of employees (FTEs)' überein (abweichende Zahl 1'423 betrifft nur die Nachhaltigkeits-Berichtsperiode Aug.2024-Jul.2025, keine Widerspruch zur Jahresendzahl)."
  }
 }

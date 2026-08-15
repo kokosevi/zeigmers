@@ -21,8 +21,8 @@
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Compagnie Financière Tradition SA",
   "revenue_zeile": "Revenue (Consolidated income statement)",
-  "profit_zeile": "Net profit for the year, attributable to: shareholders of the parent",
+  "profit_zeile": "Net profit for the year, attributable to shareholders of the parent",
   "abweichungen": [],
-  "begruendung": "PDF selbst heruntergeladen (Annual_report_ang_final.pdf) und Consolidated income statement auf S. 77 extrahiert: 'Revenue' 1'115'768 Tsd. und 'shareholders of the parent' 134'177 Tsd. stimmen exakt. Falle 1 geprüft: CFT ist Interdealer-Broker ohne Nettoumsatz, operating_income als revenue_type korrekt. Regel 7 gezielt geprüft: die Headline-Kennzahl 'Total reported revenue including share of joint ventures' 1'203.6m ist eine Summenzeile, die zusätzliche Erfolgsanteile aus assoziierten Gesellschaften enthält (S. 8, 1811-1844) und wurde korrekt NICHT verwendet; die eingetragene Zeile 'Revenue' 1'115.8m ist die tatsächliche Ertragszeile der Konzernerfolgsrechnung, getrennt von 'Other net operating income' und 'Share of profit of associates and joint ventures'. Headcount 2'605 bestätigt."
+  "begruendung": "PDF direkt heruntergeladen (Annual_report_ang_final.pdf, S. 78, Consolidated income statement) und gelesen: 'Revenue' 1'115'768 Tsd. und 'shareholders of the parent' 134'177 Tsd. (von Net profit total 142'689 Tsd.) stimmen exakt. Falle 1/Regel 7 gezielt geprüft: die separat ausgewiesene Kennzahl 'Total reported revenue including share of joint ventures' 1'203.6 Mio. ist eine Summenzeile mit zusätzlichen Erfolgsanteilen aus assoziierten Gesellschaften/Joint Ventures und wurde korrekt NICHT verwendet - stattdessen die echte 'Revenue'-Zeile der Konzernerfolgsrechnung. Headcount 2'605 sowie Gründungsjahr 1959 ('Founded in 1959 in Lausanne') bestätigt."
  }
 }

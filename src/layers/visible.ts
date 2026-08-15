@@ -68,6 +68,14 @@ export interface Company {
   // `etl/src/draufsicht_etl/companies.py`s Moduldokumentation.
   researched: boolean
   city: string | null
+  /** Versatz in Metern, wenn sich mehrere kotierte Gesellschaften eine
+   *  Adresse teilen (`null` sonst). Am identischen Punkt gezeichnet
+   *  verdeckt die höhere Säule die niedrigere vollständig — die kleinere
+   *  Firma wäre weder zu sehen noch anzuklicken. Das Panel nennt den
+   *  Versatz, damit die Position verschoben, aber nicht verschwiegen ist
+   *  (siehe `etl/src/draufsicht_etl/companies.py`,
+   *  `_spread_shared_positions`). */
+  positionAdjusted: number | null
 }
 
 export interface CompanyData {

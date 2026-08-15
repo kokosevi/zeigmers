@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.edisunpower.com/download_file/view/94a05223-d757-4bee-9844-f78f7e6b4533/504",
  "note": "'Total revenues' (TCHF 14'061) in der Konzern-Erfolgsrechnung setzt sich zusammen aus 'Revenue from sale of electricity' (TCHF 13'973, dem eigentlichen operativen Kerngeschäft), 'Revenue from the sale of renewable energy projects' (TCHF 0 im Berichtsjahr, im Vorjahr TCHF 36'719 aus dem Verkauf des italienischen Projektportfolios) und 'Other operating income' (TCHF 88); alle drei Zeilen werden im Bericht durchgängig als Umsatzbestandteile geführt, keine sachfremden Positionen enthalten. Verlust ('Net loss' TCHF -7'052) vollständig den Aktionären zurechenbar ('Attributable to shareholders of Edisun Power Europe Ltd.'). Beschäftigte: Bericht nennt keine exakte Zahl, sondern nur 'the Company employed fewer than ten employees' bzw. 'annual average number of full-time equivalents ... did not exceed 10'; als Näherung 9 eingetragen (unterste Grenze von 'unter 10'), tatsächliche Zahl könnte auch niedriger sein — Grösse ist bewusst nicht präzise offengelegt.",
- "_verification": "Umsatz und Verlust stammen aus der 'Consolidated Income Statement' (S. 29 des Corporate Governance & Financial Report 2025): Zeilen 'Total revenues' TCHF 14'061 und 'Loss/Net profit' TCHF -7'052, letzteres identisch mit der Zeile 'Attributable to shareholders of Edisun Power Europe Ltd.'. Geprüft: die Segment-Tabelle (Total revenue je Region) summiert ebenfalls auf TCHF 14'061; Mitarbeiterangabe aus Note 4.2 'Full-time equivalents' und Corporate-Governance-Text ('fewer than ten employees') abgeglichen."
+ "_verification": "Umsatz und Verlust stammen aus der 'Consolidated Income Statement' (S. 29 des Corporate Governance & Financial Report 2025): Zeilen 'Total revenues' TCHF 14'061 und 'Loss/Net profit' TCHF -7'052, letzteres identisch mit der Zeile 'Attributable to shareholders of Edisun Power Europe Ltd.'. Geprüft: die Segment-Tabelle (Total revenue je Region) summiert ebenfalls auf TCHF 14'061; Mitarbeiterangabe aus Note 4.2 'Full-time equivalents' und Corporate-Governance-Text ('fewer than ten employees') abgeglichen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Edisun Power Europe Ltd.",
+  "revenue_zeile": "Total revenues",
+  "profit_zeile": "Loss/Net profit - Attributable to shareholders of Edisun Power Europe Ltd.",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen und Consolidated Income Statement gelesen: 'Total revenues' 14'061 Tsd. (= Revenue from sale of electricity 13'973 + Revenue from sale of renewable energy projects 0 + Other operating income 88) und 'Loss/Net profit' -7'052 Tsd., vollständig 'Attributable to shareholders of Edisun Power Europe Ltd.', stimmen exakt. Bericht nennt explizit nur, dass die Mitarbeiterzahl 'did not exceed 10' - die genäherte Zahl 9 im vorgelegten Datensatz ist damit plausibel, aber nicht exakt aus dem Bericht ablesbar."
+ }
 }

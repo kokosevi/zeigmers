@@ -386,6 +386,48 @@ def apply_seat_overrides(rows: list[dict], overrides: dict[str, dict]) -> list[s
     return applied
 
 
+# Versatz für Gesellschaften, die sich eine Adresse teilen — siehe
+# `_spread_shared_positions`. 150 m liegen weit unterhalb der Auflösung, in
+# der diese Karte etwas aussagt (Gemeinden), und weit über dem, was zwei
+# Säulen zum Auseinanderrücken brauchen.
+POSITION_SPREAD_M = 150
+
+
+def _spread_shared_positions(entries: list[dict]) -> None:
+    """Verteilt Firmen, die auf denselben Koordinaten sitzen, auf einen
+    kleinen Kreis um diesen Punkt.
+
+    Vier Adressen tragen je zwei kotierte Gesellschaften: Metall Zug und
+    V-ZUG teilen sich die Industriestrasse 66 in Zug, AEVIS und Infracore
+    die Rue Georges-Jordil 4 in Fribourg, Swiss Prime Site und Fundamenta
+    eine Adresse in Zug, Edisun und C Capital eine in Zürich. Am identischen
+    Punkt gezeichnet verdeckt die höhere Säule die niedrigere vollständig —
+    die kleinere Firma existiert auf der Karte, ist aber weder zu sehen noch
+    anzuklicken. Das ist schlechter als ein kleiner Versatz.
+
+    Der Versatz steht als `positionAdjusted` (in Metern) in der Zeile, damit
+    das Panel es sagen kann: verschoben, aber nicht verschwiegen. Die
+    Reihenfolge ist die der CSV, also über Läufe hinweg stabil."""
+    import math
+    from collections import defaultdict
+
+    by_position: dict[tuple, list[dict]] = defaultdict(list)
+    for entry in entries:
+        by_position[(round(entry["lon"], 6), round(entry["lat"], 6))].append(entry)
+
+    for (lon, lat), group in by_position.items():
+        if len(group) < 2:
+            continue
+        # Meter -> Grad: Breite konstant, Länge mit dem Kosinus der Breite.
+        d_lat = POSITION_SPREAD_M / 111_320
+        d_lon = POSITION_SPREAD_M / (111_320 * math.cos(math.radians(lat)))
+        for index, entry in enumerate(group):
+            angle = 2 * math.pi * index / len(group)
+            entry["lon"] = lon + d_lon * math.cos(angle)
+            entry["lat"] = lat + d_lat * math.sin(angle)
+            entry["positionAdjusted"] = POSITION_SPREAD_M
+
+
 def research_dir() -> Path:
     """Ein JSON je recherchierter Gesellschaft, benannt nach ihrem
     SIX-Symbol. Diese Dateien gehören ins Repo: sie sind der Nachweis, aus
@@ -546,8 +588,11 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "placeholder": not revenue or float(revenue) == 0,
                 "researched": researched,
                 "city": row.get("city") or None,
+                "positionAdjusted": None,
             }
         )
+
+    _spread_shared_positions(entries)
 
     revenues = [e["revenue"] for e in entries if e["revenue"] is not None]
     # Höhenmassstab über die umgerechneten Beträge, sonst über die

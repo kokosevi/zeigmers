@@ -19,7 +19,7 @@ function company(overrides: Partial<Company> = {}): Company {
     coreProducts: null, productsUrl: null,
     foundingYear: null,
     employees: null, fiscalYear: 2024, reportUrl: null, note: null,
-    placeholder: false, researched: true, city: 'Aarau',
+    placeholder: false, researched: true, city: 'Aarau', positionAdjusted: null,
     ...overrides,
   }
 }
@@ -34,7 +34,7 @@ function companiesOf(revenues: (number | null)[]): Company[] {
     foundingYear: null,
     employees: null,
     fiscalYear: 2024, reportUrl: null, note: null,
-    placeholder: revenue === null, researched: true, city: 'Aarau',
+    placeholder: revenue === null, researched: true, city: 'Aarau', positionAdjusted: null,
   }))
 }
 

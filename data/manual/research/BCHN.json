@@ -21,8 +21,8 @@
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Burckhardt Compression Holding AG",
   "revenue_zeile": "Sales",
-  "profit_zeile": "Share of net income attributable to shareholders of Burckhardt Compression Holding AG",
+  "profit_zeile": "Result for the period, attributable to shareholders of Burckhardt Compression Holding AG",
   "abweichungen": [],
-  "begruendung": "PDF selbst heruntergeladen (annual-report-2025-burckhardt-compression-260624-en.pdf); der Bericht bestätigt im Revisionsbericht wörtlich 'for the period ended 31 March 2026' - abweichendes Geschäftsjahr (1. April-31. März), Endjahr 2026 daher korrekt eingetragen, obwohl das Unternehmen intern 'fiscal year 2025' sagt. 'Sales' 1'057'089 Tsd. und 'Share of net income attributable to shareholders of Burckhardt Compression Holding AG' 110'108 Tsd. stimmen exakt; Net income total 110'144 minus Minderheitsanteile 36 = 110'108, wie vorgelegt. FTEs 3'305 bestätigt."
+  "begruendung": "PDF direkt heruntergeladen (annual-report-2025-burckhardt-compression-260624-en.pdf) und Consolidated income statement gelesen: 'Sales' 1'057'089 Tsd. sowie 'Result for the period' 110'144 Tsd. gesamt, abzüglich 36 Tsd. Non-controlling interests = 110'108 Tsd. Aktionärsanteil, stimmen exakt. Geschäftsjahr geprüft: der Bericht formuliert wörtlich 'Burckhardt Compression Holding AG's fiscal year 2025 comprises the period from April 1, 2025 to March 31, 2026' und der Revisionsbericht spricht von 'the period ended 31 March 2026' - das abweichende Geschäftsjahr wurde korrekt mit dem Endjahr 2026 eingetragen. Mitarbeitende 3'305 ('Number of employees') ebenfalls bestätigt."
  }
 }

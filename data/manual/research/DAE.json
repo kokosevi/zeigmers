@@ -19,10 +19,10 @@
  "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. F05) des Datwyler Financial Report 2025: Zeile 'Net revenue' CHF 1'100.5 Mio. und 'Net result' CHF 80.8 Mio. Geprüft: dieselben Werte erscheinen in der Fünfjahresübersicht (Key Figures) zusammen mit 'Number of employees (at year-end)' 7'823 für 2025; laut Notes bestehen keine Minderheitsanteile, sodass der Nettogewinn vollständig den Aktionären zuzurechnen ist.",
  "_pruefung": {
   "verdict": "bestaetigt",
-  "legal_name_im_bericht": "Dätwyler Holding Inc. (dt. Bericht: Dätwyler Holding AG)",
+  "legal_name_im_bericht": "Dätwyler Holding Inc.",
   "revenue_zeile": "Net revenue",
   "profit_zeile": "Net result",
   "abweichungen": [],
-  "begruendung": "PDF selbst heruntergeladen (datwyler.com_financial-report_2025.en.pdf) und Consolidated Income Statement extrahiert: 'Net revenue' 1'100.5 und 'Net result' 80.8 stimmen exakt; Notiz 'There are no minority interests' (Konsolidierungsgrundsätze) bestätigt, dass der volle Gewinn den Aktionären zusteht. Beschäftigte 7'823 als 'Number of employees (at year-end)' in der Fünfjahresübersicht bestätigt."
+  "begruendung": "PDF direkt heruntergeladen und Consolidated Income Statement gelesen: 'Net revenue' 1'100.5 Mio. und 'Net result' 80.8 Mio. stimmen exakt. Notiz 'There are no minority interests' im Konzernabschluss bestätigt die volle Aktionärszurechnung des Gewinns; 'Number of employees (at year-end)' 7'823 laut Fünfjahresübersicht bestätigt."
  }
 }

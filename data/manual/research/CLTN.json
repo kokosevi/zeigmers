@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://files.schedulr.ch/news-files/8096/3037088f-4df5-4840-b548-85a1115d562b.pdf",
  "note": "Beschäftigtenzahl (1'180) ist im Bericht ausdrücklich als 'Number of employees (full-time positions)' zum 31.12.2025 ausgewiesen, also Vollzeitstellen (FTE), nicht Köpfe – eine Kopfzahl wird im Bericht nicht separat genannt. Gründungsjahr 2005 bezieht sich auf die rechtliche Gründung der COLTENE Holding AG laut Notes zum Konzernabschluss ('COLTENE Holding AG was founded on 15 December 2005'); die operative Coltène-Gruppe hat ältere Wurzeln (u.a. Fusion mit Whaledent 1990), die der Geschäftsbericht selbst aber nicht mit einem Gründungsjahr belegt. 'Net profit for the period' wird ohne separat ausgewiesenen Minderheitenanteil berichtet und daher als Aktionärsanteil übernommen.",
- "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated income statement' im Annual Report 2025 (Abschnitt Financials): Zeile 'Net sales' CHF 240'047 Tsd. und 'Net profit for the period' CHF 14'943 Tsd. Geprüft: dieselbe Umsatzzahl (240.0 Mio.) erscheint konsistent im Abschnitt 'COLTENE at a glance' und in Note 1 'Net sales by geographical regions' / 'by products and services'; die Beschäftigtenzahl 1'180 wird sowohl im Kennzahlenblock als auch in Note 2 (Personnel expenses/average FTE) bestätigt."
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated income statement' im Annual Report 2025 (Abschnitt Financials): Zeile 'Net sales' CHF 240'047 Tsd. und 'Net profit for the period' CHF 14'943 Tsd. Geprüft: dieselbe Umsatzzahl (240.0 Mio.) erscheint konsistent im Abschnitt 'COLTENE at a glance' und in Note 1 'Net sales by geographical regions' / 'by products and services'; die Beschäftigtenzahl 1'180 wird sowohl im Kennzahlenblock als auch in Note 2 (Personnel expenses/average FTE) bestätigt.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "COLTENE Holding AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Net profit for the period",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen und Consolidated income statement gelesen: 'Net sales' 240'047 Tsd. und 'Net profit for the period' 14'943 Tsd. stimmen exakt. 'Number of employees (full-time positions)' 1'180 (2024: 1'176) laut Kennzahlenübersicht bestätigt (ausdrücklich als Vollzeitstellen bezeichnet, kein Kopfzahl-Wert im Bericht genannt); keine Minderheitsanteile im Abschluss erwähnt."
+ }
 }

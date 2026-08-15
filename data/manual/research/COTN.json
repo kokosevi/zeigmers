@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://reports.comet-group.com/25/app/uploads/Comet_Annual-Report-2025-en.pdf",
  "note": "",
- "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated statement of income' im Annual Report 2025: Zeile 'Net sales' CHF 457'044 Tsd. und 'Net income' CHF 12'208 Tsd.; ein separater Minderheitenanteil wird nicht ausgewiesen (die Eigenkapitalveränderungsrechnung zeigt 'Net income' vollständig als 'Equity attributable to shareholders of Comet Holding AG'). Geprüft: dieselben Zahlen erscheinen konsistent in der Fünfjahresübersicht 'Comet Group key consolidated financial results'; Beschäftigte = 'Number of employees (year-end)' Total 1'832 zum 31.12.2025 (Köpfe, nach Schweiz/International aufgeschlüsselt)."
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated statement of income' im Annual Report 2025: Zeile 'Net sales' CHF 457'044 Tsd. und 'Net income' CHF 12'208 Tsd.; ein separater Minderheitenanteil wird nicht ausgewiesen (die Eigenkapitalveränderungsrechnung zeigt 'Net income' vollständig als 'Equity attributable to shareholders of Comet Holding AG'). Geprüft: dieselben Zahlen erscheinen konsistent in der Fünfjahresübersicht 'Comet Group key consolidated financial results'; Beschäftigte = 'Number of employees (year-end)' Total 1'832 zum 31.12.2025 (Köpfe, nach Schweiz/International aufgeschlüsselt).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Comet Holding AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Net income",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen und Consolidated statement of income gelesen: 'Net sales' 457'044 Tsd. und 'Net income' 12'208 Tsd. stimmen exakt, auch in der Fünfjahresübersicht identisch bestätigt. 'Total workforce at year-end' 1'832 bestätigt; keine Minderheitsanteile im gesamten Bericht gefunden."
+ }
 }

@@ -20,9 +20,9 @@
  "_pruefung": {
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "AEVIS VICTORIA SA",
-  "revenue_zeile": "Net revenue (Consolidated Income Statement: 1,055,058 TCHF; nicht die grössere Zeile 'Total revenue' = 1,208,366, die der Bericht selbst nicht als Kern-KPI führt)",
-  "profit_zeile": "Loss for the period, attributable to owners of AEVIS VICTORIA SA (Gesamt 'Loss for the period' = -25,621, davon Non-controlling interests -5,513, Aktionärsanteil -20,108)",
+  "revenue_zeile": "Net revenue",
+  "profit_zeile": "Loss for the period, attributable to shareholders of AEVIS VICTORIA SA",
   "abweichungen": [],
-  "begruendung": "Ich habe den AEVIS VICTORIA SA Annual Report 2025 direkt von aevis.com geladen und mit pdftotext ausgelesen. Net revenue (1'055.058 Mio., korrekt gewählt gegenüber der grösseren 'Total revenue'-Zeile, erfüllt Regel 7) und der Aktionärsanteil am Verlust (-20.108 Mio., korrekt getrennt von den Minderheitsanteilen -5.513 Mio., erfüllt Regel 5) stimmen exakt mit der konsolidierten Erfolgsrechnung überein. Employees (4'870) ist die einzige im Bericht ausgewiesene Grösse ('Number of employees / Full Time Equivalents at year-end'), FTE ist somit nach Regel 6 richtig gewählt. Gründungsjahr 2006 ebenfalls bestätigt."
+  "begruendung": "Annual Report 2025 (Consolidated Income Statement, mit pdftotext gelesen) zeigt exakt 'Net revenue 1,055,058' (nach Abzug 'External services' von 'Total revenue' 1,208,366) und 'Loss for the period (25,621)', davon Aktionäre AEVIS VICTORIA SA (20,108) und nicht beherrschende Anteile (5,513); keine 'discontinued operations' im Bericht gefunden, Konsolidierungskreis (Kliniken/Hotels/Immobilien) bleibt über beide Kennzahlen identisch, keine Abweichung."
  }
 }

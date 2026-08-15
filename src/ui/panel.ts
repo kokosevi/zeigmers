@@ -200,6 +200,12 @@ export function companyContent(company: Company): PanelContent {
   const notes: string[] = []
 
   if (company.city) fields.push({ label: 'Sitz', value: company.city })
+  if (company.positionAdjusted !== null) {
+    notes.push(
+      `An dieser Adresse sitzt mehr als eine kotierte Gesellschaft — die Säule ` +
+      `steht ${company.positionAdjusted} m daneben, damit beide sichtbar bleiben.`,
+    )
+  }
   if (company.foundingYear !== null) {
     fields.push({ label: 'Gegründet', value: String(company.foundingYear) })
   }

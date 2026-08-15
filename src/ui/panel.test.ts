@@ -74,6 +74,7 @@ function company(overrides: Partial<Company> = {}): Company {
     lon: 8,
     lat: 47.4,
     revenueChf: null,
+    positionAdjusted: null,
     nogaGroupIndex: 0,
     revenue: 1_250_000_000,
     currency: 'CHF',
