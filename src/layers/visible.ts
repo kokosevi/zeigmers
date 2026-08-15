@@ -88,10 +88,15 @@ export interface CompanyData {
      *  Einzelhöhen müssen aus derselben Grösse stammen, sonst normiert die
      *  Ansicht gegen einen Massstab, der nicht zu ihr gehört. */
     max: number
-    /** `true`, sobald JEDE Säule aus einem umgerechneten Betrag entsteht.
-     *  Bleibt eine einzige Umrechnung offen, fällt die ganze Ansicht auf die
-     *  Berichtswährungen zurück — halb umgerechnet stünden zwei Massstäbe
-     *  nebeneinander, ohne dass man es sieht. */
+    /** `true`, sobald JEDE Säule aus einem umgerechneten Betrag entsteht,
+     *  `false`, wenn mindestens eine Firma ohne Kurs blieb
+     *  (`etl/src/zeigmers_etl/companies.py`, `build_artifact`).
+     *
+     *  Re-Review (2026-08-15): das ist ein **Meldewert**, keine Garantie —
+     *  er hält fest, DASS ein Teilausfall vorliegt, erzwingt aber keinen
+     *  einheitlichen Rückfall auf Berichtswährungen. Siehe `heightValue()`
+     *  unten für den tatsächlichen (abweichenden) Rückfallmechanismus und
+     *  was ein Teilausfall dafür bedeuten würde. */
     revenueInChf: boolean
     /** Anzahl Zeilen mit `researched=yes` — der Zähler in der
      *  Abdeckungsangabe (Beispiel: „201 Gesellschaften von 224 kotierten
@@ -119,9 +124,29 @@ function researchedCompanies(data: CompanyData): Company[] {
  *  wo er vorliegt, sonst der berichtete. Nestlé berichtet in CHF, Novartis in
  *  USD, Richemont in EUR — ohne Umrechnung vergliche die Höhe Beträge, die
  *  nicht dasselbe messen (ein USD-Betrag als CHF gezeichnet überzeichnet die
- *  Firma 2025 um rund ein Fünftel). Der Rückfall auf `revenue` gilt nur,
- *  solange gar keine Kurse vorliegen; das ETL sorgt dafür, dass nie ein Teil
- *  der Firmen umgerechnet ist und ein anderer nicht (`stats.revenueInChf`). */
+ *  Firma 2025 um rund ein Fünftel).
+ *
+ *  Re-Review (2026-08-15): der vorige Wortlaut hier behauptete, das ETL
+ *  sorge dafür, „dass nie ein Teil der Firmen umgerechnet ist und ein
+ *  anderer nicht" — das stimmt nicht. Der Rückfall auf `revenue`
+ *  geschieht **je Firma einzeln** (`company.revenueChf ?? company.revenue`,
+ *  unten), nicht kollektiv für die ganze Ansicht. `stats.revenueInChf`
+ *  (`CompanyData` oben) *meldet*, ob jede Umrechnung gelang, *erzwingt*
+ *  aber keinen einheitlichen Rückfall: `companies.py` setzt `revenueChf`
+ *  pro Zeile und nimmt bei einem Teilausfall die bereits gelungenen
+ *  Umrechnungen der übrigen Firmen nicht zurück. Fiele der Kurs für eine
+ *  Firma aus, während die übrigen 200 einen Kurs haben, stünden hier
+ *  200 Balken in CHF neben einem Balken in Berichtswährung, ohne dass die
+ *  Karte das anzeigt — genau die „zwei Massstäbe nebeneinander, ohne dass
+ *  man es sieht", vor der `stats.revenueInChf`s eigene Dokumentation warnt.
+ *
+ *  Das ist ein bekannter, bewusst offengelassener Punkt, kein übersehener:
+ *  heute ohne Wirkung, weil `stats.fxMissing` leer ist — jede der 201
+ *  platzierten Firmen hat einen Kurs. Ein Fix bräuchte eine eigene
+ *  Entscheidung (`heightValue()`/`companyElevations()` müssten
+ *  `revenueInChf` lesen und bei `false` für ALLE Firmen auf `revenue`
+ *  zurückfallen, nicht nur für die einzelne ohne Kurs) und eigene Tests —
+ *  nicht Teil dieses Abschlusses. */
 export function heightValue(company: Company): number | null {
   return company.revenueChf ?? company.revenue
 }
