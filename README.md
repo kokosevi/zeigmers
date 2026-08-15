@@ -61,8 +61,16 @@ geprüft im Sinne einer BFS-Publikation.
 
 ## Warum die Gemeindesumme über der offiziellen Zahl liegt
 
-Ansicht B zeigt 196 extrudierte Gemeindeflächen; ihre Summe ergibt **383'203**
-Beschäftigte.
+*Re-Review (2026-08-15): dieser Abschnitt stammt aus der Zeit, als die Karte
+nur Aargau zeigte (vor der Nationalisierung am 14. August 2026), und ist bis
+heute nur für Aargau nachgerechnet, nicht für die anderen 25 Kantone. Der
+Mechanismus selbst (Rundung auf 4, daraus folgende Überschätzung) gilt
+bundesweit — die Zahlen unten sind Aargau, nicht die heutige,
+gesamtschweizerische Summe (5'876'865 Beschäftigte über alle 26 Kantone,
+siehe Einleitung).*
+
+Innerhalb von Ansicht «Beschäftigte» zeigt der Kanton Aargau 196 extrudierte
+Gemeindeflächen; ihre Summe ergibt **383'203** Beschäftigte.
 Das ETL aggregiert diese Summe intern weiterhin aus 17'940 Hektarzellen — diese
 Stufe existierte bis zum 13. August 2026 als eigene, gezeichnete Detailstufe
 der Karte und wurde dann auf Entscheid verworfen (Begründung im nächsten
@@ -224,8 +232,13 @@ Die Karte zeichnet die Basiskarte seither **selbst**:
   minimalen Stil ohne externe Quellen — nur eine einfarbige Hintergrundfarbe
   (`BLANK_STYLE` in `src/map.ts`). Die Kantonsflächen zeichnet
   `src/layers/cantons.ts` als eigenen deck.gl-Layer aus `ch_kantone.geojson`:
-  heller Flächenfüll, dünne Konturen, der konfigurierte Kanton (aus
-  `meta.json`, nicht hartcodiert) sichtbar hervorgehoben.
+  heller Flächenfüll, dünne Konturen. Re-Review (2026-08-15): hier stand
+  bisher, ein aus `meta.json` konfigurierter Kanton sei sichtbar
+  hervorgehoben — das galt vor der Nationalisierung (Phase 3), gilt aber
+  nicht mehr: Ansicht «Börsennotierte Firmen» hebt seither keinen Kanton mehr
+  hervor, Ansicht «Beschäftigte» hebt auf der Kantonsstufe den zuletzt
+  betretenen Kanton hervor, nicht den in `meta.json` konfigurierten (siehe
+  `src/layers/cantons.ts`, `CantonsLayerOptions.activeBfsNr`).
 
 Damit lädt die Karte zur Laufzeit keine externe Ressource mehr — das in der
 Spezifikation (Abschnitt 10) genannte Ausfallrisiko „swisstopo-Vektorkacheln
