@@ -1,0 +1,124 @@
+/* Dieselben Tokens wie die Karte (`src/style.css`), aber nur die, die eine
+   Textseite braucht — keine Kopie der 244 Zeilen dort, die fast ausschliesslich
+   Karten-Chrome (Legende, Panel, Hover-Label, Stapelreihenfolge) beschreiben.
+   Die Landing ist bewusst die einzige Seite ohne JavaScript: sie lädt keine
+   Zeile deck.gl/MapLibre (zusammen 1.52 MB). */
+:root {
+  --grund: #E8EDF2;
+  --land: #CFD8E3;
+  --land-kante: #A8B6C6;
+  --tinte: #1B2733;
+  --tinte-leise: #5A6B7C;
+  --oberflaeche: rgba(255, 255, 255, .84);
+  --oberflaeche-rand: rgba(168, 182, 198, .55);
+  --schrift: "Helvetica Neue", Inter, system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; min-height: 100%;
+  font-family: var(--schrift);
+  background: var(--grund);
+  color: var(--tinte);
+  /* Wie auf der Karte: Zahlen müssen untereinander ausrichten. */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 8vh, 6rem) 1.5rem 3rem;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -.03em;
+  line-height: 1;
+}
+
+.unterzeile {
+  margin: 1rem 0 0;
+  max-width: 34rem;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--tinte-leise);
+}
+
+.karten {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: clamp(2rem, 6vh, 3.5rem) 0 0;
+}
+
+/* Unter 640 px gestapelt — zwei Karten nebeneinander werden dort zu schmal,
+   um die Kennzahl in einer lesbaren Zeile zu halten. */
+@media (max-width: 640px) {
+  .karten { grid-template-columns: 1fr; }
+}
+
+.karte {
+  display: block;
+  padding: 1.5rem;
+  border: 1px solid var(--oberflaeche-rand);
+  border-radius: .75rem;
+  background: var(--oberflaeche);
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Das einzige Bewegungsdesign der Seite, und es ist Hover-Feedback — genau
+   die Grenze, die auch die Karte einhält (siehe `src/style.css`). */
+.karte:hover {
+  border-color: var(--land-kante);
+  box-shadow: 0 2px 8px rgba(27, 39, 51, .14);
+}
+
+.karte h2 {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 600;
+  letter-spacing: -.015em;
+}
+
+.karte p {
+  margin: .625rem 0 0;
+  font-size: .9375rem;
+  line-height: 1.5;
+  color: var(--tinte-leise);
+}
+
+.karte .kennzahl {
+  margin-top: 1rem;
+  padding-top: .875rem;
+  border-top: 1px solid var(--oberflaeche-rand);
+  font-size: .8125rem;
+  color: var(--tinte);
+}
+
+footer {
+  margin-top: clamp(2.5rem, 8vh, 4rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--oberflaeche-rand);
+  font-size: .75rem;
+  line-height: 1.5;
+  color: var(--tinte-leise);
+}
+
+footer p { margin: 0 0 .35rem; }
+footer p:last-child { margin-bottom: 0; }
+
+/* Sichtbarer Tastaturfokus, wie auf der Karte. */
+a:focus-visible {
+  outline: 2px solid var(--tinte);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}

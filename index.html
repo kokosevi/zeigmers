@@ -4,12 +4,49 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>zeigmers — Die Schweizer Wirtschaft als 3D-Karte</title>
+    <link rel="stylesheet" href="/src/landing.css" />
   </head>
   <body>
     <main>
-      <h1>zeigmers</h1>
-      <a href="/firmen/">Börsennotierte Firmen</a>
-      <a href="/beschaeftigte/">Beschäftigte</a>
+      <header>
+        <h1>zeigmers</h1>
+        <p class="unterzeile">
+          Die Schweizer Wirtschaft als 3D-Karte — zwei Ansichten derselben Fläche,
+          nebeneinander gehalten, damit der Unterschied sichtbar wird.
+        </p>
+      </header>
+
+      <nav class="karten" aria-label="Karten">
+        <a class="karte" href="/firmen/">
+          <h2>Börsennotierte Firmen</h2>
+          <p>
+            Wo die Schweizer Börse sitzt: jede Säule eine Gesellschaft, ihre Höhe
+            der Jahresumsatz.
+          </p>
+          <p class="kennzahl">
+            201 von 224 an der SIX kotierten Gesellschaften · alle recherchiert
+          </p>
+        </a>
+
+        <a class="karte" href="/beschaeftigte/">
+          <h2>Beschäftigte</h2>
+          <p>
+            Wo tatsächlich gearbeitet wird: alle 26 Kantone, nach einem Klick
+            jede einzelne Gemeinde.
+          </p>
+          <p class="kennzahl">5'876'865 Beschäftigte · BFS STATENT 2023</p>
+        </a>
+      </nav>
+
+      <footer>
+        <p>
+          Quellen: BFS STATENT, SIX Swiss Exchange, swisstopo, Zefix.
+        </p>
+        <p>
+          Technischer Machbarkeitsnachweis, keine amtliche Statistik — die Zahlen
+          sind korrekt im Rahmen dessen, was die Quellen hergeben.
+        </p>
+      </footer>
     </main>
   </body>
 </html>
