@@ -37,8 +37,12 @@ const de = new Intl.NumberFormat('de-CH', { maximumFractionDigits: 0 })
 
 describe('Landing-Kennzahlen', () => {
   it('nennt die Firmenzahlen genau so, wie companies.json sie ausweist', () => {
+    // `count` zählt Gesellschaften (Namen-/PS-Aktien und zweite Handelslinien
+    // derselben Firma zusammengefasst), `totalListed` zählt kotierte Titel —
+    // beide Einheiten müssen im Text stehen, sonst gibt der Satz Gesellschaften
+    // als Titel aus (Abschluss-Review, Fund 4).
     const { count, totalListed } = companies.stats
-    expect(HTML).toContain(`${count} von ${totalListed} kotierten Titeln`)
+    expect(HTML).toContain(`${count} Gesellschaften von ${totalListed} kotierten SIX-Titeln`)
   })
 
   it('behauptet nur dann "alle recherchiert", wenn auch alle recherchiert sind', () => {

@@ -38,16 +38,25 @@ export async function startFirmen(): Promise<void> {
   )
 
   // Die Abdeckungsangabe der Karte selbst — zwei Zahlen, nicht nur eine.
-  // "8 von 224 recherchiert" allein wäre unvollständig: wer die Marker zählt,
-  // sieht `stats.count` (platziert, inkl. der unrecherchierten Marker), nicht
-  // 224 — ein SIX-Titel ohne eindeutigen Zefix-Sitz erscheint gar nicht auf
-  // der Karte (siehe `companies.build_artifact`). Beide Zahlen stehen deshalb
+  // "201 recherchiert" allein wäre unvollständig: wer die Marker zählt, sieht
+  // `stats.count` (platziert, inkl. der unrecherchierten Marker), nicht 224 —
+  // ein SIX-Titel ohne eindeutigen Zefix-Sitz erscheint gar nicht auf der
+  // Karte (siehe `companies.build_artifact`). Beide Zahlen stehen deshalb
   // nebeneinander. Aus den Artefaktdaten zur Laufzeit berechnet, nicht
   // hartkodiert — ein künftiger Sync-/Recherche-Lauf zieht beide Zahlen
   // automatisch nach.
+  //
+  // Abschluss-Review, Fund 4 (2026-08-15): `stats.count`/`stats.researched`
+  // zählen Gesellschaften (Namen-/PS-Aktien und zweite Handelslinien
+  // derselben Firma zusammengefasst, `companies.group_six_titles()`),
+  // `stats.totalListed` zählt kotierte Titel — zwei verschiedene Grössen mit
+  // demselben Nenner 224 in einen Satz zu setzen ("… von 224 kotierten
+  // Titeln") hätte 201 Gesellschaften als Titel ausgegeben. Der Satz nennt
+  // deshalb beide Einheiten.
   const coverageLabel =
-    `${companies.stats.count} von ${companies.stats.totalListed} kotierten Titeln ` +
-    `auf der Karte gezeigt, davon ${companies.stats.researched} recherchiert` +
+    `${companies.stats.count} Gesellschaften von ${companies.stats.totalListed} ` +
+    `kotierten SIX-Titeln auf der Karte gezeigt, davon ${companies.stats.researched} ` +
+    'recherchiert' +
     (companies.stats.sixRetrievedDate
       ? ` · SIX-Stand ${formatGermanDate(companies.stats.sixRetrievedDate)}`
       : '')

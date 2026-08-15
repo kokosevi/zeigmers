@@ -663,7 +663,7 @@ Die Legende (`src/ui/legend.ts`, `LegendOptions.scopeLabel`) zeigt in Ansicht
 «Börsennotierte Firmen» statt eines Kantonsnamens jetzt:
 
 ```
-201 von 224 kotierten Titeln auf der Karte gezeigt, davon 201 recherchiert · SIX-Stand 15. August 2026
+201 Gesellschaften von 224 kotierten SIX-Titeln auf der Karte gezeigt, davon 201 recherchiert · SIX-Stand 15. August 2026
 ```
 
 **Zwei Zahlen, nicht eine.** Eine frühere Fassung nannte nur die Recherche-
