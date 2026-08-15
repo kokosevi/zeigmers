@@ -142,7 +142,15 @@ export function companyElevations(
     : PLACEHOLDER_BASE_HEIGHT
 
   for (let i = 0; i < heights.length; i++) {
-    if (heightValue(companies[i]!) === null) heights[i] = placeholder
+    // Sichtbarkeitsschwelle zuletzt: eine Säule unter der Kantonsplatte ist
+    // keine Säule. Platzhalter und echte Säulen bekommen verschiedene
+    // Untergrenzen, damit die Ordnung "Platzhalter < jede echte Säule"
+    // erhalten bleibt (siehe MIN_VISIBLE_BAR_M und MIN_REAL_BAR_M).
+    if (heightValue(companies[i]!) === null) {
+      heights[i] = Math.max(placeholder, MIN_VISIBLE_BAR_M)
+    } else if (heights[i]! < MIN_REAL_BAR_M) {
+      heights[i] = MIN_REAL_BAR_M
+    }
   }
   return heights
 }
@@ -213,6 +221,34 @@ export function buildCompanyLayer(
 // und WO ihr Sitz liegt, nicht WIE gross sie ist (das wüssten wir nicht,
 // ohne es zu behaupten). Ein einzelner grauer Ton für alle ~216 Titel, klar
 // unterscheidbar von den Branchenfarben der acht recherchierten Balken.
+/** Untergrenze für die Höhe einer Firmensäule.
+ *
+ *  Mit 187 echten Umsätzen spannt Ansicht A einen Faktor von rund 325'000 —
+ *  Nestlé mit 89.5 Mrd. CHF gegen Xlife Sciences mit 0.28 Mio. Am unteren
+ *  Ende ergibt die Skala Höhen von 75 und 105 m, also WENIGER als die 300 m
+ *  hohe Kantonsplatte: diese Firmen wären auf der Karte nicht vorhanden,
+ *  obwohl sie recherchiert sind und einen belegten Umsatz tragen — derselbe
+ *  Fehler, der die flachen Marker unsichtbar machte.
+ *
+ *  Neun Säulen (alle unter 18 Mio. CHF Umsatz) sitzen deshalb auf dieser
+ *  Schwelle. Ihre Höhe bildet den Umsatz dort nicht mehr ab, sondern nur
+ *  noch, DASS es die Firma gibt — bei diesen Grössen unterscheidet das Auge
+ *  75 von 105 Metern ohnehin nicht. Die Legende sagt es, und das Panel nennt
+ *  die echte Zahl. */
+export const MIN_VISIBLE_BAR_M = 400
+
+/** Untergrenze für Säulen MIT belegtem Umsatz — bewusst höher als
+ *  `MIN_VISIBLE_BAR_M`.
+ *
+ *  Zwei Zusicherungen stossen hier aneinander: jede Säule muss die
+ *  Kantonsplatte überragen, UND ein Platzhalter ("keine Zahl gefunden") muss
+ *  niedriger bleiben als jede echte Säule — sonst sieht "keine Zahl" aus wie
+ *  "kleine Zahl". Mit einer einzigen Schwelle liesse sich nur eines von
+ *  beiden halten. Also zwei: Platzhalter sitzen auf 400 m, die kleinsten
+ *  echten Säulen auf 550 m. Der Abstand ist klein, aber er ist da, und die
+ *  Reihenfolge stimmt. */
+export const MIN_REAL_BAR_M = 550
+
 export const UNRESEARCHED_MARKER_RADIUS_M = 350
 
 // Sichtbarkeitsschranken in Bildpunkten, unabhängig vom Zoom — siehe

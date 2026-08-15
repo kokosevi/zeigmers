@@ -13,6 +13,15 @@ const OUTLINE_LEGEND_TEXT =
 // oben — ohne eigenen Legendeneintrag liesse sich aus der Karte allein nicht
 // ablesen, dass ein grauer Punkt etwas grundsätzlich anderes bedeutet als
 // ein grauer ("nicht eindeutig bestimmbar") Balken.
+// Elf Säulen (alle unter rund 19 Mio. CHF Umsatz) sitzen auf einer
+// Sichtbarkeitsschwelle: darunter würden sie in der Kantonsplatte
+// verschwinden. Ihre Höhe bildet den Umsatz dort nicht mehr ab, sondern nur
+// noch, DASS es die Firma gibt — das gehört gesagt, sonst behauptet die
+// Karte eine Grösse, die sie nicht misst.
+const FLOOR_LEGEND_TEXT =
+  'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — ' +
+  'unterhalb davon zeigt die Höhe nicht mehr den Umsatz. Genaue Zahl im Panel.'
+
 const UNRESEARCHED_LEGEND_TEXT =
   'Kleiner Punkt: an der SIX kotiert, aber noch nicht recherchiert — Sitz bekannt, keine Höhenaussage.'
 
@@ -134,6 +143,9 @@ export function renderLegend(options: LegendOptions): void {
   if (view === 'sichtbare') {
     branchen.appendChild(outlineSwatch())
     branchen.appendChild(unresearchedSwatch())
+    const floorNote = document.createElement('li')
+    floorNote.textContent = FLOOR_LEGEND_TEXT
+    branchen.appendChild(floorNote)
   }
   el.appendChild(branchen)
 

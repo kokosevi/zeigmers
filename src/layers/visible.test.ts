@@ -7,6 +7,7 @@ import {
   UNKNOWN_BAR_FRACTION,
   UNRESEARCHED_MARKER_COLOR,
   heightValue,
+  MIN_REAL_BAR_M,
   type Company,
   type CompanyData,
 } from './visible'
@@ -238,5 +239,28 @@ describe('Höhenlage der Marker über der Kantonsplatte', () => {
     const getPosition = layer.props.getPosition as unknown as (c: Company) => number[]
     const position = getPosition(data.companies[0]!)
     expect(position[2]).toBe(CANTON_ELEVATION_M)
+  })
+})
+
+describe('Sichtbarkeitsschwelle der Säulen', () => {
+  it('hebt Säulen, die sonst in der Kantonsplatte verschwänden', () => {
+    // Mit 187 echten Umsätzen spannt die Karte einen Faktor von 325'000
+    // (Nestlé 89.5 Mrd. gegen Xlife Sciences 0.28 Mio.). Am unteren Ende
+    // ergibt die Skala Höhen von 75 und 105 m — unter der 300 m hohen
+    // Kantonsplatte. Diese Firmen wären auf der Karte nicht vorhanden,
+    // obwohl sie recherchiert sind und einen belegten Umsatz tragen.
+    const winzig = company({ revenue: 2.8e5, revenueChf: 2.8e5 })
+    const gross = company({ revenue: 8.9e10, revenueChf: 8.9e10 })
+    const heights = companyElevations([gross, winzig], 8.9e10, 12000, 'logarithmisch')
+
+    expect(heights[1]).toBeGreaterThan(CANTON_ELEVATION_M)
+    expect(heights[1]).toBe(MIN_REAL_BAR_M)
+    expect(heights[0]).toBe(12000)
+  })
+
+  it('lässt Säulen oberhalb der Schwelle unverändert', () => {
+    const mittel = company({ revenue: 1e9, revenueChf: 1e9 })
+    const heights = companyElevations([mittel], 8.9e10, 12000, 'logarithmisch')
+    expect(heights[0]).toBeGreaterThan(MIN_REAL_BAR_M)
   })
 })
