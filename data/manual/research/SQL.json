@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": "",
+ "profit_currency": "",
+ "profit_unit": "",
+ "core_products": "Investmentgesellschaft für Secondary Private Equity: erwirbt gemäss Firmenname und Gesellschaftszweck Beteiligungen/Anteile an Private-Equity-Fonds bzw. -Portfolios auf dem Zweitmarkt (Secondaries) sowie Beteiligungen an Unternehmen; keine eigene Produktions- oder Handelstätigkeit.",
+ "products_url": "",
+ "founding_year": 2005,
+ "founding_year_source": "https://www.moneyhouse.ch/de/company/matador-secondary-private-equity-ag-13234696171 (Handelsregisterauszug: 'foundingDate: 2005-09-23').",
+ "employees": "",
+ "fiscal_year": "",
+ "report_url": "",
+ "note": "Keine eigene, öffentlich erreichbare Firmenwebsite gefunden (naheliegende Domainnamen wie matador-se.ch/matadorpe.com etc. lösen nicht auf); die administrative Verwaltung erfolgt laut Handelsregister-Adresse (Grundacher 5, 6060 Sarnen) vermutlich durch die am gleichen Sitz eingetragene Alegro Capital AG, deren Domain alegrocapital.com nur eine geparkte Verkaufsseite (hugedomains.com) ist. Aus einem über Moneyhouse zugänglichen SHAB-Publikationstext (Einladung zur ordentlichen Generalversammlung 2025) geht hervor, dass der Verwaltungsrat plante, die Rechnungslegung erst ab Geschäftsjahr 2025 auf IFRS umzustellen und die Gesellschaft 'zukünftig an der Schweizer Börse SIX Swiss Exchange' zu listen ('Ausblick', Traktandum 9) – die Gesellschaft war zum Zeitpunkt dieser GV-Einladung (Frühjahr 2025) also noch nicht bzw. erst im Begriff, an der SIX kotiert zu werden. Ein Geschäftsbericht mit Umsatz-, Gewinn- oder Mitarbeiterzahlen war innerhalb der Recherche nicht auffindbar; Moneyhouse weist Umsatz und Mitarbeiterzahlen nur für Premium-Mitglieder aus. 'revenue', 'profit', 'employees', 'fiscal_year' und 'report_url' bleiben deshalb leer statt mit ungeprüften Zahlen aus einer unzulässigen Quelle gefüllt.",
+ "_verification": "Keine Primärquelle mit Umsatz-/Gewinnzahlen auffindbar (siehe note); die Felder bleiben deshalb bewusst leer. Verifiziert wurden lediglich Sitz, Rechtsform, Zweck (Beteiligungs-/Fondsmanagementgesellschaft, Branche laut Moneyhouse 'Betreiben von Fondsmanagement') und Gründungsdatum über den Moneyhouse-Handelsregisterauszug sowie ein über Moneyhouse einsehbarer SHAB-Text der GV-Einladung 2025, der den (zum damaligen Zeitpunkt noch bevorstehenden) SIX-Börsengang der Gesellschaft bestätigt."
+}

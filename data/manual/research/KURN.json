@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "continuing_operations",
+ "revenue": 146058,
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000,
+ "profit": 2551,
+ "profit_currency": "USD",
+ "profit_unit": 1000,
+ "core_products": "Entwicklung, Herstellung und Vertrieb von biologischen Knochentransplantat-Produkten (Bone-Graft-Substitute) für Wirbelsäulen- und Extremitätenchirurgie, insbesondere die MagnetOs-Produktfamilie auf Basis der NeedleGrip-Oberflächentechnologie.",
+ "products_url": "https://kurosbio.com/spine/",
+ "founding_year": 2000,
+ "founding_year_source": "https://kurosbio.com/about/",
+ "employees": 178,
+ "fiscal_year": 2025,
+ "report_url": "https://ir.kurosbio.com/static-files/e72aba39-dccf-4222-85a1-42b0f8f39dbd",
+ "note": "Umsatz ('Revenue from product sales' = 'Revenue', TUSD 146'058) wird im Konzernabschluss unter 'Continuing operations' ausgewiesen; daneben besteht eine kleine 'Discontinued operation' mit einem Beitrag von TUSD 89 zum 'Net profit for the period' (TUSD 2'551) - der Gewinn ist somit geringfügig weiter gefasst als der Umsatz (Differenz < 0.1% des Gewinns). Eingetragener Gewinn ist 'Net profit/(loss) for the period', nicht das umfassendere 'Total comprehensive income' (TUSD 13'672, enthält v.a. Fremdwährungsumrechnungsdifferenzen von TUSD 10'699). Keine gesonderten Minderheitsanteile ausgewiesen (EPS-Angabe bezieht sich direkt auf 'ordinary equity holders of the company'). Mitarbeitende: 178 (Konzern-Headcount per 31.12.2025 gemäss Corporate-Governance-Bericht, Vorjahr 122). Kuros wurde im März 2000 als Spin-off der ETH Zürich gegründet; die heutige Holdingstruktur (Kuros Biosciences AG als oberste Konzerngesellschaft) besteht gemäss Geschäftsbericht seit dem 18. Januar 2016.",
+ "_verification": "Umsatz und Gewinn aus der 'Consolidated income statement' im Kuros Biosciences Annual Report 2025 (S. 88f. des PDFs): Zeile 'Revenue' TUSD 146'058 (Vorjahr 85'159, Note 5) und Zeile 'Net profit/(loss) for the period' TUSD 2'551 (Vorjahr -4'835), Geschäftsjahr 2025, konsolidiert nach IFRS. Beide Zahlen aus demselben testierten Abschluss geprüft und mit der 'Consolidated statement of comprehensive income' (identischer Startwert 'Net profit/(loss)' TUSD 2'551) abgeglichen. Mitarbeiterzahl (178) und Gründungsjahr (2016 als Holding-Datum) aus dem Corporate-Governance-Teil desselben Berichts; ursprüngliches Gründungsjahr 2000 von der offiziellen Unternehmens-Website (kurosbio.com/about) verifiziert."
+}

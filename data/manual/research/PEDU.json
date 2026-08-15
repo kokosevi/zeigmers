@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "",
+ "revenue": "",
+ "revenue_currency": "",
+ "revenue_type": "",
+ "revenue_unit": "",
+ "profit": "",
+ "profit_currency": "",
+ "profit_unit": "",
+ "core_products": "Industrieholding mit zwei operativen Gruppen: Füll-Gruppe (Dosier- und Automatisierungsanlagen für die Herstellung von Farben, Lacken, Druckfarben, Klebstoffen, Duft-/Aromastoffen und Feinchemikalien) und Polystone-Gruppe (dekorative Kosmetik, insbesondere Gele für Nagelmodellage/Nail-Art für den Grosshandel).",
+ "products_url": "https://perrotduval.com/full-process-s-a/",
+ "founding_year": 1896,
+ "founding_year_source": "https://www.moneyhouse.ch/de/company/perrot-duval-holding-sa-12009240551 (Handelsregisterauszug: 'foundingDate: 1896-01-01').",
+ "employees": "",
+ "fiscal_year": "",
+ "report_url": "",
+ "note": "Umsatz, Gewinn, Beschäftigtenzahl und Geschäftsjahr konnten nicht recherchiert werden: Die Firmenwebsite perrotduval.com (inkl. der Unterseiten 'Chiffres-clés' und 'Rapports financiers', auf denen Geschäftsberichte verlinkt sind) ist seit ca. Anfang/Mitte 2025 durchgängig durch eine Cloudflare-Bot-Schutzseite ('Just a moment...') blockiert - sowohl für automatisierte Abrufe als auch für den Internet-Archive-Crawler (Wayback-Machine-Snapshot des Geschäftsberichts-Download-Links vom 03.07.2026 liefert ebenfalls nur die Cloudflare-Challenge-Seite, HTTP 403). Auch Moneyhouse weist Umsatz- und Mitarbeiterzahlen für diese Firma nur für Premium-Mitglieder aus. Ältere, im Web-Archiv erhaltene Kopien der Unterseite 'Chiffres-clés' (u. a. Snapshot vom 05.12.2024) enthalten die Kennzahlen nicht als Text, sondern binden sie über ein serverseitiges Template ein, das im archivierten HTML nicht aufgelöst ist. Geschäftsjahr endet laut Aufgabenstellung Ende April; ein aktueller Geschäftsbericht konnte innerhalb der Recherche nicht gefunden werden. Unternehmensbeschreibung, NOGA-Gruppe und Gründungsjahr stammen aus erreichbaren Quellen (archivierte Unterseiten 'Füll Process S.A.' und 'Polystone Holding S.A.' der Firmenwebsite bzw. Moneyhouse-Handelsregisterauszug).",
+ "_verification": "Für Umsatz und Gewinn konnte keine Primärquelle geöffnet werden (siehe note); beide Felder bleiben deshalb bewusst leer statt mit einer Zahl aus einer unzulässigen Sekundärquelle (Börsenportal) gefüllt zu werden. Geprüft wurden: perrotduval.com (403/Cloudflare-Challenge bei direktem Abruf und über die Wayback Machine), Moneyhouse (Umsatz/Mitarbeiter premium-gesperrt, Gründungsdatum aber frei einsehbar), SIX Swiss Exchange Newsboard/Official Notices (keine direkt auffindbaren PDF-Links). Unternehmensbeschreibung basiert auf archivierten, frei lesbaren Unterseiten der Firmenwebsite (Stand Wayback-Snapshots 2024)."
+}
