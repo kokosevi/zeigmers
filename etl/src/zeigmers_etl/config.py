@@ -37,7 +37,10 @@ DATA_MANUAL = ROOT / "data" / "manual"
 PUBLIC_DATA = ROOT / "public" / "data"
 ETL_DIR = ROOT / "etl"
 
-USER_AGENT = "zeigmers-etl/0.1 (+https://github.com/sevi/zeigmers)"
+# Die +URL im User-Agent ist Kontaktadresse für fremde Server (BFS, SIX,
+# GLEIF, swisstopo) — sie muss erreichbar sein und bei einer Umbenennung
+# des Repositorys mitgezogen werden, sonst zeigt sie ins Leere.
+USER_AGENT = "zeigmers-etl/0.1 (+https://github.com/kokosevi/zeigmers)"
 
 STATENT_MODEL_BASE = (
     "https://www.bfs.admin.ch/content/bfs/de/home/dienstleistungen/geostat/"
