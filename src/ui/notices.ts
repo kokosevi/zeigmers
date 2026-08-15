@@ -104,14 +104,26 @@ const SCALE_NOTE =
   'Höhenskala «logarithmisch»: rechnerisch eine Potenzfunktion mit Exponent ' +
   '0,4, keine echte Logarithmusfunktion.'
 
-// Zweite Quellenzeile, nur in Ansicht A: die Fixzeile oben nennt STATENT und
-// swisstopo, aber jede Zahl in Ansicht A stammt aus keiner dieser Quellen,
-// sondern aus den Geschäftsberichten der acht Unternehmen selbst (siehe
-// `report_url` je Firma im Panel). Ohne diese Zeile schriebe die Box
-// Ansicht-A-Zahlen implizit dem BFS zu (Abschluss-Review, Finding I7).
+// Zweite Quellenzeile, nur in Ansicht «Börsennotierte Firmen»: die Fixzeile
+// oben nennt STATENT und swisstopo, aber keine Zahl in dieser Ansicht stammt
+// aus einer dieser Quellen, sondern aus den Geschäftsberichten der
+// recherchierten Firmen selbst (siehe `report_url` je Firma im Panel). Ohne
+// diese Zeile schriebe die Box diese Zahlen implizit dem BFS zu
+// (Abschluss-Review, Finding I7).
+//
+// Fix-Runde (2026-08-15, Abschluss-Review Fund 1): der Wortlaut nannte bisher
+// „acht Unternehmen" — mit der Nationalisierung (Phase 3) sind es 201
+// recherchierte, und die Zahl steht bereits, aus `companies.json` berechnet,
+// in der Legende direkt daneben (`karte/firmen.ts`, `coverageLabel`); eine
+// zweite, hier hartkodierte Zahl würde bei jedem künftigen Recherche-Lauf neu
+// veralten können, ohne dass etwas rot würde. Der Satz nennt deshalb keine
+// Zahl mehr. „Ansicht A:" ist ebenfalls entfallen — das Label ist seit der
+// Aufteilung in drei benannte Seiten (`/`, `/firmen/`, `/beschaeftigte/`) tot,
+// es gibt kein A/B mehr in der Oberfläche.
 const FOOTER_COMPANIES =
-  'Ansicht A: Umsatz, Mitarbeitende und Geschäftsjahr aus den Geschäftsberichten der ' +
-  'acht Unternehmen selbst (Quelle je Firma im Panel, «Geschäftsbericht öffnen»).'
+  'Börsennotierte Firmen: Umsatz, Mitarbeitende und Geschäftsjahr aus den ' +
+  'Geschäftsberichten der recherchierten Firmen selbst (Quelle je Firma im ' +
+  'Panel, «Geschäftsbericht öffnen»).'
 
 // Redesign Change 2 (2026-08-15): vorher stand dieser Jahrgangs-Hinweis direkt
 // neben der «Beschäftigte je Einwohner»-Zeile im Klick-Panel
