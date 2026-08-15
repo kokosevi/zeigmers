@@ -3,13 +3,15 @@
 Eine statische 3D-Wirtschaftskarte der Schweiz: zwei Ansichten derselben
 Fläche, nebeneinander gehalten, damit der Unterschied sichtbar wird.
 
-**Ansicht A** zeigt die börsenkotierten Unternehmen — seit dem 14. August 2026
-gesamtschweizerisch: 135 der 224 an der SIX kotierten Titel stehen an ihrem
-Sitz auf der Karte, acht davon als Säule nach Umsatz (Zahlen, die öffentlich
-und geprüft sind, weil ein kotiertes Unternehmen sie veröffentlichen muss),
-die übrigen als schlichter Marker ohne Höhenaussage. Beide Zahlen nennt die
-Legende selbst — wie viele gezeigt werden und wie viele davon recherchiert
-sind (siehe „Die Abdeckungsangabe ist Teil der Oberfläche").
+**Ansicht A** zeigt die börsenkotierten Unternehmen, gesamtschweizerisch:
+**201 der 202 an der SIX kotierten Gesellschaften stehen an ihrem operativen
+Hauptsitz, und alle 201 sind recherchiert** — Umsatz, Gewinn, Beschäftigte,
+Branche, Kerngeschäft, jede Zahl mit Primärquelle und einer unabhängigen
+Gegenprüfung. Die Höhe der Säule ist der Umsatz, in CHF umgerechnet, damit
+Beträge in EUR und USD vergleichbar werden; das Panel zeigt die berichtete
+Zahl im Original. Wie viele Firmen gezeigt werden und wie viele davon
+recherchiert sind, nennt die Legende selbst (siehe „Die Abdeckungsangabe ist
+Teil der Oberfläche").
 
 **Ansicht B** zeigt dieselbe Fläche als 196 extrudierte Gemeindeflächen nach
 Beschäftigten am Arbeitsort, kanton­weit 383'203 Beschäftigte — seit dem
@@ -508,6 +510,96 @@ Felder, die `src/data/loader.ts`s `Meta`-Interface und `src/main.ts`
 zusätzliches Feld in einem JSON-Objekt bricht kein `as Meta`-Cast). Die
 Karte fragt weiterhin nur `ag_*`-Dateien an (aus `meta.canton.code`), die
 jetzt einfach eines von 26 gleichwertigen Kanton-Paketen sind.
+
+## Ansicht «Börsennotierte Firmen»: der Stand
+
+**201 der 202 an der SIX kotierten Gesellschaften stehen auf der Karte, und
+alle 201 sind recherchiert** — Umsatz, Gewinn, Beschäftigte, Branche,
+Kerngeschäft, Gründungsjahr, jede Zahl mit Primärquelle. Die Belege liegen
+als ein JSON je Firma in `data/manual/research/`, zusammen mit den beiden
+Verträgen, nach denen recherchiert und gegengelesen wurde.
+
+| | |
+|---|---|
+| kotierte Titel (SIX, 15. August 2026) | 224 |
+| Gesellschaften nach Zusammenfassung von Namen-/PS-Aktien und zweiten Handelslinien | 202 |
+| davon auf der Karte platziert | **201** |
+| davon recherchiert | **201** |
+| davon mit belegtem Umsatz | **188** |
+| unabhängig gegengeprüfte Zeilen | 176 |
+| eingearbeitete Korrekturen | 18 |
+
+Die **14 Zeilen ohne Umsatz** sind Beteiligungs- und Investmentvehikel
+(BB Biotech, HBM Healthcare, Private Equity Holding, nebag, Alpine Select,
+Castle, Matador, EEII, C Capital, EvoNext), klinische Biotechs ohne
+zugelassenes Produkt (Addex, BioVersys, Molecular Partners) und die
+Schweizerische Nationalbank. Bei ihnen ist das Feld leer **mit Begründung** —
+etwas anderes als «noch nicht nachgesehen», und die Karte zeichnet sie
+entsprechend als Säule auf Mindesthöhe statt mit einer Grösse, die niemand
+belegen kann.
+
+**Die eine nicht platzierte Gesellschaft** ist «Baloise Swiss Property»: kein
+Unternehmen, sondern ein vertraglicher Immobilienfonds nach KAG ohne eigene
+Rechtspersönlichkeit, dessen ISIN zudem nur zum befristeten Bezugsrecht einer
+Kapitalerhöhung gehört. Die Adresse der Fondsleitung wäre ein Näherungswert,
+kein Sitz.
+
+### Was die Gegenprüfung gefunden hat
+
+Jede recherchierte Zeile wird von einem zweiten, unabhängigen Durchgang
+gelesen, dessen Auftrag lautet, sie zu **widerlegen** — die Zahlen selbst aus
+der Primärquelle zu holen, statt die vorgelegten nachzuvollziehen. Das war
+nicht symbolisch: im Pilotlauf über acht bewusst schwierige Firmen hatten
+**vier von vier** gegengelesenen Zeilen einen Fund, keiner davon sichtbar.
+
+Aus diesen Funden wurden die sieben Regeln des Recherche-Vertrags. Danach
+kippte die Quote: über die restlichen rund 170 Zeilen blieben es 14 weitere
+Funde. Die lehrreichsten:
+
+| Firma | Fund |
+|---|---|
+| Avolta | 13'983 war «Turnover» (Nettoumsatz plus 223 Mio. Werbeerträge), eingetragen als Nettoumsatz |
+| Partners Group | Die Zeile «Total revenues …» enthält 101.9 Mio., die der Bericht selbst als «not revenue» abgrenzt |
+| APG SGA | Der Umsatz war eine selbst gebildete Teilsumme, keine gedruckte Berichtszeile |
+| Swisscom | Gewinn 1'270 statt 1'271 — Konzernergebnis statt Aktionärsanteil, nachgewiesen über die Gewinn-je-Aktie |
+| Sulzer, EMS-CHEMIE | dasselbe: Konzerntotal statt Aktionärsanteil |
+| Kuros | Gewinn enthielt ein aufgegebenes Geschäft, der Umsatz nicht |
+| Alcon, Clariant, Cembra | Beschäftigte gerundet bzw. Vollzeitstellen statt Köpfe |
+| Temenos | Gründungsjahr stammte aus Wikipedia — Feld jetzt leer |
+
+**Korrekturen stehen in einem eigenen Feld** (`_korrektur`), nicht im
+Prüfurteil. Der Grund ist eine Panne, die eine Prüfung aufdeckte: Avoltas
+gespeichertes Urteil stammte von VOR der Korrektur und hielt die alten,
+falschen Werte für richtig. Ein Prüfurteil ist eine Momentaufnahme, eine
+Korrektur eine Entscheidung — im selben Feld überschreibt das spätere das
+frühere. Bei Kuros widersprechen sich zwei Prüfungen bis heute: die eine
+bestätigt, dass die Zahl im Bericht steht (stimmt), die andere, dass ihr
+Umfang nicht zum Umsatz passt (stimmt auch). Ohne getrenntes Feld hätte die
+schwächere die schärfere überschrieben.
+
+### Zwei Darstellungsfehler, die erst mit der Vollständigkeit auftraten
+
+**Acht Firmen waren hinter anderen versteckt.** Vier Adressen tragen je zwei
+kotierte Gesellschaften (Metall Zug und V-ZUG teilen sich die
+Industriestrasse 66 in Zug, AEVIS und Infracore die Rue Georges-Jordil 4 in
+Fribourg). Am identischen Punkt gezeichnet verdeckt die höhere Säule die
+niedrigere vollständig — Infracore mit 66 Mio. verschwand hinter AEVIS mit
+1'055 Mio. Sie stehen jetzt auf einem Kreis von 150 m um den echten Punkt,
+weit unter der Auflösung, in der diese Karte etwas aussagt, und das Panel
+nennt den Versatz.
+
+**Elf Säulen steckten in der Kantonsplatte.** Mit 188 echten Umsätzen spannt
+die Ansicht einen Faktor von rund 325'000 (Nestlé 89.5 Mrd. gegen Xlife
+Sciences 0.28 Mio.); am unteren Ende ergab die Skala 75 und 105 m, weniger
+als die 300 m hohe Platte. Zwei Schwellen lösen das, weil zwei Zusicherungen
+aneinanderstossen: jede Säule muss die Platte überragen, und ein Platzhalter
+(«keine Zahl gefunden») muss niedriger bleiben als jede echte Säule, sonst
+sieht «keine Zahl» aus wie «kleine Zahl». Platzhalter sitzen auf 400 m, die
+kleinsten echten Säulen auf 550 m — und die Legende sagt, dass die Höhe
+unterhalb der Schwelle nicht mehr den Umsatz zeigt.
+
+Beide Fehler haben dieselbe Form wie fast alles in diesem Projekt: **die
+Daten stimmten, die Karte zeigte sie trotzdem nicht.**
 
 ## Phase 3: Ansicht «Börsennotierte Firmen» wird national
 
