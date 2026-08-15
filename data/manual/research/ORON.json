@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://cdn.shopify.com/s/files/1/0928/1182/1392/files/ORIOR_AG_Annual_Report_2025.pdf?v=1775844606",
  "note": "Mitarbeitendenzahl ist die durchschnittliche Anzahl Vollzeitstellen (FTE) im Jahr ('Av. number of employees (FTE)'); der Bericht weist keinen separaten Stichtags-Headcount aus. Vorjahr 2024 war ein Verlustjahr (-35.2 Mio.) durch Sondereffekte; 2025 kehrte die Gruppe in die Gewinnzone zurück.",
- "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Key figures – 2025 financial year' auf der ersten Innenseite des Annual Report 2025: Zeile 'Net sales' 622'940 (Tsd. CHF) und Zeile 'Net profit attributable to owners of the parent' 9'372 (Tsd. CHF) - bereits explizit als Aktionärsanteil ausgewiesen. Mitarbeitendenzahl aus derselben Tabelle, Zeile 'Av. number of employees (FTE)'. Geprüft: PDF direkt heruntergeladen, alle Werte im Volltext an der Quellstelle verifiziert."
+ "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Key figures – 2025 financial year' auf der ersten Innenseite des Annual Report 2025: Zeile 'Net sales' 622'940 (Tsd. CHF) und Zeile 'Net profit attributable to owners of the parent' 9'372 (Tsd. CHF) - bereits explizit als Aktionärsanteil ausgewiesen. Mitarbeitendenzahl aus derselben Tabelle, Zeile 'Av. number of employees (FTE)'. Geprüft: PDF direkt heruntergeladen, alle Werte im Volltext an der Quellstelle verifiziert.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "ORIOR AG",
+  "revenue_zeile": "Net sales (from goods and services)",
+  "profit_zeile": "Net profit attributable to shareholders of ORIOR AG",
+  "abweichungen": [],
+  "begruendung": "Annual Report 2025 selbst heruntergeladen (pdftotext). Net sales 622'940 Tsd. und Net profit attributable to shareholders of ORIOR AG 9'372 Tsd. exakt gefunden; 'Net profit for the period' entspricht ebenfalls 9'372 Tsd., also keine Minderheitsanteile abzuziehen."
+ }
 }

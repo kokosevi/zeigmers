@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://vskb.ch/volumes/files/Jahresberichte/2025/WKB_2025.pdf",
  "note": "Als Kantonalbank kein 'Umsatz' im Industriesinn; revenue_type daher operating_income = Geschäftsertrag, berechnet als Summe der vier Erfolgs-Subtotale der Erfolgsrechnung (Netto-Erfolg Zinsengeschäft 204.492 + Erfolg Kommissions-/Dienstleistungsgeschäft 53.500 + Erfolg Handelsgeschäft 20.089 + übriger ordentlicher Erfolg 5.495 = 283.576 Mio.), was mit der im Lagebericht genannten Grösse 'Erträge... insgesamt CHF 283,6 Millionen' übereinstimmt. Mitarbeitendenzahl 561 ist die Kopfzahl per 31.12.2025; der Bericht nennt zusätzlich den Jahresdurchschnitt der Vollzeitstellen von 493.67 (FTE), hier nicht verwendet gemäss Vertragsregel (Kopfzahl vor FTE).",
- "_verification": "Finanzbericht/Erfolgsrechnung Seite 56 des Geschäftsberichts 2025: Zeilen 'Subtotal Netto-Erfolg Zinsengeschäft' 204'492, 'Subtotal Erfolg Kommissions- und Dienstleistungsgeschäft' 53'500, 'Erfolg aus dem Handelsgeschäft' 20'089, 'Subtotal übriger ordentlicher Erfolg' 5'495 (Summe 283'576 Tsd. CHF) sowie 'Gewinn (Periodenerfolg)' 85'871 Tsd. CHF für Geschäftsjahr 2025 - beide aus derselben geprüften Jahresrechnung. Lagebericht Seite 6 bestätigt Rundungen ('CHF 283,6 Millionen', 'Jahresgewinn... CHF 85,9 Millionen'). Mitarbeitendenzahl 561 laut Seite 4 ('31. Dezember 2025 beschäftigte sie 561 Mitarbeitende'). Gründungsjahr 1917 von der offiziellen WKB-Porträt-Seite bestätigt (100-Jahr-Jubiläum 2017)."
+ "_verification": "Finanzbericht/Erfolgsrechnung Seite 56 des Geschäftsberichts 2025: Zeilen 'Subtotal Netto-Erfolg Zinsengeschäft' 204'492, 'Subtotal Erfolg Kommissions- und Dienstleistungsgeschäft' 53'500, 'Erfolg aus dem Handelsgeschäft' 20'089, 'Subtotal übriger ordentlicher Erfolg' 5'495 (Summe 283'576 Tsd. CHF) sowie 'Gewinn (Periodenerfolg)' 85'871 Tsd. CHF für Geschäftsjahr 2025 - beide aus derselben geprüften Jahresrechnung. Lagebericht Seite 6 bestätigt Rundungen ('CHF 283,6 Millionen', 'Jahresgewinn... CHF 85,9 Millionen'). Mitarbeitendenzahl 561 laut Seite 4 ('31. Dezember 2025 beschäftigte sie 561 Mitarbeitende'). Gründungsjahr 1917 von der offiziellen WKB-Porträt-Seite bestätigt (100-Jahr-Jubiläum 2017).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Walliser Kantonalbank (WKB)",
+  "revenue_zeile": "Summe der Erfolgs-Subtotale (Netto-Erfolg Zinsengeschäft 204'492 + Kommissions-/Dienstleistungsgeschäft 53'500 + Handelsgeschäft 20'089 + übriger ordentlicher Erfolg 5'495)",
+  "profit_zeile": "Gewinn (Periodenerfolg)",
+  "abweichungen": [],
+  "begruendung": "WKB_2025.pdf selbst heruntergeladen (pdftotext). Alle vier Subtotale und die Gewinnzeile exakt gefunden, Summe ergibt 283'576 Tsd. CHF, konsistent mit dem im Lagebericht genannten 'insgesamt CHF 283,6 Millionen'. Mitarbeitendenzahl 561 im Bericht als Kopfzahl bestätigt ('31. Dezember 2025 beschäftigte sie 561 Mitarbeitende')."
+ }
 }

@@ -15,6 +15,17 @@
  "employees": "94",
  "fiscal_year": "2025",
  "report_url": "https://www.santhera.com/assets/files/financial_reports/Consolidated_Annual_Report_2025-FINAL.pdf",
- "note": "Beschäftigte: 'Full-time equivalents at year-end' = 93.6 (FY2025, Anhang 'Employee Expenses and Benefits'), auf 94 gerundet; keine Kopfzahl im Bericht ausgewiesen. founding_year leer gelassen: keine eigene Quelle der Firma gefunden, externe Quellen widersprechen sich (1998/2000/2004) und sind nicht primär genug, um sicher zu sein.",
- "_verification": "Umsatz (Zeile 'Revenue from contracts with customers', konsolidierte Erfolgsrechnung, CHF 77,185 Tsd.) und Gewinn (Zeile 'Net result attributable to shareholders', CHF -49,236 Tsd.) stammen aus dem offiziellen 'Consolidated Annual Report 2025' von santhera.com (Financial Reports). Geprüft: gleiches Geschäftsjahr 2025, gleicher Konsolidierungskreis (Konzern, kein Hinweis auf Minderheitsanteile), Beschäftigtenzahl aus Anhang 'Full-time equivalents' im selben Bericht."
+ "note": "Zusammensetzung des Umsatzes: von den 77.185 Mio. CHF ('Revenue from contracts with customers') sind nur rund 25.8 Mio. direkter AGAMREE-Produktabsatz; 23.1 Mio. sind Lizenz- und Meilensteinzahlungen und 28.3 Mio. Lieferungen an Partner. Die Zahl ist die Umsatzzeile des Berichts, aber sie misst nicht dasselbe wie der Nettoumsatz eines Industrieunternehmens. Beschäftigte: 'Full-time equivalents at year-end' = 93.6 (FY2025, Anhang 'Employee Expenses and Benefits'), auf 94 gerundet; keine Kopfzahl im Bericht ausgewiesen. founding_year leer gelassen: keine eigene Quelle der Firma gefunden, externe Quellen widersprechen sich (1998/2000/2004) und sind nicht primär genug, um sicher zu sein.",
+ "_verification": "Umsatz (Zeile 'Revenue from contracts with customers', konsolidierte Erfolgsrechnung, CHF 77,185 Tsd.) und Gewinn (Zeile 'Net result attributable to shareholders', CHF -49,236 Tsd.) stammen aus dem offiziellen 'Consolidated Annual Report 2025' von santhera.com (Financial Reports). Geprüft: gleiches Geschäftsjahr 2025, gleicher Konsolidierungskreis (Konzern, kein Hinweis auf Minderheitsanteile), Beschäftigtenzahl aus Anhang 'Full-time equivalents' im selben Bericht.",
+ "_pruefung": {
+  "verdict": "abweichung",
+  "legal_name_im_bericht": "Santhera Pharmaceuticals Holding AG",
+  "revenue_zeile": "Revenue from contracts with customers",
+  "profit_zeile": "Net result attributable to shareholders",
+  "abweichungen": [
+   "Die Zahl 77.185 Mio. CHF ist korrekt aus 'Revenue from contracts with customers' übernommen, aber das Feld 'note' verschweigt (anders als bei BSLN und ADXN explizit gemacht), dass nur CHF 25.8 Mio. davon direkter AGAMREE-Produktabsatz sind, während CHF 23.1 Mio. Royalties/Meilensteinzahlungen von Lizenzpartnern (u.a. Catalyst) und weitere CHF 28.3 Mio. Lieferungen an Partner (Produktlieferung/Services) sind — rund zwei Drittel des ausgewiesenen Umsatzes stammen somit nicht aus direktem Endmarkt-Produktverkauf."
+  ],
+  "begruendung": "Consolidated Annual Report 2025 selbst heruntergeladen (pdftotext). Beide Kernzahlen (77'185 Tsd. Umsatz, -49'236 Tsd. Nettoergebnis Aktionäre) exakt gefunden und stammen aus derselben konsolidierten Rechnung 2025; im Finanzteil des Berichts wird die Umsatzzusammensetzung jedoch offengelegt (Product sales 25.8 Mio., Royalties/Meilensteine 23.1 Mio., Lieferungen an Partner 28.3 Mio.), die im vorgelegten 'note'-Feld fehlt."
+ },
+ "_korrektur": "Zahl unveraendert, Zusammensetzung offengelegt: zwei Drittel des Umsatzes sind Lizenzen, Meilensteine und Partnerlieferungen statt Produktverkauf — das stand vorher nicht in der Zeile."
 }

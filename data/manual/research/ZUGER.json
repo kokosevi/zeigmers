@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.zugerkb.ch/docs/default-source/die-zgkb/geschaeftsbericht-2025/finanzbericht.pdf?sfvrsn=f1ca7e8d_2",
  "note": "Mitarbeitendenzahl ist der Personalbestand auf Stufe Konzern per Ende 2025, teilzeitbereinigt (FTE) laut Anhang zur Konzernrechnung; eine Kopfzahl wird nicht separat ausgewiesen. Bericht bestätigt explizit: 'Minderheitsanteile von Drittaktionären am Eigenkapital und am Konzerngewinn bestehen nicht' — Konzerngewinn ist vollständig den Aktionären zurechenbar. Die separate Stammhaus-Erfolgsrechnung weist abweichende Werte aus (Geschäftsertrag 322'653, Gewinn 144'239), wurde hier aber nicht verwendet, da die Konzernwerte massgeblich sind.",
- "_verification": "Konsolidierte Erfolgsrechnung (Geschäftsbericht 2025, Finanzbericht Konzern) Zeile 'Geschäftsertrag' 328'519 Tausend CHF (2025) und Zeile 'Konzerngewinn' 131'108 Tausend CHF (2025). Personalbestand aus Anhang zur Konzernrechnung, Ziffer 1: 'Per Ende 2025 umfasste der Personalbestand auf Stufe Konzern teilzeitbereinigt 521 Personen'. Werte gegen die Medienmitteilung 'Zuger Kantonalbank erzielt ein gutes Jahresergebnis 2025' abgeglichen (328.5 Mio. / 131.1 Mio., übereinstimmend gerundet)."
+ "_verification": "Konsolidierte Erfolgsrechnung (Geschäftsbericht 2025, Finanzbericht Konzern) Zeile 'Geschäftsertrag' 328'519 Tausend CHF (2025) und Zeile 'Konzerngewinn' 131'108 Tausend CHF (2025). Personalbestand aus Anhang zur Konzernrechnung, Ziffer 1: 'Per Ende 2025 umfasste der Personalbestand auf Stufe Konzern teilzeitbereinigt 521 Personen'. Werte gegen die Medienmitteilung 'Zuger Kantonalbank erzielt ein gutes Jahresergebnis 2025' abgeglichen (328.5 Mio. / 131.1 Mio., übereinstimmend gerundet).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Zuger Kantonalbank",
+  "revenue_zeile": "Geschäftsertrag (Konzern)",
+  "profit_zeile": "Konzerngewinn",
+  "abweichungen": [],
+  "begruendung": "Finanzbericht 2025 selbst heruntergeladen (pdftotext); Geschäftsertrag 328'519 Tsd. und Konzerngewinn 131'108 (exakt 131'108'431) Tsd./CHF exakt gefunden. Wichtig: ZUGER und ZUGN verweisen auf denselben PDF-Report (identischer MD5-Hash) und tragen identische Zahlen — beides ist dieselbe Zuger Kantonalbank unter zwei Kürzeln, kein Widerspruch."
+ }
 }

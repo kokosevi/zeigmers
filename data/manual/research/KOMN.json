@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.komaxgroup.com/file/2026-03-10-gb-komax-2025.pdf",
  "note": "Verlustjahr: Konzernergebnis nach Steuern (EAT) -7.888 Mio., davon den Aktionaeren der Komax Holding AG zurechenbar -9.070 Mio. (Non-controlling interests dagegen positiv +1.182 Mio.) - eingetragen ist der Aktionaersanteil gemaess Regel 5. Umsatz: die Erfolgsrechnung weist eine Zeile 'Net sales' (574.2 Mio.) UND eine Summe 'Revenues' (580.9 Mio., inkl. 'Other operating income') aus; eingetragen ist die Zeile 'Net sales', nicht die groessere Summe. employees = Headcount 3'167 zum 31.12.2025 (Bericht weist daneben auch FTE 3'061 aus, hier nicht verwendet).",
- "_verification": "Konzern-Erfolgsrechnung ('Consolidated Income Statement'), Komax Group Annual Report 2025, S. 176: Zeile 'Net sales' TCHF 574'203 (2025, Vorjahr 621'990); getrennt davon 'Group earnings after taxes (EAT)' TCHF -7'888, aufgeteilt 'Of which attributable to: Shareholders of Komax Holding AG' TCHF -9'070 und 'Non-controlling interests' TCHF 1'182. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl aus der ESG-Tabelle 'Employees as at 31 December' (Headcount 3'167 vs. FTE 3'061), S. ~230 (ESG-Report-Teil); Gründungsjahr 1975 (Max Koch, Ingenieurbuero Komax) laut komaxgroup.com/en/history, bestätigt durch '50 years Komax'-Jubiläum 2025."
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated Income Statement'), Komax Group Annual Report 2025, S. 176: Zeile 'Net sales' TCHF 574'203 (2025, Vorjahr 621'990); getrennt davon 'Group earnings after taxes (EAT)' TCHF -7'888, aufgeteilt 'Of which attributable to: Shareholders of Komax Holding AG' TCHF -9'070 und 'Non-controlling interests' TCHF 1'182. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl aus der ESG-Tabelle 'Employees as at 31 December' (Headcount 3'167 vs. FTE 3'061), S. ~230 (ESG-Report-Teil); Gründungsjahr 1975 (Max Koch, Ingenieurbuero Komax) laut komaxgroup.com/en/history, bestätigt durch '50 years Komax'-Jubiläum 2025.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Komax Holding AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Shareholders of Komax Holding AG (Group earnings after taxes)",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (komaxgroup.com Annual Report 2025) und mit pdftotext durchsucht. 'Net sales' CHF 574'203 Tsd. (=574.2 Mio.) und 'Shareholders of Komax Holding AG' CHF -9'070 Tsd. (=-9.07 Mio., Gesamt-EAT -7'888 Tsd., NCI positiv +1'182 Tsd.) stimmen exakt mit den vorgelegten Werten überein."
+ }
 }

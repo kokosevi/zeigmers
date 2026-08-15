@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "http://glkb.ch/.dam/0743960e-3270-4bea-afac-3a861387b384/berichterstattung-geschaeftsbericht-2025-glkb.pdf?C350FA",
  "note": "GLKB hat keine konsolidierungspflichtigen Tochtergesellschaften; der Bericht weist eine einzige 'Erfolgsrechnung' (nicht 'Konzernerfolgsrechnung') aus, die Gewinnzeile heisst schlicht 'Gewinn'. Mitarbeitendenzahl 330 ist die Kopfzahl ('Ende 2025 beschäftigte die Bank 330 Personen'); das entspricht 274 Vollzeitstellen laut Bericht.",
- "_verification": "Erfolgsrechnung, S. 44/45 des GLKB-Geschäftsbericht 2025: Zeile 'Betriebsertrag' 95'798 Tausend CHF (2025) und Zeile 'Gewinn' 21'825 Tausend CHF (2025). Mitarbeitendenzahl aus Lagebericht: 'Ende 2025 beschäftigte die Bank 330 Personen (Vorjahr: 320)'. Werte gegen die Ad-hoc-Mitteilung 'Gutes Ergebnis der Glarner Kantonalbank im ESAF-Jahr 2025' abgeglichen (Betriebsertrag 95.8 Mio., Reingewinn 21.8 Mio., übereinstimmend)."
+ "_verification": "Erfolgsrechnung, S. 44/45 des GLKB-Geschäftsbericht 2025: Zeile 'Betriebsertrag' 95'798 Tausend CHF (2025) und Zeile 'Gewinn' 21'825 Tausend CHF (2025). Mitarbeitendenzahl aus Lagebericht: 'Ende 2025 beschäftigte die Bank 330 Personen (Vorjahr: 320)'. Werte gegen die Ad-hoc-Mitteilung 'Gutes Ergebnis der Glarner Kantonalbank im ESAF-Jahr 2025' abgeglichen (Betriebsertrag 95.8 Mio., Reingewinn 21.8 Mio., übereinstimmend).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Glarner Kantonalbank",
+  "revenue_zeile": "Betriebsertrag",
+  "profit_zeile": "Gewinn",
+  "abweichungen": [],
+  "begruendung": "Geschäftsbericht 2025 der GLKB selbst heruntergeladen (pdftotext). Beide Zeilen exakt gefunden (95'798 bzw. 21'825 Tsd. CHF, 2025); keine Konzernrechnung, also keine Minderheitsanteilsfrage."
+ }
 }

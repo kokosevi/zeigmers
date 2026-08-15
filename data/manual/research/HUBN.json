@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.hubersuhner.com/Asset/eyJpZGVudGlmaWVyIjoxMzkzOTksInR5cGUiOiJhc3NldCJ9/LfXOxmv4lcvPYl2x/Annual_Report_2025.pdf",
  "note": "Gewinn (74.3 Mio.) ist der Aktionaersanteil ('Attributable to shareholders of HUBER+SUHNER AG'); der Konzerngewinn inkl. Minderheitsanteile betraegt 74.871 Mio. (davon 0.522 Mio. Minderheitsanteile). employees = Koepfe zum Stichtag 31.12.2025 ('Employees as of 31.12.'), der Bericht weist Beschaeftigtenzahlen ausdruecklich als Headcount aus ('Employees numbers are reported in headcount').",
- "_verification": "Konzern-Erfolgsrechnung ('Consolidated Income Statement'), HUBER+SUHNER Annual Report 2025, S. 69: Zeile 'Net sales' CHF 864'129 Tsd. (2025); darunter 'Net income' CHF 74'871 Tsd., aufgeteilt in 'Attributable to shareholders of HUBER+SUHNER AG' CHF 74'349 Tsd. und 'Attributable to minority interests' CHF 522 Tsd. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis (Gesamtkonzern). Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl 4'224 aus der Key-Figures-Tabelle ('Employees as of 31.12.') sowie im Sustainability-Teil als Headcount-Basis bestätigt; Gründungsjahr 1969 (Fusion von Suhner & Co. und R. & E. Huber) laut firmeneigener Geschichte-Seite."
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated Income Statement'), HUBER+SUHNER Annual Report 2025, S. 69: Zeile 'Net sales' CHF 864'129 Tsd. (2025); darunter 'Net income' CHF 74'871 Tsd., aufgeteilt in 'Attributable to shareholders of HUBER+SUHNER AG' CHF 74'349 Tsd. und 'Attributable to minority interests' CHF 522 Tsd. Beide Zahlen aus derselben Erfolgsrechnung, gleicher Konsolidierungskreis (Gesamtkonzern). Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl 4'224 aus der Key-Figures-Tabelle ('Employees as of 31.12.') sowie im Sustainability-Teil als Headcount-Basis bestätigt; Gründungsjahr 1969 (Fusion von Suhner & Co. und R. & E. Huber) laut firmeneigener Geschichte-Seite.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "HUBER+SUHNER AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Attributable to shareholders of HUBER+SUHNER AG",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (hubersuhner.com Annual Report 2025) und mit pdftotext durchsucht. 'Net sales' CHF 864'129 Tsd. (=864.1 Mio.) und 'Attributable to shareholders of HUBER+SUHNER AG' CHF 74'349 Tsd. (=74.3 Mio., Gesamt-Net-income 74'871 Tsd. inkl. Minderheitsanteile 522 Tsd.) stimmen exakt überein."
+ }
 }

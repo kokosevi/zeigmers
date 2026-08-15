@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.blkb.ch/dam/pdf/berichte/2025/BLKB_Geschaeftsbericht_2025.pdf",
  "note": "Profit ist der auf die BLKB-Aktionäre entfallende Anteil: die Erfolgsrechnung Konzern weist 'Konzerngewinn' 154.541 Mio. CHF (Total, inkl. Minderheiten) aus, davon 'Minderheitsanteile am Konzerngewinn' -34.982 Mio. CHF (negativ, primär wegen der Liquidation der Tochter Radicant) und 'Konzerngewinn (ohne Minderheiten)' 189.523 Mio. CHF, ausgewiesen im Eigenkapitalnachweis/in der Bilanz (Passiven), S. 66-67 und 107 des Geschäftsberichts. Letzterer, den BLKB-Aktionären zurechenbare Betrag wurde als 'profit' eingetragen, nicht die in der Medienberichterstattung meist zitierte Gesamtsumme 154.5 Mio. Personalbestand 926 ist der Konzern-Durchschnittsbestand in Vollzeitpensen ('Konzern auf einen Blick', S. 9); eine Kopfzahl weist der Bericht nicht aus.",
- "_verification": "Erfolgsrechnung Konzern (Geschäftsbericht 2025, S. 67/'Konzern auf einen Blick' S. 9): Zeile 'Geschäftsertrag' 499'145 Tausend CHF (2025). Gewinnzeilen S. 66f./107: 'Konzerngewinn' 154'541, 'Minderheitsanteile am Konzerngewinn' -34'982, 'Konzerngewinn (ohne Minderheiten)' 189'523 (alles Tausend CHF, 2025) - geprüft, dass 189'523 + (-34'982) = 154'541 rechnerisch aufgeht, also 189'523 der Aktionärsanteil ist gemäss Regel 5."
+ "_verification": "Erfolgsrechnung Konzern (Geschäftsbericht 2025, S. 67/'Konzern auf einen Blick' S. 9): Zeile 'Geschäftsertrag' 499'145 Tausend CHF (2025). Gewinnzeilen S. 66f./107: 'Konzerngewinn' 154'541, 'Minderheitsanteile am Konzerngewinn' -34'982, 'Konzerngewinn (ohne Minderheiten)' 189'523 (alles Tausend CHF, 2025) - geprüft, dass 189'523 + (-34'982) = 154'541 rechnerisch aufgeht, also 189'523 der Aktionärsanteil ist gemäss Regel 5.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Basellandschaftliche Kantonalbank",
+  "revenue_zeile": "Geschäftsertrag (Konzern)",
+  "profit_zeile": "Konzerngewinn (ohne Minderheiten)",
+  "abweichungen": [],
+  "begruendung": "Geschäftsbericht 2025 selbst heruntergeladen (pdftotext). Geschäftsertrag 499'145 Tsd. und Konzerngewinn ohne Minderheiten 189'523 Tsd. exakt gefunden; Rechnung 189'523 - 34'982 (Minderheitsanteile) = 154'541 (Konzerngewinn gesamt) geht auf, Aktionärsanteil korrekt gewählt."
+ }
 }

@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://ir.inficon.com/media/document/8c90b789-bae9-438f-98c7-2a78513308e7/assets/INFICON_Annual_Report_2025.pdf",
  "note": "Kein Minderheitsanteil ausgewiesen - das gesamte 'Net income' faellt den Aktionaeren der INFICON Holding AG zu. employees = Headcount 1'731 zum Jahresende 2025 gemaess Kennzahlentabelle und Sustainability-Teil ('All numbers in Headcount').",
- "_verification": "Konzern-Erfolgsrechnung ('Consolidated Statement of Income'), INFICON Annual Report 2025, S. 78: Zeile 'Net sales' USD 673'715 Tsd. (2025, Vorjahr 670'954); darunter 'Net income' USD 85'816 Tsd. (2025, Vorjahr 112'753) - identisch zur 5-Jahres-Kennzahlentabelle 'Net sales 673.7' und 'Net income 85.8' (in Mio., 'According to Swiss GAAP FER'). Keine gesonderte Zeile fuer nicht beherrschende Anteile in der Eigenkapitalveraenderungsrechnung, daher voller Betrag den Aktionaeren zurechenbar. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl 1'731 aus derselben Kennzahlentabelle, als Headcount bestätigt durch Sustainability-Report-Tabelle ('All numbers in Headcount'); Gründungsjahr 2000 (Boersengang/Abspaltung von Unaxis-Balzers-Gruppe) laut inficon.com/en/about-us."
+ "_verification": "Konzern-Erfolgsrechnung ('Consolidated Statement of Income'), INFICON Annual Report 2025, S. 78: Zeile 'Net sales' USD 673'715 Tsd. (2025, Vorjahr 670'954); darunter 'Net income' USD 85'816 Tsd. (2025, Vorjahr 112'753) - identisch zur 5-Jahres-Kennzahlentabelle 'Net sales 673.7' und 'Net income 85.8' (in Mio., 'According to Swiss GAAP FER'). Keine gesonderte Zeile fuer nicht beherrschende Anteile in der Eigenkapitalveraenderungsrechnung, daher voller Betrag den Aktionaeren zurechenbar. Geprüft: PDF direkt heruntergeladen und mit pdftotext -layout durchsucht; Mitarbeiterzahl 1'731 aus derselben Kennzahlentabelle, als Headcount bestätigt durch Sustainability-Report-Tabelle ('All numbers in Headcount'); Gründungsjahr 2000 (Boersengang/Abspaltung von Unaxis-Balzers-Gruppe) laut inficon.com/en/about-us.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "INFICON Holding AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Net income",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (ir.inficon.com Annual Report 2025) und mit pdftotext durchsucht. 'Net sales' USD 673,715 Tsd. (=673.7 Mio.) und 'Net income' USD 85,816 Tsd. (=85.8 Mio.) stimmen exakt mit den vorgelegten Werten überein; keine Minderheitsanteile ausgewiesen."
+ }
 }

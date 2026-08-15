@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.gurit.com/downloads/Gurit-Annual-Report-2025.pdf",
  "note": "Gurit hat 2025 das Carbonfaser-Pultrusionsgeschäft sowie weitere Werke (u.a. PET-Präparationsanlage Carmignano di Brenta) als 'discontinued business' eingestuft/veräussert. Die konsolidierte Erfolgsrechnung weist NET SALES als 'TOTAL GROUP' (319.57 Mio. CHF = Continued Operations 293.6 Mio. + Discontinued Operations/Wind Materials 25.95 Mio.) aus einer einzigen Zeile aus – daher total_group. Konzernergebnis (Result for the year) war ein Verlust von –60.408 Mio. CHF, davon den Aktionären von Gurit zurechenbar –60.318 Mio. CHF (Minderheitsanteil –0.090 Mio.). employees = 'Number of employees at December 31' 2025 = 1'961 — explizit als Kopfzahl (Headcount) ausgewiesen, nicht die daneben genannten 2'047 durchschnittlichen Vollzeitäquivalenten (FTE).",
- "_verification": "Umsatz (NET SALES 319'570 Tsd. CHF, TOTAL GROUP) und Konzernergebnis (RESULT FOR THE YEAR –60'408 Tsd. CHF, davon 'Thereof attributable to shareholders of Gurit' –60'318 Tsd. CHF) stammen beide aus der Consolidated Income Statement im Gurit Annual Report 2025, S. 100. Geprüft: Segmentnote 3 (Net Sales by Segments) bestätigt, dass die Zeile 'TOTAL GROUP' Continued und Discontinued Operations zusammenfasst und mit der Zeile in der Erfolgsrechnung übereinstimmt; Employees-Kennzahlen auf der Umschlagseite (Headcount vs. FTE explizit unterschieden, S. Workforce-Daten Fussnote 'based on headcounts as of 31.12.2025')."
+ "_verification": "Umsatz (NET SALES 319'570 Tsd. CHF, TOTAL GROUP) und Konzernergebnis (RESULT FOR THE YEAR –60'408 Tsd. CHF, davon 'Thereof attributable to shareholders of Gurit' –60'318 Tsd. CHF) stammen beide aus der Consolidated Income Statement im Gurit Annual Report 2025, S. 100. Geprüft: Segmentnote 3 (Net Sales by Segments) bestätigt, dass die Zeile 'TOTAL GROUP' Continued und Discontinued Operations zusammenfasst und mit der Zeile in der Erfolgsrechnung übereinstimmt; Employees-Kennzahlen auf der Umschlagseite (Headcount vs. FTE explizit unterschieden, S. Workforce-Daten Fussnote 'based on headcounts as of 31.12.2025').",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Gurit Holding AG",
+  "revenue_zeile": "NET SALES / TOTAL GROUP",
+  "profit_zeile": "Thereof attributable to shareholders of Gurit",
+  "abweichungen": [],
+  "begruendung": "PDF selbst heruntergeladen (gurit.com Annual Report 2025) und mit pdftotext durchsucht. 'NET SALES'/'TOTAL GROUP' CHF 319'570 Tsd. und 'Thereof attributable to shareholders of Gurit' CHF -60'318 Tsd. (Result for the year gesamt -60'408 Tsd.) stimmen exakt mit den vorgelegten Werten überein."
+ }
 }
