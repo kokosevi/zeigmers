@@ -199,6 +199,20 @@ neu hinzugefügtes Bewegungsdesign über das Hover-Feedback hinaus, mit einer
 
 ### Kennzahlen und ihr Drift-Schutz
 
+> **Korrekturnotiz (Fix-Runde 2 von Task 5, 15. August 2026):** Die Tabelle
+> unten und der Absatz „Das ist kein theoretisches Risiko" behaupten, die
+> Landing-Kennzahl sei „201 von 224 an der SIX kotierten Gesellschaften" und
+> das README nenne fälschlich „202" statt „224". Das war ein Fehlschluss:
+> **224** ist die Zahl der kotierten **Titel** (`stats.totalListed`), **202**
+> ist die Zahl der **Gesellschaften** nach Zusammenfassung von Namen-/PS-
+> Aktien und zweiten Handelslinien, **201** davon stehen auf der Karte — drei
+> unterschiedliche, je für sich korrekte Grössen, kein Widerspruch. Das
+> README leitet das ausführlich her (Abschnitt „Woher die 224 kommen — und
+> wie sie zu 202 Gesellschaften werden"). Endstand: Die Landing nennt „201
+> von 224 kotierten Titeln", das README nennt an der betroffenen Stelle
+> weiterhin „201 der 202 ... Gesellschaften" — beide korrekt, keine der
+> beiden Zahlen wurde verändert.
+
 Die Kennzahlen stehen fest im HTML — die Landing soll nicht 320 KB laden, um
 zwei Zahlen zu zeigen. Stand der Daten am 15. August 2026:
 

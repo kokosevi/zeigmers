@@ -10,10 +10,6 @@ import { describe, expect, it } from 'vitest'
 // vergleicht, was im HTML steht, mit dem, was in den Artefakten steht, und
 // lässt `npm test` (und damit den Netlify-Build) fehlschlagen, sobald beide
 // auseinanderlaufen.
-//
-// Dass das kein theoretisches Risiko ist, zeigt das README: es nannte
-// "201 der 202 an der SIX kotierten Gesellschaften", während totalListed
-// längst bei 224 stand.
 
 // `process.cwd()` statt `__dirname`: package.json trägt `"type": "module"`,
 // in einem ESM-Modul gibt es kein `__dirname`. Vitest läuft vom Projektwurzel-

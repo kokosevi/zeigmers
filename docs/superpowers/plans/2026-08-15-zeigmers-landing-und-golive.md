@@ -24,6 +24,17 @@
 
 ## Bestandsaufnahme
 
+> **Korrekturnotiz (Fix-Runde 2 von Task 5, 15. August 2026):** Die Zeile
+> unten unterstellt, das README nenne „202" fälschlich statt „224". Das
+> stimmte nicht: **224** ist die Zahl der kotierten **Titel**
+> (`stats.totalListed`), **202** ist die Zahl der **Gesellschaften** nach
+> Zusammenfassung von Namen-/PS-Aktien und zweiten Handelslinien, **201**
+> davon stehen auf der Karte — drei unterschiedliche, je für sich korrekte
+> Grössen, kein Widerspruch (README, Abschnitt „Woher die 224 kommen — und
+> wie sie zu 202 Gesellschaften werden"). Endstand: Die Landing nennt „201
+> von 224 kotierten Titeln", das README nennt weiterhin „201 der 202 ...
+> Gesellschaften" — beide korrekt.
+
 Verifizierte Werte aus den Artefakten (Stand 15. August 2026) — diese Zahlen sind die Wahrheit, nicht das README:
 
 | Quelle | Feld | Wert |
@@ -1106,6 +1117,18 @@ EOF
 
 ### Task 3: Landing Page ausgestalten
 
+> **Korrekturnotiz (Fix-Runde 2 von Task 5, 15. August 2026):** Step 1 (Test-
+> Kommentar) und Step 3 (`index.html`-Kennzahl) unten formulieren „201 von
+> 224 an der SIX kotierten Gesellschaften" bzw. begründen den Test mit einem
+> angeblichen Widerspruch zum README-Wert „202". Das war ein Fehlschluss:
+> **224** ist die Zahl der kotierten **Titel**, **202** die Zahl der
+> **Gesellschaften** nach Zusammenfassung von Namen-/PS-Aktien und zweiten
+> Handelslinien, **201** davon stehen auf der Karte — drei unterschiedliche,
+> je für sich korrekte Grössen (README, Abschnitt „Woher die 224 kommen —
+> und wie sie zu 202 Gesellschaften werden"). Endstand: `index.html` nennt
+> „201 von 224 kotierten Titeln", der Testkommentar verweist nicht mehr auf
+> das README als (vermeintlichen) Beleg.
+
 **Files:**
 - Modify: `index.html`
 - Create: `src/landing.css`
@@ -1579,6 +1602,19 @@ Run: `grep -rn "draufsicht" -i src/`
 Expected: keine Treffer.
 
 - [ ] **Step 4: README umbenennen und die falsche Firmenzahl korrigieren**
+
+> **Korrekturnotiz (Fix-Runde 2 von Task 5, 15. August 2026):** Die
+> „Sachkorrektur" unten (202 → 224) war selbst falsch und wurde nach der
+> Umsetzung wieder zurückgesetzt. **224** ist die Zahl der kotierten
+> **Titel** (`stats.totalListed`), **202** ist die Zahl der **Gesellschaften**
+> nach Zusammenfassung von Namen-/PS-Aktien und zweiten Handelslinien, **201**
+> davon stehen auf der Karte — drei unterschiedliche, je für sich korrekte
+> Grössen, kein Widerspruch (README, Abschnitt „Woher die 224 kommen — und
+> wie sie zu 202 Gesellschaften werden"). Endstand: Die README-Zeile zu
+> Ansicht A nennt weiterhin „201 der 202 an der SIX kotierten
+> Gesellschaften" — unverändert korrekt. Stattdessen wurde die Landing
+> (`index.html`, „201 von 224 kotierten Titeln") und der zugehörige Test
+> (`src/landing.test.ts`) korrigiert, die denselben Fehlschluss enthielten.
 
 Zwei getrennte Änderungen in derselben Datei:
 
