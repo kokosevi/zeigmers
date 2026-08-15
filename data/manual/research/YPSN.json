@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 730.982,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 221.927,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Injektionssysteme (Pens, Autoinjektoren, On-Body-Geräte) zur Selbstverabreichung flüssiger Medikamente für Pharma- und Biotech-Kunden.",
+ "products_url": "https://www.ypsomed.com/en/about-us",
+ "founding_year": 2003,
+ "founding_year_source": "https://www.ypsomed.com/en/about-us/history",
+ "employees": 2099,
+ "fiscal_year": 2026,
+ "report_url": "https://www.ypsomed.com/files/_NEW_Ypsomed/0000_Documents%20-%20Corporate/02_Reports/2025_26/YPS_GB_2025-26_E.pdf",
+ "note": "Geschäftsjahr 2025/26 = 1. April 2025 bis 31. März 2026, Endjahr 2026 eingetragen. Ypsomed verkaufte die Diabetes-Care-Sparte per 31. Juli 2025; die konsolidierte Erfolgsrechnung ('Net sales from goods and services', Total Konzern) enthält den Diabetes-Care-Umsatz noch anteilig bis zum Verkaufsdatum (Total 730.982 Mio., davon Delivery Systems 601.5 Mio., Diabetes Care 75.2 Mio., Others 71.2 Mio., Eliminierungen -16.9 Mio.) sowie einen einmaligen Veräusserungsgewinn in 'Other operating income' (73.6 Mio. vs. 1.1 Mio. Vorjahr), der den Nettogewinn stark erhöht. Die Mitarbeitendenzahl 2'099 (Headcount) bezieht sich dagegen nur auf das fortgeführte Geschäft (Diabetes Care nicht mehr enthalten) und ist daher nicht exakt deckungsgleich mit dem Konsolidierungskreis von Umsatz/Gewinn.",
+ "_verification": "Seite 69 (Financial Report) des Annual Report 2025/26, 'Consolidated income statement' (Swiss GAAP FER, geprüft): Zeile 'Net sales from goods and services' CHF 730'982 Tsd. und Zeile 'Net profit' CHF 221'927 Tsd. für Geschäftsjahr 01.04.2025-31.03.2026. Segmentnote 23 (S. 96) bestätigt, dass sich diese Summe aus Delivery Systems, Diabetes Care (bis Verkauf) und Others zusammensetzt - bewusst die Gesamtkonzern-Zeile statt der im Fliesstext genannten Delivery-Systems-Teilsumme (601.5 Mio.) verwendet. Mitarbeitendenzahl 2'099 als 'Headcount' im Sustainability-Teil (S. 45) bestätigt."
+}

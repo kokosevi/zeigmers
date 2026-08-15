@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 86.5,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 212.8,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Intershop erwirbt, entwickelt und bewirtschaftet Renditeliegenschaften in der Schweiz und realisiert Wertsteigerungen durch aktives Asset Management, Arealentwicklung und den gezielten Verkauf von Immobilien.",
+ "products_url": "https://www.intershop.ch/de/immobilien/portfolio/immobilien",
+ "founding_year": 1962,
+ "founding_year_source": "https://www.moneyhouse.ch/en/company/intershop-holding-ag-20890131661 (Handelsregisterdaten: Gründung 02.07.1962). Auf der eigenen Firmenwebsite (intershop.ch) und im Geschäftsbericht 2025 konnte trotz Suche kein Gründungsjahr gefunden werden; die Website nennt nur die Börsenkotierung 'seit 1970'.",
+ "employees": 63,
+ "fiscal_year": 2025,
+ "report_url": "https://www.intershop.ch/resources/files/FrkyxwBKG2jCGMswFwFZ-983/Jahresbericht-2025_PdfWeb-DE-446.pdf",
+ "note": "Als Umsatz wurde 'Liegenschaftsertrag' (86'536 Tsd. CHF, konsolidierte Erfolgsrechnung) eingetragen, nicht 'Total betrieblicher Ertrag' (119'114 Tsd. CHF), da darin 'Erfolg aus Verkauf Anlageimmobilien' (29'386 Tsd., Verkaufsgewinne) sowie 'Übriger Erfolg' enthalten sind, die keine wiederkehrende Umsatzgrösse darstellen. Reingewinn 212'794 Tsd. CHF enthält dagegen wertmässig hohe, nicht realisierte Bewertungsveränderungen des Portfolios (+188.5 Mio., Neubewertungsgewinn); ohne diese läge der Reingewinn bei 73.5 Mio. CHF (Kennzahl 'Reingewinn exkl. Bewertungsveränderungen'). Umsatz und Gewinn sind damit nicht deckungsgleich im Umfang - typisch für Immobiliengesellschaften nach Swiss GAAP FER/IFRS, wo Neubewertungen erfolgs- aber nicht umsatzwirksam sind. Es bestehen laut Bericht keine Minderheitsanteile ('Es bestehen keine Minderheitsanteile'), Reingewinn ist somit vollständig den Aktionären zurechenbar. Employees = Stichtags-Headcount 'Anzahl Mitarbeitende' zum 31.12.2025 laut Kennzahlentabelle.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Konsolidierten Erfolgsrechnung' des Geschäftsberichts 2025 (S. 55): Zeile 'Liegenschaftsertrag' 86'536 Tsd. CHF und Zeile 'Reingewinn' 212'794 Tsd. CHF (Spalte 2025), beide aus derselben Konzernrechnung, demselben Geschäftsjahr, Gesamtkonzern. Geprüft: PDF direkt von intershop.ch heruntergeladen und Volltext an der Quellstelle in der Erfolgsrechnung sowie in der Kennzahlentabelle (S. 5-6) verifiziert; Mitarbeitendenzahl (63) und Reingewinn pro Aktie (23.09) stimmen zwischen Kennzahlentabelle und Erfolgsrechnungs-Anhang überein."
+}

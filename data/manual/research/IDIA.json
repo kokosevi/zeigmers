@@ -15,5 +15,13 @@
  "employees": 487,
  "fiscal_year": 2025,
  "report_url": "https://www.idorsia.com/dam/jcr:661f2eb2-71c7-4d59-8b66-f47ba10aefc2/2025_idorsia-annual-report.pdf",
- "note": "Idorsia hat echten Produktumsatz (kein reines Pre-Revenue-Biotech): 'Product sales' 141.7 Mio. CHF (überwiegend QUVIVIQ) + 'Contract revenue' 78.9 Mio. CHF (Kollaborationen/Meilensteine) = 'Total net revenue' 220.584 Mio. CHF, Konsolidierte Erfolgsrechnung (US GAAP) im Financial-Report-Teil. Gewinn = 'Net income (loss) attributable to Idorsia's shareholders' = -111,696 Tsd. CHF (US GAAP), identisch mit Konzern-Nettoverlust, keine Minderheitsanteile ausgewiesen. Der Bericht zeigt zusätzlich 'Non-GAAP'-Kennzahlen (Net revenue 214 Mio., Net loss -118 Mio.) auf S. vorne, die wir bewusst NICHT verwenden, da revenue_type/profit auf die testierte GAAP-Konzernrechnung gestützt sein sollen. Employees = 487 (Headcount, permanente Mitarbeitende per 31.12.2025, GRI-Tabelle im Sustainability-Teil des Berichts)."
+ "note": "Idorsia hat echten Produktumsatz (kein reines Pre-Revenue-Biotech): 'Product sales' 141.7 Mio. CHF (überwiegend QUVIVIQ) + 'Contract revenue' 78.9 Mio. CHF (Kollaborationen/Meilensteine) = 'Total net revenue' 220.584 Mio. CHF, Konsolidierte Erfolgsrechnung (US GAAP) im Financial-Report-Teil. Gewinn = 'Net income (loss) attributable to Idorsia's shareholders' = -111,696 Tsd. CHF (US GAAP), identisch mit Konzern-Nettoverlust, keine Minderheitsanteile ausgewiesen. Der Bericht zeigt zusätzlich 'Non-GAAP'-Kennzahlen (Net revenue 214 Mio., Net loss -118 Mio.) auf S. vorne, die wir bewusst NICHT verwenden, da revenue_type/profit auf die testierte GAAP-Konzernrechnung gestützt sein sollen. Employees = 487 (Headcount, permanente Mitarbeitende per 31.12.2025, GRI-Tabelle im Sustainability-Teil des Berichts).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Idorsia Ltd",
+  "revenue_zeile": "Total net revenue (Product sales 141.656 + Contract revenue 78.927, US GAAP Consolidated Income Statement)",
+  "profit_zeile": "Net income (loss), attributable to Idorsia's shareholders (keine Minderheitsanteile)",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (idorsia.com Annual Report 2025) und per pdftotext die Consolidated Income Statement (US GAAP) gesucht; bestätigt, dass der eingetragene Umsatz KEIN reiner Produktumsatz ist, sondern zu 64% aus Product sales (141.656 Mio., v. a. QUVIVIQ) und zu 36% aus Contract revenue aus Kollaborationen/Meilensteinen (78.927 Mio.) besteht – dies ist im vorgelegten note bereits korrekt und transparent offengelegt, nicht verschleiert; Nettoverlust -111.696 Mio. CHF stimmt exakt und ist vollständig den Aktionären zurechenbar."
+ }
 }

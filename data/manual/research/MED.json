@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://medartis.com/fileadmin/user_upload/006_Investors/002_Reports_Presentations/2026/EN/Medartis_Annual_Report_2025.pdf",
  "note": "Konzern-Erfolgsrechnung weist die Zeile 'Net revenue' aus (269'257 Tsd. CHF), nicht wörtlich 'Net sales' - inhaltlich aber der Produktumsatz des Konzerns. Vom Konzern-Nettogewinn (9'336 Tsd. CHF) entfallen 987 Tsd. auf nicht beherrschende Anteile (KeriMedical, NeoOrtho); eingetragen ist der auf die Aktionäre der Medartis Holding AG entfallende Anteil (8'349 Tsd.). Mitarbeitendenzahl ist der ausgewiesene Headcount zum 31.12.2025 (nicht die im Text gerundete Marketingangabe 'approx. 1,400').",
- "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. 124) des Annual Report 2025: Zeile 'Net revenue' 269'257 (2025) sowie 'Attributable to: Medartis Holding AG shareholders' 8'349. Mitarbeitendenzahl aus der Tabelle 'KEY FIGURES EMPLOYEES / Global workforce', explizit als Headcount zum Berichtsstichtag deklariert. Geprüft: PDF direkt heruntergeladen, Zahlen im Volltext an der Quellstelle verifiziert."
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. 124) des Annual Report 2025: Zeile 'Net revenue' 269'257 (2025) sowie 'Attributable to: Medartis Holding AG shareholders' 8'349. Mitarbeitendenzahl aus der Tabelle 'KEY FIGURES EMPLOYEES / Global workforce', explizit als Headcount zum Berichtsstichtag deklariert. Geprüft: PDF direkt heruntergeladen, Zahlen im Volltext an der Quellstelle verifiziert.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Medartis Holding AG",
+  "revenue_zeile": "Net revenue",
+  "profit_zeile": "Medartis Holding AG shareholders (Net income attributable to)",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (medartis.com Annual Report 2025) und per pdftotext die Consolidated income statement / Segmentnote gesucht; Net revenue 269,257 Tsd. CHF bestätigt, Net income total 9,336 Tsd. aufgeteilt in Medartis Holding AG shareholders 8,349 Tsd. und Non-controlling interests 987 Tsd., exakt wie vorgelegt; Headcount 1,337 zum Jahresende bestätigt im Kennzahlenblock am Berichtsanfang."
+ }
 }

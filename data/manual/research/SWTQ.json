@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 904.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": -9.2,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Herstellung von Verbundwerkstoffen und Leichtbau-Kernmaterialien über die Division 3A Composites: extrudierte und gegossene Kunststoff- und Leichtbauplatten, Aluminium-Verbundplatten für Fassaden (Marken u. a. Alucobond, Dibond, Forex, Kapa) sowie Balsaholz- und PET-Schaumkerne (Airex, Baltek) für Architektur-, Display-, Windenergie-, Marine- und Transportanwendungen.",
+ "products_url": "https://www.schweiter.ch/s1a1/group/corporate-profile.html",
+ "founding_year": 1912,
+ "founding_year_source": "https://www.schweiter.ch/s1f32/milestones/",
+ "employees": 4111,
+ "fiscal_year": 2025,
+ "report_url": "https://www.schweiter.ch/download/332/en_schweiter_annual_report_24_03_2026_v1_1774373282",
+ "note": "Konzernverlust 2025: Nettoumsatz sank u. a. wegen Verkauf des Bus & Rail-Geschäfts während des Jahres (adjustierter Nettoumsatz CHF 890.7 Mio. exkl. Effekt). Der Gewinn ist bereits als Aktionärsanteil ausgewiesen ('Net income attributable to the shareholders of Schweiter Technologies AG', CHF -9.2 Mio.); davon abweichend beträgt der Konzern-Gesamtverlust inkl. Minderheitsanteilen CHF -10.0 Mio. (Minderheitsanteil CHF -0.8 Mio., v. a. aus nicht vollständig konsolidierten Balsaholz-Plantagenbetrieben) — Regel 5. Beschäftigte: Die Kennzahlentabelle im Bericht weist eine FTE-Zahl (4'076 per 31.12.2025, an anderer Stelle 4'069) aus; im Sustainability-Kapitel findet sich eine gesonderte Kopfzahl-Tabelle ('headcount used, not FTE'), Summe Salaried + Waged Staff 2025 = 1'081 + 3'030 = 4'111. Gemäss Regel 6 wurde diese Kopfzahl eingetragen.",
+ "_verification": "Nettoumsatz (CHF 904.4 Mio.) und Gewinn stammen aus der 'Consolidated Income Statement' im Schweiter Technologies Annual Report 2025, Geschäftsjahr 2025 vs. 2024. Geprüft: Die Umsatzzeile heisst exakt 'Net sales' (keine Summenzeile, Regel 4); der Gewinn wird direkt darunter in 'Net income attributable to the shareholders of Schweiter Technologies AG' (CHF -9.2 Mio.) von den nicht beherrschenden Anteilen (CHF -0.8 Mio.) getrennt ausgewiesen (Regel 5). Beschäftigtenzahl aus der Sustainability-Tabelle 'Figures for employees, trainees, and fixed-term contracts' desselben Berichts (explizit als Headcount deklariert) entnommen und mit der FTE-Zahl in den Key Figures abgeglichen (Regel 6). Gründungsjahr 1912 (Eintragung als Schweiter AG im Handelsregister) auf der offiziellen Milestones-Seite von schweiter.ch bestätigt."
+}

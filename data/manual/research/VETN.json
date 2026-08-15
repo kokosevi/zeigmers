@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 778.9,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 3.8,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Glasverpackungen (Flaschen und Gläser) für die Getränke- und Lebensmittelindustrie.",
+ "products_url": "https://www.vetropack.com/de/products-services/glass-packaging/",
+ "founding_year": 1911,
+ "founding_year_source": "https://www.vetropack.com/de/ueber-uns/geschichte/",
+ "employees": 3532,
+ "fiscal_year": 2025,
+ "report_url": "https://report.vetropack.com/2025/consolidated-income-statement",
+ "note": "Konsolidierte Erfolgsrechnung weist keine gesonderten Minderheitsanteile aus; 'Net profit' CHF 3.8 Mio. wird direkt für die Berechnung des Gewinns je Aktie verwendet und gilt daher als Aktionärsanteil. Mitarbeitendenzahl 3'532 wird im Bericht als 'Mitarbeitende' (Kopfzahl, Stand Jahresende) ausgewiesen, ohne separate FTE-Angabe.",
+ "_verification": "Seite 'Consolidated income statement' des Annual Report 2025 (report.vetropack.com/2025): Zeile 'Net sales from goods and services' CHF 778.9 Mio. und Zeile 'Net profit' CHF 3.8 Mio. für Geschäftsjahr 2025, mit Vorjahresvergleich 2024 (842.1 / 13.7). Geprüft, dass beide Zahlen aus derselben konsolidierten Erfolgsrechnung für dasselbe Geschäftsjahr (Gesamtkonzern) stammen; Gründungsjahr 1911 direkt von der Geschichte-Seite der Firma bestätigt."
+}

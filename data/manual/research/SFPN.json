@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 61.505,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 42.681,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Schweizer Immobiliengesellschaft, die in Wohn-, Geschäfts- und Entwicklungsliegenschaften mit Fokus auf Zürich und Basel investiert; Erträge stammen aus Vermietung von Anlageliegenschaften (Liegenschaftsertrag) und aus dem Verkauf von Stockwerkeigentum aus eigenen Promotionsentwicklungen (Wohnbauprojekte).",
+ "products_url": "https://www.sfurban.ch/en/about-us/portrait-strategy",
+ "founding_year": 2001,
+ "founding_year_source": "https://www.moneyhouse.ch/en/company/sf-urban-properties-ag-12022548901",
+ "employees": "",
+ "fiscal_year": 2025,
+ "report_url": "https://www.sfurban.ch/index.php?eID=download&t=f&f=16316&token=cd89f2160080a3b13b9a7421f1628f370dba3562",
+ "note": "Umsatz: SF Urban Properties AG (frühere Firma: Swiss Finance & Property Investment AG) hat zwei operative Segmente – Anlageliegenschaften (Vermietung) und Promotionsliegenschaften (Verkauf von Wohneigentum aus eigener Entwicklung). Reiner Mietertrag ('Liegenschaftsertrag') betrug 2025 nur CHF 31.744 Mio.; da das Promotionssegment mit CHF 28.423 Mio. Ertrag nahezu gleich gross ist und die konsolidierte Segmentberichterstattung (Anhang 20) beide Positionen zusammen mit 'Übriger Ertrag' und 'Verkaufserfolg aus Anlageliegenschaften' explizit als 'Erträge mit Dritten' bzw. 'Total Betriebsertrag vor Neubewertungen' (CHF 61.505 Mio.) ausweist – ausdrücklich getrennt von den nicht umsatzwirksamen 'Neubewertungen aus Anlageliegenschaften' (CHF 38.436 Mio.) –, wurde diese Zahl als Umsatz eingetragen (Regel 7). Gewinn ist bereits als Aktionärsanteil ausgewiesen ('Reingewinn, den Aktionären der SF Urban Properties AG zuzurechnen', CHF 42.681 Mio.); der Minderheitsanteil beträgt CHF 1.127 Mio. (Regel 5). Beschäftigte: Die Gesellschaft hat kein eigenes Personal im üblichen Sinn (Vermögensverwaltung ist an die Swiss Finance & Property Funds AG ausgelagert); der handelsrechtliche Anhang nennt keine exakte Zahl, sondern nur die Schwellenaussage 'Die Anzahl der Vollzeitstellen im Jahresdurchschnitt lag im Berichtsjahr sowie im Vorjahr nicht über zehn.' Da keine genaue Zahl im Bericht steht, bleibt das Feld leer (Konzern-Personalaufwand nur TCHF 228). Gründungsjahr 2001 ist nicht im Geschäftsbericht genannt; Quelle ist der Handelsregistereintrag vom 30.10.2001 (via Moneyhouse), da die Firmenwebsite kein Gründungsdatum nennt.",
+ "_verification": "Umsatzbestandteile und Gewinn stammen aus der 'Konsolidierten Erfolgsrechnung' (S. 60) sowie der Segmentberichterstattung (Anhang 20) im Geschäftsbericht 2025 der SF Urban Properties AG, Geschäftsjahr 2025 vs. 2024: Zeilen 'Liegenschaftsertrag' (31'744), 'Übriger Ertrag' (155), 'Verkaufserfolg aus Anlageliegenschaften' (1'183), 'Ertrag aus Promotionsliegenschaften' (28'423), Summe 'Total Betriebsertrag vor Neubewertungen' = 'Erträge mit Dritten' (61'505 Tsd. CHF), sowie 'Reingewinn, den Aktionären der SFUP zuzurechnen' (42'681 Tsd. CHF). Geprüft: Die Segmentnote weist 'Erträge mit Dritten' konsistent als Summe derselben vier Positionen aus und trennt sie ausdrücklich von den nicht realisierten 'Neubewertungen aus Anlageliegenschaften' (Regel 7); der Gewinn ist unmittelbar als Aktionärsanteil von den Minderheitsanteilen (1'127) getrennt ausgewiesen (Regel 5). Für Mitarbeitendenzahl und Gründungsjahr wurde geprüft, dass der Bericht selbst keine exakte Mitarbeiterzahl nennt (nur Schwellenaussage 'nicht über zehn') und kein Gründungsdatum enthält."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 79.8,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 152.0,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Investis besitzt, entwickelt und bewirtschaftet ein Portfolio von primär Wohnimmobilien in erstklassigen Lagen rund um den Genfersee und erzielt daraus wiederkehrende Mieterträge sowie Wertsteigerungen; das frühere Immobiliendienstleistungsgeschäft (Facility Management) wurde im Juni 2024 vollständig veräussert.",
+ "products_url": "https://www.investisgroup.com/en/portfolio",
+ "founding_year": 1994,
+ "founding_year_source": "Investis Annual Report 2025, Abschnitt Executive Board (Stéphane Bonvin): 'Stéphane Bonvin founded Investis in 1994 and has served as its Chief Executive Officer ever since.' (https://www.investisgroup.com/fileadmin/user_upload/Dateien/Geschaeftsbericht_2025/INVESTIS-Annual-Report-2025.pdf)",
+ "employees": 13,
+ "fiscal_year": 2025,
+ "report_url": "https://www.investisgroup.com/fileadmin/user_upload/Dateien/Geschaeftsbericht_2025/INVESTIS-Annual-Report-2025.pdf",
+ "note": "Umsatz = Zeile 'Revenue' der konsolidierten Erfolgsrechnung (79'811 Tsd. CHF), die laut Anhang 'die tatsächlichen Mieterträge aus Immobilien, Erträge aus Real Estate Services sowie sonstige Erträge' umfasst - deutlich tiefer als 2024 (152.7 Mio.), da die Immobiliendienstleistungssparte im Juni 2024 verkauft wurde. Gewinn 152.038 Mio. CHF enthält eine grosse nicht realisierte Neubewertung der Anlageliegenschaften (+113.5 Mio.); ohne Bewertungseffekt läge der Gewinn bei 54.1 Mio. CHF (Kennzahl 'Net profit excluding revaluation effect'). Net profit und 'of which attributable to Investis Holding SA shareholders' sind für 2025 identisch (152'038 = 152'038), keine abweichenden Minderheitsanteile in diesem Jahr. Employees = Headcount zum 31.12.2025 (13 Personen, entsprechend 11 Vollzeitstellen laut Bericht) - starker Rückgang gegenüber 2024 (17 Headcount / 795 FTE im Vorjahresdurchschnitt) wegen Verkauf der personalintensiven Property-Services-Sparte.",
+ "_verification": "Umsatz und Gewinn stammen aus der 'Consolidated Income Statement' (S. 94 des Berichts): Zeile 'Revenue' 79'811 Tsd. CHF und Zeile 'Net profit' 152'038 Tsd. CHF mit Unterzeile 'of which attributable to Investis Holding SA shareholders' 152'038 Tsd. CHF, beide für dieselbe Konzernrechnung und dasselbe Geschäftsjahr 2025. Geprüft: PDF direkt von investisgroup.com heruntergeladen, Zahlen an der Quellstelle in der Erfolgsrechnung sowie in der Kennzahlentabelle 'Selected Key Figures' (S. 3) übereinstimmend verifiziert; Employees-Angabe im Non-Financial Report (S. 35) mit der Kennzahlentabelle abgeglichen."
+}

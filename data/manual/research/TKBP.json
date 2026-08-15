@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://gb.tkb.ch/fileadmin/user_upload/redakteure/gb2025/pdf/TKB_GB2025_Geschaeftsbericht-2025.pdf",
  "note": "TKB ist eine Anstalt öffentlichen Rechts ohne Konzernrechnungspflicht (Bericht S. 'Recht und Organisation': 'stellt keinen Konzern dar ... zur Erstellung einer Konzernrechnung ist die TKB nicht verpflichtet'); daher keine Minderheitsanteile. Mitarbeiterzahl 869 ist die Kopfzahl ('Anzahl Personen, exkl. Lernende/Praktikanten'); zusätzlich 57 Lernende/Praktikanten sowie separat 778 Vollzeit-Personaleinheiten (FTE) ausgewiesen - hier wurde die Kopfzahl exkl. Auszubildende gewählt, da der Bericht sie explizit als 'Anzahl Personen' führt.",
- "_verification": "Konzern-/Jahresrechnung (TKB-Geschäftsbericht 2025, Finanzteil 'Erfolgsrechnung'): Zeile 'Geschäftsertrag' CHF 439'092 Tsd. (2025) - Summe aus Erfolg Zinsengeschäft, Kommissions- und Dienstleistungsgeschäft, Handelsgeschäft/Fair-Value-Option sowie übrigem ordentlichem Erfolg, unmittelbar vor dem Geschäftsaufwand. Zeile 'Jahresgewinn' CHF 162'256 Tsd., in der Fünfjahresübersicht sowie im Fliesstext ('Jahresgewinn gesteigert ... 162.3 Mio.') konsistent bestätigt. Mitarbeiterzahl aus der Tabelle 'Zahlen im Überblick / Mitarbeiterinnen und Mitarbeiter': 'Anzahl Personen (exkl. Lernende/Praktikanten)' 869 (2025) vs. 858 (2024)."
+ "_verification": "Konzern-/Jahresrechnung (TKB-Geschäftsbericht 2025, Finanzteil 'Erfolgsrechnung'): Zeile 'Geschäftsertrag' CHF 439'092 Tsd. (2025) - Summe aus Erfolg Zinsengeschäft, Kommissions- und Dienstleistungsgeschäft, Handelsgeschäft/Fair-Value-Option sowie übrigem ordentlichem Erfolg, unmittelbar vor dem Geschäftsaufwand. Zeile 'Jahresgewinn' CHF 162'256 Tsd., in der Fünfjahresübersicht sowie im Fliesstext ('Jahresgewinn gesteigert ... 162.3 Mio.') konsistent bestätigt. Mitarbeiterzahl aus der Tabelle 'Zahlen im Überblick / Mitarbeiterinnen und Mitarbeiter': 'Anzahl Personen (exkl. Lernende/Praktikanten)' 869 (2025) vs. 858 (2024).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Thurgauer Kantonalbank (TKB)",
+  "revenue_zeile": "Geschäftsertrag",
+  "profit_zeile": "Jahresgewinn",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (gb.tkb.ch) und per pdftotext die Erfolgsrechnung gesucht; Geschäftsertrag 439,092 Tsd. CHF und Jahresgewinn 162,256 Tsd. CHF exakt bestätigt, ebenso die Aussage, dass die TKB als Anstalt öffentlichen Rechts keinen Konzern bildet und nicht zur Konzernrechnung verpflichtet ist (keine Minderheitsanteile); operating_income korrekt statt net_sales für eine Bank (Falle 1), und die Zusammensetzung des Geschäftsertrags zeigt nur banküblichen operativen Ertrag ohne Regel-7-Auffälligkeit."
+ }
 }

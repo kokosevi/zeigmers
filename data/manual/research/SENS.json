@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 342.365,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 20.116,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Entwicklung und Herstellung digitaler Mikrosensoren (Feuchte, Temperatur, Gas/VOC, CO2, Feinstaub, Differenzdruck sowie Gas- und Flüssigkeitsdurchfluss) für Automobil-, Medizin-, Industrie- und Konsumgüteranwendungen, inklusive eigener Halbleiter-Waferentwicklung.",
+ "products_url": "https://sensirion.com/company/about-sensirion",
+ "founding_year": 1998,
+ "founding_year_source": "https://sensirion.com/company/about-sensirion",
+ "employees": 1307,
+ "fiscal_year": 2025,
+ "report_url": "https://sensirion.com/media/media/file/23149187/69AF0241/Sensirion_Annual_Report_2025_EN.pdf",
+ "note": "Beschäftigte: Bericht weist im Kapitel 'Key figures' die FTE-Zahl (1'280) aus, im Sustainability-Teil aber auch die Kopfzahl ('headcount') nach Beschäftigungsvertrag: 1'251 permanent + 56 temporär = 1'307 per 31.12.2025 (Fussnote: seit 2024 wird auf Headcount-Basis berichtet). Gemäss Regel 6 wurde die Kopfzahl 1'307 eingetragen. Gewinn CHF 20.116 Mio. ist bereits explizit 'attributable to owners of Sensirion Holding AG' (keine gesonderte Minderheitsanteilszeile in der Konzern-Erfolgsrechnung ausgewiesen).",
+ "_verification": "Umsatz (CHF 342'365 Tsd. = 342.365 Mio.) und Gewinn ('Profit (loss) for the period, attributable to owners of Sensirion Holding AG', CHF 20'116 Tsd. = 20.116 Mio.) stammen aus der 'Consolidated Income Statement' im Sensirion Annual Report 2025 (Financial Report, S. 145), Geschäftsjahr 2025 vs. 2024. Geprüft: Die Umsatzzeile heisst exakt 'Revenue' (keine Summenzeile, Regel 4); der Gewinn ist bereits als Aktionärsanteil ausgewiesen (Regel 5), es gibt keine Minderheitsanteile in der Konzernstruktur laut Bericht. Beschäftigtenzahl aus dem Kapitel 'Sustainability Report' (Composition of the workforce, headcount) desselben Berichts entnommen und mit der FTE-Zahl in den Key Figures abgeglichen (Regel 6). Gründungsjahr 1998 sowohl im Bericht ('incorporated on 7 October 1998') als auch auf der offiziellen 'About us'-Seite bestätigt."
+}

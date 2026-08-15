@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://aws-media.medacta.com/media/2025-financial-report.pdf",
  "note": "Bericht weist nur die 'AVERAGE NR OF EMPLOYEES DURING THE YEAR' aus (2'036 für 2025), keinen Stichtags-Headcount; deshalb wurde diese Durchschnittszahl übernommen. Rechnungslegung in EUR (nicht CHF), obwohl Sitz in der Schweiz.",
- "_verification": "Umsatz aus Zeile 'Revenues' (Note 6.25.1) der Consolidated Statement of Profit or Loss, S. 161f. des Financial Report 2025: 683'827 Tsd. EUR. Nettogewinn aus Zeile 'PROFIT FOR THE YEAR' / 'Shareholders of the parent company' (Note 6.28), ebenfalls S. 162: 95'460 Tsd. EUR — identisch, da keine nicht beherrschenden Anteile ausgewiesen sind. Mitarbeitendenzahl aus der Tabelle 'Personnel expenses by function' im selben Bericht. Geprüft: PDF direkt heruntergeladen und Zahlen im Volltext verifiziert."
+ "_verification": "Umsatz aus Zeile 'Revenues' (Note 6.25.1) der Consolidated Statement of Profit or Loss, S. 161f. des Financial Report 2025: 683'827 Tsd. EUR. Nettogewinn aus Zeile 'PROFIT FOR THE YEAR' / 'Shareholders of the parent company' (Note 6.28), ebenfalls S. 162: 95'460 Tsd. EUR — identisch, da keine nicht beherrschenden Anteile ausgewiesen sind. Mitarbeitendenzahl aus der Tabelle 'Personnel expenses by function' im selben Bericht. Geprüft: PDF direkt heruntergeladen und Zahlen im Volltext verifiziert.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Medacta Group SA",
+  "revenue_zeile": "Revenues (Note 6.25.1)",
+  "profit_zeile": "PROFIT FOR THE YEAR – Shareholders of the parent company",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (aws-media.medacta.com Financial Report 2025) und per pdftotext die Consolidated Statement of Profit or Loss gesucht; Revenues 683,827 Tsd. EUR und Profit for the year 95,460 Tsd. EUR (vollständig den Shareholders of the parent company zurechenbar, keine Minderheitsanteile) exakt bestätigt; Average nr of employees during the year 2,036 stimmt mit dem eingetragenen employees-Wert überein (Bericht weist keinen Stichtags-Headcount aus)."
+ }
 }

@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 1518.8,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 156.256,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Versicherungsprodukte für Privatpersonen und Unternehmen: Nichtleben-Sachversicherungen (u. a. Motorfahrzeug-, Gebäude-, Haftpflicht- und Reiseversicherung) sowie Lebensversicherungen.",
+ "products_url": "https://www.vaudoise.ch/de/privatperson",
+ "founding_year": 1895,
+ "founding_year_source": "https://www.vaudoise.ch/fr/a-notre-propos/le-groupe-vaudoise/vaudoise-assurances/histoire-du-groupe",
+ "employees": 2013,
+ "fiscal_year": 2025,
+ "report_url": "https://www.vaudoise.ch/docs/default-source/a-notre-propos/rapports-annuels/finanzbericht-2025.pdf",
+ "note": "Als Versicherer weist Vaudoise keinen 'Umsatz' im Sinne eines Industrieunternehmens aus; als revenue_type daher operating_income gewählt, analog zum Geschäftsertrag einer Bank. Verwendet wurde die auf der Kennzahlen-Seite des Finanzberichts 2025 (S. 8) ausgewiesene Kennzahl 'Umsatz' CHF 1'518.8 Mio., die sich aus den gebuchten Bruttoprämien (Nichtleben 1'242.6 + Leben 156.3 + Leben Risiko Dritter 76.3) und dem Umsatz des sonstigen Geschäfts (43.7) zusammensetzt, jedoch das separat ausgewiesene Kapitalanlagenergebnis nicht enthält. Mitarbeitendenzahl 2'013 ist als Vollzeitäquivalente (VZÄ) ausgewiesen, nicht als Köpfe; eine Kopfzahl wird im Bericht nicht genannt.",
+ "_verification": "Finanzbericht 2025 (Gruppe Vaudoise Versicherungen), Kennzahlen-Seite 8: Zeile 'Umsatz' CHF 1'518.8 Mio. (Vorjahr 1'436.4, angepasst). Konsolidierte Erfolgsrechnung Seite 89: 'Davon zuzuschreiben an: Aktionärinnen und Aktionäre Vaudoise Versicherungen Holding AG' CHF 156'256 Tsd. für 2025 (Vorjahr 133'883). Geprüft, dass die konsolidierte Erfolgsrechnung explizit für die Vaudoise Versicherungen Holding AG (nicht nur die weitere Genossenschaftsgruppe) erstellt ist (Seite 774 im Anhang: 'Die konsolidierte Bilanz und Erfolgsrechnung der Vaudoise Versicherungen Holding AG')."
+}

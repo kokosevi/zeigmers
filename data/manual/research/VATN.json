@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://gb.valiant.ch/fileadmin/user_upload/valiant/2025_gb/pdf/de/Valiant-Geschaeftsbericht-2025.pdf",
  "note": "Mitarbeiterzahl 1'188 ist die Kopfzahl ('Anzahl Mitarbeitende'); der Bericht weist daneben separat Vollzeitstellen aus (1'052 FTE) - hier wurde die Kopfzahl gewählt. Konzerngewinn CHF 154.709 Mio. ist vollständig den Aktionären zugerechnet (keine Minderheitsanteile ausgewiesen).",
- "_verification": "Konzernerfolgsrechnung (Geschäftsbericht 2025, Fünfjahresübersicht S. 158 f. und Erfolgsrechnung S. 5190 im Volltext-Extrakt): Zeile 'Geschäftsertrag' CHF 549'494 Tsd. (2025) - Summe aus Netto-Erfolg Zinsengeschäft (396'305), Erfolg Kommissions- und Dienstleistungsgeschäft (98'558) und Erfolg Handelsgeschäft/Fair-Value-Option (41'049), unmittelbar vor dem Geschäftsaufwand. Zeile 'Konzerngewinn' CHF 154'709 Tsd., derselbe Wert in der Fünfjahresübersicht und im Fliesstext ('Konzerngewinn von 154,7 Mio. Franken') bestätigt; keine separate Minderheitsanteil-Zeile gefunden, Wert daher vollständig aktionärszurechenbar. Mitarbeiterzahl (Kopfzahl 1'188 vs. FTE 1'052) aus der Kennzahlentabelle 'Personalbestand'."
+ "_verification": "Konzernerfolgsrechnung (Geschäftsbericht 2025, Fünfjahresübersicht S. 158 f. und Erfolgsrechnung S. 5190 im Volltext-Extrakt): Zeile 'Geschäftsertrag' CHF 549'494 Tsd. (2025) - Summe aus Netto-Erfolg Zinsengeschäft (396'305), Erfolg Kommissions- und Dienstleistungsgeschäft (98'558) und Erfolg Handelsgeschäft/Fair-Value-Option (41'049), unmittelbar vor dem Geschäftsaufwand. Zeile 'Konzerngewinn' CHF 154'709 Tsd., derselbe Wert in der Fünfjahresübersicht und im Fliesstext ('Konzerngewinn von 154,7 Mio. Franken') bestätigt; keine separate Minderheitsanteil-Zeile gefunden, Wert daher vollständig aktionärszurechenbar. Mitarbeiterzahl (Kopfzahl 1'188 vs. FTE 1'052) aus der Kennzahlentabelle 'Personalbestand'.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Valiant Holding AG",
+  "revenue_zeile": "Geschäftsertrag",
+  "profit_zeile": "Konzerngewinn",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (gb.valiant.ch) und per pdftotext die Konzernerfolgsrechnung gesucht; Geschäftsertrag 549,494 Tsd. CHF und Konzerngewinn 154,709 Tsd. CHF exakt bestätigt; Zusammensetzung des Geschäftsertrags (Zinserfolg, Kommissions- und Dienstleistungserfolg, Handelserfolg, übriger ordentlicher Erfolg) enthält nur banküblichen operativen Ertrag ohne durch den Bericht selbst als 'nicht Umsatz' ausgewiesene Posten (Regel 7 unauffällig); operating_income korrekt statt net_sales für eine Bank (Falle 1)."
+ }
 }

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 1073.5,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 214.3,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Vakuumventile, Multiventil-Module und randverschweisste Faltenbälge für Halbleiterfertigung und andere Vakuumprozesse.",
+ "products_url": "https://www.vatgroup.com/vacuum-valves",
+ "founding_year": 1965,
+ "founding_year_source": "https://www.vatgroup.com/files/live/sites/vat/files/Investor%20relations/annual-report/2025/vat-annual-report-2025.pdf",
+ "employees": 3250,
+ "fiscal_year": 2025,
+ "report_url": "https://www.vatgroup.com/files/live/sites/vat/files/Investor%20relations/annual-report/2025/vat-annual-report-2025.pdf",
+ "note": "Mitarbeitende als Vollzeitäquivalente (FTE) ausgewiesen, siehe Fussnote 9 der Kennzahlentabelle im Geschäftsbericht 2025.",
+ "_verification": "Seite 'Key figures' des Annual Report 2025 (Umschlagseite 3): Zeile 'Net sales' CHF 1'073.5 Mio. und Zeile 'Net income' CHF 214.3 Mio. für Geschäftsjahr 2025, jeweils mit Vorjahresvergleich 2024. Founding year 1965 bestätigt durch Aussage 'VAT builds on 60 years' auf der Innenseite des Berichts (2025-60=1965); geprüft, dass Net sales und Net income aus derselben Kennzahlentabelle für dasselbe Geschäftsjahr stammen."
+}
