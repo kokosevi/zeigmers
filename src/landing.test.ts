@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { VIEW_PATH } from './ui/nav'
 
 // Die Landing nennt Kennzahlen ("201 von 224 …"), lädt aber bewusst keine
 // Daten — sie soll nicht 320 KB companies.json holen, um zwei Zahlen zu
@@ -60,8 +61,13 @@ describe('Landing-Kennzahlen', () => {
     expect(HTML).toContain(`alle ${kantone.count} Kantone`)
   })
 
-  it('verlinkt beide Kartenseiten', () => {
-    expect(HTML).toContain('href="/firmen/"')
-    expect(HTML).toContain('href="/beschaeftigte/"')
+  it('verlinkt beide Kartenseiten mit denselben Pfaden wie ui/nav.ts', () => {
+    // Import statt Literal (Abschluss-Review, Fund 8): `index.html` ist
+    // bewusst ohne JavaScript gebaut und kann `VIEW_PATH` nie selbst
+    // importieren — dieser Test übernimmt die Drift-Prüfung stellvertretend,
+    // damit `createNav` (`ui/nav.ts`) und die hier verlinkten Pfade nicht
+    // auseinanderlaufen können.
+    expect(HTML).toContain(`href="${VIEW_PATH.sichtbare}"`)
+    expect(HTML).toContain(`href="${VIEW_PATH.beschaeftigte}"`)
   })
 })

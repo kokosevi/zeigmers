@@ -40,7 +40,14 @@ export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
 /** Die URL je Ansicht — an einer Stelle, damit `createNav` unten und die
  *  Landing (`index.html`) nicht auseinanderlaufen können. Mit Schrägstrich am
  *  Ende: Netlify serviert `/firmen/` aus `dist/firmen/index.html` und leitet
- *  `/firmen` zusätzlich dorthin um; der direkte Pfad spart die Umleitung. */
+ *  `/firmen` zusätzlich dorthin um; der direkte Pfad spart die Umleitung.
+ *
+ *  Abschluss-Review, Fund 8 (2026-08-15): `index.html` selbst ist bewusst
+ *  ohne eine Zeile JavaScript gebaut und kann diese Konstante deshalb nie
+ *  importieren — das Auseinanderlaufen wird stattdessen dort verhindert, wo
+ *  es sich prüfen lässt: `src/landing.test.ts` importiert `VIEW_PATH` und
+ *  vergleicht es mit den in `index.html` verlinkten Pfaden, statt sie dort
+ *  ein zweites Mal als Literal zu wiederholen. */
 export const VIEW_PATH: Record<ViewName, string> = {
   sichtbare: '/firmen/',
   beschaeftigte: '/beschaeftigte/',
