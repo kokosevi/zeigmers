@@ -16,8 +16,12 @@ import { createBasis, mountNav } from './basis'
  *  existiert hier deshalb nicht, statt als unerreichbarer Zweig
  *  mitgeschleppt zu werden. */
 export async function startFirmen(): Promise<void> {
-  const basis = await createBasis()
-  const companies = await loadCompanies()
+  // `loadCompanies()` hängt fachlich von nichts ab, was `createBasis()`
+  // liefert — erst unten (`year`) werden beide Ergebnisse kombiniert. Beide
+  // deshalb parallel statt nacheinander, sonst wartet der grösste Fetch der
+  // Seite (companies.json, 320 KB) unnötig auf `createBasis()`s eigenes
+  // `Promise.all` (meta, ch_kantone, Kantonsgrenzen).
+  const [basis, companies] = await Promise.all([createBasis(), loadCompanies()])
 
   const year =
     Math.max(0, ...companies.companies.map((c) => c.fiscalYear ?? 0)) ||
