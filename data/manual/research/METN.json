@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://metallzug.ch/assets/uploads/files/documents/reports/Reports/2025-AR/Geschaeftsbericht_2025_Englisch_Web.pdf",
  "note": "Am 7. Juni 2024 wurden die Business Unit Infection Control und die Belimed Life Science Group dekonsolidiert und in das Joint Venture SteelcoBelimed AG eingebracht (Metall Zug hält 33%); dadurch ist der Vorjahreswert 2024 (283.4 Mio.) nicht mit 2025 vergleichbar. Die hier eingetragenen 2025-Werte sind bereits die Zahlen des dekonsolidierten (kleineren) Konzerns - es gibt keine separate 'fortgeführtes Geschäft'-Zeile, da die Dekonsolidierung bereits im Vorjahr vollzogen wurde. Konzernergebnis 2025 gesamt: -16.719 Mio. CHF, davon Aktionäre Metall Zug AG -15.234 Mio., nicht beherrschende Anteile -1.485 Mio. Mitarbeitende: durchschnittliche Vollzeitstellen (FTE) im Jahr, kein Stichtags-Headcount im Bericht ausgewiesen.",
- "_verification": "Umsatz und Ergebnis aus der 'Consolidated Income Statement' (S. 86f. des Annual Report 2025): Zeile 'Net sales' 194'619 (Tsd. CHF) und 'Net result attributable to: Shareholders of Metall Zug AG' -15'234 (Tsd. CHF). Mitarbeitendenzahl aus Note zu den Personalaufwendungen: 'the average number of full-time equivalents for the year ... 913 (previous year: 983)'. Geprüft: korrekte PDF-Version (Englisch_Web) nach Fehlversuch mit falscher URL heruntergeladen, Zahlen im Volltext verifiziert."
+ "_verification": "Umsatz und Ergebnis aus der 'Consolidated Income Statement' (S. 86f. des Annual Report 2025): Zeile 'Net sales' 194'619 (Tsd. CHF) und 'Net result attributable to: Shareholders of Metall Zug AG' -15'234 (Tsd. CHF). Mitarbeitendenzahl aus Note zu den Personalaufwendungen: 'the average number of full-time equivalents for the year ... 913 (previous year: 983)'. Geprüft: korrekte PDF-Version (Englisch_Web) nach Fehlversuch mit falscher URL heruntergeladen, Zahlen im Volltext verifiziert.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Metall Zug AG",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Net result attributable to: Shareholders of Metall Zug AG",
+  "abweichungen": [],
+  "begruendung": "Geschaeftsbericht_2025_Englisch_Web.pdf direkt abgerufen (PDF-Metadatentitel 'Halbjahresbericht 2025' ist irrefuehrende Vorlagen-Metadaten, Inhalt ist eindeutig der Annual Report 2025); Consolidated Income Statement zeigt Net sales 194'619 TCHF, Net result -16'719 TCHF, davon Shareholders of Metall Zug AG -15'234 TCHF und Non-controlling interest holders -1'485 TCHF. Konsolidierungskreis bestaetigt: Infection Control/Belimed Life Science wurden per 7.6.2024 in das Joint Venture SteelcoBelimed AG eingebracht (Metall Zug haelt 33%-Minderheitsbeteiligung, als 'associated company' equity-bilanziert, nicht mehr konsolidiert); 2025-Werte sind bereits die Zahlen des dekonsolidierten Konzerns, wie im Bericht mehrfach bestaetigt. Mitarbeitende 913 (FTE) exakt bestaetigt."
+ }
 }

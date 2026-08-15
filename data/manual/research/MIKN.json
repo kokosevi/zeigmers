@@ -23,6 +23,6 @@
   "revenue_zeile": "Net sales",
   "profit_zeile": "Net profit",
   "abweichungen": [],
-  "begruendung": "Annual Report 2025 selbst heruntergeladen (pdftotext). Net sales 381'934 Tsd. und Net profit 32'526 Tsd. exakt in der konsolidierten Erfolgsrechnung gefunden; die abweichenden Werte 22'369/6'240 im Bericht betreffen nachweislich nur die Mikron Holding AG (Stammhaus-Jahresrechnung), nicht den Konzern, wie in der Note korrekt vermerkt."
+  "begruendung": "Mikron_Annual_Report_2025_Web.pdf direkt abgerufen; Consolidated income statement zeigt Net sales 381'934 TCHF und Net profit 32'526 TCHF fuer 2025, keine Erwaehnung von non-controlling interests im gesamten Bericht gefunden. Wortlaut zur Mitarbeiterzahl exakt bestaetigt: 'The number of employees is the total of the full-time equivalent of all employees. The total headcount is higher than the Group's full-time equivalent' - die eingetragene Zahl 1'570 ist somit korrekt als FTE (nicht Headcount) gekennzeichnet."
  }
 }

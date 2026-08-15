@@ -15,5 +15,13 @@
  "employees": 2851,
  "fiscal_year": 2025,
  "report_url": "https://www.feintool.com/wp-content/uploads/2026/02/Annual_Report_2025.pdf",
- "note": "Net sales 661,390 Tsd. CHF laut konsolidierter Erfolgsrechnung (Seite 'Income statement'), gerundet 661.4 Mio. CHF in Kennzahlentabelle. Gewinn = 'Net result attributable to Feintool shareholders' = -8,024 Tsd. CHF (Verlust), keine gesonderte Minderheitsanteilszeile ausgewiesen. Employees = Headcount zum 31.12.2025 exkl. 89 Lernende/Trainees (Bericht nennt ausdrücklich 'Group has a headcount of 2 851')."
+ "note": "Net sales 661,390 Tsd. CHF laut konsolidierter Erfolgsrechnung (Seite 'Income statement'), gerundet 661.4 Mio. CHF in Kennzahlentabelle. Gewinn = 'Net result attributable to Feintool shareholders' = -8,024 Tsd. CHF (Verlust), keine gesonderte Minderheitsanteilszeile ausgewiesen. Employees = Headcount zum 31.12.2025 exkl. 89 Lernende/Trainees (Bericht nennt ausdrücklich 'Group has a headcount of 2 851').",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Feintool International Holding AG, Lyss (Switzerland)",
+  "revenue_zeile": "Net sales",
+  "profit_zeile": "Net result attributable to Feintool shareholders",
+  "abweichungen": [],
+  "begruendung": "Annual_Report_2025.pdf von feintool.com direkt abgerufen und via pdftotext durchsucht; Konsolidierte Erfolgsrechnung zeigt Net sales 661'390 TCHF und Net result attributable to Feintool shareholders -8'024 TCHF fuer 2025, Mitarbeiterzahl 2'851 (Headcount) exakt wie vorgelegt, Rechtseinheit Feintool International Holding AG bestaetigt."
+ }
 }

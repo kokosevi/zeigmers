@@ -19,10 +19,10 @@
  "_verification": "Umsatz ('Net sales from goods and services', CHF 386'195 Tsd. = 386.195 Mio.) und Gewinn ('Profit for the year, of which attributable to the shareholders of the parent company', CHF 18'574 Tsd. = 18.574 Mio.) stammen aus der 'Consolidated Income Statement' im MCH Group Annual Report 2025 (Financial Report), Geschäftsjahr 2025 vs. 2024. Geprüft: Die Umsatzzeile heisst exakt 'Net sales from goods and services' und ist getrennt von der Summenzeile 'Total operating income' (429.5 Mio., inkl. sonstiger betrieblicher Erträge und Bestandsveränderungen) ausgewiesen (Regel 4); der Gewinn ist unmittelbar nach nicht beherrschenden Anteilen (-1.810 Mio.) aufgeschlüsselt (Regel 5). Beschäftigtenzahl aus dem Sustainability-Report-Kapitel (Tabelle 'Employees', Headcount vs. FTE) desselben Geschäftsberichts entnommen (Regel 6).",
  "_pruefung": {
   "verdict": "bestaetigt",
-  "legal_name_im_bericht": "MCH Group Ltd. (MCH Group AG)",
+  "legal_name_im_bericht": "MCH Group AG / MCH Group Ltd.",
   "revenue_zeile": "Net sales from goods and services",
   "profit_zeile": "Profit for the year, of which attributable to the shareholders of the parent company",
   "abweichungen": [],
-  "begruendung": "Financial Report 2025 selbst heruntergeladen (pdftotext). Net sales from goods and services 386'195 Tsd. (getrennt von Total operating income 429'538 Tsd.) und Profit attributable to shareholders of the parent 18'574 Tsd. exakt gefunden; Rechnung 16'764 + 1'810 (non-controlling interests) = 18'574 geht auf."
+  "begruendung": "mch_chapter-financial-report-2025_en.pdf direkt abgerufen; Consolidated Income Statement zeigt Net sales from goods and services 386'195 TCHF, getrennt von Total operating income 429'538 TCHF (inkl. Bestandsveraenderungen/sonstiger Ertraege), sowie Profit for the year 16'764 TCHF mit Aufteilung 'of which attributable to non-controlling interests' -1'810 und 'of which attributable to the shareholders of the parent company' 18'574 TCHF. Beschaeftigtenzahl (1'348) liegt im separaten Sustainability-/Corporate-Governance-Teil des Geschaeftsberichts, der in dieser PDF nicht enthalten war, konnte daher nicht separat gegengeprueft werden, ist aber plausibel und nicht widerlegt."
  }
 }

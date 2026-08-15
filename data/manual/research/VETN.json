@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://report.vetropack.com/2025/consolidated-income-statement",
  "note": "Konsolidierte Erfolgsrechnung weist keine gesonderten Minderheitsanteile aus; 'Net profit' CHF 3.8 Mio. wird direkt für die Berechnung des Gewinns je Aktie verwendet und gilt daher als Aktionärsanteil. Mitarbeitendenzahl 3'532 wird im Bericht als 'Mitarbeitende' (Kopfzahl, Stand Jahresende) ausgewiesen, ohne separate FTE-Angabe.",
- "_verification": "Seite 'Consolidated income statement' des Annual Report 2025 (report.vetropack.com/2025): Zeile 'Net sales from goods and services' CHF 778.9 Mio. und Zeile 'Net profit' CHF 3.8 Mio. für Geschäftsjahr 2025, mit Vorjahresvergleich 2024 (842.1 / 13.7). Geprüft, dass beide Zahlen aus derselben konsolidierten Erfolgsrechnung für dasselbe Geschäftsjahr (Gesamtkonzern) stammen; Gründungsjahr 1911 direkt von der Geschichte-Seite der Firma bestätigt."
+ "_verification": "Seite 'Consolidated income statement' des Annual Report 2025 (report.vetropack.com/2025): Zeile 'Net sales from goods and services' CHF 778.9 Mio. und Zeile 'Net profit' CHF 3.8 Mio. für Geschäftsjahr 2025, mit Vorjahresvergleich 2024 (842.1 / 13.7). Geprüft, dass beide Zahlen aus derselben konsolidierten Erfolgsrechnung für dasselbe Geschäftsjahr (Gesamtkonzern) stammen; Gründungsjahr 1911 direkt von der Geschichte-Seite der Firma bestätigt.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Vetropack Holding AG",
+  "revenue_zeile": "Net sales from goods and services",
+  "profit_zeile": "Net profit",
+  "abweichungen": [],
+  "begruendung": "Seite report.vetropack.com/2025/consolidated-income-statement direkt abgerufen; zeigt Net sales from goods and services 778.9 Mio. CHF (Vorjahr 842.1) und Net profit 3.8 Mio. CHF (Vorjahr 13.7) fuer Geschaeftsjahr 2025, keine gesonderte Minderheitsanteile-Zeile. Mitarbeiterzahl 3'532 konnte auf der gepruepften Seite nicht separat verifiziert werden (andere Kapitel-Unterseite, per Direktzugriff nicht erreichbar), Kernzahlen Umsatz/Gewinn/Rechtseinheit jedoch vollstaendig bestaetigt."
+ }
 }

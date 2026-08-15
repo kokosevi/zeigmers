@@ -526,8 +526,10 @@ Verträgen, nach denen recherchiert und gegengelesen wurde.
 | davon auf der Karte platziert | **201** |
 | davon recherchiert | **201** |
 | davon mit belegtem Umsatz | **188** |
-| unabhängig gegengeprüfte Zeilen | 176 |
-| eingearbeitete Korrekturen | 18 |
+| unabhängig gegengeprüfte Zeilen | **alle 193** |
+| davon bestätigt | 183 |
+| davon mit Fund | 10 — alle eingearbeitet |
+| eingearbeitete Korrekturen | 21 |
 
 Die **14 Zeilen ohne Umsatz** sind Beteiligungs- und Investmentvehikel
 (BB Biotech, HBM Healthcare, Private Equity Holding, nebag, Alpine Select,
@@ -566,6 +568,13 @@ Funde. Die lehrreichsten:
 | Kuros | Gewinn enthielt ein aufgegebenes Geschäft, der Umsatz nicht |
 | Alcon, Clariant, Cembra | Beschäftigte gerundet bzw. Vollzeitstellen statt Köpfe |
 | Temenos | Gründungsjahr stammte aus Wikipedia — Feld jetzt leer |
+
+**Ein Fund blieb offen und steht so in der Zeile:** Perrot Duvals Zahlen
+stammen aus dem Geschäftsjahr 2024/25, obwohl 2025/26 seit dem 29. Juli 2026
+veröffentlicht ist — perrotduval.com sperrt jeden Zugriff (HTTP 403), auch
+über mehrere Wege. Es ist die einzige der 201 Firmen mit einem älteren
+Geschäftsjahr; 188 stehen auf 2025, zehn auf einem in 2026 endenden. Die
+Einschränkung steht in der Zeile, statt stillschweigend übernommen zu werden.
 
 **Korrekturen stehen in einem eigenen Feld** (`_korrektur`), nicht im
 Prüfurteil. Der Grund ist eine Panne, die eine Prüfung aufdeckte: Avoltas

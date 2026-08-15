@@ -21,8 +21,8 @@
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Orell Füssli AG",
   "revenue_zeile": "Revenues from goods and services",
-  "profit_zeile": "Net income for the period, attributable to the shareholders of Orell Füssli AG",
+  "profit_zeile": "Attributable to the shareholders of Orell Füssli AG",
   "abweichungen": [],
-  "begruendung": "Annual Report 2025 selbst heruntergeladen (pdftotext). Revenues from goods and services 272'807 Tsd. (getrennt von der höheren Summenzeile Operating income 278'280 Tsd.) und Attributable to the shareholders of Orell Füssli AG 18'981 Tsd. (getrennt von Minderheitsanteilen 3'976 Tsd., Gesamt 22'957 Tsd.) exakt gefunden."
+  "begruendung": "OF_Annual_Report_2025.pdf direkt abgerufen; Consolidated Income Statement zeigt Revenues from goods and services 272'807 TCHF getrennt von Operating income 278'280 TCHF, sowie Net income for the period 22'957 TCHF mit Aufteilung Attributable to the shareholders of Orell Füssli AG 18'981 TCHF und Attributable to minority interests 3'976 TCHF. Full-time equivalents FTE (at 31.12.) 683.9, auf 684 gerundet exakt bestaetigt."
  }
 }

@@ -15,5 +15,13 @@
  "employees": 1053,
  "fiscal_year": 2026,
  "report_url": "https://www.carlogavazzi.com/files/media/files/ca0a102d7e9262bc1938e777d8e7df78/2025-2026_EN-Annual-report-Carlo-Gavazzi.pdf",
- "note": "Geschäftsjahr endet am 31. März; verwendet wird das Geschäftsjahr 2025/26 (1. April 2025 – 31. März 2026), fiscal_year als Endjahr = 2026. Umsatzzeile im Bericht heisst 'Revenue from sale of goods' (136,937 Tsd. CHF, konsolidierte Erfolgsrechnung 'for the years ended March 31'), nicht wörtlich 'Net sales', aber die einzige Umsatzzeile der Gruppe. Net profit attributable to owners of Carlo Gavazzi Holding AG = 1,824 Tsd. CHF; Bericht bestätigt, dass in den dargestellten Jahren keine Minderheitsanteile (non-controlling interests) bestehen. Employees = 'Number of employees (average)' aus der Fünfjahresübersicht = 1,053 (Durchschnitt über das Geschäftsjahr; keine gesonderte Kopf-/FTE-Angabe im Bericht gefunden)."
+ "note": "Geschäftsjahr endet am 31. März; verwendet wird das Geschäftsjahr 2025/26 (1. April 2025 – 31. März 2026), fiscal_year als Endjahr = 2026. Umsatzzeile im Bericht heisst 'Revenue from sale of goods' (136,937 Tsd. CHF, konsolidierte Erfolgsrechnung 'for the years ended March 31'), nicht wörtlich 'Net sales', aber die einzige Umsatzzeile der Gruppe. Net profit attributable to owners of Carlo Gavazzi Holding AG = 1,824 Tsd. CHF; Bericht bestätigt, dass in den dargestellten Jahren keine Minderheitsanteile (non-controlling interests) bestehen. Employees = 'Number of employees (average)' aus der Fünfjahresübersicht = 1,053 (Durchschnitt über das Geschäftsjahr; keine gesonderte Kopf-/FTE-Angabe im Bericht gefunden).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Carlo Gavazzi Holding AG",
+  "revenue_zeile": "Revenue from sale of goods",
+  "profit_zeile": "Net profit attributable to owners of Carlo Gavazzi Holding AG",
+  "abweichungen": [],
+  "begruendung": "2025-2026_EN-Annual-report-Carlo-Gavazzi.pdf direkt abgerufen; konsolidierte Erfolgsrechnung 'for the years ended March 31, 2026 and 2025' zeigt Revenue from sale of goods 136'937 TCHF und Net profit attributable to owners of Carlo Gavazzi Holding AG 1'824 TCHF, Bericht bestaetigt ausdruecklich 'no non-controlling interests'. Geschaeftsjahr endet 31.3., fiscal_year=2026 als Endjahr korrekt; Mitarbeiterzahl 1'053 (Durchschnitt) exakt bestaetigt."
+ }
 }

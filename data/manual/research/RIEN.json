@@ -5,7 +5,7 @@
  "revenue_currency": "CHF",
  "revenue_type": "net_sales",
  "revenue_unit": "1000000",
- "profit": -63.4,
+ "profit": "-63.3",
  "profit_currency": "CHF",
  "profit_unit": "1000000",
  "core_products": "Maschinen, Systeme und Komponenten für die Textilindustrie zur Verarbeitung von Natur- und Chemiefasern zu Kurz- und Langstapelgarn sowie Filamentgarn.",
@@ -15,6 +15,17 @@
  "employees": 4278,
  "fiscal_year": 2025,
  "report_url": "https://www.rieter.com/fileadmin/user_upload/media/2026/bmk/rieter-annual-report-2025-en.pdf",
- "note": "Rieter weist Mitarbeitende sowohl als Headcount (4'278 per 31.12.2025) als auch als FTE (4'220) aus; hier Headcount gemäss Regel 6 verwendet. Nettoverlust 2025 (CHF -63.4 Mio.) infolge ausserordentlicher Restrukturierungs- und Transaktionskosten im Zusammenhang mit der Barmag-Akquisition (CHF 54.2 Mio.).",
- "_verification": "Umsatz (Sales) CHF 685.1 Mio. und Konzernergebnis den Aktionären der Rieter Holding AG zurechenbar CHF -63.3/-63.4 Mio. für Geschäftsjahr 2025 stammen aus der konsolidierten Erfolgsrechnung des Geschäftsberichts 2025 (reports.rieter.com/2025/ar) sowie der offiziellen Medienmitteilung vom 26.02.2026 'Milestone Reached in Strategic Repositioning'. Beide Zahlen (Umsatz und Verlust) stammen aus derselben konsolidierten Konzernrechnung für dasselbe Geschäftsjahr 2025; Mitarbeitendenzahl aus der Seite 'People'-related des Geschäftsberichts 2025 geprüft und mit Medienmitteilung abgeglichen."
+ "note": "Gewinn ist die Zeile 'Attributable to shareholders of Rieter Holding Ltd.' (-63.3 Mio.), nicht der Konzern-Gesamtverlust 'Net (loss)/profit' (-63.4 Mio.); die Differenz von 0.1 Mio. sind Minderheitsanteile. Rieter weist Mitarbeitende sowohl als Headcount (4'278 per 31.12.2025) als auch als FTE (4'220) aus; hier Headcount gemäss Regel 6 verwendet. Nettoverlust 2025 (CHF -63.4 Mio.) infolge ausserordentlicher Restrukturierungs- und Transaktionskosten im Zusammenhang mit der Barmag-Akquisition (CHF 54.2 Mio.).",
+ "_verification": "Umsatz (Sales) CHF 685.1 Mio. und Konzernergebnis den Aktionären der Rieter Holding AG zurechenbar CHF -63.3/-63.4 Mio. für Geschäftsjahr 2025 stammen aus der konsolidierten Erfolgsrechnung des Geschäftsberichts 2025 (reports.rieter.com/2025/ar) sowie der offiziellen Medienmitteilung vom 26.02.2026 'Milestone Reached in Strategic Repositioning'. Beide Zahlen (Umsatz und Verlust) stammen aus derselben konsolidierten Konzernrechnung für dasselbe Geschäftsjahr 2025; Mitarbeitendenzahl aus der Seite 'People'-related des Geschäftsberichts 2025 geprüft und mit Medienmitteilung abgeglichen.",
+ "_pruefung": {
+  "verdict": "abweichung",
+  "legal_name_im_bericht": "Rieter Holding Ltd. (Rieter Holding AG)",
+  "revenue_zeile": "Sales",
+  "profit_zeile": "Attributable to shareholders of Rieter Holding Ltd. (nicht 'Net (loss)/profit' gesamt)",
+  "abweichungen": [
+   "Der eingetragene Gewinn -63.4 Mio. CHF ist der Konzern-Gesamtverlust 'Net (loss)/profit' (inkl. non-controlling interests -0.1 Mio.), nicht der laut Aufgabenstellung geforderte Aktionaersanteil. In der Consolidated Income Statement steht direkt darunter separat 'Attributable to shareholders of Rieter Holding Ltd.' mit -63.3 Mio. CHF - das ist die Zahl, die eingetragen werden sollte (Regel: Gewinn = Aktionaersanteil, nicht Konzern-Gesamtergebnis)."
+  ],
+  "begruendung": "rieter-annual-report-2025-en.pdf direkt abgerufen; Consolidated income statement (S. 130) zeigt Sales 685.1 Mio. CHF sowie 'Net (loss)/profit' -63.4 Mio. CHF, unmittelbar gefolgt von der Aufschluesselung 'Attributable to shareholders of Rieter Holding Ltd.' -63.3 Mio. und 'Attributable to non-controlling interests' -0.1 Mio. Die im Datensatz eingetragene Zahl -63.4 entspricht der Gesamtsumme vor Abzug der Minderheitsanteile und nicht dem Aktionaersanteil; Differenz ist mit CHF 0.1 Mio. klein, aber ein Kategorienfehler. Mitarbeitende 4'278 (Headcount) exakt bestaetigt."
+ },
+ "_korrektur": "Gewinn -63.4 -> -63.3: Aktionaersanteil statt Konzern-Gesamtverlust (Regel 5)."
 }
