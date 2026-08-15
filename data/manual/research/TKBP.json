@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 439.092,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 162.256,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Universalbank mit Staatsgarantie: Alltagsbanking, Hypotheken- und Anlageberatung für Privatkunden sowie Finanzierungen und Dienstleistungen für Gewerbe, Firmenkunden und die öffentliche Hand im Kanton Thurgau.",
+ "products_url": "https://www.tkb.ch/ueber-uns/die-tkb",
+ "founding_year": 1871,
+ "founding_year_source": "https://www.tkb.ch/ueber-uns/die-tkb/geschichte",
+ "employees": 869,
+ "fiscal_year": 2025,
+ "report_url": "https://gb.tkb.ch/fileadmin/user_upload/redakteure/gb2025/pdf/TKB_GB2025_Geschaeftsbericht-2025.pdf",
+ "note": "TKB ist eine Anstalt öffentlichen Rechts ohne Konzernrechnungspflicht (Bericht S. 'Recht und Organisation': 'stellt keinen Konzern dar ... zur Erstellung einer Konzernrechnung ist die TKB nicht verpflichtet'); daher keine Minderheitsanteile. Mitarbeiterzahl 869 ist die Kopfzahl ('Anzahl Personen, exkl. Lernende/Praktikanten'); zusätzlich 57 Lernende/Praktikanten sowie separat 778 Vollzeit-Personaleinheiten (FTE) ausgewiesen - hier wurde die Kopfzahl exkl. Auszubildende gewählt, da der Bericht sie explizit als 'Anzahl Personen' führt.",
+ "_verification": "Konzern-/Jahresrechnung (TKB-Geschäftsbericht 2025, Finanzteil 'Erfolgsrechnung'): Zeile 'Geschäftsertrag' CHF 439'092 Tsd. (2025) - Summe aus Erfolg Zinsengeschäft, Kommissions- und Dienstleistungsgeschäft, Handelsgeschäft/Fair-Value-Option sowie übrigem ordentlichem Erfolg, unmittelbar vor dem Geschäftsaufwand. Zeile 'Jahresgewinn' CHF 162'256 Tsd., in der Fünfjahresübersicht sowie im Fliesstext ('Jahresgewinn gesteigert ... 162.3 Mio.') konsistent bestätigt. Mitarbeiterzahl aus der Tabelle 'Zahlen im Überblick / Mitarbeiterinnen und Mitarbeiter': 'Anzahl Personen (exkl. Lernende/Praktikanten)' 869 (2025) vs. 858 (2024)."
+}

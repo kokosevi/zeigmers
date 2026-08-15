@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 549.494,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 154.709,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Unabhängige Schweizer Retail- und KMU-Bank: Hypotheken, Spar- und Anlagekonten, Anlage- und Vorsorgeberatung sowie Finanzierungslösungen für Privatkunden und kleine und mittlere Unternehmen.",
+ "products_url": "https://www.valiant.ch/en/ueber-valiant/ihre-valiant-portrait",
+ "founding_year": 1997,
+ "founding_year_source": "https://www.valiant.ch/en/investor-relations/profile",
+ "employees": 1188,
+ "fiscal_year": 2025,
+ "report_url": "https://gb.valiant.ch/fileadmin/user_upload/valiant/2025_gb/pdf/de/Valiant-Geschaeftsbericht-2025.pdf",
+ "note": "Mitarbeiterzahl 1'188 ist die Kopfzahl ('Anzahl Mitarbeitende'); der Bericht weist daneben separat Vollzeitstellen aus (1'052 FTE) - hier wurde die Kopfzahl gewählt. Konzerngewinn CHF 154.709 Mio. ist vollständig den Aktionären zugerechnet (keine Minderheitsanteile ausgewiesen).",
+ "_verification": "Konzernerfolgsrechnung (Geschäftsbericht 2025, Fünfjahresübersicht S. 158 f. und Erfolgsrechnung S. 5190 im Volltext-Extrakt): Zeile 'Geschäftsertrag' CHF 549'494 Tsd. (2025) - Summe aus Netto-Erfolg Zinsengeschäft (396'305), Erfolg Kommissions- und Dienstleistungsgeschäft (98'558) und Erfolg Handelsgeschäft/Fair-Value-Option (41'049), unmittelbar vor dem Geschäftsaufwand. Zeile 'Konzerngewinn' CHF 154'709 Tsd., derselbe Wert in der Fünfjahresübersicht und im Fliesstext ('Konzerngewinn von 154,7 Mio. Franken') bestätigt; keine separate Minderheitsanteil-Zeile gefunden, Wert daher vollständig aktionärszurechenbar. Mitarbeiterzahl (Kopfzahl 1'188 vs. FTE 1'052) aus der Kennzahlentabelle 'Personalbestand'."
+}

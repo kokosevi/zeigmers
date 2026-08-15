@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 574.477,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 235.601,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Unabhängige Finanzberatung und Vermögensverwaltung für Privatkunden (Vorsorge-, Anlage- und Hypothekenberatung) sowie eigene Depotbank- und Versicherungsdienstleistungen (VZ Depotbank, VZ Versicherungen).",
+ "products_url": "https://www.vermoegenszentrum.ch/en/about-us",
+ "founding_year": 1993,
+ "founding_year_source": "https://www.vermoegenszentrum.ch/en/about-us",
+ "employees": 1717,
+ "fiscal_year": 2025,
+ "report_url": "https://www.vermoegenszentrum.ch/sites/default/files/documents/investor-relations-geschaeftsbericht-2025-chen.pdf",
+ "note": "Mitarbeiterzahl 1'716.9 ist in Vollzeitäquivalenten ausgewiesen ('Full-time equivalents (FTE)'); auf 1'717 gerundet, eine separate Kopfzahl weist der Bericht nicht aus. Konzerngewinn (Net profit) CHF 236.438 Mio. gesamt, davon den Aktionären der VZ Holding Ltd zurechenbar CHF 235.601 Mio.; Minderheitsanteile (Non-controlling interests) CHF 0.837 Mio.",
+ "_verification": "Consolidated income statement (Annual Report 2025 VZ Group, S. 65, 'Key figures'/S. 1): Zeile 'Total revenues' CHF 574'477 Tsd. (2025) — Summe aus Consulting fees, Management fees, Banking income (Kommissionen/Handel/Zinsen), Insurance result, Net impairment und Other revenues, unmittelbar vor 'Total expenses'. Zeile 'Attributable to: Shareholders of VZ Holding Ltd' CHF 235'601 Tsd. Geprüft: 'Total revenues' ist die einzige Ertragssummenzeile im Konzernerfolgsausweis und wird in der Kennzahlenübersicht ('Key figures') konsistent auf CHF 574.5 Mio. gerundet wiederholt; VZ ist als diversifizierte Finanzdienstleisterin (Beratung, Bank, Versicherung) organisiert, sodass diese Summenzeile - anders als bei Partners Group - tatsächlich sämtliche Geschäftserträge und keine sachfremden Posten enthält."
+}

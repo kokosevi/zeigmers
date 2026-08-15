@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 1431.5,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": 1000000,
+ "profit": 280.1,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Private Banking und Vermögensverwaltung für vermögende Privatkunden sowie institutionelles Asset Management (Anlagefonds, Mandate) und strukturierte Produkte/Derivate für Anleger.",
+ "products_url": "https://www.vontobel.com/en/about-vontobel/",
+ "founding_year": 1924,
+ "founding_year_source": "https://www.vontobel.com/en/about-vontobel/",
+ "employees": 2310,
+ "fiscal_year": 2025,
+ "report_url": "https://www.vontobel.com/siteassets/about-vontobel/investor-relations/reports--presentations/2025/fyr/full-year-report-2025_en-mjaynjaymdy.pdf",
+ "note": "Mitarbeiterzahl 2'310.0 ist in Vollzeitäquivalenten ausgewiesen ('Personnel (full-time equivalents)', Summe Schweiz 1'914.9 + Ausland 395.1); auf 2'310 gerundet. Konzerngewinn CHF 280.1 Mio. ist zu 100% den Aktionären der Vontobel Holding AG zugerechnet (kein Minderheitsanteil ausgewiesen).",
+ "_verification": "Consolidated income statement (Full-Year Report 2025, S. 151/Zeile 'Total operating income'): CHF 1'431.5 Mio. (2025) und 'Group net profit' CHF 280.1 Mio., davon 'of which allocated to shareholders of Vontobel Holding AG' ebenfalls CHF 280.1 Mio. (keine Minderheitsanteile). Geprüft: 'Total operating income' ist die Summe aus Net interest and dividend income (81.0), Net fee and commission income (851.2), Trading income (487.5) und Other income (11.7) und steht unmittelbar vor den Betriebsaufwendungen - konsistent mit der 5-Jahresübersicht auf S. 22/23 des Berichts. Mitarbeiterzahl (2'310.0 FTE) aus der Personalstatistik im Berichtsteil bestätigt."
+}
