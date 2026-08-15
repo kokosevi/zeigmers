@@ -16,5 +16,13 @@
  "fiscal_year": "2025",
  "report_url": "https://www.burkhalter.ch/fileadmin/buma/doc/Ueber_uns/Publikationen/2026/Burkhalter_FB_2025_DE.pdf",
  "note": "Konzernergebnis inkl. Minderheitsaktionäre betrug 61'340 TCHF (davon 4 TCHF Minderheitsanteile); eingetragen ist der Aktionärsanteil von 61'336 TCHF. Employees als Vollzeitstellen (FTE) ausgewiesen, der Bericht nennt keine separate Kopfzahl. Die KPI-Übersicht (S.3) weist 'Umsatz netto' 1'207'547 TCHF aus; das ist die Summe aus der Zeile 'Nettoerlöse aus Lieferungen und Leistungen' (1'201'526 TCHF) und 'Veränderung Aufträge in Arbeit' (6'021 TCHF) - eingetragen ist die tatsächliche Umsatzzeile aus der Konzernerfolgsrechnung.",
- "_verification": "Umsatz und Konzernergebnis stammen aus der Konsolidierten Erfolgsrechnung auf S.43 des Finanzberichts 2025 (Geschäftsjahr 2025, Vorjahresvergleich 2024); Zeile 'Nettoerlöse aus Lieferungen und Leistungen' und die Aufteilung 'Davon Aktionäre Burkhalter Holding AG' / 'Davon Minderheitsaktionäre' wurden geprüft und gegen die Kennzahlen-Übersicht auf S.3 sowie den Lagebericht (Gründungsjahr, FTE-Zahl) auf S.7 abgeglichen."
+ "_verification": "Umsatz und Konzernergebnis stammen aus der Konsolidierten Erfolgsrechnung auf S.43 des Finanzberichts 2025 (Geschäftsjahr 2025, Vorjahresvergleich 2024); Zeile 'Nettoerlöse aus Lieferungen und Leistungen' und die Aufteilung 'Davon Aktionäre Burkhalter Holding AG' / 'Davon Minderheitsaktionäre' wurden geprüft und gegen die Kennzahlen-Übersicht auf S.3 sowie den Lagebericht (Gründungsjahr, FTE-Zahl) auf S.7 abgeglichen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Burkhalter Holding AG",
+  "revenue_zeile": "Nettoerlöse aus Lieferungen und Leistungen",
+  "profit_zeile": "Konzernergebnis, davon Aktionäre Burkhalter Holding AG",
+  "abweichungen": [],
+  "begruendung": "Finanzieller Bericht 2025 (Konsolidierte Erfolgsrechnung, S.43, mit pdftotext gelesen) zeigt exakt 'Nettoerlöse aus Lieferungen und Leistungen 1'201'526' und 'Konzernergebnis 61'340', davon 'Aktionäre Burkhalter Holding AG 61'336' und 'Minderheitsaktionäre 4'. Beide Zahlen stammen aus derselben Erfolgsrechnung und demselben Geschäftsjahr; keine Abweichung."
+ }
 }
