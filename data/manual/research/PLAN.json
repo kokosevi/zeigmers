@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.plazza.ch/wp-content/uploads/PLAZZA_JB2025_Inhalt_WEB.pdf",
  "note": "Umsatz = Zeile 'Liegenschaftenertrag' der konsolidierten Erfolgsrechnung (39'866 TCHF, Note 14), nicht 'Total Betriebsertrag' (40'114 TCHF), da darin auch Ertrag aus Immobilienentwicklungen und sonstige betriebliche Erträge enthalten sind. Gewinn 60'703 TCHF (Vorjahr 50'696) enthält Neubewertungserfolg von 44'504 TCHF; keine Minderheitsanteile ausgewiesen. Beschäftigte: 24 Personen zum 31.12.2025 (Kopfzahl gemäss Nachhaltigkeitsbericht), entsprechend 22,2 Vollzeitäquivalenten.",
- "_verification": "Umsatz und Gewinn aus der 'Konsolidierten Erfolgsrechnung' im Geschäftsbericht 2025: Zeile 'Liegenschaftenertrag' 39'866 TCHF (Vorjahr 33'040, Note 14) und Zeile 'Gewinn' 60'703 TCHF (Vorjahr 50'696), Geschäftsjahr 2025, in TCHF. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft. Gründungsdatum (22. Juni 2015, Handelsregistereintrag 25.6.2015) aus dem Corporate-Governance-Teil desselben Berichts ('Angaben zum Kapital'). Mitarbeiterzahl (24, Kopfzahl) aus dem Nachhaltigkeitsbericht, Abschnitt 'Mitarbeitendenstruktur'."
+ "_verification": "Umsatz und Gewinn aus der 'Konsolidierten Erfolgsrechnung' im Geschäftsbericht 2025: Zeile 'Liegenschaftenertrag' 39'866 TCHF (Vorjahr 33'040, Note 14) und Zeile 'Gewinn' 60'703 TCHF (Vorjahr 50'696), Geschäftsjahr 2025, in TCHF. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft. Gründungsdatum (22. Juni 2015, Handelsregistereintrag 25.6.2015) aus dem Corporate-Governance-Teil desselben Berichts ('Angaben zum Kapital'). Mitarbeiterzahl (24, Kopfzahl) aus dem Nachhaltigkeitsbericht, Abschnitt 'Mitarbeitendenstruktur'.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "PLAZZA AG",
+  "revenue_zeile": "Liegenschaftenertrag — Erfolgsrechnung, Note 14",
+  "profit_zeile": "Gewinn — Erfolgsrechnung",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Geschäftsbericht 2025 direkt heruntergeladen und die konsolidierte Erfolgsrechnung geprüft: Liegenschaftenertrag TCHF 39'866 und Gewinn TCHF 60'703 stehen exakt so da; Total Betriebsertrag (TCHF 40'114, inkl. Entwicklungsertrag) wurde korrekt NICHT als Umsatz verwendet. Der Anhang bestätigt Gründung der PLAZZA AG am 22.6.2015."
+ }
 }

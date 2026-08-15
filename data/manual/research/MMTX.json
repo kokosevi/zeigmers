@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 0.642,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -9.906,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Neurotechnologie-Plattform aus VR-/KI-gestützter Software und Hardware zur Diagnose, Überwachung und Rehabilitation nach Schlaganfall, Parkinson und anderen neurologischen Erkrankungen (u. a. MindMotion GO, MindPod, Izar, Physilog); daneben ein biopharmazeutisches Geschäft (v. a. über die Tochter APR Applied Pharma Research) mit Orphan-Drug-Formulierungen, u. a. für Phenylketonurie.",
+ "products_url": "https://mindmazetherapeutics.com/solutions/mindmaze-platform/",
+ "founding_year": 2007,
+ "founding_year_source": "https://www.moneyhouse.ch/de/company/mindmaze-therapeutics-holding-sa-4376870261 (Handelsregisterauszug: 'foundingDate: 2007-03-20', damals als Vorgängergesellschaft RELIEF THERAPEUTICS Holding SA eingetragen).",
+ "employees": "",
+ "fiscal_year": 2025,
+ "report_url": "https://mindmazetherapeutics.com/wp-content/uploads/2026/04/MMTX_Annual_Report_2025.pdf",
+ "note": "Komplexe Firmengeschichte: Die börsenkotierte Gesellschaft (SIX: MMTX) ist rechtlich die frühere RELIEF THERAPEUTICS Holding SA (im Handelsregister seit 2007), die am 10.12.2025 eine 'Business Combination' mit der NeuroX Group SA (Trägergesellschaft der MindMaze-Neurotechnologie, HR-Eintrag 2020) abschloss und sich in MindMaze Therapeutics Holding SA umbenannte. Bilanziell handelt es sich um eine umgekehrte Akquisition ('reverse acquisition'): NeuroX gilt als 'accounting acquirer', weshalb die konsolidierte Erfolgsrechnung 2025 (Umsatz CHF 642 Tsd., Verlust CHF -9.906 Mio.) praktisch ausschliesslich das Neurotechnologie-Geschäft (NeuroX/MindMaze) für das volle Jahr 2025 abbildet. Das ehemalige Relief-/APR-Pharmageschäft wurde erst zum Bilanzstichtag 31.12.2025 konsolidiert und trug daher NICHT zum Umsatz/Ergebnis 2025 bei, nur zur Bilanz; pro forma hätte eine ganzjährige Einbeziehung von APR den Umsatz um CHF 3.967 Mio. erhöht und den Verlust um CHF 8.114 Mio. vergrössert (Anhang 6 des Geschäftsberichts). Die Umsatz-/Gewinnzahl 2025 ist deshalb NICHT repräsentativ für die künftige, kombinierte Gruppengrösse. Beschäftigte: Der Bericht nennt für die MindMaze Therapeutics Holding SA als Einzelgesellschaft (Statutarischer Abschluss) 'weniger als 10' Vollzeitstellen im Jahresdurchschnitt - das betrifft aber nur die Holding, nicht die konsolidierte Gruppe (Personalaufwand der Gruppe CHF 7.1 Mio.); eine Kopfzahl/FTE-Angabe für die gesamte Gruppe war im Bericht nicht auffindbar, daher 'employees' leer.",
+ "_verification": "Umsatz ('Total revenue' TCHF 642) und Verlust ('Net loss for the period' TCHF -9'906) stammen aus der Konsolidierten Gesamtergebnisrechnung ('Consolidated statement of comprehensive loss') des Annual Report FY25, S. 94f., geprüft gegen Anhang 9 ('9. Revenue', Total revenue TCHF 642) und Anhang 6 ('6. Business combination', inkl. Pro-forma-Hinweis zur Nichtberücksichtigung des Pharma-Geschäfts). Beide Zahlen stammen aus derselben konsolidierten Rechnung, gleiches Geschäftsjahr, gleicher (durch die Reverse-Acquisition-Bilanzierung vorgegebener) Konsolidierungskreis. Gründungsjahr über Moneyhouse-Handelsregisterauszug der rechtlich fortbestehenden Gesellschaft verifiziert, da der Bericht selbst kein einzelnes Gründungsdatum für die neue kombinierte Einheit nennt."
+}

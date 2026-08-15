@@ -1,0 +1,20 @@
+{
+ "noga_group": "handel",
+ "consolidation_basis": "total_group",
+ "revenue": 61.64,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 2.798,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Diversifizierte Beteiligungsgesellschaft mit drei Sparten: Detailhandel (Tankstellenshops der Marke Restoshop; Bäckerei-Konditoreien Suard und Arte Panis), Gastronomie (Kaffeebars Pause-Café) und Immobilien (Immobilienportfolio und -entwicklung über Parvico SA und Lully .01 SA), alle mit Sitz in der Region Freiburg.",
+ "products_url": "https://www.villarsholding.ch/groupe/",
+ "founding_year": 1970,
+ "founding_year_source": "https://www.villarsholding.ch/groupe/ ('Villars Holding SA a été créée en 1970'; die Seite nennt daneben eine unabhängig davon 1901 gegründete Schokolade-/Kaffeefabrik als ursprünglichen Namensgeber, die nicht Teil der heutigen Firmengeschichte ist).",
+ "employees": "",
+ "fiscal_year": 2025,
+ "report_url": "https://www.villarsholding.ch/wp-content/uploads/2026/04/Rapport_gestion_2025-5.pdf",
+ "note": "Nicht zu verwechseln mit der Zürcher Finanzgruppe 'Valartis Group AG' (Ticker VLRT) - eine gänzlich andere Gesellschaft. Umsatz = Zeile 'Chiffre d'affaires' der konsolidierten Erfolgsrechnung (KCHF 61'640), nicht die Summe 'Total des produits d'exploitation' (KCHF 70'791), die zusätzlich Mieterträge aus Renditeliegenschaften (KCHF 6'179) und übrige betriebliche Erträge (KCHF 2'972) enthält. Bénéfice de l'exercice (Konzerngewinn total) KCHF 2'937, davon den Aktionären der Villars Holding SA zurechenbar KCHF 2'798 und den Minderheitsaktionären KCHF 139 (eingetragen: Aktionärsanteil). Keine konsolidierte Mitarbeiterzahl im Geschäftsbericht gefunden (nur Teilangaben pro Tochtergesellschaft, z. B. Pause-Café 'près de 100 collaboratrices et collaborateurs'; keine Gesamtsumme für die Gruppe ausgewiesen), Feld bleibt deshalb leer statt geschätzt.",
+ "_verification": "Umsatz und Ergebnisverteilung stammen aus dem 'Compte de résultat consolidé du groupe' (Rapport de gestion 2025, S. 32): Zeile 'Chiffre d'affaires' KCHF 61'640 (Vorjahr 64'950) sowie 'BÉNÉFICE DE L'EXERCICE' KCHF 2'937, aufgeteilt in 'Dont attribuable aux actionnaires de Villars Holding SA' KCHF 2'798 und 'Dont attribuable aux actionnaires minoritaires' KCHF 139, Geschäftsjahr 2025 (Kalenderjahr, Bilanzstichtag 31.12.2025). Geprüft, dass beide Zahlen aus derselben konsolidierten Rechnung, demselben Geschäftsjahr und ohne Trennung zwischen fortgeführtem/aufgegebenem Geschäft stammen (Anhang S. 36: unverändertes Konsolidierungskreis-Prinzip, alle Töchter zu 100% bzw. 67.5% global konsolidiert)."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 151.858,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 5.442,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Vermahlung von Getreide zu Brotmehlen und Spezialitäten (Müesli, Flocken, glutenfreie Produkte, ölhaltige Samen und Hülsenfrüchte) für Bäcker, Lebensmittelindustrie und Detailhandel in der Schweiz.",
+ "products_url": "https://www.gmsa-rg.ch/wp-content/uploads/gmsa-rapport-gestion-2025.pdf",
+ "founding_year": 1885,
+ "founding_year_source": "https://www.gmsa-rg.ch/wp-content/uploads/gmsa-rapport-gestion-2025.pdf (Rapport de gestion 2025, S. 8: 'Fondée en 1885 à Genève sous le nom de Minoteries de Plainpalais SA'; 2025 als 140-jähriges Jubiläum begangen)",
+ "employees": 260,
+ "fiscal_year": 2025,
+ "report_url": "https://www.gmsa-rg.ch/wp-content/uploads/gmsa-rapport-gestion-2025.pdf",
+ "note": "Der Vertrag nannte für Groupe Minoteries SA ein am 30. Juni endendes Geschäftsjahr; der vorliegende, aktuellste Rapport de gestion 2025 weist jedoch durchgängig ein Geschäftsjahr zum Kalenderjahresende aus ('Chiffres-clés du groupe, Etat au 31.12.2025', Bilanz und Erfolgsrechnung jeweils 'au 31.12.2025'/'31.12.2024'). Offenbar wurde das Geschäftsjahr zwischenzeitlich auf das Kalenderjahr umgestellt oder die Angabe im Auftrag war veraltet; eingetragen wurden die Zahlen wie im aktuellen Bericht ausgewiesen (Periode 1.1.–31.12.2025). Konzerngewinn: Gesamtergebnis 'Résultat net' CHF 5.433 Mio., davon den Minderheitsaktionären CHF -0.009 Mio. und den Aktionären der Groupe Minoteries SA CHF 5.442 Mio. zugerechnet (eingetragen: Aktionärsanteil). Mitarbeitendenzahl 260 ist ausdrücklich 'en équivalent plein temps (EPT)', also Vollzeitäquivalente, keine Köpfe.",
+ "_verification": "Chiffre d'affaires net (KCHF 151'858) und Ergebnis je Aktionärsgruppe (Résultat net attribuable aux actionnaires de Groupe Minoteries SA KCHF 5'442) stammen aus dem 'Compte de profits et pertes consolidé du groupe' auf Seite 74 des Rapport de gestion 2025. Geprüft, dass beide Zeilen aus derselben konsolidierten Erfolgsrechnung für dieselbe Berichtsperiode (1.1.–31.12.2025) stammen und keine Trennung nach fortgeführtem Geschäft vorliegt; Minderheitsanteile sind separat ausgewiesen und wurden für den Karteneintrag herausgerechnet."
+}

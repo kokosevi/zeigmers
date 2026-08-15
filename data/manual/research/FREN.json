@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://gb.fundamentarealestate.ch/fileadmin/user_upload/geschaeftsberichte_re/2025/pdf/Fundamenta_GB2025_DE.pdf",
  "note": "Umsatz = Zeile 'Netto-Ist-Mietertrag' der Erfolgsrechnung (42'323 TCHF, Note 14), nicht die Zeile 'Betriebsertrag' (42'384 TCHF). Reingewinn 46'091 TCHF (Vorjahr 30'493) enthält Neubewertungserfolg; ohne Neubewertung läge der Reingewinn bei 21'803 TCHF. Gesellschaft ist nicht Teil eines Konzerns und hat keine eigenen Mitarbeitenden im klassischen Sinn: einzige beschäftigte Person ist der Delegierte des Verwaltungsrats mit 50%-Pensum (Asset Management extern durch Swiss Prime Site Solutions AG) - daher employees=1 (Kopfzahl), FTE 0.5.",
- "_verification": "Umsatz und Gewinn aus der Erfolgsrechnung des Geschäftsberichts 2025 (Finanzbericht/Jahresrechnung nach Swiss GAAP FER): Zeile 'Netto-Ist-Mietertrag' 42'323 TCHF (Vorjahr 41'851, Note 14) und Zeile 'Reingewinn' 46'091 TCHF (Vorjahr 30'493), Geschäftsjahr 2025. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft, inkl. Detail-Kennzahlentabelle im Lagebericht (deckungsgleich). Gründungsdatum (15. Dezember 2006, Handelsregistereintrag 28.12.2006) aus dem Anhang zur Jahresrechnung, Abschnitt 'Gesellschaftsdomizil'. Mitarbeiterangabe aus demselben Abschnitt ('Delegierten des Verwaltungsrats mit 50%-Pensum beschäftigt')."
+ "_verification": "Umsatz und Gewinn aus der Erfolgsrechnung des Geschäftsberichts 2025 (Finanzbericht/Jahresrechnung nach Swiss GAAP FER): Zeile 'Netto-Ist-Mietertrag' 42'323 TCHF (Vorjahr 41'851, Note 14) und Zeile 'Reingewinn' 46'091 TCHF (Vorjahr 30'493), Geschäftsjahr 2025. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft, inkl. Detail-Kennzahlentabelle im Lagebericht (deckungsgleich). Gründungsdatum (15. Dezember 2006, Handelsregistereintrag 28.12.2006) aus dem Anhang zur Jahresrechnung, Abschnitt 'Gesellschaftsdomizil'. Mitarbeiterangabe aus demselben Abschnitt ('Delegierten des Verwaltungsrats mit 50%-Pensum beschäftigt').",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Fundamenta Real Estate AG",
+  "revenue_zeile": "Netto-Ist-Mietertrag — Erfolgsrechnung, Note 14",
+  "profit_zeile": "Reingewinn — Erfolgsrechnung",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Geschäftsbericht 2025 direkt heruntergeladen und die Erfolgsrechnung geprüft: Netto-Ist-Mietertrag TCHF 42'323 und Reingewinn TCHF 46'091 stehen exakt so da; Betriebsertrag (TCHF 42'384, inkl. übrigem Ertrag) wurde korrekt NICHT als Umsatz verwendet."
+ }
 }

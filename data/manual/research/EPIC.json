@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://ir.epic.ch/media/document/1d02b2f6-23cd-4da5-a6c6-e826b4c42af2/assets/EPIC_Suisse_Annual_Report_2025.pdf",
  "note": "EPIC Suisse AG (die kotierte Holding) wurde am 5. Dezember 2016 gegründet; die operative EPIC-Gruppe ist gemäss eigener Darstellung bereits seit 2004 im Schweizer Immobilienmarkt tätig (Vorgängerstrukturen). Umsatz = Zeile 'Rental income from real estate properties' der konsolidierten Erfolgsrechnung (68'170 TCHF, Note 8), nicht 'Total income' (69'824 TCHF, enthält 'Other income'). Gewinn 65'596 TCHF (Vorjahr 47'276) enthält einen Neubewertungserfolg von netto 32'994 TCHF; ohne Neubewertung weist der Bericht separat 'Profit (excl. revaluation effects)' von 42'527 TCHF aus. Keine Minderheitsanteile ausgewiesen. Beschäftigte: 20 Personen per 31.12.2025 (Kopfzahl, 'the 20 employees of EPIC Group'), davon 8 technisches Personal vor Ort in zwei Einkaufszentren (Kosten an Mieter weiterverrechnet).",
- "_verification": "Umsatz und Gewinn aus dem 'Consolidated Statement of Comprehensive Income' im Annual Report 2025: Zeile 'Rental income from real estate properties' CHF 68'170 Tsd. (Vorjahr 66'166, Note 8) und Zeile 'Profit' CHF 65'596 Tsd. (Vorjahr 47'276), Geschäftsjahr 2025, konsolidiert. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft und mit der separaten Key-Figures-Tabelle abgeglichen (deckungsgleich). Gründungsdatum (5. Dezember 2016) aus dem Corporate-Governance-Teil ('EPIC Suisse AG ... was incorporated on 5 December 2016'), Mitarbeiterzahl (20, Kopfzahl) aus dem Sustainability-Report-Teil desselben Dokuments."
+ "_verification": "Umsatz und Gewinn aus dem 'Consolidated Statement of Comprehensive Income' im Annual Report 2025: Zeile 'Rental income from real estate properties' CHF 68'170 Tsd. (Vorjahr 66'166, Note 8) und Zeile 'Profit' CHF 65'596 Tsd. (Vorjahr 47'276), Geschäftsjahr 2025, konsolidiert. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft und mit der separaten Key-Figures-Tabelle abgeglichen (deckungsgleich). Gründungsdatum (5. Dezember 2016) aus dem Corporate-Governance-Teil ('EPIC Suisse AG ... was incorporated on 5 December 2016'), Mitarbeiterzahl (20, Kopfzahl) aus dem Sustainability-Report-Teil desselben Dokuments.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "EPIC Suisse AG",
+  "revenue_zeile": "Rental income from real estate properties — Consolidated Statement of Comprehensive Income, Note 8",
+  "profit_zeile": "Profit — Consolidated Statement of Comprehensive Income",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Annual Report 2025 direkt heruntergeladen und das Consolidated Statement of Comprehensive Income geprüft: Rental income from real estate properties CHF 68'170 Tsd. und Profit CHF 65'596 Tsd. stehen exakt so da; Total income (CHF 69'824 Tsd., inkl. Other income) wurde korrekt NICHT als Umsatz verwendet."
+ }
 }

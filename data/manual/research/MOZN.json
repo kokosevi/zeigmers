@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.mobilezone.ch/assets/cms/persistent/88df64891b578bb3e77b2ae2710017381d8d9549/mobilezone_GB2025_DE.pdf",
  "note": "mobilezone hat das deutsche Geschäft Ende Dezember 2025 verkauft (Closing 29.12.2025). Alle Kennzahlen im Geschäftsbericht 2025 (Kennzahlen-Tabelle S. 8) beziehen sich ausdrücklich nur auf die 'fortgeführten Aktivitäten in der Schweiz' — Konzernzahlen inkl. Deutschland werden nur noch als 'bereinigt um Sondereffekte' ausgewiesen (z. B. Konzernumsatz 'gesamt' bereinigt CHF 921 Mio., davon 70% Deutschland, Konzerngewinn bereinigt CHF 39.6 Mio.) und sind daher nicht direkt mit dem unbereinigten Vorjahr vergleichbar; für die Karte wurde deshalb die saubere, unbereinigte Schweiz-Zahlenreihe (continuing_operations) verwendet. Personalbestand 616 ist 'auf Vollzeitbasis' (FTE) per 31.12.2025, keine Kopfzahl ausgewiesen (Periodendurchschnitt wäre 625 FTE inkl. 142 Lernende).",
- "_verification": "Nettoumsatz (CHF 274'168 Tsd.) und Konzerngewinn (CHF 27'350 Tsd.) stammen aus der Tabelle 'Kennzahlen' auf Seite 8 des Geschäftsberichts 2025 (fortgeführte Aktivitäten Schweiz, nicht bereinigt); Personalbestand von Seite 8/9 derselben Tabelle. Geprüft, dass Umsatz- und Gewinnzeile aus derselben Kennzahlentabelle für dasselbe Geschäftsjahr 2025 und denselben Konsolidierungskreis (fortgeführtes Schweizer Geschäft) stammen, und dass es sich um die unbereinigten (nicht 'bereinigt um Sondereffekte') Werte handelt."
+ "_verification": "Nettoumsatz (CHF 274'168 Tsd.) und Konzerngewinn (CHF 27'350 Tsd.) stammen aus der Tabelle 'Kennzahlen' auf Seite 8 des Geschäftsberichts 2025 (fortgeführte Aktivitäten Schweiz, nicht bereinigt); Personalbestand von Seite 8/9 derselben Tabelle. Geprüft, dass Umsatz- und Gewinnzeile aus derselben Kennzahlentabelle für dasselbe Geschäftsjahr 2025 und denselben Konsolidierungskreis (fortgeführtes Schweizer Geschäft) stammen, und dass es sich um die unbereinigten (nicht 'bereinigt um Sondereffekte') Werte handelt.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "mobilezone holding ag",
+  "revenue_zeile": "Nettoumsatz (Kennzahlen-Tabelle, Seite 8)",
+  "profit_zeile": "Konzerngewinn (Kennzahlen-Tabelle)",
+  "abweichungen": [],
+  "begruendung": "Ich habe den Geschäftsbericht 2025 der mobilezone holding ag direkt heruntergeladen und die Kennzahlen-Tabelle geprüft: Nettoumsatz CHF 274'168 Tsd. und Konzerngewinn CHF 27'350 Tsd. stehen exakt so da, explizit deklariert als 'fortgeführte Aktivitäten in der Schweiz' (ohne das Ende 2025 verkaufte Deutschland-Geschäft) — die im JSON gewählte consolidation_basis 'continuing_operations' ist korrekt und konsistent für Umsatz und Gewinn."
+ }
 }

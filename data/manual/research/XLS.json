@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 0.275312,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -21.547312,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Schweizer Inkubator/Accelerator für Life-Science-Forschungsprojekte: gründet und begleitet 'Project Companies' (Ausgründungen aus Universitäten/Forschungsinstituten) in den Bereichen Technologieplattformen, Biotechnologie/Therapien, Medizintechnik und KI/Digital Health und erbringt für diese Management-, Marketing- und Finanzierungsdienstleistungen gegen Entgelt sowie Lizenzeinnahmen; hält daneben Beteiligungen an diesen Projektgesellschaften als zum Fair Value bewertete Finanzanlagen.",
+ "products_url": "https://www.xlifesciences.ch",
+ "founding_year": 2013,
+ "founding_year_source": "https://www.moneyhouse.ch/de/company/xlife-sciences-ag-9852230911 (Handelsregisterauszug: 'foundingDate: 2013-06-20'). Der Geschäftsbericht 2025 selbst nennt kein Gründungsdatum, sondern nur: 'The current structure of our company was established in 2019. However, we have over 25 years of experience in the industry.'",
+ "employees": 20,
+ "fiscal_year": 2025,
+ "report_url": "https://cdn.prod.website-files.com/69ce2f0104f3824cab96b0b1/6a26e29b509fcf3b0b08eb0d_20251231_Xlife%20Sciences%20AG_Annual%20Report.pdf",
+ "note": "Umsatz = 'Revenue' aus der konsolidierten Erfolgsrechnung (CHF 275'312, zusammengesetzt aus 'Revenue from services' CHF 591'874 und 'Revenue from trade' CHF 148'956 gemäss Anhang 4.1, abzüglich konzerninterner Eliminierungen); dies sind echte Dienstleistungs-/Handelserlöse, getrennt von den darunter ausgewiesenen 'Profits/Loss from financial assets at fair value' (Bewertungsergebnis aus dem Projektgesellschafts-Portfolio), die NICHT als Umsatz eingetragen wurden. Gewinn = 'Result after income taxes attributable to Shareholders of the parent company' CHF -21'547'312 (Gesamtergebnis der Gruppe inkl. Minderheiten: CHF -27'120'567, davon CHF -5'573'255 Minderheitsanteile). Der grosse Verlust 2025 resultiert primär aus Wertminderungen/Abschreibungen auf Finanzanlagen (u. a. 'Depreciation, amortisation and impairment' CHF -28.36 Mio.). Beschäftigte: Bericht nennt 'a core team of approximately 20 employees' für Xlife Sciences AG; das breitere 'Xlife-Universum' inkl. aller Projektgesellschaften umfasst laut Bericht 'more than 120 dedicated team members' – hier wurde die engere, auf die Holding bezogene Zahl (20) übernommen, da keine präzise konsolidierte FTE-/Kopfzahl für die Gruppe ausgewiesen ist.",
+ "_verification": "Umsatz (CHF 275'312) und Gewinn/Verlust (CHF -21'547'312, Aktionärsanteil) stammen aus der Konsolidierten Erfolgsrechnung ('Income statement for the year 2025') und der nachfolgenden Aufteilung 'Result after income taxes is attributable to: Shareholders of the parent company / Non-controlling interests' im Finanzbericht 2025, gleiches Geschäftsjahr, gleicher Konsolidierungskreis ('Fully consolidated subsidiaries'). Geprüft gegen die Segmentangabe in Anhang 4.1 ('Income from contracts with customers (revenue)'), die explizit zwischen Umsatz und den separat ausgewiesenen Bewertungsergebnissen aus Finanzanlagen unterscheidet."
+}

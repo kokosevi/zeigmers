@@ -562,12 +562,12 @@ Die Legende (`src/ui/legend.ts`, `LegendOptions.scopeLabel`) zeigt in Ansicht
 «Börsennotierte Firmen» statt eines Kantonsnamens jetzt:
 
 ```
-201 von 224 kotierten Titeln auf der Karte gezeigt, davon 120 recherchiert · SIX-Stand 15. August 2026
+201 von 224 kotierten Titeln auf der Karte gezeigt, davon 201 recherchiert · SIX-Stand 15. August 2026
 ```
 
 **Zwei Zahlen, nicht eine.** Eine frühere Fassung nannte nur die Recherche-
 Abdeckung („8 von 224 recherchiert"). Die ist wahr, aber allein irreführend:
-wer die Marker auf der Karte zählt, kommt auf 201, nicht auf 224 — die
+wer die Säulen auf der Karte zählt, kommt auf 201, nicht auf 224 — die
 Differenz sind ganz überwiegend Titel, die als Namen-/PS-Aktie oder zweite
 Handelslinie derselben Gesellschaft zusammengefasst wurden (224 Titel → 202
 Gesellschaften, siehe oben), dazu genau **eine** Gesellschaft ohne Sitz:

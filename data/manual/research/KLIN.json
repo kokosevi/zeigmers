@@ -16,5 +16,13 @@
  "fiscal_year": "2026",
  "report_url": "https://www.klingelnberg.com/fileadmin/Investors/Annual_Report_2025_26_en.pdf",
  "note": "Geschaeftsjahr endet am 31. Maerz; Berichtsjahr 2025/26 (1.4.2025-31.3.2026) wird als fiscal_year 2026 (Endjahr) gefuehrt. Mitarbeitende: 1'293 Vollzeitstellen (FTE) am Ende des Geschaeftsjahres 2025/26 (Vorjahr 1'348); der Bericht weist fuer die Gruppe keine separate Kopfzahl aus, nur FTE. Konzern hat gemaess Bericht keine Minderheitsanteile ('The KLINGELNBERG Group had no minority interests.'), daher ist der ausgewiesene Nettogewinn vollstaendig den Aktionaeren zurechenbar.",
- "_verification": "Umsatz (Net sales from goods and services 285'390 TEUR) und Gewinn (Net profit 5'793 TEUR) stammen beide aus der 'Consolidated income statement' auf Seite 129/im Financial-Statements-Teil des KLINGELNBERG Annual Report 2025/26, Spalte 2025/26. Geprueft wurde im Eigenkapitalnachweis/Notes, dass keine Minderheitsanteile bestehen (explizite Aussage 'The KLINGELNBERG Group had no minority interests.'), sodass der Nettogewinn zu 100% den Aktionaeren der KLINGELNBERG AG zusteht."
+ "_verification": "Umsatz (Net sales from goods and services 285'390 TEUR) und Gewinn (Net profit 5'793 TEUR) stammen beide aus der 'Consolidated income statement' auf Seite 129/im Financial-Statements-Teil des KLINGELNBERG Annual Report 2025/26, Spalte 2025/26. Geprueft wurde im Eigenkapitalnachweis/Notes, dass keine Minderheitsanteile bestehen (explizite Aussage 'The KLINGELNBERG Group had no minority interests.'), sodass der Nettogewinn zu 100% den Aktionaeren der KLINGELNBERG AG zusteht.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "KLINGELNBERG AG",
+  "revenue_zeile": "Net sales from goods and services — Consolidated income statement, Spalte 2025/26",
+  "profit_zeile": "Net profit — Consolidated income statement",
+  "abweichungen": [],
+  "begruendung": "Ich habe den KLINGELNBERG Annual Report 2025/26 direkt heruntergeladen. Net sales from goods and services EUR 285.390 Mio. und Net profit EUR 5.793 Mio. stehen exakt so in der Consolidated income statement für die Periode 2025/26 (fiscal_year 2026 als Endjahr korrekt); der Bericht bestätigt zusätzlich explizit 'The KLINGELNBERG Group had no minority interests', Berichtswährung korrekt EUR."
+ }
 }

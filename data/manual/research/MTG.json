@@ -16,5 +16,15 @@
  "fiscal_year": 2025,
  "report_url": "https://assets.ctfassets.net/55zoubyadgjo/7mExYG0LQp8JBDvfmM6zsX/ba3c641640e92180ec58c3d3188089cb/2025-Gesch%C3%A4ftsbericht_Meier_Tobler.pdf",
  "note": "Mitarbeitendenzahl 1'264 ist im Geschäftsbericht ausdrücklich als 'Anzahl Mitarbeitende (Vollzeitstellen)' ausgewiesen, keine Köpfe. Keine gesonderte Minderheitsanteile-Zeile im Konzernabschluss gefunden; Konzerngewinn daher als vollständig den Aktionären zurechenbar eingetragen. Die heutige Meier Tobler Group AG entstand 2018 durch Fusion von Meier Tobler Holding und Tobler Haustechnik; das Gründungsjahr 1937 bezieht sich auf die älteste Vorgängerfirma.",
- "_verification": "Umsatz ('Nettoumsatz' CHF 496'642 Tsd., Notenanhang 'UMSATZERLÖSE, NETTO': Summe aus Handel CHF 380'787 Tsd. und Dienstleistungen CHF 112'746 Tsd. sowie Vermietung CHF 489 Tsd.) und Gewinn ('Konzerngewinn' CHF 15'269 Tsd.) stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 der Meier Tobler Group AG. Geprüft, dass die Zeile 'Nettoumsatz' (nicht Bruttoumsatz) verwendet wurde und dass keine Minderheitsanteile den Konzerngewinn schmälern (keine entsprechende Zeile im Abschluss)."
+ "_verification": "Umsatz ('Nettoumsatz' CHF 496'642 Tsd., Notenanhang 'UMSATZERLÖSE, NETTO': Summe aus Handel CHF 380'787 Tsd. und Dienstleistungen CHF 112'746 Tsd. sowie Vermietung CHF 489 Tsd.) und Gewinn ('Konzerngewinn' CHF 15'269 Tsd.) stammen aus der konsolidierten Erfolgsrechnung im Geschäftsbericht 2025 der Meier Tobler Group AG. Geprüft, dass die Zeile 'Nettoumsatz' (nicht Bruttoumsatz) verwendet wurde und dass keine Minderheitsanteile den Konzerngewinn schmälern (keine entsprechende Zeile im Abschluss).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Meier Tobler Group AG (nicht direkt aus dem Geschäftsbericht selbst bestätigt, siehe Begründung)",
+  "revenue_zeile": "Nettoumsatz (Erfolgsrechnung, Mio. CHF)",
+  "profit_zeile": "Konzerngewinn (Erfolgsrechnung, Mio. CHF)",
+  "abweichungen": [
+   "Der angegebene report_url (Contentful-Asset '2025-Geschäftsbericht_Meier_Tobler.pdf') liefert aktuell durchgängig HTTP 403 AccessDenied, geprüft von drei unabhängigen Netzstandorten/Proxies (direkter Abruf, r.jina.ai, Browser-UA) — der Link ist derzeit tot."
+  ],
+  "begruendung": "Da der ursprüngliche report_url nicht erreichbar war, habe ich stattdessen die offizielle Medien- und Finanzanalystenkonferenz-Präsentation vom 26.2.2026 (selbe meiertobler.ch-Domain, verlinkt von der Publikationen-Seite) unabhängig heruntergeladen und ausgewertet: Nettoumsatz CHF 496.6 Mio. (Vorjahr 496.2) und Konzerngewinn CHF 15.3 Mio. (Vorjahr 21.3) decken sich exakt mit den recherchierten Werten (496.642 / 15.269 Mio., gerundet)."
+ }
 }

@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.medmix.swiss/investors/financial-reports",
  "note": "medmix ist ein 2021 von Sulzer abgespaltenes Unternehmen; das Kerngeschäft (Marke Mixpac) ist deutlich älter, aber medmix als eigenständige Gesellschaft besteht erst seit 2021 (Kotierungsjahr). Mitarbeitendenzahl 2'574 ist laut Medienmitteilung ausdrücklich 'Employees (number of full-time equivalent)', keine Köpfe. Keine Hinweise auf Minderheitsanteile gefunden, Nettogewinn daher als vollständig den Aktionären zurechenbar eingetragen.",
- "_verification": "Umsatz ('Total Revenue' CHF 448.0 Mio.) und Gewinn ('Net income' CHF 7.0 Mio.) stammen aus der Tabelle 'Key figures' der Ad-hoc-Medienmitteilung 'Full-Year 2025 Results' vom 26.2.2026 (medmix.swiss). Geprüft, dass die Zeile 'Total Revenue' (Summe aus Healthcare- und Consumer&Industrial-Segmenten, nicht eine andere Teilsumme) sowie 'Net income' (nicht 'Adjusted EBITDA') verwendet wurden, beide für dasselbe Geschäftsjahr 2025 auf Konzernebene."
+ "_verification": "Umsatz ('Total Revenue' CHF 448.0 Mio.) und Gewinn ('Net income' CHF 7.0 Mio.) stammen aus der Tabelle 'Key figures' der Ad-hoc-Medienmitteilung 'Full-Year 2025 Results' vom 26.2.2026 (medmix.swiss). Geprüft, dass die Zeile 'Total Revenue' (Summe aus Healthcare- und Consumer&Industrial-Segmenten, nicht eine andere Teilsumme) sowie 'Net income' (nicht 'Adjusted EBITDA') verwendet wurden, beide für dasselbe Geschäftsjahr 2025 auf Konzernebene.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "medmix Ltd",
+  "revenue_zeile": "Total Revenue / Revenue (Key figures)",
+  "profit_zeile": "Net income",
+  "abweichungen": [],
+  "begruendung": "Ich habe unabhängig die medmix Full-Year 2025 Media Release (Ad-hoc-Mitteilung vom 26.2.2026, medmix.swiss) sowie den Full-Year Report 2025 selbst heruntergeladen und per pdftotext ausgewertet. Total Revenue CHF 448.0 Mio. und Net income CHF 7.0 Mio. stehen exakt so in der Tabelle 'Key figures'; die konsolidierten Zahlen im Annual Report nennen die Gesellschaft durchgehend 'medmix Ltd' (nicht 'medmix AG')."
+ }
 }

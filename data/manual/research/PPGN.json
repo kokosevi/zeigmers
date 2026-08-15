@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.polypeptide.com/wp-content/uploads/2022/09/PolyPeptide_FY-2025_Media-release.pdf",
  "note": "Mitarbeitendenzahl 1'395 ist ein Durchschnitt der Vollzeitstellen ('Employees (# of FTEs, average)'), keine Köpfe und kein Stichtagswert. Ergebnis 2025 ist ein Verlust ('Result for the year' EUR -21.169 Mio.); keine Hinweise auf Minderheitsanteile in der Mitteilung gefunden, daher als vollständig zurechenbar eingetragen.",
- "_verification": "Umsatz ('Revenue' kEUR 389'327) und Ergebnis ('Result for the year' kEUR -21'169) stammen aus der Tabelle 'Key figures' der Ad-hoc-Medienmitteilung 'PolyPeptide delivers strong revenue growth and marked improvement in profitability' vom 12.3.2026 (polypeptide.com). Geprüft, dass die Zeile 'Revenue' (nicht EBITDA oder EBIT) sowie 'Result for the year' (nicht eine EPS- oder Non-IFRS-Grösse) verwendet wurden, beide für dasselbe Geschäftsjahr 2025 auf Konzernebene."
+ "_verification": "Umsatz ('Revenue' kEUR 389'327) und Ergebnis ('Result for the year' kEUR -21'169) stammen aus der Tabelle 'Key figures' der Ad-hoc-Medienmitteilung 'PolyPeptide delivers strong revenue growth and marked improvement in profitability' vom 12.3.2026 (polypeptide.com). Geprüft, dass die Zeile 'Revenue' (nicht EBITDA oder EBIT) sowie 'Result for the year' (nicht eine EPS- oder Non-IFRS-Grösse) verwendet wurden, beide für dasselbe Geschäftsjahr 2025 auf Konzernebene.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "PolyPeptide Group AG",
+  "revenue_zeile": "Revenue (Key figures)",
+  "profit_zeile": "Result for the year (Key figures)",
+  "abweichungen": [],
+  "begruendung": "Ich habe die Ad-hoc-Medienmitteilung 'PolyPeptide delivers strong revenue growth...' vom 12.3.2026 unabhängig heruntergeladen und die Tabelle 'Key figures' geprüft. Revenue kEUR 389,327 und Result for the year kEUR -21,169 stehen exakt so im Dokument, ebenso Employees (# of FTEs, average) 1,395; alle Werte für dasselbe Geschäftsjahr 2025 auf Konzernebene."
+ }
 }
