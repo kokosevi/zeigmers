@@ -65,7 +65,7 @@ def municipality_lookup(pattern: str | None = None):
     paths = sorted(glob.glob(pattern))
     if not paths:
         raise FileNotFoundError(
-            f"Keine Gemeindegrenzen unter {pattern} — erst `draufsicht-etl statent` laufen lassen"
+            f"Keine Gemeindegrenzen unter {pattern} — erst `zeigmers-etl statent` laufen lassen"
         )
     frames = [gpd.read_file(p) for p in paths]
     merged = pd.concat(frames, ignore_index=True)

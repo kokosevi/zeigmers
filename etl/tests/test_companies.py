@@ -4,7 +4,7 @@ import urllib.parse
 
 import pytest
 
-from draufsicht_etl import companies, noga
+from zeigmers_etl import companies, noga
 
 
 def _row(**overrides):
@@ -375,7 +375,7 @@ def test_build_artifact_skips_rows_without_coordinates():
 def test_build_artifact_falls_back_to_unknown_noga_group_when_blank():
     table = noga.load_table()
     artifact = companies.build_artifact([_unresearched_row(noga_group="")], table)
-    from draufsicht_etl import config
+    from zeigmers_etl import config
     assert artifact["companies"][0]["nogaGroupIndex"] == config.NOGA_UNKNOWN_INDEX
 
 
@@ -807,7 +807,7 @@ def test_sync_national_csv_appends_only_new_titles_and_leaves_existing_rows_unto
 ):
     # GLEIFs Antwort-Cache liegt unter DATA_RAW; ohne Umleitung schriebe
     # dieser Test in das echte Datenverzeichnis des Repos.
-    from draufsicht_etl import gleif as _gleif
+    from zeigmers_etl import gleif as _gleif
 
     monkeypatch.setattr(_gleif.config, "DATA_RAW", tmp_path)
     path = tmp_path / "listed_companies.csv"

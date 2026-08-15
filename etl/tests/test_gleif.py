@@ -8,7 +8,7 @@ import json
 
 import pytest
 
-from draufsicht_etl import gleif
+from zeigmers_etl import gleif
 
 
 @pytest.fixture(autouse=True)

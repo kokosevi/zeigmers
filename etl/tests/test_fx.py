@@ -2,7 +2,7 @@
 
 import pytest
 
-from draufsicht_etl import fx
+from zeigmers_etl import fx
 
 # Zwei Monate M0 und zwei Monate M1 desselben Jahres: die M1-Zeilen duerfen
 # NICHT in den Durchschnitt geraten (siehe Moduldokumentation).

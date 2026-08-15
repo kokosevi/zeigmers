@@ -4,7 +4,7 @@ import subprocess
 
 import pytest
 
-from draufsicht_etl import binpack, config
+from zeigmers_etl import binpack, config
 
 
 pytestmark = pytest.mark.integration
@@ -22,14 +22,14 @@ pytestmark = pytest.mark.integration
 def meta():
     path = config.PUBLIC_DATA / "meta.json"
     if not path.exists():
-        pytest.skip("meta.json fehlt, zuerst `draufsicht-etl all` laufen lassen")
+        pytest.skip("meta.json fehlt, zuerst `zeigmers-etl all` laufen lassen")
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 @pytest.fixture(scope="module")
 def gemeinde_artifact():
     if not (config.PUBLIC_DATA / "ag_gemeinde.bin").exists():
-        pytest.skip("Artefakt fehlt, zuerst `draufsicht-etl all` laufen lassen: ag_gemeinde")
+        pytest.skip("Artefakt fehlt, zuerst `zeigmers-etl all` laufen lassen: ag_gemeinde")
     return binpack.read_level(
         config.PUBLIC_DATA / "ag_gemeinde.bin", config.PUBLIC_DATA / "ag_gemeinde.json"
     )
@@ -38,7 +38,7 @@ def gemeinde_artifact():
 @pytest.fixture(scope="module")
 def kantone_artifact():
     if not (config.PUBLIC_DATA / "ch_kantone.bin").exists():
-        pytest.skip("Artefakt fehlt, zuerst `draufsicht-etl all` laufen lassen: ch_kantone")
+        pytest.skip("Artefakt fehlt, zuerst `zeigmers-etl all` laufen lassen: ch_kantone")
     return binpack.read_level(
         config.PUBLIC_DATA / "ch_kantone.bin", config.PUBLIC_DATA / "ch_kantone.json"
     )
@@ -137,7 +137,7 @@ def test_cantons_geojson_is_shipped_and_within_its_own_budget():
     # gemeinde_artifact/meta.json (die kennen nur die STATENT-Stufen).
     path = config.PUBLIC_DATA / "ch_kantone.geojson"
     if not path.exists():
-        pytest.skip("ch_kantone.geojson fehlt, zuerst `draufsicht-etl all` laufen lassen")
+        pytest.skip("ch_kantone.geojson fehlt, zuerst `zeigmers-etl all` laufen lassen")
     assert path.stat().st_size < config.MAX_CANTONS_BYTES
     data = json.loads(path.read_text(encoding="utf-8"))
     assert len(data["features"]) == 26
@@ -247,7 +247,7 @@ def test_startup_payload_is_within_its_budget():
               "ch_kantone.geojson", "companies.json")
     paths = [config.PUBLIC_DATA / n for n in names]
     if not all(p.exists() for p in paths):
-        pytest.skip("Start-Artefakte fehlen, zuerst `draufsicht-etl all` laufen lassen")
+        pytest.skip("Start-Artefakte fehlen, zuerst `zeigmers-etl all` laufen lassen")
     total = sum(p.stat().st_size for p in paths)
     assert total < config.MAX_STARTUP_BYTES, f"{total / 1024:.0f} KB"
 

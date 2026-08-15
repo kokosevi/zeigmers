@@ -275,7 +275,7 @@ def _run_statent(force: bool) -> dict:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="draufsicht-etl")
+    parser = argparse.ArgumentParser(prog="zeigmers-etl")
     parser.add_argument(
         "--force", action="store_true", help="Downloads erneut laden, Cache ignorieren"
     )
@@ -614,7 +614,7 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         return 1 if failed else 0
 
-    print(f"[draufsicht-etl] {args.command} — noch nicht implementiert")
+    print(f"[zeigmers-etl] {args.command} — noch nicht implementiert")
     return 0
 
 
@@ -622,10 +622,10 @@ def run() -> None:
     sys.exit(main())
 
 
-# `python -m draufsicht_etl.cli …` lief ohne diesen Block stillschweigend
+# `python -m zeigmers_etl.cli …` lief ohne diesen Block stillschweigend
 # durch: das Modul wurde importiert, `main()` nie aufgerufen, Exit-Code 0 —
 # ein Aufruf, der Erfolg meldet und nichts getan hat. Das offizielle
-# Kommando ist zwar das Konsolenskript `draufsicht-etl` (siehe README und
+# Kommando ist zwar das Konsolenskript `zeigmers-etl` (siehe README und
 # `package.json`s `build:data`), aber `-m` ist der naheliegende Griff, wenn
 # das Skript nicht im PATH liegt, und darf dann nicht ins Leere laufen.
 if __name__ == "__main__":

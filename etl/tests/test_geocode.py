@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from draufsicht_etl import geocode
+from zeigmers_etl import geocode
 
 RESPONSE = json.dumps(
     {"results": [{"attrs": {"lon": 8.0442, "lat": 47.3903, "label": "Aarau"}}]}

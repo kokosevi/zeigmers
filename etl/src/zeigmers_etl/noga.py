@@ -102,7 +102,7 @@ def _hex_to_rgb(value: str) -> tuple[int, int, int]:
 def generate_typescript(table: NogaTable, out: Path) -> None:
     lines = [
         "// ERZEUGT AUS etl/noga_groups.json — NICHT VON HAND ÄNDERN.",
-        "// Neu erzeugen mit: uv run --project etl draufsicht-etl noga",
+        "// Neu erzeugen mit: uv run --project etl zeigmers-etl noga",
         "",
         "export interface NogaGroup {",
         "  readonly key: string",

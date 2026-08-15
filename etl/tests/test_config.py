@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from draufsicht_etl import config
+from zeigmers_etl import config
 
 
 def test_canton_is_aargau():
@@ -23,7 +23,7 @@ def test_public_data_points_at_repo_public_dir():
 
 
 def test_user_agent_is_identifiable():
-    assert config.USER_AGENT.startswith("draufsicht-etl/")
+    assert config.USER_AGENT.startswith("zeigmers-etl/")
 
 
 def test_canton_codes_cover_all_26_official_bfs_numbers():

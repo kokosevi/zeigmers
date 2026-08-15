@@ -1,6 +1,6 @@
 import pytest
 
-from draufsicht_etl import boundaries, config, fetch
+from zeigmers_etl import boundaries, config, fetch
 
 
 def pytest_configure(config):

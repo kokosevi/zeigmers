@@ -1,7 +1,7 @@
 import inspect
 import re
 
-from draufsicht_etl import cli
+from zeigmers_etl import cli
 
 
 def test_every_command_has_a_dispatch_path():

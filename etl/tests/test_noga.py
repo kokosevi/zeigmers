@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from draufsicht_etl import config, noga
+from zeigmers_etl import config, noga
 
 SECTION_RANGES = {
     "A": range(1, 4), "B": range(5, 10), "C": range(10, 34), "D": range(35, 36),

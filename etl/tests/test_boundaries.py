@@ -5,7 +5,7 @@ import geopandas as gpd
 import pytest
 from shapely.geometry import MultiPolygon, Polygon
 
-from draufsicht_etl import boundaries, config
+from zeigmers_etl import boundaries, config
 
 
 def test_geojson_path_derives_from_configured_canton(monkeypatch):

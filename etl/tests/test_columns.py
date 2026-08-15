@@ -1,6 +1,6 @@
 import pytest
 
-from draufsicht_etl import columns
+from zeigmers_etl import columns
 
 GOOD = [
     "RELI", "E_KOORD", "N_KOORD", "ERHJAHR",
@@ -71,7 +71,7 @@ def test_roundtrip_dict():
 
 
 def test_save_and_load(tmp_path, monkeypatch):
-    from draufsicht_etl import config
+    from zeigmers_etl import config
 
     monkeypatch.setattr(config, "COLUMNS_DIR", tmp_path)
     r = columns.resolve(GOOD)

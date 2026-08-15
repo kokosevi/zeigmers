@@ -4,7 +4,7 @@ import geopandas as gpd
 import pytest
 from shapely.geometry import Polygon
 
-from draufsicht_etl import placement
+from zeigmers_etl import placement
 
 
 def _gemeinden():

@@ -90,7 +90,7 @@ def _extract(gpkg_zip: Path) -> Path:
         dest = target / name
         # Municipality- und Cantons-Aufbereitung (build()/build_cantons()) extrahieren
         # beide aus demselben Zip; ohne diese Prüfung würde das ~74-MB-GeoPackage bei
-        # jedem `draufsicht-etl all`-Lauf zweimal ausgepackt.
+        # jedem `zeigmers-etl all`-Lauf zweimal ausgepackt.
         if not dest.exists():
             zf.extract(name, target)
         return dest

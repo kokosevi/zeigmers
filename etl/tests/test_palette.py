@@ -9,7 +9,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-from draufsicht_etl import noga
+from zeigmers_etl import noga
 
 PROT = np.array([
     [ 0.152286,  1.052583, -0.204868],

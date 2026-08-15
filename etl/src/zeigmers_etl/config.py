@@ -28,7 +28,7 @@ CANTON_CODES: dict[int, str] = {
     23: "VS", 24: "NE", 25: "GE", 26: "JU",
 }
 
-# ROOT = Repo-Wurzel: config.py -> draufsicht_etl -> src -> etl -> ROOT
+# ROOT = Repo-Wurzel: config.py -> zeigmers_etl -> src -> etl -> ROOT
 ROOT = Path(__file__).resolve().parents[3]
 
 DATA_RAW = ROOT / "data" / "raw"
@@ -37,7 +37,7 @@ DATA_MANUAL = ROOT / "data" / "manual"
 PUBLIC_DATA = ROOT / "public" / "data"
 ETL_DIR = ROOT / "etl"
 
-USER_AGENT = "draufsicht-etl/0.1 (+https://github.com/sevi/draufsicht)"
+USER_AGENT = "zeigmers-etl/0.1 (+https://github.com/sevi/zeigmers)"
 
 STATENT_MODEL_BASE = (
     "https://www.bfs.admin.ch/content/bfs/de/home/dienstleistungen/geostat/"

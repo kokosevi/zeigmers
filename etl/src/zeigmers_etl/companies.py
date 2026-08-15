@@ -116,7 +116,7 @@ def load_csv(path: Path) -> list[dict]:
         raise FileNotFoundError(
             f"Firmen-CSV fehlt: {path}\n"
             f"Diese Datei ist seit Phase 3 national und wird nicht mehr von Hand "
-            f"neu angelegt: `draufsicht-etl companies-sync` erzeugt sie aus der "
+            f"neu angelegt: `zeigmers-etl companies-sync` erzeugt sie aus der "
             f"aktuellen SIX-Titelliste (Sitz je Titel über Zefix/LINDAS, wo "
             f"eindeutig auffindbar). Danach ist inhaltliche Recherche (Umsatz, "
             f"Gewinn, Kerngeschäft je Firma, siehe README) weiterhin Handarbeit."

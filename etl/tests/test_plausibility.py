@@ -1,6 +1,6 @@
 import pytest
 
-from draufsicht_etl import plausibility
+from zeigmers_etl import plausibility
 
 
 def test_widen_leaves_bounds_unchanged_for_a_canton_without_an_exception():

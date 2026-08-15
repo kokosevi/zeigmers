@@ -3,7 +3,7 @@ import json
 import numpy as np
 import pytest
 
-from draufsicht_etl import aggregate, binpack, config, noga
+from zeigmers_etl import aggregate, binpack, config, noga
 
 
 @pytest.fixture(scope="module")

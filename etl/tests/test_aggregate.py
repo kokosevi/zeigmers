@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from draufsicht_etl import aggregate, config, noga, statent
+from zeigmers_etl import aggregate, config, noga, statent
 
 
 @pytest.fixture(scope="module")
@@ -274,7 +274,7 @@ def test_hectare_raises_on_unknown_gmde(table):
 # nur gegen die Aggregationsfunktionen selbst — siehe deren Docstrings. Diese Tests
 # prüfen die Guard-Logik an synthetischen Objekten (schnell, kein Download nötig); dass
 # die Invariante an den echten Aargauer Daten hält, prüft der Guard selbst bei jedem
-# `draufsicht-etl statent`/`all`-Lauf.
+# `zeigmers-etl statent`/`all`-Lauf.
 
 
 def _canton_box():

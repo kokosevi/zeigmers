@@ -3,7 +3,7 @@ import zipfile
 
 import pandas as pd
 
-from draufsicht_etl import inspect_statent
+from zeigmers_etl import inspect_statent
 
 
 def _zip_with(tmp_path, files: dict[str, bytes]):

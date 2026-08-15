@@ -3,7 +3,7 @@ import json
 
 import pytest
 
-from draufsicht_etl import fetch
+from zeigmers_etl import fetch
 
 
 def test_download_writes_file_and_manifest(tmp_path):

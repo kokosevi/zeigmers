@@ -4,7 +4,7 @@ import pandas as pd
 import pytest
 from shapely.geometry import box
 
-from draufsicht_etl import columns, statent
+from zeigmers_etl import columns, statent
 
 # Amtlicher Referenzpunkt: Bern, Bundeshaus / LV95-Nullpunkt-Definition
 # 2600000 / 1200000  ->  7.438632 E, 46.951082 N  (swisstopo, Toleranz 1e-4 Grad)
