@@ -536,7 +536,14 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "fiscalYear": int(row["fiscal_year"]) if row.get("fiscal_year") else None,
                 "reportUrl": row.get("report_url") or None,
                 "note": row.get("note") or None,
-                "placeholder": not revenue,
+                # Auch ein ausgewiesener Umsatz von NULL traegt keine
+                # Hoehenaussage: als echte Hoehe gerechnet ergaebe er eine
+                # Saeule von null Metern, und die Firma verschwaende von der
+                # Karte, obwohl sie recherchiert ist und es sie gibt
+                # (Molecular Partners, 2025: CHF 0, Vorjahr 5.0 Mio. — ein
+                # klinisches Biotech ohne zugelassenes Produkt). Die echte
+                # Null bleibt in `revenue` und damit im Panel stehen.
+                "placeholder": not revenue or float(revenue) == 0,
                 "researched": researched,
                 "city": row.get("city") or None,
             }

@@ -1084,3 +1084,23 @@ def test_validate_rejects_mismatched_units_between_revenue_and_profit():
             profit="45000000", profit_unit="1", profit_currency="CHF",
             consolidation_basis="total_group",
         )])
+
+
+def test_build_artifact_treats_a_reported_zero_revenue_as_a_placeholder_bar():
+    """Ein ausgewiesener Umsatz von null ist wahr, aber unzeichenbar.
+
+    Molecular Partners weist fuer 2025 einen Umsatz von CHF 0 aus (2024:
+    5.0 Mio.) — klinisches Biotech ohne zugelassenes Produkt. Als echte
+    Hoehe gerechnet ergaebe das eine Saeule von null Metern: die Firma
+    verschwaende von der Karte, obwohl sie recherchiert ist und es sie gibt.
+    Sie bekommt deshalb die Mindesthoehe der Platzhalter-Saeulen; das Panel
+    zeigt weiterhin die echte Null.
+    """
+    artifact = companies.build_artifact(
+        [_row(revenue="0", revenue_currency="CHF", revenue_type="net_sales",
+              revenue_unit="1000000", note="kein Produktumsatz")],
+        noga.load_table(),
+    )
+    entry = artifact["companies"][0]
+    assert entry["revenue"] == 0.0, "die berichtete Null bleibt in den Daten"
+    assert entry["placeholder"] is True, "aber sie traegt keine Hoehenaussage"
