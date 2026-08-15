@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": 873.1,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": 8.6,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Medienhaus mit Tages- und Wochenzeitungen sowie Onlineportalen (Tamedia, u. a. Tages-Anzeiger), Pendlerzeitung 20 Minuten, digitale Werbevermarktung (Goldbach) und Online-Marktplätze (TX Markets/SMG Swiss Marketplace Group) in der Schweiz.",
+ "products_url": "https://tx.group/de/unsere-unternehmen/",
+ "founding_year": 1893,
+ "founding_year_source": "https://www.tamedia.ch/ueber-uns/geschichte (Gründung des Tages-Anzeiger 1893 durch Wilhelm Girardet und Fritz Walz; Kernunternehmen der heutigen TX Group)",
+ "employees": 2978,
+ "fiscal_year": 2025,
+ "report_url": "https://tx.group/fileadmin/user_upload/reports-and-publications/2025/de/Jahresabschluss_2025_DE.pdf",
+ "note": "Als Medienkonzern weist TX Group keinen 'Nettoumsatz', sondern 'Betriebsertrag' aus (Summe aus Werbeumsatz, Umsatz aus Classifieds & Services, Vermarktungs-/Vermittlungsumsatz, Abonnement-/Einzelverkauf, Druck & Logistik, übrigem Betriebsumsatz und übrigen Erträgen, alle unter derselben Anmerkung 1.1) - als operating_income eingetragen. Gewinn: 'Ergebnis (EAT)' 2025 = 36.6 Mio. CHF, davon Anteil Aktionäre TX Group AG 8.6 Mio. CHF (eingetragen) und Anteil Minderheitsaktionäre 28.0 Mio. CHF (nicht eingetragen). Beschäftigte: nur Vollzeitäquivalente (FTE) ausgewiesen, 2'978 per 2025 (Mehrjahresvergleich, S. 104); keine separate Kopfzahl für den Gesamtkonzern im Bericht gefunden.",
+ "_verification": "Umsatz (Betriebsertrag CHF 873.1 Mio., FY2025) aus der Konsolidierten Gesamtergebnisrechnung, S. 109/110 des TX Group Geschäftsberichts 2025 (Zeile 'Betriebsertrag', bestätigt durch den Mehrjahresvergleich S. 104). Gewinn (Ergebnis EAT, Anteil Aktionäre TX Group AG, CHF 8.6 Mio.) aus derselben Gesamtergebnisrechnung, S. 109, gleicher Konzernkreis und gleiches Geschäftsjahr wie der Umsatz; Beschäftigte (2'978 FTE) aus dem Mehrjahresvergleich, S. 104, desselben Berichts."
+}

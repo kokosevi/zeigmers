@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": 2983.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -112.2,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Mobilfunk-, Breitband-Internet-, Festnetz- und TV-Dienstleistungen für Privat- und Geschäftskunden in der Schweiz.",
+ "products_url": "https://www.sunrise.ch/de/privatkunden",
+ "founding_year": 1996,
+ "founding_year_source": "https://www.markenlandschaft.ch/markenlexikon/markeneintrag/sunrise/ (1996 Gründung der Newtelco AG durch SBB, UBS und Migros, Vorläufer von Sunrise; Sunrise-eigene Geschichte-Seite war zum Recherchezeitpunkt nicht erreichbar/404)",
+ "employees": 2985,
+ "fiscal_year": 2025,
+ "report_url": "https://a.storyblok.com/f/113473/x/d5a55b804b/sunrise-communications-ag-annual-report-2025.pdf",
+ "note": "Konzern weist Nettoverlust aus: Net (loss) attributable to Sunrise Communications AG shareholders CHF -112.2 Mio. (S. 207, Consolidated Statements of Income or Loss). Beschäftigte: 2'985 Personen (Headcount), FTE 2'897 (S. 216 Sustainability-Teil: 'Sunrise employed a total of 2,985 employees (FTE: 2,897)') - Kopfzahl gemäss Regel 6 verwendet.",
+ "_verification": "Umsatz (Total revenue CHF 2'983.4 Mio., FY2025) aus Consolidated Statements of Income or Loss, S. 207 des Sunrise Annual Report 2025 (Zeile 'Revenue'), bestätigt durch die Segment-Tabelle 'Total revenue' auf S. 41. Gewinn (Net loss attributable to Sunrise Communications AG shareholders, CHF -112.2 Mio.) ebenfalls S. 207, gleiche Berichtsperiode/Konsolidierungskreis wie Umsatz (Gesamtkonzern, Geschäftsjahr 2025); Beschäftigte (2'985 Headcount) aus dem Sustainability-Kapitel desselben Berichts."
+}

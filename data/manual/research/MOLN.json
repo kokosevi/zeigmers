@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": "0",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "-61.7",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung von DARPin-basierten Proteintherapeutika (u.a. Radio-DARPins und Immunzell-Engager) gegen Krebs; klinisches Stadium, kein zugelassenes eigenes Produkt am Markt.",
+ "products_url": "https://www.molecularpartners.com/pipeline/",
+ "founding_year": "2004",
+ "founding_year_source": "https://www.molecularpartners.com/about-us/",
+ "employees": "134",
+ "fiscal_year": "2025",
+ "report_url": "https://www.globenewswire.com/news-release/2026/03/12/3255073/0/en/molecular-partners-reports-highlights-and-financial-results-full-year-2025.html",
+ "note": "Kein Produktumsatz: Molecular Partners ist klinisch-stufiges Biotech ohne zugelassenes Produkt. FY2025-Umsatz (Contract/Collaboration Revenue) betrug CHF 0 (2024: CHF 5.0 Mio.), daher revenue=0. Beschäftigte als FTE (134.0) ausgewiesen, nicht als Köpfe, auf ganze Zahl gerundet. report_url ist die offizielle, wortgleiche GlobeNewswire-Pressemitteilung des Unternehmens; die investors.molecularpartners.com-Version derselben Meldung war technisch nicht abrufbar (Timeout), Inhalt ist identisch.",
+ "_verification": "Umsatz und Gewinn stammen aus der offiziellen Finanzmitteilung 'Molecular Partners Reports Highlights and Financial Results for Full Year 2025' (12.03.2026): Zeile 'revenue'/'no revenue' (2025: CHF 0, 2024: CHF 5.0 Mio.) und 'net loss of CHF 61.7 million' sowie FTE-Angabe 134.0 zum 31.12.2025. Geprüft, dass es sich um Konzernzahlen (total_group) für das volle Geschäftsjahr 2025 handelt und dass kein Produktumsatz vorliegt, da alle bisherigen Erlöse aus Kollaborationsverträgen stammen."
+}

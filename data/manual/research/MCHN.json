@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 386.195,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000000,
+ "profit": 18.574,
+ "profit_currency": "CHF",
+ "profit_unit": 1000000,
+ "core_products": "Durchführung und Vermarktung von Messen, Ausstellungen und Kongressen sowie Betrieb von Messeinfrastruktur (u. a. Art Basel-Kunstmessen, Swissbau, Giardina) inklusive Live-Marketing-Dienstleistungen wie Standbau und Eventorganisation für Aussteller.",
+ "products_url": "https://www.mch-group.com/en/company/about-us",
+ "founding_year": 1917,
+ "founding_year_source": "https://www.nzz.ch/schweiz/hundert-jahre-basler-muba-mutter-aller-messen-ld.14029",
+ "employees": 1348,
+ "fiscal_year": 2025,
+ "report_url": "https://www.mch-group.com/assets/documents/reports/en/2025/mch_chapter-financial-report-2025_en.pdf",
+ "note": "Gewinn: Der Konzerngewinn 2025 ('Profit for the year', CHF 16.764 Mio.) ist niedriger als der den Aktionären der Muttergesellschaft zurechenbare Anteil (CHF 18.574 Mio.), weil den nicht beherrschenden Anteilen ein negativer Betrag von CHF -1.810 Mio. zugewiesen wurde. Eingetragen ist gemäss Regel 5 der Aktionärsanteil (18.574 Mio.). Beschäftigte: Der Sustainability-Report weist sowohl Headcount (1'348 per 31.12.2025) als auch FTE (1'043) aus; gemäss Regel 6 wurde die Kopfzahl eingetragen. Gründungsjahr: Die offizielle MCH-Group-Firmengeschichte-Seite (mch-group.com/en/company/history) war technisch nicht abrufbar (HTTP 403); als Ersatzquelle diente ein Bericht der NZZ zu '100 Jahre Basler MUBA'. MCH Group ist Rechtsnachfolgerin der 1917 gegründeten Schweizer Mustermesse Basel (Vorentscheid des Basler Regierungsrats bereits 1916); die MCH Group AG selbst entstand erst 2009 aus der Fusion von Messe Basel und Messe Zürich (2001 'Messe Schweiz').",
+ "_verification": "Umsatz ('Net sales from goods and services', CHF 386'195 Tsd. = 386.195 Mio.) und Gewinn ('Profit for the year, of which attributable to the shareholders of the parent company', CHF 18'574 Tsd. = 18.574 Mio.) stammen aus der 'Consolidated Income Statement' im MCH Group Annual Report 2025 (Financial Report), Geschäftsjahr 2025 vs. 2024. Geprüft: Die Umsatzzeile heisst exakt 'Net sales from goods and services' und ist getrennt von der Summenzeile 'Total operating income' (429.5 Mio., inkl. sonstiger betrieblicher Erträge und Bestandsveränderungen) ausgewiesen (Regel 4); der Gewinn ist unmittelbar nach nicht beherrschenden Anteilen (-1.810 Mio.) aufgeschlüsselt (Regel 5). Beschäftigtenzahl aus dem Sustainability-Report-Kapitel (Tabelle 'Employees', Headcount vs. FTE) desselben Geschäftsberichts entnommen (Regel 6)."
+}

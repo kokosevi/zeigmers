@@ -1,0 +1,20 @@
+{
+ "noga_group": "bau",
+ "consolidation_basis": "total_group",
+ "revenue": 77.355,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 115.105,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Vermietung und Bewirtschaftung eines Portfolios von Industrie-, Gewerbe- und Wohnliegenschaften auf ehemaligen Industrearealen in der Deutsch- und Westschweiz.",
+ "products_url": "https://www.hiag.com/de/areale-und-flaechen-nachhaltig-entwickeln",
+ "founding_year": 1876,
+ "founding_year_source": "https://www.bilanz.ch/unternehmen/hiag-das-diskrete-immobilienreich-der-grisards-127603",
+ "employees": 81,
+ "fiscal_year": 2025,
+ "report_url": "https://www.hiag.com/media/d3wjvsie/geschaeftsbericht-2025.pdf",
+ "note": "Als Umsatz wurde die Zeile 'Liegenschaftsertrag' (Mietertrag 76'433 TCHF + Stromverkaufserlöse 1'257 TCHF abzüglich Debitorenverluste, Note 15) eingetragen, nicht 'Total Betriebsertrag' (217'997 TCHF), da diese Zeile Neubewertungsgewinne auf Immobilienanlagen (51'405 TCHF), Erfolg aus Verkauf Immobilienanlagen (18'662 TCHF) und Ertrag aus Verkauf Promotionen (64'379 TCHF) enthält - keine reine Umsatzgrösse (analog PSP Swiss Property in diesem Projekt). Reingewinn (115.105 Mio.) enthält diese Neubewertungs- und Verkaufserfolge dagegen bereits; 'Reingewinn vor Wertänderung' wäre nur 68.666 Mio. - Umsatz und Gewinn sind daher nicht deckungsgleich im Umfang, wie bei Immobiliengesellschaften nach Swiss GAAP FER üblich. Beschäftigte: 81 ist der Stichtags-Headcount ('Anzahl Mitarbeitende') per 31.12.2025; Vollzeitkräfte (FTE) betrugen 73.9. Gründungsjahr 1876 bezieht sich auf den historischen Ursprung als Holzhandelsbetrieb von Ernst Benz in Rorschach, aus dem 1924 die Holzindustrie AG (HIAG) hervorging; die Firmenwebsite selbst führt keine öffentlich zugängliche Geschichte-Seite mit Jahreszahl.",
+ "_verification": "Umsatz und Gewinn aus der 'Konsolidierten Erfolgsrechnung' (Geschäftsbericht 2025, S. 55): Zeile 'Liegenschaftsertrag' 77'355 TCHF (Note 15, Detail: Mietertrag + Stromverkaufserlöse, S. 68) und Zeile 'Reingewinn' 115'105 TCHF, beide für das Geschäftsjahr 2025, keine Minderheitsanteile ausgewiesen (Einzelposition ohne Splitting). Beschäftigtenzahl 81 aus der Tabelle 'Anzahl Mitarbeitende' per 31.12.2025 (S. 71, Note 18-20) geprüft, PDF direkt von hiag.com heruntergeladen und Volltext durchsucht."
+}

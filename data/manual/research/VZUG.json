@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 567.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 6.8,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Herstellung und Vertrieb von Haushaltgeräten (Kochen, Backen, Kühlen, Waschen, Trocknen, Geschirrspülen) unter der Marke V-ZUG, mehrheitlich in der Schweiz produziert.",
+ "products_url": "https://www.vzug.com/ch/de/about-v-zug",
+ "founding_year": 1913,
+ "founding_year_source": "https://www.vzug.com/ch/de/about-v-zug (Gründung der Verzinkerei Zug 1913, Vorläuferin der heutigen V-ZUG AG)",
+ "employees": 2078,
+ "fiscal_year": 2025,
+ "report_url": "https://www.vzug.com/medias/sys_master/root/h6d/hb6/11182433599518/VZUG_Jahresbericht_2025_DE/VZUG-Jahresbericht-2025-DE.pdf",
+ "note": "Konzernergebnis 2025 CHF 6.8 Mio. (6'830 TCHF) ist in der Erfolgsrechnung als einzige Ergebniszeile ausgewiesen, keine Minderheitsanteile erwähnt - vollständig den Aktionären der V-ZUG Holding AG zurechenbar. Beschäftigte: nur Vollzeitäquivalente (FTE) ausgewiesen, 2'078 per 31.12.2025 (Mehrjahreskennzahlen); an anderer Stelle im Bericht wird die Belegschaft gerundet mit 'rund 2'100 Mitarbeitende' beschrieben, dafür wurde die exakte FTE-Zahl verwendet.",
+ "_verification": "Umsatz (Nettoerlös CHF 567.4 Mio. bzw. 567'448 TCHF, FY2025) aus der Konsolidierten Erfolgsrechnung des V-ZUG Geschäftsberichts 2025 (Finanzbericht S. 84, Zeile 'Nettoerlös'), bestätigt durch die Mehrjahreskennzahlen-Tabelle. Gewinn (Konzernergebnis CHF 6.8 Mio.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/Geschäftsjahr; Beschäftigte (2'078 FTE per 31.12.2025) aus der Mehrjahreskennzahlen-Tabelle 'Cash Flow / Investitionen / Mitarbeitende' desselben Berichts."
+}

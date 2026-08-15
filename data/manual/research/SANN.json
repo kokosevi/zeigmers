@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "77.185",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "-49.236",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung und Vermarktung von AGAMREE (Wirkstoff Vamorolon), einem zugelassenen Kortikosteroid-Medikament zur Behandlung der Duchenne-Muskeldystrophie, vertrieben direkt in Europa und über Partner (u.a. Catalyst Pharmaceuticals in Nordamerika) weltweit.",
+ "products_url": "https://www.santhera.com/physicians-and-pharmacists/physicians",
+ "founding_year": "",
+ "founding_year_source": "",
+ "employees": "94",
+ "fiscal_year": "2025",
+ "report_url": "https://www.santhera.com/assets/files/financial_reports/Consolidated_Annual_Report_2025-FINAL.pdf",
+ "note": "Beschäftigte: 'Full-time equivalents at year-end' = 93.6 (FY2025, Anhang 'Employee Expenses and Benefits'), auf 94 gerundet; keine Kopfzahl im Bericht ausgewiesen. founding_year leer gelassen: keine eigene Quelle der Firma gefunden, externe Quellen widersprechen sich (1998/2000/2004) und sind nicht primär genug, um sicher zu sein.",
+ "_verification": "Umsatz (Zeile 'Revenue from contracts with customers', konsolidierte Erfolgsrechnung, CHF 77,185 Tsd.) und Gewinn (Zeile 'Net result attributable to shareholders', CHF -49,236 Tsd.) stammen aus dem offiziellen 'Consolidated Annual Report 2025' von santhera.com (Financial Reports). Geprüft: gleiches Geschäftsjahr 2025, gleicher Konsolidierungskreis (Konzern, kein Hinweis auf Minderheitsanteile), Beschäftigtenzahl aus Anhang 'Full-time equivalents' im selben Bericht."
+}

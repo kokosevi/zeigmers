@@ -1,0 +1,20 @@
+{
+ "noga_group": "finanz",
+ "consolidation_basis": "total_group",
+ "revenue": 172.338,
+ "revenue_currency": "CHF",
+ "revenue_type": "operating_income",
+ "revenue_unit": "1000000",
+ "profit": -33.695,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Emission und technologiebasierter Vertrieb strukturierter Anlage- und Hebelprodukte (Derivate) für Banken, Vermögensverwalter und institutionelle Partner über die eigene digitale Handelsplattform.",
+ "products_url": "https://structuredproducts-ch.leonteq.com/",
+ "founding_year": 2007,
+ "founding_year_source": "https://www.leonteq.com/investor-relations/fyr-2025/leonteq%20ag-annual%20report-2025-en.pdf",
+ "employees": 555,
+ "fiscal_year": 2025,
+ "report_url": "https://www.leonteq.com/investor-relations/fyr-2025/leonteq%20ag-annual%20report-2025-en.pdf",
+ "note": "Als Finanzdienstleister (Wertpapierhaus) weist Leonteq keinen Nettoumsatz aus (Falle 1); Zeile 'Total operating income' (CHF 172.338 Mio., Konzern-Erfolgsrechnung, unmittelbar vor den Betriebsaufwendungen) wurde als revenue_type operating_income eingetragen - Summe aus Net fee income (178.575 Mio.), Result from trading activities and fair value option (-3.137 Mio.), Net result from interest operations (-6.398 Mio.) und Other operating income (3.298 Mio.). Leonteq verzeichnete 2025 einen IFRS-Konzernverlust von CHF 33.695 Mio. (2024: Gewinn 5.836 Mio.), vollständig den Aktionären der Leonteq AG zurechenbar (keine Minderheitsanteile). Beschäftigte: 555 ist die im Bericht ausdrücklich genannte Kopfzahl ('The Group employed 555 employees as of 31 December 2025'); Vollzeitäquivalente (FTE) betrugen 545.",
+ "_verification": "Umsatz und Gewinn aus der 'Consolidated income statement' (Leonteq AG Annual Report 2025, S. 130): Zeile 'Total operating income' CHF 172'338 Tsd. (2025; Vorjahr 238'511) und Zeile 'Group net profit/(loss)' CHF -33'695 Tsd. (2025; Vorjahr 5'836), davon 'of which allocated to shareholders of Leonteq AG' ebenfalls -33'695 Tsd. (keine Minderheitsanteile). Beschäftigtenzahl aus Note 13 (Personnel expenses, S. 165): 'The Group employed 555 employees as of 31 December 2025' vs. 545 FTEs. PDF direkt von leonteq.com heruntergeladen (korrekte URL-Kodierung mit %20 statt '+' nötig, da sonst 404) und Volltext durchsucht."
+}
