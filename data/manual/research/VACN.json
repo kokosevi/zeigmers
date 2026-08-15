@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://www.vatgroup.com/files/live/sites/vat/files/Investor%20relations/annual-report/2025/vat-annual-report-2025.pdf",
  "note": "Mitarbeitende als Vollzeitäquivalente (FTE) ausgewiesen, siehe Fussnote 9 der Kennzahlentabelle im Geschäftsbericht 2025.",
- "_verification": "Seite 'Key figures' des Annual Report 2025 (Umschlagseite 3): Zeile 'Net sales' CHF 1'073.5 Mio. und Zeile 'Net income' CHF 214.3 Mio. für Geschäftsjahr 2025, jeweils mit Vorjahresvergleich 2024. Founding year 1965 bestätigt durch Aussage 'VAT builds on 60 years' auf der Innenseite des Berichts (2025-60=1965); geprüft, dass Net sales und Net income aus derselben Kennzahlentabelle für dasselbe Geschäftsjahr stammen."
+ "_verification": "Seite 'Key figures' des Annual Report 2025 (Umschlagseite 3): Zeile 'Net sales' CHF 1'073.5 Mio. und Zeile 'Net income' CHF 214.3 Mio. für Geschäftsjahr 2025, jeweils mit Vorjahresvergleich 2024. Founding year 1965 bestätigt durch Aussage 'VAT builds on 60 years' auf der Innenseite des Berichts (2025-60=1965); geprüft, dass Net sales und Net income aus derselben Kennzahlentabelle für dasselbe Geschäftsjahr stammen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "VAT Group AG",
+  "revenue_zeile": "Net sales (Consolidated income statement)",
+  "profit_zeile": "Net income attributable to owners of the Company",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (176 Seiten) und per pdftotext durchsucht; die 'Consolidated income statement' für das Geschäftsjahr 1. Januar bis 31. Dezember 2025 weist 'Net sales' 1'073'516 TCHF (=1073.5 Mio.) und 'Net income attributable to owners of the Company' 214'280 TCHF (=214.3 Mio.) aus, exakt übereinstimmend mit der Kennzahlen-Übersichtsseite. Keine Abweichung gefunden."
+ }
 }

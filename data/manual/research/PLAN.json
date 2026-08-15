@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 39866,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000,
+ "profit": 60703,
+ "profit_currency": "CHF",
+ "profit_unit": 1000,
+ "core_products": "Erwerb, Entwicklung, Vermietung und Bewirtschaftung eines Portfolios an Wohn- und Geschäftsliegenschaften in den Wirtschaftszentren Zürich und Umgebung.",
+ "products_url": "https://www.plazza.ch/",
+ "founding_year": 2015,
+ "founding_year_source": "https://www.plazza.ch/wp-content/uploads/PLAZZA_JB2025_Inhalt_WEB.pdf",
+ "employees": 24,
+ "fiscal_year": 2025,
+ "report_url": "https://www.plazza.ch/wp-content/uploads/PLAZZA_JB2025_Inhalt_WEB.pdf",
+ "note": "Umsatz = Zeile 'Liegenschaftenertrag' der konsolidierten Erfolgsrechnung (39'866 TCHF, Note 14), nicht 'Total Betriebsertrag' (40'114 TCHF), da darin auch Ertrag aus Immobilienentwicklungen und sonstige betriebliche Erträge enthalten sind. Gewinn 60'703 TCHF (Vorjahr 50'696) enthält Neubewertungserfolg von 44'504 TCHF; keine Minderheitsanteile ausgewiesen. Beschäftigte: 24 Personen zum 31.12.2025 (Kopfzahl gemäss Nachhaltigkeitsbericht), entsprechend 22,2 Vollzeitäquivalenten.",
+ "_verification": "Umsatz und Gewinn aus der 'Konsolidierten Erfolgsrechnung' im Geschäftsbericht 2025: Zeile 'Liegenschaftenertrag' 39'866 TCHF (Vorjahr 33'040, Note 14) und Zeile 'Gewinn' 60'703 TCHF (Vorjahr 50'696), Geschäftsjahr 2025, in TCHF. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft. Gründungsdatum (22. Juni 2015, Handelsregistereintrag 25.6.2015) aus dem Corporate-Governance-Teil desselben Berichts ('Angaben zum Kapital'). Mitarbeiterzahl (24, Kopfzahl) aus dem Nachhaltigkeitsbericht, Abschnitt 'Mitarbeitendenstruktur'."
+}

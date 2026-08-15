@@ -1,0 +1,20 @@
+{
+ "noga_group": "bau",
+ "consolidation_basis": "total_group",
+ "revenue": 105.186,
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -38.045,
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Erwerb, Bestandshaltung, Entwicklung und Vermietung von bezahlbarem Wohnraum in deutschen B-Städten (Wohnimmobilienportfolio zum Halten und zur Projektentwicklung/zum Verkauf).",
+ "products_url": "https://www.peachproperty.com/en/about-peach/",
+ "founding_year": 2001,
+ "founding_year_source": "https://www.peachproperty.com/en/about-peach/",
+ "employees": 225,
+ "fiscal_year": 2025,
+ "report_url": "https://www.peachproperty.com/wp-content/uploads/2026/04/high_PEACH_GB_2025.pdf",
+ "note": "Als Umsatz wurde die Zeile 'Rental income' (EUR 105.186 Mio.) eingetragen, nicht 'Operating income' (EUR 222.886 Mio.), da diese Summenzeile Neubewertungsgewinne auf Renditeliegenschaften (73.247 Mio.), Erträge aus Verkauf von Promotionsliegenschaften (41.015 Mio.) und sonstige betriebliche Erträge enthält - keine reine Umsatzgrösse (analog PSP Swiss Property in diesem Projekt). Peach Property berichtet in EUR (Berichtswährung), nicht CHF, obwohl an der SIX kotiert. Konzernergebnis nach Steuern insgesamt EUR -41.212 Mio., davon den Aktionären der Peach Property Group AG zurechenbar EUR -38.045 Mio. und den Minderheitsanteilen -3.167 Mio. (Regel 5) - Aktionärsanteil (Verlust) eingetragen. Beschäftigte 225 ist die im Bericht als 'Number of employees' ausgewiesene Kennzahl.",
+ "_verification": "Umsatz und Ergebnis aus der 'Consolidated Statement of Income' (Annual Report 2025, S. 61-62): Zeile 'Rental income' EUR 105'186 Tsd. (2025; Vorjahr 124'522) und Zeile 'Result after taxes - attributable to Peach Property Group AG equity holders' EUR -38'045 Tsd. (2025; Vorjahr -194'994), getrennt von 'attributable to non-controlling interests' -3'167 Tsd. ausgewiesen. 'Number of employees' 225 aus der Kennzahlenübersicht am Berichtsanfang bestätigt. PDF direkt von peachproperty.com heruntergeladen und Volltext durchsucht."
+}

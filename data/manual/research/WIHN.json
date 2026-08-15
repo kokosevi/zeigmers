@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": 19.289,
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": -6.072,
+ "profit_currency": "USD",
+ "profit_unit": "1000000",
+ "core_products": "Cybersicherheits-, digitale-Identitäts- und IoT-Sicherheitslösungen sowie über die mehrheitlich konsolidierte Tochter SEALSQ Post-Quantum-Halbleiter (Sicherheitschips) für vernetzte Geräte.",
+ "products_url": "https://www.wisekey.com/technology/",
+ "founding_year": 1999,
+ "founding_year_source": "SEC-Formular 20-F für Geschäftsjahr 2025, Abschnitt 'History and Development of WISeKey': 'In 1999, Carlos Moreira founded the Geneva-based online data security firm WISeKey SA.'",
+ "employees": 202,
+ "fiscal_year": 2025,
+ "report_url": "https://www.sec.gov/Archives/edgar/data/1738699/000110465926053033/tmb-20251231x20f.htm",
+ "note": "Konzern weist einen Nettoverlust aus: 'Net loss attributable to WISeKey International Holding Ltd' USD -6.072 Mio. (2025); der gesamte Konzernverlust inkl. nicht beherrschender Anteile (v. a. der mehrheitlich konsolidierten Tochter SEALSQ Corp) betrug USD -38.154 Mio., davon USD -32.082 Mio. Minderheitsanteile - nicht eingetragen. Berichtswährung USD (WISeKey berichtet nach US-GAAP bei der SEC, nicht in CHF). Beschäftigte: 202 Personen (Headcount) per 31.12.2025 gemäss Abschnitt 'Employees' des 20-F ('WISeKey had 202 employees, of which 33 were located in Switzerland and 160 were located in France').",
+ "_verification": "Umsatz (Net sales USD 19'289 Tsd., FY2025) aus der Konzern-Erfolgsrechnung im Form 20-F für das Geschäftsjahr 2025 (Zeile 'Net sales', Abschnitt 'Results of Operations' und Konzernabschluss-Anhang), Umsatzwachstum +62% ggü. Vorjahr bestätigt. Gewinn ('Net loss attributable to WISeKey International Holding Ltd', USD -6.072 Mio.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/Geschäftsjahr wie der Umsatz, getrennt von den Minderheitsanteilen ausgewiesen; Beschäftigte (202 Headcount) aus dem Abschnitt 'Employees' desselben 20-F-Berichts."
+}

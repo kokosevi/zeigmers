@@ -1,0 +1,20 @@
+{
+ "noga_group": "ikt",
+ "consolidation_basis": "total_group",
+ "revenue": "1243.4",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "0.9",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Vermittlung und Management von Softwarelizenzen sowie Beratung und Managed Services für Cloud-Migration und -Betrieb (u.a. Microsoft Azure, AWS, Google Cloud) für Unternehmenskunden.",
+ "products_url": "https://www.softwareone.com/en-us/our-story",
+ "founding_year": "2000",
+ "founding_year_source": "https://report.softwareone.com/ar19/history-and-milestones/",
+ "employees": "12973",
+ "fiscal_year": "2025",
+ "report_url": "https://report.softwareone.com/ar25/app/uploads/SWO-Annual-Report-2025-en.pdf",
+ "note": "Gewinn: 'Profit/(loss) for the period' war CHF 1.4 Mio. (Gesamtkonzern inkl. Minderheitsanteile aus der Crayon-Übernahme), davon 'Owners of the parent' CHF 0.9 Mio. und 'Non-controlling interest' CHF 0.5 Mio. — eingetragen ist der Aktionärsanteil (0.9). Umsatz: als 'Total revenue' (IFRS-Konzernzahl CHF 1'243.4 Mio.) übernommen, nicht die 'Like-for-like combined'-Pro-forma-Zahl (CHF 1'518.2 Mio., inkl. Crayon für das ganze Jahr gerechnet). Beschäftigte: Headcount 12'973 verwendet (der Bericht weist zusätzlich 12'712 FTE aus; gemäss Vertrag wird die Kopfzahl bevorzugt). Gründung: Vorläuferfirma 'Softwarepipeline' 2000 in Zürich gegründet; übernahm 2006 die US-Firma 'SoftwareONE' (gegründet 1985) und deren Namen — als founding_year wird die Gründung der heutigen Gruppe (2000) verwendet.",
+ "_verification": "Umsatz und Gewinn stammen aus der Tabelle 'Consolidated IFRS figures / Key figures Group' im SoftwareOne Annual Report 2025 (Zeilen 'Total revenue' CHF 1'243.4 Mio. und 'Profit/(loss) for the period attributable to: Owners of the parent' CHF 0.9 Mio., beide FY2025, Konzernebene). Geprüft: gleiches Geschäftsjahr, gleicher Konsolidierungskreis (inkl. Crayon-Akquisition per 2.7.2025), Umsatzzeile heisst im Bericht exakt 'Total revenue' (nicht die separat ausgewiesene Pro-forma-Kombinationszahl), Beschäftigtenzahl im selben Bericht als Headcount vs. FTE gegenübergestellt."
+}

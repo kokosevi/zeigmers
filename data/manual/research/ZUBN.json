@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 9.431,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 8.685,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Erwerb, aktive Bewirtschaftung und Weiterentwicklung eines Portfolios von Wohn- und Geschäftsliegenschaften ausschliesslich in der Schweiz (Vermietung).",
+ "products_url": "https://www.zueblin.ch/unternehmen/",
+ "founding_year": "",
+ "founding_year_source": "",
+ "employees": 4,
+ "fiscal_year": 2025,
+ "report_url": "https://reports.zueblin.ch/24-25/ar/app/uploads/Zueblin_Geschaeftsbericht_24-25_de.pdf",
+ "note": "Geschäftsjahr läuft vom 1.4. bis 31.3.; Zahlen für 2024/25 (Endjahr 2025) verwendet. Umsatz = Zeile 'Mietertrag' aus der konsolidierten Erfolgsrechnung (CHF 9'431 Tsd.). Konzerngewinn CHF 8'685 Tsd. enthält eine positive Marktwertveränderung der Liegenschaften von CHF 5'838 Tsd.; keine Minderheitsanteile ausgewiesen. Beschäftigte: nur 4 Personen (Konzern beschäftigt keine eigene Hausverwaltung, sondern lässt die Liegenschaften durch Dritte bewirtschaften) - Kopfzahl gemäss Bericht ('Per 31. März 2025 beschäftigt die Gruppe 4 Mitarbeitende'). Gründungsjahr leer gelassen: In Geschäftsbericht, Investor-Relations- und Unternehmensseiten von Zueblin/zueblin.ch wurde keine Angabe zum Gründungs- oder Handelsregister-Eintragungsjahr der Zueblin Immobilien Holding AG gefunden; ohne eigene Firmenquelle wurde bewusst keine Zahl geschätzt.",
+ "_verification": "Umsatz (Mietertrag CHF 9'431 Tsd., Geschäftsjahr 1.4.2024-31.3.2025) aus der Konsolidierten Erfolgsrechnung im Geschäftsbericht 2024/25 der Zueblin Immobilien Holding AG (Finanzbericht-Teil), oberste Ertragszeile vor Liegenschaftsaufwand und Unterhalt. Gewinn ('Konzerngewinn' CHF 8'685 Tsd.) aus derselben Erfolgsrechnung, gleicher Konzernkreis/gleiches Geschäftsjahr wie der Umsatz (inkl. Marktwertveränderung der Liegenschaften als Teil des EBIT). Beschäftigte (4 Personen) aus dem Konzernanhang zum Personalaufwand desselben Berichts, mit Vorjahresvergleich (31.3.2024: ebenfalls 4)."
+}

@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "285.390",
+ "revenue_currency": "EUR",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "5.793",
+ "profit_currency": "EUR",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung und Herstellung von Werkzeugmaschinen und Praezisionsmesszentren fuer Kegelraeder (OERLIKON) und Stirnraeder (HOEFLER) sowie zugehoerige Software fuer Verzahnungsfertigung und -messtechnik, v.a. fuer Automobil-, Nutzfahrzeug- und Luftfahrtindustrie.",
+ "products_url": "https://www.klingelnberg.com/unternehmen/ueber-uns",
+ "founding_year": "1863",
+ "founding_year_source": "Annual Report 2025/26, Abschnitt 'KLINGELNBERG HISTORY' (S. 19): 'The Company is founded in Remscheid, Germany' im Zeitraum 1863 to 1897, durch die Gruender W. Ferd. Klingelnberg, Soehne (Julius und Ernst Klingelnberg).",
+ "employees": "1293",
+ "fiscal_year": "2026",
+ "report_url": "https://www.klingelnberg.com/fileadmin/Investors/Annual_Report_2025_26_en.pdf",
+ "note": "Geschaeftsjahr endet am 31. Maerz; Berichtsjahr 2025/26 (1.4.2025-31.3.2026) wird als fiscal_year 2026 (Endjahr) gefuehrt. Mitarbeitende: 1'293 Vollzeitstellen (FTE) am Ende des Geschaeftsjahres 2025/26 (Vorjahr 1'348); der Bericht weist fuer die Gruppe keine separate Kopfzahl aus, nur FTE. Konzern hat gemaess Bericht keine Minderheitsanteile ('The KLINGELNBERG Group had no minority interests.'), daher ist der ausgewiesene Nettogewinn vollstaendig den Aktionaeren zurechenbar.",
+ "_verification": "Umsatz (Net sales from goods and services 285'390 TEUR) und Gewinn (Net profit 5'793 TEUR) stammen beide aus der 'Consolidated income statement' auf Seite 129/im Financial-Statements-Teil des KLINGELNBERG Annual Report 2025/26, Spalte 2025/26. Geprueft wurde im Eigenkapitalnachweis/Notes, dass keine Minderheitsanteile bestehen (explizite Aussage 'The KLINGELNBERG Group had no minority interests.'), sodass der Nettogewinn zu 100% den Aktionaeren der KLINGELNBERG AG zusteht."
+}

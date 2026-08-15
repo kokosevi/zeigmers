@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": 3555.4,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": 294.7,
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Pumpen, Misch- und Trenntechnik sowie Oberflächentechnik (thermisches Spritzen, Beschichtungen) für Energie-, Prozess- und Wasserindustrie.",
+ "products_url": "https://www.sulzer.com/en/products",
+ "founding_year": 1834,
+ "founding_year_source": "https://www.sulzer.com/en/about-us/our-company/history",
+ "employees": 13526,
+ "fiscal_year": 2025,
+ "report_url": "https://report.sulzer.com/ar25/en/financial-review",
+ "note": "Mitarbeitendenzahl laut Sulzer-Kennzahlenseite als Vollzeitstellen (FTE) ausgewiesen, nicht als Köpfe.",
+ "_verification": "Umsatz (Sales, CHF 3'555.4 Mio.) und Nettogewinn (Net income, CHF 294.7 Mio.) stammen von der Financial-Review-Seite des Sulzer Annual Report 2025 (report.sulzer.com/ar25) sowie der zugehörigen Kennzahlenseite (our-key-figures), die dieselbe Nettogewinnzahl und EPS von CHF 8.68 bestätigt. Geprüft, dass die Zeile 'Sales' (nicht eine Summenzeile) verwendet wurde und dass Mitarbeitendenzahl als FTE gekennzeichnet ist."
+}

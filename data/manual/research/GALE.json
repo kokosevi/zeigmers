@@ -19,9 +19,9 @@
  "_pruefung": {
   "verdict": "bestaetigt",
   "legal_name_im_bericht": "Galenica Ltd.",
-  "revenue_zeile": "Net sales (Konzern, Note 5 'Net sales' = 4,135,621 Tsd. CHF; identisch mit Key-figures-Box zusammen mit 8,427 Mitarbeitenden)",
-  "profit_zeile": "Profit from continuing operations – attributable to shareholders of Galenica Ltd. (182,705 Tsd. CHF)",
+  "revenue_zeile": "Net sales (Consolidated statement of income, Note 5)",
+  "profit_zeile": "Profit from continuing operations - attributable to shareholders of Galenica Ltd. (Note 10, Earnings per share)",
   "abweichungen": [],
-  "begruendung": "PDF direkt heruntergeladen und per pdftotext durchsucht (report.galenica.com/ar25); Net sales 4,135.6 Mio. CHF erscheint konsistent als Konzern-Gesamtzahl in Key figures, MD&A und Note 5 (nicht als Segmentzahl, bestätigt durch Kopplung mit der Konzern-Mitarbeiterzahl 8,427), und die Gewinnzeile 182,705 Tsd. CHF (continuing operations, Aktionärsanteil) stimmt exakt mit der vorgelegten Zahl überein."
+  "begruendung": "PDF direkt heruntergeladen (310 Seiten) und per pdftotext durchsucht; 'Net sales' 4'135'621 TCHF (=4135.6 Mio.) steht in der 'Consolidated statement of income' für 2025, und 'Profit from continuing operations - attributable to shareholders of Galenica Ltd.' 182'705 TCHF (=182.7 Mio.) in Note 10 (Earnings per share) für 2025 - beide auf continuing-operations-Basis wie begründet, während der Gesamtkonzern-Nettogewinn inkl. discontinued operations 181.1 Mio. abweicht (korrekterweise nicht verwendet). Employees 8'427 und Legal Name 'Galenica Ltd.' bestätigt; keine Abweichung gefunden."
  }
 }

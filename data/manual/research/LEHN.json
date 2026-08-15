@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "287.675",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "9.857",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung und Herstellung von elektronischen Strom- und Spannungssensoren sowie Energiezaehlern fuer Automation, Automotive, erneuerbare Energien, Netzverteilung und Bahntechnik.",
+ "products_url": "https://www.lem.com/en/product-list?measurement=52",
+ "founding_year": "",
+ "founding_year_source": "",
+ "employees": "1626",
+ "fiscal_year": "2026",
+ "report_url": "https://www.lem.com/en/file/14822/download",
+ "note": "Geschaeftsjahr endet am 31. Maerz; Berichtsjahr 2025/26 (1.4.2025-31.3.2026) wird als fiscal_year 2026 (Endjahr) gefuehrt. Mitarbeitende: 1'626 = Kopfzahl ('Total' aus permanent + temporary + apprentices) zum Stichtag 31.3.2026 laut Note zu den Mitarbeiterzahlen im Finanzbericht; explizit als Personenzahl (nicht FTE) ausgewiesen. Gewinn ist vollstaendig den Aktionaeren zurechenbar (kein Minderheitsanteil in der Eigenkapitalveraenderungsrechnung ausgewiesen). founding_year leer gelassen: Die Unternehmensseite lem.com/en/company-information enthaelt eine 'Company History'/'Key Dates'-Sektion, deren Inhalt dynamisch nachgeladen wird und beim Abruf nicht auslesbar war; der Jahresbericht 2025/26 nennt kein Gruendungsjahr, nur dass LEM seit 1986 an der SIX kotiert ist. Keine verlaessliche Primaerquelle mit explizitem Gruendungsjahr gefunden.",
+ "_verification": "Umsatz (Sales 287'675 TCHF) und Gewinn (Net profit 9'857 TCHF) stammen beide aus der 'Consolidated income statement' auf Seite 48 des LEM Annual Report 2025/26, Spalte April to March 2025/26. Geprueft wurde anhand der 'Consolidated statement of changes in equity' (S. 50), dass der ausgewiesene Nettogewinn zu 100% den Aktionaeren zugerechnet wird (keine separate Zeile fuer Minderheitsanteile); die Mitarbeiterzahl 1'626 stammt aus derselben PDF-Datei, Abschnitt 'Number of employees at the end of the financial year' (S. 73)."
+}

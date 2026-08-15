@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 42323,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000,
+ "profit": 46091,
+ "profit_currency": "CHF",
+ "profit_unit": 1000,
+ "core_products": "Investition in und Bewirtschaftung von Wohnliegenschaften, gemischt genutzten Liegenschaften und Entwicklungsprojekten in der Schweiz (Vermietung).",
+ "products_url": "https://fundamentarealestate.ch/de/",
+ "founding_year": 2006,
+ "founding_year_source": "https://gb.fundamentarealestate.ch/fileadmin/user_upload/geschaeftsberichte_re/2025/pdf/Fundamenta_GB2025_DE.pdf",
+ "employees": 1,
+ "fiscal_year": 2025,
+ "report_url": "https://gb.fundamentarealestate.ch/fileadmin/user_upload/geschaeftsberichte_re/2025/pdf/Fundamenta_GB2025_DE.pdf",
+ "note": "Umsatz = Zeile 'Netto-Ist-Mietertrag' der Erfolgsrechnung (42'323 TCHF, Note 14), nicht die Zeile 'Betriebsertrag' (42'384 TCHF). Reingewinn 46'091 TCHF (Vorjahr 30'493) enthält Neubewertungserfolg; ohne Neubewertung läge der Reingewinn bei 21'803 TCHF. Gesellschaft ist nicht Teil eines Konzerns und hat keine eigenen Mitarbeitenden im klassischen Sinn: einzige beschäftigte Person ist der Delegierte des Verwaltungsrats mit 50%-Pensum (Asset Management extern durch Swiss Prime Site Solutions AG) - daher employees=1 (Kopfzahl), FTE 0.5.",
+ "_verification": "Umsatz und Gewinn aus der Erfolgsrechnung des Geschäftsberichts 2025 (Finanzbericht/Jahresrechnung nach Swiss GAAP FER): Zeile 'Netto-Ist-Mietertrag' 42'323 TCHF (Vorjahr 41'851, Note 14) und Zeile 'Reingewinn' 46'091 TCHF (Vorjahr 30'493), Geschäftsjahr 2025. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft, inkl. Detail-Kennzahlentabelle im Lagebericht (deckungsgleich). Gründungsdatum (15. Dezember 2006, Handelsregistereintrag 28.12.2006) aus dem Anhang zur Jahresrechnung, Abschnitt 'Gesellschaftsdomizil'. Mitarbeiterangabe aus demselben Abschnitt ('Delegierten des Verwaltungsrats mit 50%-Pensum beschäftigt')."
+}

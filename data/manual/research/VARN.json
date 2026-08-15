@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 98324099,
+ "revenue_currency": "USD",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1,
+ "profit": -31750207,
+ "profit_currency": "USD",
+ "profit_unit": 1,
+ "core_products": "Investition in und Bewirtschaftung von Mehrfamilienhäusern (multifamily residential) in sekundären und tertiären Märkten der USA über US-Tochtergesellschaften.",
+ "products_url": "https://variausproperties.com/",
+ "founding_year": 2015,
+ "founding_year_source": "https://variausproperties.com/wp-content/uploads/2026/03/VariaUS_AR_2025.pdf",
+ "employees": 0,
+ "fiscal_year": 2025,
+ "report_url": "https://variausproperties.com/wp-content/uploads/2026/03/VariaUS_AR_2025.pdf",
+ "note": "Varia US Properties AG ist eine Schweizer Holding, die ausschliesslich über US-Tochtergesellschaften in US-Mehrfamilienhäuser investiert; sie hat selbst keine eigenen Angestellten ('The Company has a Board of Directors but no direct employees' / 'Varia US Properties AG has no employees at December 31, 2025') - employees daher 0. Berichtswährung des Konzerns ist USD. Umsatz = Zeile 'Rental income' (98'324'099 USD) der konsolidierten Erfolgsrechnung, nicht 'Total income' (81'480'460 USD), da diese Zeile einen Verlust aus Neubewertung von -33,98 Mio. sowie sonstige Erträge und Versicherungserlöse enthält. Der Konzern (IFRS, konsolidiert, USD) verzeichnete 2025 einen Verlust ('Loss for the period') von USD -31'750'207, primär wegen hoher Zinsaufwendungen (39,0 Mio.) und Fremdwährungsverlusten. Die separat ausgewiesene STATUTARISCHE Einzelabschluss-Zahl der Holding AG selbst (CHF 17,3 Mio. Gewinn) wurde bewusst NICHT verwendet, da sie einen anderen Konsolidierungskreis (nur Holding, nicht Konzern) und eine andere Währung (CHF statt USD) betrifft und damit nicht zum konsolidierten Umsatz passen würde (Regel 3 des Recherche-Vertrags).",
+ "_verification": "Umsatz und Gewinn aus den 'Consolidated Statements of Profit or Loss and Other Comprehensive Income' im Annual Report 2025: Zeile 'Rental income' USD 98'324'099 (Vorjahr 108'557'209) und Zeile 'Loss for the period' USD -31'750'207 (Vorjahr -17'513'657), Geschäftsjahr 2025, konsolidiert (Group), in USD. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft; explizit geprüft, dass beide Zahlen aus derselben konsolidierten IFRS-Rechnung stammen (nicht die abweichende statutarische CHF-Zahl der Holding allein). Gründungsjahr (September 2015, 'Established in September 2015 as a Swiss company') und Kerngeschäft von der offiziellen Unternehmensseite/Report-Einleitung; Mitarbeiterzahl (0) aus dem Corporate-Governance-Teil und dem Anhang zur Jahresrechnung des Berichts."
+}

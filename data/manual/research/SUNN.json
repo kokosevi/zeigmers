@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://a.storyblok.com/f/113473/x/d5a55b804b/sunrise-communications-ag-annual-report-2025.pdf",
  "note": "Konzern weist Nettoverlust aus: Net (loss) attributable to Sunrise Communications AG shareholders CHF -112.2 Mio. (S. 207, Consolidated Statements of Income or Loss). Beschäftigte: 2'985 Personen (Headcount), FTE 2'897 (S. 216 Sustainability-Teil: 'Sunrise employed a total of 2,985 employees (FTE: 2,897)') - Kopfzahl gemäss Regel 6 verwendet.",
- "_verification": "Umsatz (Total revenue CHF 2'983.4 Mio., FY2025) aus Consolidated Statements of Income or Loss, S. 207 des Sunrise Annual Report 2025 (Zeile 'Revenue'), bestätigt durch die Segment-Tabelle 'Total revenue' auf S. 41. Gewinn (Net loss attributable to Sunrise Communications AG shareholders, CHF -112.2 Mio.) ebenfalls S. 207, gleiche Berichtsperiode/Konsolidierungskreis wie Umsatz (Gesamtkonzern, Geschäftsjahr 2025); Beschäftigte (2'985 Headcount) aus dem Sustainability-Kapitel desselben Berichts."
+ "_verification": "Umsatz (Total revenue CHF 2'983.4 Mio., FY2025) aus Consolidated Statements of Income or Loss, S. 207 des Sunrise Annual Report 2025 (Zeile 'Revenue'), bestätigt durch die Segment-Tabelle 'Total revenue' auf S. 41. Gewinn (Net loss attributable to Sunrise Communications AG shareholders, CHF -112.2 Mio.) ebenfalls S. 207, gleiche Berichtsperiode/Konsolidierungskreis wie Umsatz (Gesamtkonzern, Geschäftsjahr 2025); Beschäftigte (2'985 Headcount) aus dem Sustainability-Kapitel desselben Berichts.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Sunrise Communications AG",
+  "revenue_zeile": "Revenue (Consolidated Statements of Income or Loss, Note 6)",
+  "profit_zeile": "Net (loss), Attributable to: Sunrise Communications AG shareholders",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (250 MB, 307 Seiten) und per pdftotext durchsucht; in der 'Consolidated Statements of Income or Loss' steht Revenue 2025 = CHF 2'983.4 Mio. und, unter 'Attributable to: Sunrise Communications AG shareholders', Net loss CHF -112.2 Mio. (Gesamtkonzern-Nettoverlust vor Minderheitsanteil war -108.5 Mio., Differenz sind 3.7 Mio. Non-controlling interest). Beide Zahlen stammen aus derselben Tabelle, demselben Geschäftsjahr 2025 und demselben Konsolidierungskreis; keine Abweichung gefunden."
+ }
 }

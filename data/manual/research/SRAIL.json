@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "3679.25",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "88.024",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Entwicklung, Herstellung und Wartung von Schienenfahrzeugen (Triebzüge, Lokomotiven, Trams, Metros, Zahnradbahnen) sowie Signaltechnik-Lösungen für Bahnbetreiber weltweit.",
+ "products_url": "https://www.stadlerrail.com/solutions/rolling-stock",
+ "founding_year": "1942",
+ "founding_year_source": "https://a.storyblok.com/f/269997/x/518f589306/annual-report_2025_en.pdf (Annual Report 2025: 'Since the company was founded in 1942...')",
+ "employees": "18343",
+ "fiscal_year": "2025",
+ "report_url": "https://a.storyblok.com/f/269997/x/518f589306/annual-report_2025_en.pdf",
+ "note": "Gewinn: 'Profit for the year' (Gesamtkonzern) betrug CHF 100,664 Tsd., davon 'thereof attributable to shareholders of Stadler Rail AG' CHF 88,024 Tsd. und 'thereof attributable to minority interests' CHF 12,640 Tsd. — eingetragen ist der Aktionärsanteil (88.024 Mio.). Beschäftigte: 'Number of employees total' (ESRS-Sozialbericht, auf Kopfzahl/Headcount-Basis) = 18'343 zum 31.12.2025 verwendet; die Kennzahlenübersicht nennt daneben separat den Durchschnitt 'Ø FTE 2025' = 17'119 — gemäss Vertrag wird die Kopfzahl bevorzugt.",
+ "_verification": "Umsatz ('Net revenue' CHF 3,679,250 Tsd.) und Gewinn ('Profit for the year, thereof attributable to shareholders of Stadler Rail AG' CHF 88,024 Tsd.) stammen aus der konsolidierten Erfolgsrechnung im Stadler Annual Report 2025 (Konsolidierte Jahresrechnung, S. 182f.), beide für das Geschäftsjahr 2025 auf Konzernebene. Geprüft: gleiches Geschäftsjahr, gleicher Konsolidierungskreis, Gewinnzeile korrekt als Aktionärsanteil (nicht Gesamtkonzernergebnis inkl. Minderheiten) gewählt, Beschäftigtenzahl im selben Bericht als Headcount (nicht FTE) identifiziert."
+}

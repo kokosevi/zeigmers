@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 41759772,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1,
+ "profit": 30536323,
+ "profit_currency": "CHF",
+ "profit_unit": 1,
+ "core_products": "Bau, Erwerb, Halten, Umbau und Bewirtschaftung von Renditeliegenschaften (überwiegend Wohnnutzung) ausschliesslich in der Schweiz.",
+ "products_url": "https://www.novavest.ch/en/investor-relations/",
+ "founding_year": 2012,
+ "founding_year_source": "https://www.novavest.ch/wp-content/uploads/2026/02/Novavest_GB_2025.pdf",
+ "employees": 2,
+ "fiscal_year": 2025,
+ "report_url": "https://www.novavest.ch/wp-content/uploads/2026/02/Novavest_GB_2025.pdf",
+ "note": "Zahlen aus der Jahresrechnung Swiss GAAP FER der Novavest Real Estate AG selbst (kein separater Konzernabschluss; Gesellschaft besitzt Liegenschaften direkt, keine Tochtergesellschaften/Minderheitsanteile). Umsatz = Zeile 'Mietertrag' (41'759'772 CHF), nicht 'Total Betriebsertrag' (42'861'669 CHF), da darin auch Verkaufserfolg und übriger Ertrag enthalten sind. Gewinn (30'536'323 CHF) enthält einen Neubewertungserfolg von 7'399'597 CHF sowie Auflösung negativer Goodwill von 5'943'264 CHF aus der 2025 erfolgten Übernahme der SenioResidenz AG. Beschäftigte: Die Gesellschaft selbst hatte 2025 nur 2 eigene Mitarbeitende (Vorjahr 3, Kopfzahl) - operative Führung erfolgt extern durch die Nova Property Fund Management AG (separate Gesellschaft mit rund 30 Mitarbeitenden, nicht Teil dieser Kennzahl).",
+ "_verification": "Umsatz und Gewinn aus der 'Jahresrechnung Swiss GAAP FER der Novavest Real Estate AG' im Geschäftsbericht 2025 (S. 90f.): Zeile 'Mietertrag' 41'759'772 CHF (Vorjahr 36'100'529) und Zeile 'Gewinn' 30'536'323 CHF (Vorjahr 19'110'126), beide 1.1.-31.12.2025, alle Beträge in vollen CHF wie im Bericht angegeben. Per pdftotext-Volltextsuche im heruntergeladenen PDF geprüft, inkl. Abgleich mit der separaten Kennzahlentabelle im Lagebericht (TCHF 41'760, gerundet, deckt sich). Gründungsdatum (17. Oktober 2012) und Beschäftigtenzahl (2, Kopfzahl) aus dem Anhang zur Jahresrechnung ('Allgemeine Informationen') bzw. dem Corporate-Governance-Teil desselben Berichts."
+}

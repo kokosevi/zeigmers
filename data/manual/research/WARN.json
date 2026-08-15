@@ -1,0 +1,20 @@
+{
+ "noga_group": "dienstleistung",
+ "consolidation_basis": "total_group",
+ "revenue": 44505,
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": 1000,
+ "profit": 44665,
+ "profit_currency": "CHF",
+ "profit_unit": 1000,
+ "core_products": "Erwerb, aktive Bewirtschaftung und Weiterentwicklung eines Portfolios von Wohn- und Geschäftsliegenschaften (Renditeliegenschaften) primär in der Region Basel und weiteren Wachstumsregionen der Schweiz.",
+ "products_url": "https://www.warteck-invest.ch/immobilien/portfolio",
+ "founding_year": 1988,
+ "founding_year_source": "https://www.warteck-invest.ch/unternehmen/portraet",
+ "employees": 15,
+ "fiscal_year": 2025,
+ "report_url": "https://mailing-ircockpit.eqs.com/crm-mailing/5c28394c-ea7c-11e8-902f-2c44fd856d8c/7fe765bc-3e53-4c84-8148-77ee83a0db7a/4856c422-2503-49c8-8f0d-5c1110e011ed/Warteck_Invest_Geschaeftsbericht_2025.pdf",
+ "note": "Umsatz = Zeile 'Mieterträge' der Konzernerfolgsrechnung (44'505 TCHF, Note 14), nicht die als KPI kommunizierte 'Soll-Miete' von CHF 45,5 Mio. (Zielgrösse vor Leerstandsabzug). Konzerngewinn 44'665 TCHF (exakt CHF 44'665'129) enthält einen positiven Neubewertungserfolg von 21'487 TCHF; ohne Neubewertung läge der Gewinn bei 26,4 Mio. Keine Minderheitsanteile ausgewiesen (100%-Konzern), Gewinn somit voll den Aktionären zurechenbar. Beschäftigte: 15 Personen ('Personalbestand Verwaltung am 31.12.', Kopfzahl gemäss Kennzahlentabelle und Lagebericht), Vollzeitäquivalent dazu 14,1 Stellen; die GRI-Tabelle weist zusätzlich 19 Personen inkl. 4 Hauswarte/-innen aus - für die Kennzahl wurde die im Lagebericht als Personalbestand geführte Zahl (15) verwendet.",
+ "_verification": "Umsatz und Gewinn aus der 'Konzernerfolgsrechnung' im Geschäftsbericht 2025 (Konzernrechnung-Teil): Zeile 'Mieterträge' 44'505 TCHF (Note 14, Vorjahr 43'991) und Zeile 'Konzerngewinn' 44'665 TCHF (Vorjahr 23'078), beide für das Geschäftsjahr 1.1.-31.12.2025, in Tausend CHF. Geprüft per pdftotext-Volltextsuche im heruntergeladenen PDF. Mitarbeiterzahl (15, Kopfzahl) aus der Kennzahlentabelle 'Personalbestand Verwaltung am 31.12.' und dem Lagebericht ('Der Personalbestand in der Verwaltung blieb mit 15 Personen (14,1 Vollzeitstellen) stabil'). Gründungsjahr (1988, Verselbständigung als Immobiliengesellschaft nach Verkauf des Biergeschäfts der Brauerei Warteck) von der offiziellen Unternehmensseite warteck-invest.ch/unternehmen/portraet."
+}

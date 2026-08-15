@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://tx.group/fileadmin/user_upload/reports-and-publications/2025/de/Jahresabschluss_2025_DE.pdf",
  "note": "Als Medienkonzern weist TX Group keinen 'Nettoumsatz', sondern 'Betriebsertrag' aus (Summe aus Werbeumsatz, Umsatz aus Classifieds & Services, Vermarktungs-/Vermittlungsumsatz, Abonnement-/Einzelverkauf, Druck & Logistik, übrigem Betriebsumsatz und übrigen Erträgen, alle unter derselben Anmerkung 1.1) - als operating_income eingetragen. Gewinn: 'Ergebnis (EAT)' 2025 = 36.6 Mio. CHF, davon Anteil Aktionäre TX Group AG 8.6 Mio. CHF (eingetragen) und Anteil Minderheitsaktionäre 28.0 Mio. CHF (nicht eingetragen). Beschäftigte: nur Vollzeitäquivalente (FTE) ausgewiesen, 2'978 per 2025 (Mehrjahresvergleich, S. 104); keine separate Kopfzahl für den Gesamtkonzern im Bericht gefunden.",
- "_verification": "Umsatz (Betriebsertrag CHF 873.1 Mio., FY2025) aus der Konsolidierten Gesamtergebnisrechnung, S. 109/110 des TX Group Geschäftsberichts 2025 (Zeile 'Betriebsertrag', bestätigt durch den Mehrjahresvergleich S. 104). Gewinn (Ergebnis EAT, Anteil Aktionäre TX Group AG, CHF 8.6 Mio.) aus derselben Gesamtergebnisrechnung, S. 109, gleicher Konzernkreis und gleiches Geschäftsjahr wie der Umsatz; Beschäftigte (2'978 FTE) aus dem Mehrjahresvergleich, S. 104, desselben Berichts."
+ "_verification": "Umsatz (Betriebsertrag CHF 873.1 Mio., FY2025) aus der Konsolidierten Gesamtergebnisrechnung, S. 109/110 des TX Group Geschäftsberichts 2025 (Zeile 'Betriebsertrag', bestätigt durch den Mehrjahresvergleich S. 104). Gewinn (Ergebnis EAT, Anteil Aktionäre TX Group AG, CHF 8.6 Mio.) aus derselben Gesamtergebnisrechnung, S. 109, gleicher Konzernkreis und gleiches Geschäftsjahr wie der Umsatz; Beschäftigte (2'978 FTE) aus dem Mehrjahresvergleich, S. 104, desselben Berichts.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "TX Group AG",
+  "revenue_zeile": "Betriebsertrag (Konsolidierte Gesamtergebnisrechnung, S. 109)",
+  "profit_zeile": "Ergebnis (EAT), davon Anteil Aktionäre TX Group AG",
+  "abweichungen": [],
+  "begruendung": "PDF direkt heruntergeladen (203 Seiten) und per pdftotext durchsucht; die 'Konsolidierte Gesamtergebnisrechnung' (S. 109/110, Konzernrechnung) weist 'Betriebsertrag' 873.1 Mio. CHF aus und darunter 'Ergebnis (EAT)' 36.6 Mio., davon Anteil Aktionäre TX Group AG 8.6 Mio. (Minderheitsanteile 28.0 Mio.). Geprüft, dass die Zeile 'Ergebnisanteil an Assoziierten/Joint Ventures' (26.7 Mio., u. a. SMG Swiss Marketplace Group at-equity) erst NACH dem Betriebsertrag als separate Zeile Richtung EBITDA hinzugefügt wird und somit den Umsatz nicht beeinflusst - keine Abweichung gefunden."
+ }
 }

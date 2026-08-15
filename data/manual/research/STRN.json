@@ -1,0 +1,20 @@
+{
+ "noga_group": "industrie",
+ "consolidation_basis": "total_group",
+ "revenue": "104.415",
+ "revenue_currency": "CHF",
+ "revenue_type": "net_sales",
+ "revenue_unit": "1000000",
+ "profit": "-1.394",
+ "profit_currency": "CHF",
+ "profit_unit": "1000000",
+ "core_products": "Herstellung von Spezialmaschinen fuer Schweissen (Anlagen zur Produktion von Armierungs- und Industriegittern sowie zum Schweissen von Eisenbahnschienen) und Weben (Draht- und Gitterwebmaschinen fuer technische Gewebe, z.B. Sicherheits- und Airbaggewebe).",
+ "products_url": "https://www.schlattergroup.com/en/products/",
+ "founding_year": "1916",
+ "founding_year_source": "https://www.schlattergroup.com/en/the-company/ ('The Schlatter Group was founded in 1916 by Hans A. Schlatter, a pioneer in resistance welding.')",
+ "employees": "366",
+ "fiscal_year": "2025",
+ "report_url": "https://www.schlattergroup.com/?protected_dl=protected-files%2FGB2025.pdf",
+ "note": "Der im Auftrag genannte Name 'Schlatter Holding AG, Schaffhausen' konnte nicht bestaetigt werden: Die unter Symbol STRN (ISIN CH0002277314) an der SIX kotierte Gesellschaft heisst gemaess Geschaeftsbericht 2025 'Schlatter Industries AG' mit Sitz in Schlieren (Brandstrasse 24, 8952 Schlieren), nicht Schaffhausen. Alle Zahlen beziehen sich auf diese Gesellschaft. Konzernergebnis 2025 gesamt: -1'368 TCHF, davon Minderheitsanteile +26 TCHF und Aktionaere der Schlatter Industries AG -1'394 TCHF (eingetragener Wert). Mitarbeitende: 366 Vollzeitstellen (FTE) per 31.12.2025 gemaess Kennzahlen-Uebersicht (S. 5); Jahresdurchschnitt 369 FTE. Der Bericht weist keine Kopfzahl separat aus.",
+ "_verification": "Umsatz (Nettoerlös aus Lieferungen und Leistungen 104'415 TCHF) und Konzernergebnis (den Aktionaeren der Schlatter Industries AG zurechenbar: -1'394 TCHF) stammen beide aus der 'Konsolidierte Erfolgsrechnung' auf Seite 42 des Geschaeftsberichts 2025 der Schlatter Industries AG, Spalte 2025. Geprueft wurde die Aufteilung 'Davon Aktionaere der Schlatter Industries AG' vs. 'Davon Minderheitsanteile' direkt unter der Zeile 'Konzernergebnis', um den Aktionaersanteil (nicht das Gesamtergebnis inkl. Minderheiten) zu waehlen; zusaetzlich wurde die Uebereinstimmung mit der Segmentberichterstattung (Total Nettoumsatzerloese Schweissen+Weben = 104'415, S. 58) geprueft."
+}
