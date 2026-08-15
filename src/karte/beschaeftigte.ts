@@ -143,7 +143,12 @@ export async function startBeschaeftigte(): Promise<void> {
         level === 'kanton' && activeCanton ? activeCanton.presentGroups : kantonePresentGroups,
       scopeLabel: level === 'kanton' && activeCanton ? `Kanton ${activeCanton.name}` : undefined,
     })
-    renderNotices('beschaeftigte', level)
+    // Diese Seite lädt `companies.json` nicht (siehe `karte/basis.ts`,
+    // `createBasis`-Dokumentation) und hat deshalb kein `stats.revenueInChf`
+    // zur Hand — unbeachtlich, `renderNotices` liest den Parameter nur bei
+    // `view === 'sichtbare'` (siehe dort). `true` ist hier ein neutraler
+    // Platzhalter, kein Fakt über diese Ansicht.
+    renderNotices('beschaeftigte', level, true)
     renderBackControl(level === 'kanton', exitToSwitzerland)
   }
 

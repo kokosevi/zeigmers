@@ -70,20 +70,54 @@ const HAUPT_SICHTBARE =
 // Eckbox, was man zum Vertrauen braucht" — Quellen- und Währungsangabe
 // gehören zu Letzterem.
 //
-// Abschluss-Review, Fund 2 (2026-08-15): der bisherige Wortlaut behauptete
+// Abschluss-Review, Fund 2 (2026-08-15): der damalige Wortlaut behauptete
 // „nicht umgerechnet" — das Gegenteil dessen, was die Karte seit der
 // Nationalisierung tut. `layers/visible.ts`s `heightValue()` nimmt
 // `company.revenueChf ?? company.revenue`, und `companies.json`s
 // `stats.revenueInChf` bestätigt es: die Säulenhöhe rechnet in CHF um, das
 // Panel zeigt weiterhin die berichtete Zahl im Original (`ui/panel.ts`,
-// `companyContent`, `company.revenue`/`company.currency` — unverändert). Der
-// verwendete Kurs ist der SNB-Jahresmittelkurs des Geschäftsjahres
-// (Datenwürfel `devkum`, Reihe `M0`; Herleitung und Rundungsfenster in
-// `etl/src/zeigmers_etl/fx.py`).
-const CURRENCY_NOTE =
-  'Balkenhöhe: Umsatz in CHF umgerechnet (SNB-Jahresmittelkurs des ' +
-  'Geschäftsjahres) — das Panel zeigt weiterhin die berichtete Zahl in der ' +
-  'jeweiligen Konzernwährung (CHF, EUR, USD).'
+// `companyContent`, `company.revenue`/`company.currency` — unverändert).
+//
+// Re-Review (2026-08-15), zwei Nachbesserungen an diesem ersten Fix:
+//
+// 1. „SNB-Jahresmittelkurs des Geschäftsjahres" war selbst zu präzise.
+//    `etl/src/zeigmers_etl/fx.py` (`rate()`, Zeilen 103–129) mittelt NICHT
+//    einheitlich über das Geschäftsjahr: ein abgeschlossenes Kalenderjahr
+//    (`window: "kalenderjahr"`) bekommt dessen zwölf Monatsmittelkurse, ein
+//    noch nicht abgeschlossenes (`window: "rollend"`, im aktuellen Artefakt
+//    z. B. EUR/2026, USD/2026) die letzten verfügbaren Monate — laut
+//    `fx.py`s eigener Dokumentation (Zeilen 32–36) selbst „eine Näherung:
+//    exakt wäre das Fenster April bis März". Beide Fenster im Wortlaut
+//    genannt, statt nur des einen, das gerade nicht zutrifft.
+// 2. `stats.revenueInChf` wird nur `true`, wenn JEDE Säule umgerechnet
+//    werden konnte (`companies.py`, `build_artifact`, Zeile 617) — bleibt
+//    eine Umrechnung offen, fällt die Ansicht laut `layers/visible.ts`
+//    (Zeilen 91–95) auf die Berichtswährungen zurück. Der Satz war fest auf
+//    „in CHF umgerechnet" formuliert, ohne diese Möglichkeit vorzusehen —
+//    dieselbe Regel aus Fund 1 (keine Zahl/Zusicherung hartkodieren, die
+//    veralten kann) gilt hier für ein Flag statt einer Zahl. `currencyNote()`
+//    unten liest deshalb `stats.revenueInChf` zur Laufzeit; `renderNotices`
+//    bekommt dafür einen weiteren Pflichtparameter (siehe dort).
+const CURRENCY_NOTE_CHF =
+  'Balkenhöhe: Umsatz in CHF umgerechnet (SNB-Monatsmittelkurse, gemittelt ' +
+  'über das Kalenderjahr oder — ist dieses noch nicht abgeschlossen — die ' +
+  'letzten verfügbaren Monate) — das Panel zeigt weiterhin die berichtete ' +
+  'Zahl in der jeweiligen Konzernwährung (CHF, EUR, USD).'
+
+// Seltener Fall (`stats.revenueInChf === false`): mindestens eine Firma
+// blieb ohne SNB-Kurs (fehlende Reihe, Geschäftsjahr ausserhalb der Daten,
+// siehe `fx.py`, `rate()`). Keine CHF-Zusicherung mehr, aber auch keine
+// falsche „nicht umgerechnet"-Aussage wie im ursprünglichen Fund 2 — nur so
+// viel, wie für jeden Einzelfall stimmt.
+const CURRENCY_NOTE_FALLBACK =
+  'Umsätze in der jeweiligen Konzernwährung (CHF, EUR, USD) — für einzelne ' +
+  'Firmen fehlt die Umrechnung nach CHF, deshalb zeigt die Balkenhöhe hier ' +
+  'ausnahmsweise ebenfalls den berichteten statt eines einheitlich ' +
+  'umgerechneten Betrags.'
+
+function currencyNote(revenueInChf: boolean): string {
+  return revenueInChf ? CURRENCY_NOTE_CHF : CURRENCY_NOTE_FALLBACK
+}
 
 // Lizenzpflichtig (STATENT: „Freie Nutzung, Quellenangabe Pflicht"; swisstopo-
 // Geodaten: Nutzungsbedingungen für kostenlose Geodaten, siehe README) —
@@ -157,8 +191,15 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
  *  `HAUPT_BESCHAEFTIGTE` oben). Bei `view === 'sichtbare'` bedeutungslos, aber
  *  Pflichtparameter statt optional: ein Seiteneinstieg (`karte/firmen.ts`,
  *  `karte/beschaeftigte.ts`), der ihn vergisst, soll ein Typfehler sein,
- *  kein still falscher Text zur Laufzeit. */
-export function renderNotices(view: ViewName, level: NoticeLevel): void {
+ *  kein still falscher Text zur Laufzeit.
+ *
+ *  `revenueInChf` (Re-Review, 2026-08-15, dieselbe Begründung wie `level`):
+ *  nur bei `view === 'sichtbare'` gelesen — `companies.json`s
+ *  `stats.revenueInChf`, entscheidet zwischen `CURRENCY_NOTE_CHF` und
+ *  `CURRENCY_NOTE_FALLBACK` (siehe dort). Bei `view === 'beschaeftigte'`
+ *  bedeutungslos, aber ebenfalls Pflichtparameter statt optional — aus
+ *  demselben Grund wie bei `level`. */
+export function renderNotices(view: ViewName, level: NoticeLevel, revenueInChf: boolean): void {
   let box = document.getElementById('hinweis')
   if (!box) {
     box = document.createElement('div')
@@ -168,7 +209,7 @@ export function renderNotices(view: ViewName, level: NoticeLevel): void {
   box.replaceChildren()
   const haupt = view === 'sichtbare' ? HAUPT_SICHTBARE : HAUPT_BESCHAEFTIGTE[level]
   box.appendChild(paragraph(haupt, 'hinweis-haupt'))
-  if (view === 'sichtbare') box.appendChild(paragraph(CURRENCY_NOTE, 'hinweis-haupt'))
+  if (view === 'sichtbare') box.appendChild(paragraph(currencyNote(revenueInChf), 'hinweis-haupt'))
   box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Skalenschalter (und damit die Formel, um
   // die es hier geht) ist in beiden Ansichten sichtbar und bedienbar, nicht

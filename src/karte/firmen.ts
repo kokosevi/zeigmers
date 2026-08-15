@@ -82,7 +82,12 @@ export async function startFirmen(): Promise<void> {
     )
 
     renderLegend({ view: 'sichtbare', year, presentGroups, scopeLabel: coverageLabel })
-    renderNotices('sichtbare', 'schweiz')
+    // Re-Review Fund 2 (2026-08-15): `renderNotices` liest `revenueInChf` nur
+    // in dieser Ansicht — ob die Balkenhöhe die «in CHF umgerechnet»-Aussage
+    // tragen darf, entscheidet `companies.json`s `stats.revenueInChf` zur
+    // Laufzeit, nicht ein hartkodierter Satz (siehe `ui/notices.ts`,
+    // `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK`).
+    renderNotices('sichtbare', 'schweiz', companies.stats.revenueInChf)
   }
 
   mountNav('sichtbare', render)
