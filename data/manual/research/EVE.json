@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://evonextholdings.com/app/uploads/2026/04/2025-12-EvoNext-Holdings-SA-Annual-Report-2025.pdf",
  "note": "EvoNext Holdings SA (vormals Evolva Holding SA) hat seit dem Verkauf der operativen Tochtergesellschaft Evolva AG per 28.12.2023 kein operatives Geschäft mehr und erzielt keinerlei Umsatz ('the Company ceased operations and no longer has any revenue'; 'Total Revenue: - / -'); 'revenue' bleibt daher leer. Die Gesellschaft hat keine Mitarbeitenden ('EvoNext had no employees' zum 31.12.2025 und 31.12.2024). Ergebnis 2025: Nettoverlust CHF 652.7 Tsd. (2024: Gewinn CHF 1'043.8 Tsd., v. a. aus einem einmaligen Gewinn aus dem Verkauf von Evolva AG), getrieben durch einmalige Transaktions-/Suchkosten für neue Akquisitionsziele.",
- "_verification": "Profit (Nettoverlust CHF -652.7 Tsd. für 2025) aus der konsolidierten Erfolgsrechnung ('Net profit / (loss) for the period') im Annual Report 2025, identisch mit dem Wert im separaten Statutory-Abschluss ('Net loss for the year 2025: (652.7)'), geprüft gegen die Segmentangabe (Abschnitt 4: 'the Company ceased operations and no longer has any revenue', Abschnitt 'Total Revenue - -'). Keine Umsatzzahl vorhanden, da die Gesellschaft seit dem Verkauf ihres operativen Geschäfts 2023 eine reine Cash-Holding ohne Geschäftstätigkeit und ohne Mitarbeitende ist (mehrfach im Bericht bestätigt)."
+ "_verification": "Profit (Nettoverlust CHF -652.7 Tsd. für 2025) aus der konsolidierten Erfolgsrechnung ('Net profit / (loss) for the period') im Annual Report 2025, identisch mit dem Wert im separaten Statutory-Abschluss ('Net loss for the year 2025: (652.7)'), geprüft gegen die Segmentangabe (Abschnitt 4: 'the Company ceased operations and no longer has any revenue', Abschnitt 'Total Revenue - -'). Keine Umsatzzahl vorhanden, da die Gesellschaft seit dem Verkauf ihres operativen Geschäfts 2023 eine reine Cash-Holding ohne Geschäftstätigkeit und ohne Mitarbeitende ist (mehrfach im Bericht bestätigt).",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "EvoNext Holdings SA",
+  "revenue_zeile": "keine Umsatzzeile ('the Company ceased operations and no longer has any revenue')",
+  "profit_zeile": "Net profit/(loss) for the period / Net loss for the period",
+  "abweichungen": [],
+  "begruendung": "PDF '2025-12-EvoNext-Holdings-SA-Annual-Report-2025.pdf' (evonextholdings.com) selbst geladen: 'Net profit/(loss) for the period' zeigt exakt (652.7) für 2025, keine Revenue-Zeile vorhanden, Gesellschaft bestätigt explizit 'no employees' und keine operative Tätigkeit seit Verkauf der Evolva AG. Legal Name EvoNext Holdings SA (vormals Evolva Holding SA) bestätigt. Keine Abweichung gefunden."
+ }
 }

@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://valartisgroup.ch/wp-content/uploads/2026/03/valartis_group_ar_2025_en.pdf",
  "note": "Finanzgruppe, daher revenue_type = operating_income: 'Total operating income' CHF 15.520 Mio. (Key Figures, S. 1 des Berichts), zusammengesetzt aus Income from management services, Income from investment property, Share of results of associated companies und Other income/(expense). Gewinn = 'Net result attributable to shareholders of Valartis Group AG' CHF 7.410 Mio. (Konzerngewinn insgesamt CHF 7.428 Mio., davon CHF 0.018 Mio. Minderheitsanteile). Beschäftigte: Bericht weist nur Vollzeitstellen aus ('Staff (full-time equivalents, FTE)': 35.5), keine Kopfzahl; auf ganze Zahl gerundet (36).",
- "_verification": "Umsatz und Gewinn stammen von Seite 1 (Key Figures) sowie aus der Konsolidierten Erfolgsrechnung (S. 38 laut Inhaltsverzeichnis) des Valartis Group Annual Report 2025 (PDF), geprüft gegen die im Fliesstext wiederholten Zahlen ('the Group reported a net profit of CHF 7.4 million', 'Total operating income ... 15,520'). Beide Zahlen entstammen derselben konsolidierten Rechnung, gleiches Geschäftsjahr 2025, gleicher Konsolidierungskreis (kein discontinued business). Gründungsjahr über Moneyhouse-Handelsregisterauszug verifiziert, da der Geschäftsbericht selbst keine eigene Gründungsangabe für die Valartis Group AG enthält."
+ "_verification": "Umsatz und Gewinn stammen von Seite 1 (Key Figures) sowie aus der Konsolidierten Erfolgsrechnung (S. 38 laut Inhaltsverzeichnis) des Valartis Group Annual Report 2025 (PDF), geprüft gegen die im Fliesstext wiederholten Zahlen ('the Group reported a net profit of CHF 7.4 million', 'Total operating income ... 15,520'). Beide Zahlen entstammen derselben konsolidierten Rechnung, gleiches Geschäftsjahr 2025, gleicher Konsolidierungskreis (kein discontinued business). Gründungsjahr über Moneyhouse-Handelsregisterauszug verifiziert, da der Geschäftsbericht selbst keine eigene Gründungsangabe für die Valartis Group AG enthält.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Valartis Group AG",
+  "revenue_zeile": "Total operating income (Key Figures S. 1 / Konzern-Erfolgsrechnung)",
+  "profit_zeile": "Net (loss)/gain attributable to shareholders of Valartis Group AG (Konzerngewinn total 7'428, davon Minderheiten 18)",
+  "abweichungen": [],
+  "begruendung": "PDF valartis_group_ar_2025_en.pdf (valartisgroup.ch) selbst geladen: 'Total operating income' 15'520, 'Net (loss)/gain attributable to shareholders of Valartis Group AG' 7'410 exakt bestätigt; revenue_type operating_income korrekt, da Finanzgruppe. Mitarbeitende: 35.5 FTE, auf 36 gerundet wie im Datensatz. Keine Abweichung gefunden."
+ }
 }

@@ -19,13 +19,13 @@
  "_verification": "Umsatz ('Sales revenue CHF m 14,788.6') und Gewinn ('Net profit for the year CHF m 188.4') sowie Mitarbeitendenzahl ('Employees ... 13,138') stammen aus der Full-Year-Results-Medienmitteilung zum Geschaeftsjahr 2024/25 (PDF, publiziert 05.11.2025) auf barry-callebaut.com/system/files. Geprueft wurde, dass Umsatz- und Gewinnzahl aus derselben Mitteilung und demselben Berichtsumfang (Konzern gesamt, kein Hinweis auf fortgefuehrtes/aufgegebenes Geschaeft) stammen; Gruendungsjahr 1996 wurde separat auf der offiziellen Unternehmensgeschichte-Seite verifiziert.",
  "_pruefung": {
   "verdict": "abweichung",
-  "legal_name_im_bericht": "Barry Callebaut Group (konsolidierte Berichtseinheit der Barry Callebaut AG, Zürich)",
-  "revenue_zeile": "Sales revenue (FY 2024/25, +42.4% in CHF ggü. Vorjahr)",
-  "profit_zeile": "Net profit for the year",
+  "legal_name_im_bericht": "Barry Callebaut AG / Barry Callebaut Group (aus vorheriger Extraktion; in dieser Sitzung nicht erneut einsehbar)",
+  "revenue_zeile": "Sales revenue (laut vorheriger Extraktion aus der Full-Year-Results-Mitteilung FY 2024/25)",
+  "profit_zeile": "Net profit for the year (laut vorheriger Extraktion; ob dies Aktionärsanteil oder Konzerngesamtgewinn inkl. Minderheiten ist, konnte in dieser Sitzung NICHT verifiziert werden)",
   "abweichungen": [
-   "report_url verweist nicht auf den Geschäftsbericht, sondern auf eine Medienmitteilung: Das PDF trägt den Kopf 'NEWS RELEASE – Ad hoc announcement pursuant to Art. 53 LR', ist also eine Ad-hoc-Pressemitteilung zu den Full-Year-Ergebnissen, kein Jahres-/Geschäftsbericht mit testierten Konzernabschlüssen.",
-   "Auf der Investor-Relations-Publikationsseite von Barry Callebaut liess sich kein separates Geschäftsbericht-PDF für 2024/25 auffinden (Seite lieferte 403/404); die eigentliche Primärquelle (Annual Report bzw. testierter Konzernabschluss) müsste stattdessen verlinkt werden."
+   "report_url zeigt weiterhin auf eine Ad-hoc-Medienmitteilung ('NEWS RELEASE – Ad hoc announcement pursuant to Art. 53 LR') statt auf den testierten Geschäftsbericht/Jahresabschluss — dieser bereits zuvor dokumentierte Fund ist nach wie vor unbereinigt in report_url sichtbar.",
+   "Ich konnte in dieser Sitzung nicht unabhängig prüfen, ob 'Net profit for the year' (188.4 Mio.) der Aktionärsanteil ist oder der Konzerngesamtgewinn inkl. Minderheitsanteilen (Regel 5) — barry-callebaut.com blockierte sämtliche Zugriffsversuche (curl und WebFetch, mehrere User-Agents, mehrere URLs) mit Cloudflare-403/JS-Challenge. Das ist ein offener Punkt, kein bestätigter Fund."
   ],
-  "begruendung": "Ich habe die genannte report_url per Volltext-Abruf geöffnet: Kopfzeile 'NEWS RELEASE Ad hoc announcement pursuant to Art. 53 LR' identifiziert das Dokument eindeutig als Medienmitteilung. Die Zahlen selbst stimmen (Sales revenue CHF 14'788.6 Mio., Net profit for the year CHF 188.4 Mio., 13'138 Mitarbeitende, FY 2024/25, Gesamtkonzern, CHF, in Mio.) und Umsatz/Gewinn beziehen sich auf denselben Konsolidierungskreis und dasselbe Geschäftsjahr — der einzige Fund betrifft die Quellenart (Medienmitteilung statt Geschäftsbericht), nicht die Zahlen."
+  "begruendung": "Ich habe versucht, die Primärquelle unabhängig zu öffnen (report_url direkt, die Investor-Relations-Publikationsseite, die Media-Releases-Seite, sowie über einen Proxy-Reader) — barry-callebaut.com antwortete durchgehend mit Cloudflare-403 ('Attention Required' / 'Enable JavaScript and cookies'), sodass ich die Zahlen in dieser Sitzung nicht selbst am Primärdokument nachvollziehen konnte. Ich stütze mich daher auf die bereits im Datensatz dokumentierte, offenbar sorgfältige frühere Extraktion (u. a. mit spezifischem Zitat der Dokumentkopfzeile), kann sie aber nicht als eigenständig bestätigt kennzeichnen; der bereits bekannte Fund zur Quellenart bleibt bestehen."
  }
 }

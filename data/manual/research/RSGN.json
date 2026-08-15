@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://ir.the-rsgroup.com/media/document/0fec9fb0-b91a-4deb-aef1-5cb2afb265d8/assets/RSG_Annual_report_2025_def.pdf",
  "note": "Die operative Kernmarke Rauscher & Stoecklin blickt laut Geschäftsbericht 2025 (S. 7) auf 'more than 100 years' Firmengeschichte zurück; die heutige Gruppenstruktur R&S Group entstand jedoch erst 2012 durch Übernahme von Rauscher & Stoecklin. Eingetragen wurde das Gründungsjahr der heutigen Unternehmensstruktur (2012). Beschäftigtenzahl 1'328 ist 'Year-end number of full-time equivalent employees' (FTE, Stichtag 31.12.2025), keine Kopfzahl. Der Konzernabschluss weist keine gesonderte Minderheitsanteile-Zeile aus; das Jahresergebnis wird daher als vollständig den Aktionären zurechenbar eingetragen. Im Dezember 2025 wurde das nicht zum Kerngeschäft zählende Geschäftsfeld 'Electrical Switches & Connectors' veräussert (Gewinn vor Steuern CHF 1.8 Mio., in EBIT enthalten); eine separate Darstellung als aufgegebener Geschäftsbereich erfolgt im Abschluss nicht.",
- "_verification": "Nettoumsatz ('Net sales' TCHF 414'843) und Jahresgewinn ('Profit' TCHF 58'103) stammen aus der 'Consolidated profit & loss statement per 31 December 2025' auf Seite 68 des Geschäftsberichts 2025 der R&S Group Holding AG; Beschäftigtenzahl aus der Tabelle 'Consolidated key financials' auf Seite 23. Geprüft, dass beide Zeilen aus derselben konsolidierten Erfolgsrechnung für dasselbe Geschäftsjahr 2025 stammen und keine Trennung zwischen fortgeführtem und aufgegebenem Geschäft in der Erfolgsrechnung vorgenommen wird."
+ "_verification": "Nettoumsatz ('Net sales' TCHF 414'843) und Jahresgewinn ('Profit' TCHF 58'103) stammen aus der 'Consolidated profit & loss statement per 31 December 2025' auf Seite 68 des Geschäftsberichts 2025 der R&S Group Holding AG; Beschäftigtenzahl aus der Tabelle 'Consolidated key financials' auf Seite 23. Geprüft, dass beide Zeilen aus derselben konsolidierten Erfolgsrechnung für dasselbe Geschäftsjahr 2025 stammen und keine Trennung zwischen fortgeführtem und aufgegebenem Geschäft in der Erfolgsrechnung vorgenommen wird.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "R&S Group Holding AG",
+  "revenue_zeile": "Net sales (Consolidated profit & loss statement per 31 December 2025, S. 68)",
+  "profit_zeile": "Profit / 'Profit attributable to the shareholders of the company' (S. 68/71)",
+  "abweichungen": [],
+  "begruendung": "PDF RSG_Annual_report_2025_def.pdf (ir.the-rsgroup.com) selbst geladen, Seite 68: 'Net sales' 414'843, 'Profit' 58'103; Zeile 'Profit attributable to the shareholders of the company' bestätigt denselben Wert 58'103 (keine Minderheiten). Mitarbeiterzahl 1'328 (FTE) in der Kennzahlentabelle bestätigt. Keine Abweichung gefunden."
+ }
 }

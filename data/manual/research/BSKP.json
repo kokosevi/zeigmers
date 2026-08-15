@@ -16,5 +16,13 @@
  "fiscal_year": 2025,
  "report_url": "https://report.bkb.ch/2025/konzern-bkb-auf-einen-blick",
  "note": "Bank: Umsatzäquivalent ist der Geschäftsertrag des Konzerns (keine Nettoumsatzerlöse). employees = Headcount 1'443 gemäss Bericht; Vollzeitäquivalente (FTE) betragen 1'273. Geschäftsertrag und Konzerngewinn stammen aus derselben konsolidierten Konzernrechnung, Geschäftsjahr 2025.",
- "_verification": "Geschäftsertrag (675'098 Tsd. CHF) und Konzerngewinn (202'808 Tsd. CHF) stammen beide von der offiziellen Online-Geschäftsbericht-Seite 'Konzern BKB – auf einen Blick' (report.bkb.ch/2025), derselben Kennzahlentabelle für das Geschäftsjahr 2025. Geprüft: beide Zahlen sind Konzernzahlen (total_group) aus derselben Quelle/Zeile, Gründungsjahr 1899 stammt von der offiziellen BKB-Geschichtsseite (bkb.ch), Mitarbeiterzahl aus derselben Kennzahlentabelle wie die Finanzzahlen."
+ "_verification": "Geschäftsertrag (675'098 Tsd. CHF) und Konzerngewinn (202'808 Tsd. CHF) stammen beide von der offiziellen Online-Geschäftsbericht-Seite 'Konzern BKB – auf einen Blick' (report.bkb.ch/2025), derselben Kennzahlentabelle für das Geschäftsjahr 2025. Geprüft: beide Zahlen sind Konzernzahlen (total_group) aus derselben Quelle/Zeile, Gründungsjahr 1899 stammt von der offiziellen BKB-Geschichtsseite (bkb.ch), Mitarbeiterzahl aus derselben Kennzahlentabelle wie die Finanzzahlen.",
+ "_pruefung": {
+  "verdict": "bestaetigt",
+  "legal_name_im_bericht": "Basler Kantonalbank (Anstalt öffentlichen Rechts, kein AG-Zusatz im Impressum)",
+  "revenue_zeile": "Geschäftsertrag (Konsolidierte Erfolgsrechnung, 'Konzern BKB – auf einen Blick', report.bkb.ch/2025)",
+  "profit_zeile": "Konzerngewinn (Konsolidierte Erfolgsrechnung); keine separate Zeile für Minderheitsanteile vorhanden, Betrag ist Gesamtbetrag",
+  "abweichungen": [],
+  "begruendung": "Ich habe report.bkb.ch/2025/konzern-bkb-auf-einen-blick und die konsolidierte Erfolgsrechnung (report.bkb.ch/2025/konsolidierte-erfolgsrechnung) direkt geöffnet. Geschäftsertrag (675.098 Mio.) und Konzerngewinn (202.808 Mio.) stimmen exakt, employees=1443 ist korrekt die im Bericht ausgewiesene Headcount-Zahl (FTE 1273 wird daneben genannt, aber Headcount ist gemäss Regel 6 korrekt gewählt), und es gibt keine Minderheitsanteile, die den Gewinn verfälschen würden."
+ }
 }
