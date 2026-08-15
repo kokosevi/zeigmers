@@ -445,6 +445,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             fetch.download(fx.SNB_URL, fx_path, force=args.force)
         monthly_fx = fx.parse(fx_path.read_text(encoding="utf-8-sig"))
 
+        # Liegt jede Firma in der Gemeinde, die ihre Zeile nennt? Der
+        # Geokodierungsdienst scheitert nie laut — er liefert immer den
+        # nächstbesten Treffer, auch für eine unsinnige Anfrage. So landete
+        # EMS-CHEMIE unbemerkt in Giornico TI und der Flughafen Zürich bei
+        # Willisau LU. Gemeldet, nicht abgebrochen: Ortschaft und Gemeinde
+        # heissen oft verschieden (Rotkreuz liegt in Risch), ein Fund ist
+        # deshalb ein Verdacht, den ein Mensch anschaut.
+        from . import placement
+
+        try:
+            misplaced = placement.check(rows)
+        except FileNotFoundError as exc:
+            print(f"[companies] Platzierungsprüfung übersprungen: {exc}")
+        else:
+            if misplaced:
+                print(f"[companies] {len(misplaced)} Platzierung(en) zu prüfen:")
+                for finding in misplaced:
+                    print(f"    {finding['six_symbol']} {finding['name']}: Zeile nennt "
+                          f"{finding['city']!r}, Punkt liegt in {finding['gemeinde']!r}")
+
         artifact = companies.build_artifact(
             rows, noga.load_table(), six_meta=six_meta, monthly_fx=monthly_fx,
         )
