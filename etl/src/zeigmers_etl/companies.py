@@ -44,6 +44,7 @@ CSV_COLUMNS = (
     "uid", "name", "six_symbol", "isin", "lei",
     "street", "zip", "city", "lon", "lat", "geocode_query", "seat_basis",
     "noga_group",
+    "org_form",
     "consolidation_basis",
     "revenue", "revenue_currency", "revenue_type", "revenue_unit",
     "profit", "profit_currency", "profit_unit",
@@ -98,6 +99,15 @@ REVENUE_TYPES = {"net_sales", "operating_income"}
 # that's exactly the situation where two figures might silently disagree on what they're
 # both measuring.
 CONSOLIDATION_BASES = {"total_group", "continuing_operations"}
+
+# Die Rechtsform-Dimension der Karte. Heute trägt jede Zeile denselben Wert —
+# die Quelle ist die SIX-Titelliste, und die kennt nur Kotierte. Das Feld
+# existiert trotzdem schon: die Karte filtert danach, und eine später
+# ergänzte Genossenschaft (Migros, Coop) oder eine grosse nicht kotierte
+# Firma (Bertschi AG) soll eine Zeile mehr sein, kein Sonderfall im Ladepfad.
+# Geschlossenes Set wie REVENUE_TYPES — ein Tippfehler wäre sonst eine
+# lautlose vierte Organisationsform, die als eigener Knopf erschiene.
+ORG_FORMS = {"boersenkotiert"}
 
 Fetcher = Callable[[str], bytes]
 
@@ -296,6 +306,18 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
             problems.append(
                 f"{label}: consolidation_basis {basis!r} unbekannt, "
                 f"erlaubt: {sorted(CONSOLIDATION_BASES)}"
+            )
+
+        # Ausserhalb jeder researched-Bedingung, anders als noga_group & Co.:
+        # die Rechtsform ist keine Rechercheleistung, sondern steht schon
+        # fest, sobald die Zeile entsteht (siehe Kommentar bei ORG_FORMS) —
+        # auch eine researched=no-Zeile muss sie tragen.
+        org_form = row.get("org_form", "").strip()
+        if not org_form:
+            problems.append(f"{label}: org_form fehlt — erlaubt: {sorted(ORG_FORMS)}")
+        elif org_form not in ORG_FORMS:
+            problems.append(
+                f"{label}: org_form={org_form!r} unbekannt — erlaubt: {sorted(ORG_FORMS)}"
             )
 
         # `founding_year` stammt entweder aus eigenen Unternehmensunterlagen oder aus dem
@@ -556,6 +578,22 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 revenue_chf = float(revenue) * unit * converted["rate"]
                 fx_used[f"{currency}/{fiscal_year}"] = converted
 
+        # Dieselbe Umrechnung wie beim Umsatz, aus demselben Grund: als
+        # Säulenhöhe verglichen misst ein EUR-Gewinn neben einem CHF-Gewinn
+        # nicht dasselbe. Vorzeichen bleibt erhalten — ein Verlust wird
+        # umgerechnet, nicht unterschlagen.
+        profit_chf = None
+        profit_currency = (row.get("profit_currency") or "").strip()
+        if profit and monthly_fx is not None and profit_currency and fiscal_year:
+            try:
+                converted = fx_module.rate(profit_currency, int(fiscal_year), monthly_fx)
+            except (KeyError, LookupError) as exc:
+                fx_missing.append({"name": row["name"], "currency": profit_currency,
+                                   "fiscalYear": fiscal_year, "error": str(exc)})
+            else:
+                profit_chf = float(profit) * profit_unit * converted["rate"]
+                fx_used[f"{profit_currency}/{fiscal_year}"] = converted
+
         entries.append(
             {
                 "uid": row["uid"] or None,
@@ -564,11 +602,13 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "lon": float(row["lon"]),
                 "lat": float(row["lat"]),
                 "nogaGroupIndex": index[group] if group in index else config.NOGA_UNKNOWN_INDEX,
+                "orgForm": row.get("org_form") or None,
                 "revenue": float(revenue) * unit if revenue else None,
                 "revenueChf": revenue_chf,
                 "currency": row.get("revenue_currency") or None,
                 "revenueType": row.get("revenue_type") or None,
                 "profit": float(profit) * profit_unit if profit else None,
+                "profitChf": profit_chf,
                 "profitCurrency": row.get("profit_currency") or None,
                 "consolidationBasis": row.get("consolidation_basis") or None,
                 "coreProducts": row.get("core_products") or None,
@@ -578,13 +618,18 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "fiscalYear": int(row["fiscal_year"]) if row.get("fiscal_year") else None,
                 "reportUrl": row.get("report_url") or None,
                 "note": row.get("note") or None,
-                # Auch ein ausgewiesener Umsatz von NULL traegt keine
-                # Hoehenaussage: als echte Hoehe gerechnet ergaebe er eine
-                # Saeule von null Metern, und die Firma verschwaende von der
+                # Auch ein ausgewiesener Umsatz von NULL trägt keine
+                # Höhenaussage: als echte Höhe gerechnet ergäbe er eine
+                # Säule von null Metern, und die Firma verschwände von der
                 # Karte, obwohl sie recherchiert ist und es sie gibt
                 # (Molecular Partners, 2025: CHF 0, Vorjahr 5.0 Mio. — ein
                 # klinisches Biotech ohne zugelassenes Produkt). Die echte
                 # Null bleibt in `revenue` und damit im Panel stehen.
+                # Diese Invariante ist keine ETL-Interna: `domain/metric.ts`
+                # liefert für die Kennzahl «Umsatz» genau dann `null`, wenn
+                # `placeholder` gesetzt ist — sonst zeichnete die Karte für
+                # eine echte Null eine Säule auf Mindesthöhe und färbte sie
+                # zugleich als «keine Zahl gefunden».
                 "placeholder": not revenue or float(revenue) == 0,
                 "researched": researched,
                 "city": row.get("city") or None,
@@ -594,14 +639,35 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
 
     _spread_shared_positions(entries)
 
-    revenues = [e["revenue"] for e in entries if e["revenue"] is not None]
+    # Fix-Runde (2026-08-16, Abschluss-Review Finding I7): "echter Umsatz"
+    # schliesst Platzhalterzeilen (`placeholder=True`) aus — dieselbe
+    # Invariante, die `domain/metric.ts`s `metricValue()` im Frontend erzwingt
+    # (`company.placeholder ? null : company.revenueChf`). Vorher zählte
+    # `revenues` jede Zeile mit `revenue is not None`, auch Molecular
+    # Partners AG (FY2025: CHF 0, `placeholder=True`, siehe Kommentar bei
+    # `"placeholder"` oben) — das Artefakt meldete `stats.withRevenue = 188`,
+    # während die Karte (`result.withValue`, weil `metricValue` für diese
+    # Zeile `null` liefert) nur 187 zeigte: zwei Zahlen für dieselbe Menge.
+    # Die Oberfläche (Kennzahlenzeile, Legende, Panel-Rang) zählt konsequent
+    # nach "trägt eine Höhe bei" — `stats.withRevenue` zieht hier nach, statt
+    # umgekehrt die Karte an eine Zahl anzupassen, die einen Platzhalter ohne
+    # Höhenaussage mitzählt.
+    revenues = [e["revenue"] for e in entries if e["revenue"] is not None and not e["placeholder"]]
     # Höhenmassstab über die umgerechneten Beträge, sonst über die
     # berichteten: `max` und die einzelnen Höhen müssen aus DERSELBEN Grösse
     # stammen. Ein Maximum in CHF neben Höhen in Berichtswährung wäre genau
     # der Fehler, der bei den Detailstufen von Ansicht B schon einmal
     # auftrat (jede Stufe auf ihr eigenes Maximum normiert, siehe README).
-    revenues_chf = [e["revenueChf"] for e in entries if e.get("revenueChf") is not None]
+    # Dieselbe Platzhalter-Ausnahme wie bei `revenues` oben, aus demselben
+    # Grund: eine Platzhalterzeile trägt ohnehin nie das Maximum (ihr Wert
+    # ist 0 oder fehlt), aber sie soll auch nicht in der Vollständigkeits-
+    # meldung `revenueInChf` unten mitzählen.
+    revenues_chf = [
+        e["revenueChf"] for e in entries if e.get("revenueChf") is not None and not e["placeholder"]
+    ]
     height_values = revenues_chf if len(revenues_chf) == len(revenues) else revenues
+    profits = [e["profit"] for e in entries if e["profit"] is not None]
+    profits_chf = [e["profitChf"] for e in entries if e.get("profitChf") is not None]
     six_meta = six_meta or {}
     return {
         "companies": entries,
@@ -615,9 +681,14 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
             # umgerechnet wäre schlimmer als gar nicht, weil dann zwei
             # Massstäbe nebeneinander stünden, ohne dass man es sieht.
             "revenueInChf": bool(revenues) and len(revenues_chf) == len(revenues),
+            "profitInChf": bool(profits) and len(profits_chf) == len(profits),
             "fxRates": fx_used,
             "fxMissing": fx_missing,
             "researched": researched_count,
+            # Nicht hartkodiert wie ORG_FORMS: das sind die tatsächlich im
+            # Artefakt vorkommenden Werte, nicht das erlaubte Set — die
+            # Karte baut ihre Filterknöpfe daraus, nicht aus dem Schema.
+            "orgForms": sorted({e["orgForm"] for e in entries if e["orgForm"]}),
             "totalListed": six_meta.get("totalListed", len(rows)),
             "sixRetrievedDate": six_meta.get("retrievedAt"),
         },
@@ -1377,6 +1448,7 @@ def sync_national_csv(
                     "street": place["street"], "zip": place["zip"],
                     "city": place["city"], "seat_basis": place["basis"],
                     "geocode_query": f"{place['street']}, {place['zip']} {place['city']}",
+                    "org_form": "boersenkotiert",
                 })
                 new_rows.append(row)
                 report["fromGleif"].append({
@@ -1419,6 +1491,7 @@ def sync_national_csv(
         row["six_symbol"] = primary["sixSymbol"]
         row["isin"] = primary["isin"]
         row["researched"] = "no"
+        row["org_form"] = "boersenkotiert"
 
         if outcome["status"] == "matched":
             m = outcome["match"]

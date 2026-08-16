@@ -1,7 +1,7 @@
 import { MapboxOverlay } from '@deck.gl/mapbox'
 import type { LayersList } from '@deck.gl/core'
 import maplibregl from 'maplibre-gl'
-import type { StyleSpecification } from 'maplibre-gl'
+import type { PaddingOptions, StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LngLatBounds } from './domain/bounds'
 import { mapLightingEffect } from './layers/lighting'
@@ -54,14 +54,160 @@ export const INITIAL_VIEW = {
   bearing: -15,
 }
 
-// Kamera-Padding für `frameBounds` (Pixel je Seite) — grosszügig genug, dass
-// die UI-Chrome (Steuerung oben links, Legende/Hinweis unten, siehe
-// `style.css`) eine gerahmte Fläche nicht verdeckt, und dass die durch
-// `pitch` gestauchte Ferne (siehe `FitBoundsOptions`, die den `pitch` selbst
-// nicht in die Bounds-Rechnung einbezieht) nicht am Bildrand abgeschnitten
-// wirkt. Von Hand gewählt, nicht hergeleitet — wie stark eine Kantonsfläche
-// dadurch tatsächlich ausgefüllt wird, ist unverifiziert (siehe Bericht).
-const FRAME_PADDING_PX = 64
+// Kamera-Padding für `frameBounds`, je Seite einzeln (Pixel) — hergeleitet
+// aus der tatsächlichen UI-Chrome in `style.css`, nicht mehr ein einzelner,
+// von Hand gewählter Wert für alle vier Seiten (siehe Bericht Aufgabe 17).
+// Zeilenhöhe, wo `style.css` kein eigenes `line-height` setzt: angenommener
+// Browser-Normalwert ≈ 1,2 × Schriftgrösse (gängige Faustregel für
+// serifenlose Systemschriften, exakter Wert erst im Browser messbar).
+//
+// oben (140px = 1rem + 6,75rem + 1rem): #steuerung (Marke + zwei
+// `.gruppe`-Zeilen) wird nicht neu vermessen, sondern von `#zurueck-gruppe`s
+// eigenem `top: 7.75rem` übernommen (= 1rem Randabstand + 6,75rem Höhe von
+// #steuerung selbst) — dessen Kommentar in `style.css` bezeichnet diese
+// 7.75rem selbst als «unverifiziert»; dieselbe geerbte Unsicherheit gilt
+// deshalb auch für die 6,75rem hier, ungeglättet, bis Aufgabe 18 sie am
+// Screenshot prüft. #kennzahlen bleibt mit ein bis zwei Zeilen (Padding
+// 2×.5rem=1rem + Zeilenhöhe 2×1,4×.8125rem=2,275rem + 2×1px Rand ≈ 3,4rem
+// Boxhöhe) deutlich darunter — #steuerung bestimmt die Seite so oder so.
+// +1rem Sicherheitsabstand (derselbe Randabstand, den jede Box in diesem
+// Stylesheet vom Viewport-Rand hat) ergibt 1rem+6,75rem+1rem=8,75rem.
+//
+// links (320px = 1rem + 18rem + 1rem): #legende (`max-width: 18rem`) ist
+// breiter als die Button-Reihen von #steuerung und bestimmt die Seite.
+// Randabstand 1rem + Breite 18rem + 1rem Sicherheitsabstand = 20rem.
+//
+// rechts (368px = 1rem + 21rem + 1rem): #panel (`max-width: 21rem`) ist
+// breiter als #hinweis (16rem) und bestimmt die Seite. Randabstand 1rem +
+// Breite 21rem + 1rem Sicherheitsabstand = 23rem.
+//
+// unten (528px ≈ 1rem + 31rem + 1rem): #legende bestimmt die Seite,
+// vollständig aufgeschlüsselt für Ansicht «Börsennotierte Firmen» (Filter-
+// Modus, `ui/legend.ts`, `renderLegend`) — die dort dichteste Kombination:
+//   - `.legende-titel`: 1 Zeile × 13,2px (11px×1,2) + .5rem Marge = 21,2px
+//   - `.legende-alle`-Knopf: 12px Zeile + 2×.3rem Padding + .5rem Marge = 29,6px
+//   - Branchenliste: bis zu 12 Zeilen (elf NOGA-Gruppen + „nicht eindeutig
+//     bestimmbar" bei `presentGroups.hasUnknown`) × 13,2px + 11×.25rem Gap
+//     + .55rem Listen-Marge = 211,2px
+//   - zweite Liste, nur hier (Randmarkierung/unrecherchierter Marker/
+//     Mindesthöhen-Hinweis, `outlineSwatch`/`unresearchedSwatch`/
+//     `floorNote` in `ui/legend.ts`): drei ganze Sätze, die bei 18rem
+//     Boxbreite umbrechen. Textbreite mit Punkt+Gap ≈ 18rem − 2×.875rem
+//     Padding − 2px Rand − .55rem Punkt − .45rem Gap ≈ 242px, ohne Punkt
+//     (Mindesthöhen-Hinweis, reiner Text-Li) ≈ 258px; bei ≈5,5px/Zeichen
+//     (Faustregel für proportionale 11px-Schrift) ≈44 bzw. ≈47 Zeichen/
+//     Zeile. Randmarkierungs-Text (145 Zeichen) → 4 Zeilen, Marker-Text
+//     (99 Zeichen) → 3 Zeilen, Mindesthöhen-Text (144 Zeichen) → 4 Zeilen,
+//     macht 11 Zeilen × 13,2px + 2×.25rem Gap + .55rem Listen-Marge = 162px
+//   - Bezugszeilen (bis zu zwei: „Höchste Säule" + Verlustzeile,
+//     `.legende-bezug`): angenommen 3 Zeilen × 13,2px + eine .35rem-Marge
+//     = 45,2px
+// Summe Innenhalt 469,2px + 2×.75rem Boxpadding + 2×1px Rand ≈ 495,2px
+// Boxhöhe (≈31rem) + 1rem Randabstand + 1rem Sicherheitsabstand ≈ 33rem.
+// #hinweis trägt in derselben Ansicht bis zu sechs Pflichttext-Absätze
+// (`ui/notices.ts`, `renderNotices`) und bleibt nach derselben Rechnung
+// (vier bis sechs Absätze statt fixer drei Zeilen) knapp darunter — beide
+// Boxen sind also ähnlich raumgreifend, #legende bleibt die etwas grössere
+// und damit bestimmende. Aufgabe 18 prüft am Screenshot, ob dieser
+// grosszügige Wert übertrieben wirkt oder tatsächlich gebraucht wird.
+//
+// Dieser Rohwert bleibt unverändert stehen — er sagt, woher die Zahlen
+// kommen. Er wird aber NICHT direkt an `fitBounds`/`cameraForBounds`
+// weitergereicht, siehe `cappedPadding` unten: das Modell hinter dieser
+// Herleitung (Padding = volle Höhe/Breite der Chrome-Box) geht davon aus,
+// die Chrome schneide die Karte am Rand ab wie ein echter Rahmen. Das
+// stimmt nicht — #legende/#hinweis/#panel/#steuerung/#kennzahlen liegen mit
+// `z-index` ÜBER dem Kartencanvas (siehe `#ui`/`#map` in `style.css`), nicht
+// daneben; sie sind zudem halbtransparent (`--oberflaeche`,
+// `rgba(255,255,255,.84)`). Es genügt, dass die Landesfläche nicht
+// vollständig hinter einer Box verschwindet — nicht, dass die gerahmte
+// Fläche jede Chrome-Box vollständig meidet. Ungekappt würde eine
+// 15-zeilige Legende (528px unten) auf einem 1000px hohen Fenster der Karte
+// zusammen mit den oberen 140px nur noch ein Drittel der Höhe lassen — das
+// Gegenteil dessen, wofür diese Aufgabe existiert (Schweiz füllt das Bild,
+// nicht 45 % davon).
+const DERIVED_FRAME_PADDING: PaddingOptions = {
+  top: 140,
+  bottom: 528,
+  left: 320,
+  right: 368,
+}
+
+// Obergrenze je Seite: höchstens ein Viertel der zugehörigen Fenstergrösse
+// (Breite für links/rechts, Höhe für oben/unten) — der kleinere von
+// hergeleitetem und begrenztem Wert gilt. Damit bleibt der Karte in jeder
+// Fenstergrösse mindestens die Hälfte in jeder Richtung (zwei Seiten à
+// höchstens 25 % lassen mindestens 50 % übrig), unabhängig davon, wie lang
+// die Legende gerade ist. Diese Kappung ist kein Zurückrudern von der
+// Herleitung oben, sondern die Korrektur ihrer falschen Modellannahme (siehe
+// dort) — die Herleitung bleibt die Grundlage und greift unverändert dort,
+// wo sie unter dieser Grenze liegt (z. B. `left`/`right`/`top` bei den
+// meisten Fenstergrössen).
+const MAX_PADDING_FRACTION = 0.25
+
+/** Wendet `MAX_PADDING_FRACTION` auf `DERIVED_FRAME_PADDING` an, bezogen auf
+ *  die tatsächliche Grösse des Kartencontainers — muss deshalb zur Laufzeit
+ *  in `frameBounds` berechnet werden, nicht als Modulkonstante, weil sich
+ *  die Fenstergrösse zwischen Aufrufen ändern kann (Resize, andere Seite).
+ *
+ *  Aufgabe 18, festgehalten statt stillschweigend hingenommen: ist der
+ *  Container beim Aufruf noch nicht gelayoutet (`clientWidth`/`clientHeight`
+ *  liefern dann `0`, z. B. ein `frameBounds()` vor dem ersten Browser-Reflow),
+ *  ergibt sich ein Padding von `0` auf allen vier Seiten — unschädlich
+ *  (`cameraForBounds` rahmt dann ungepolstert, keine Exception, kein NaN),
+ *  aber ohne die hier sonst geltende Rahmung. In der Praxis tritt der Fall
+ *  nicht auf: `createBasis()` ruft `frameBounds()` erst, nachdem `#map` im DOM
+ *  hängt und der erste Layout-Pass gelaufen ist (siehe dort). Kein Abfangen
+ *  nötig, nur die Randbedingung dieser Herleitung dokumentiert. */
+function cappedPadding(map: maplibregl.Map): PaddingOptions {
+  const { clientWidth, clientHeight } = map.getContainer()
+  const maxHorizontal = clientWidth * MAX_PADDING_FRACTION
+  const maxVertical = clientHeight * MAX_PADDING_FRACTION
+  return {
+    top: Math.min(DERIVED_FRAME_PADDING.top, maxVertical),
+    bottom: Math.min(DERIVED_FRAME_PADDING.bottom, maxVertical),
+    left: Math.min(DERIVED_FRAME_PADDING.left, maxHorizontal),
+    right: Math.min(DERIVED_FRAME_PADDING.right, maxHorizontal),
+  }
+}
+
+// Zusätzlicher Zoom, nach der aus `DERIVED_FRAME_PADDING` hergeleiteten
+// Kamera aufaddiert (siehe `frameBounds` unten): `cameraForBounds` — wie
+// `fitBounds`, das intern denselben Weg geht — rechnet `pitch` nicht in die
+// Bounds-Berechnung ein (siehe `CameraForBoundsOptions`, die keinen
+// `pitch`-Parameter kennt), obwohl die Kamera anschliessend mit `pitch: 50`
+// aus `INITIAL_VIEW` schwenkt. Dadurch bleibt die gerahmte Fläche kleiner als
+// vom Padding beabsichtigt (Screenshot-Befund: rund 45 % Bildfläche statt der
+// angestrebten Ausfüllung). Der richtige Ausgleichswert lässt sich nur am
+// gerenderten Bild ablesen, nicht aus CSS oder Geometrie herleiten — deshalb
+// hier bewusst nicht geraten: `PITCH_FILL_BOOST` blieb `0` (unverändertes
+// Verhalten gegenüber vor dieser Aufgabe), bis Aufgabe 18 anhand von
+// Screenshots den tatsächlich passenden Wert mass.
+//
+// Aufgabe 18, Messreihe (Kennzahl Umsatz, 1600×1000, headless Chrome/
+// SwiftShader, `PITCH_FILL_BOOST` testweise verändert und jeweils neu
+// geschossen): `0` rahmte die Schweiz auf rund 45 % Bildfläche (Befund oben
+// bestätigt); `1.0` füllte den Rahmen deutlich, schob den Genfersee-Rand
+// («Compagnie Financière Richemont SA») dabei aber unter die Legende-Box
+// links (deren eigener 1rem-Sicherheitsabstand, siehe `DERIVED_FRAME_
+// PADDING`, ist für das *flache* `fitBounds`-Modell gerechnet, nicht für den
+// tatsächlich weiter herausgezoomten Rand bei `pitch: 50`).
+//
+// Nachbesserung (selbes Datum): `0.15` war die erste Wahl, verworfen nach
+// Sichtprüfung der ganzen Reihe (`0.15`/`0.2`/`0.3`/`0.5`) — bei `0.15`
+// bleiben rund 40 % der Bildfläche leer, praktisch der Ausgangszustand, wegen
+// dem die Rahmung überhaupt angefasst wurde. Bei `0.5` füllt die Landesfläche
+// den Rahmen spürbar besser, die Seen treten deutlicher hervor, und
+// Beschriftungen wie NOVARTIS AG, NESTLÉ S.A. und Kühne + Nagel werden
+// dadurch deutlich lesbarer. Massgeblich für die Wahl: bei `0.5` berührt die
+// Landesfläche selbst die Legende-Box weiterhin nicht — sie endet an deren
+// Kante, wie bei `0.15` auch. Einzige neue Einschränkung: der
+// Beschriftungstext von «Compagnie Financière Richemont SA» am Westrand
+// streift jetzt den Rand der Legende-Box (Text, nicht Landfläche) — in
+// Kauf genommen, weil kein Buchstabe darunter verschwindet und der Zugewinn
+// an gefüllter Fläche und Lesbarkeit den kleinen Kontaktpunkt aufwiegt.
+const PITCH_FILL_BOOST = 0.5
+
 const FRAME_DURATION_MS = 900
 
 function prefersReducedMotion(): boolean {
@@ -89,9 +235,13 @@ export interface MapHandle {
   /** Bewegt die Kamera so, dass `bounds` (Lng/Lat, siehe `domain/bounds.ts`)
    *  im Bild liegt, bei fester `pitch`/`bearing` aus `INITIAL_VIEW` — die
    *  Herleitung „von der Geometrie, nicht von 26 Handpositionen" (Auftrag).
-   *  `instant: true` (Erstladung der Schweiz-Übersicht) und ein aktives
-   *  `prefers-reduced-motion` überspringen die Animation (`duration: 0`);
-   *  sonst wird über `FRAME_DURATION_MS` sanft geschwenkt. */
+   *  Padding je Seite aus `DERIVED_FRAME_PADDING`, gekappt auf höchstens ein
+   *  Viertel der jeweiligen Fenstergrösse (`cappedPadding`), zusätzlich um
+   *  `PITCH_FILL_BOOST` ausgeglichen (siehe dort — `pitch` selbst bleibt in
+   *  der Bounds-Rechnung unberücksichtigt). `instant: true` (Erstladung der
+   *  Schweiz-Übersicht) und ein aktives `prefers-reduced-motion` überspringen
+   *  die Animation (`duration: 0`); sonst wird über `FRAME_DURATION_MS`
+   *  sanft geschwenkt. */
   frameBounds(bounds: LngLatBounds, options?: { instant?: boolean }): void
 }
 
@@ -134,10 +284,29 @@ export function createMap(container: HTMLElement): MapHandle {
     setLayers: (layers) => overlay.setProps({ layers }),
     frameBounds: (bounds, options) => {
       const instant = options?.instant === true || prefersReducedMotion()
-      map.fitBounds(bounds, {
+      const padding = cappedPadding(map)
+      // `cameraForBounds` statt `fitBounds` direkt: dieselbe Zentrum/Zoom-
+      // Herleitung aus den Bounds (siehe `PITCH_FILL_BOOST`-Kommentar oben),
+      // aber als eigener Zwischenschritt, damit der Ausgleichswert auf den
+      // berechneten Zoom aufaddiert werden kann, bevor in einer einzigen
+      // Animation dorthin geschwenkt wird — kein zweiter, sichtbar
+      // nachruckender Kameraschritt.
+      const camera = map.cameraForBounds(bounds, {
+        padding,
+        bearing: INITIAL_VIEW.bearing,
+      })
+      // `cameraForBounds` liefert laut eigener Dokumentation `undefined`,
+      // wenn es nicht rahmen kann (z. B. entartete Bounds), und warnt dann
+      // bereits selbst in die Konsole — hier bleibt in dem Fall nur, die
+      // Kamera unverändert zu lassen statt mit `undefined`-Werten
+      // weiterzurechnen.
+      if (!camera) return
+      map.easeTo({
+        center: camera.center,
+        zoom: (camera.zoom ?? map.getZoom()) + PITCH_FILL_BOOST,
         pitch: INITIAL_VIEW.pitch,
         bearing: INITIAL_VIEW.bearing,
-        padding: FRAME_PADDING_PX,
+        padding,
         duration: instant ? 0 : FRAME_DURATION_MS,
       })
     },

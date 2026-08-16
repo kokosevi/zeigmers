@@ -10,8 +10,17 @@ Gesellschaften, gesamtschweizerisch: **201 der 202 an der SIX kotierten
 Gesellschaften stehen an ihrem operativen Hauptsitz, und alle 201 sind
 recherchiert** — Umsatz, Gewinn, Beschäftigte, Branche, Kerngeschäft, jede
 Zahl mit Primärquelle und einer unabhängigen Gegenprüfung. Die Höhe der Säule
-ist der Umsatz, in CHF umgerechnet, damit Beträge in EUR und USD vergleichbar
-werden; das Panel zeigt die berichtete Zahl im Original. Wie viele
+folgt einer von **drei wählbaren Kennzahlen** — Jahresumsatz (Start),
+Mitarbeitende oder Reingewinn —, in CHF umgerechnet, damit Beträge in EUR und
+USD vergleichbar werden; das Panel zeigt die berichtete Zahl im Original. Bei
+Reingewinn steht eine Verlustfirma so hoch wie eine gleich grosse Gewinnfirma,
+das Vorzeichen trägt allein die Farbe der Säule (siehe „Warum ein Verlust
+nicht mehr hängt" unten). Zwei Filter — Branche und Organisationsform —
+schränken die Auswahl ein; die Legende zählt dabei jede Branche mit Anzahl und
+Anteil und wird selbst zum Bedienelement, nicht nur zur Farbliste. Seeflächen
+(Genfer-, Zürich-, Bodensee und weitere, aus Natural Earth und
+swissBOUNDARIES3D kombiniert, siehe Quellenliste unten) liegen als
+Orientierung auf der Karte, ohne eigene Zahl oder Aussage. Wie viele
 Gesellschaften gezeigt werden und wie viele davon recherchiert sind, nennt
 die Legende selbst (siehe „Die Abdeckungsangabe ist Teil der Oberfläche").
 
@@ -314,7 +323,8 @@ App ist mit dieser Unschärfe zu lesen, nicht als amtlich verbindliche Zahl.
 | Basiskarte (`ch_kantone.geojson`, selbst gezeichnet) | swisstopo (aus swissBOUNDARIES3D, `tlm_kantonsgebiet`) | Kantonsflächen als deck.gl-Layer, `src/layers/cantons.ts` — seit dem 13. August 2026 keine externen Vektorkacheln mehr, siehe „Warum die Karte keine externe Basiskarte mehr lädt" |
 | Liste kotierter Titel (seit Phase 3, national) | SIX Group, `six-group.com/fqs/ref.json` (`ProductLine=BC`+`DS`) | Ansicht A: Nenner der Abdeckungsangabe, Kandidatenliste für `companies-sync` |
 | Firmen-Stammdaten (LINDAS/Zefix, Geokodierung) | LINDAS SPARQL-Endpunkt, swisstopo SearchServer | Sitz je Titel (wo eindeutig auffindbar) und Adresse→Koordinate für Ansicht A |
-| Umsatz, Mitarbeitende, Geschäftsjahr je Firma | Geschäftsberichte der acht Unternehmen selbst | Ansicht A (siehe `report_url` je Zeile) |
+| Umsatz, Mitarbeitende, Geschäftsjahr je Firma | Geschäftsberichte der 201 recherchierten Unternehmen selbst | Ansicht A (siehe `report_url` je Zeile) |
+| Seeflächen (`lakes.geojson`) | Natural Earth 10m «lakes» (Genfersee, Bodensee, Lago Maggiore), swissBOUNDARIES3D (`tlm_hoheitsgebiet`, die übrigen amtlich geführten Seen) | Orientierung in beiden Ansichten (`src/layers/lakes.ts`) — die einzige nicht-amtliche Quelle dieser Karte, deshalb namentlich in der Eckbox genannt. **Bleibt unvollständig:** Vierwaldstättersee, Zugersee, Walensee und Lago di Lugano stecken in keiner der beiden Quellen als eigene Fläche und fehlen auf der Karte (siehe `etl/src/zeigmers_etl/lakes.py`, Moduldocstring) |
 
 Abgerufen: 13. August 2026 (Datum, an dem die zugrundeliegenden Rohdaten
 zuletzt heruntergeladen wurden, siehe `data/raw/manifest.json`); die
@@ -559,7 +569,7 @@ Verträgen, nach denen recherchiert und gegengelesen wurde.
 | Gesellschaften nach Zusammenfassung von Namen-/PS-Aktien und zweiten Handelslinien | 202 |
 | davon auf der Karte platziert | **201** |
 | davon recherchiert | **201** |
-| davon mit belegtem Umsatz | **188** |
+| davon mit belegtem Umsatz | **187** |
 | unabhängig gegengeprüfte Zeilen | **alle 193** |
 | davon bestätigt | 183 |
 | davon mit Fund | 10 — alle eingearbeitet |
@@ -631,7 +641,7 @@ niedrigere vollständig — Infracore mit 66 Mio. verschwand hinter AEVIS mit
 weit unter der Auflösung, in der diese Karte etwas aussagt, und das Panel
 nennt den Versatz.
 
-**Elf Säulen steckten in der Kantonsplatte.** Mit 188 echten Umsätzen spannt
+**Elf Säulen steckten in der Kantonsplatte.** Mit 187 echten Umsätzen spannt
 die Ansicht einen Faktor von rund 325'000 (Nestlé 89.5 Mrd. gegen Xlife
 Sciences 0.28 Mio.); am unteren Ende ergab die Skala 75 und 105 m, weniger
 als die 300 m hohe Platte. Zwei Schwellen lösen das, weil zwei Zusicherungen
@@ -643,6 +653,32 @@ unterhalb der Schwelle nicht mehr den Umsatz zeigt.
 
 Beide Fehler haben dieselbe Form wie fast alles in diesem Projekt: **die
 Daten stimmten, die Karte zeigte sie trotzdem nicht.**
+
+### Warum ein Verlust nicht mehr hängt
+
+Kennzahl-Umschalter, Branchen-/Organisationsformfilter, Kennzahlenzeile und
+Panel-Kontext waren über mehrere Aufgaben hinweg gebaut, aber nirgends
+verdrahtet — `buildViewLayers` zeichnete unabhängig von der Steuerung immer
+dieselbe feste Auswahl (Kennzahl Umsatz, alle Branchen). Die Verdrahtung
+(Aufgabe 18) deckte dabei einen dritten Darstellungsfehler auf, der sich erst
+zeigte, sobald die Kennzahl **Reingewinn** zum ersten Mal im Browser lief:
+die in der Spezifikation vorgesehene erste Wahl — eine bei Verlusten
+angehobene Nulllinie, von der eine Verlustsäule nach unten hängt — liess sich
+im Screenshot nicht nachweisen. Eine pixelgenaue Farbsuche über den gesamten
+Screenshot fand kein einziges Pixel der Verlustfarbe unter den 41
+Verlustfirmen. Grund: die Nulllinie hebt sich um den Betrag des tiefsten
+Verlusts über die Kantonsplatte — bei einem grossen Ausreisser (die
+Schweizerische Nationalbank trägt den grössten Ausschlag der Auswahl) landet
+sie damit selbst nahe der Höhendecke, und jede von dort hängende Verlustsäule
+verschwindet optisch zwischen den hohen Gewinnsäulen, statt sichtbar «unten»
+zu hängen.
+
+Die App zeigt seither die zweite, im Auftrag ausdrücklich vorgesehene Wahl:
+die Säulenhöhe folgt dem **Betrag** der Kennzahl, das Vorzeichen trägt
+ausschliesslich die Farbe der Säule (`src/layers/visible.ts`, `LOSS_COLOR`
+und `zeroPlaneHeight`, seither immer die Plattenoberkante). Ein Verlust steht
+damit so hoch wie ein gleich grosser Gewinn, aber erkennbar in einem eigenen
+Ton — sichtbar statt nur theoretisch richtig.
 
 ## Phase 3: Ansicht «Börsennotierte Firmen» wird national
 

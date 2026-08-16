@@ -4,7 +4,7 @@ import urllib.parse
 
 import pytest
 
-from zeigmers_etl import companies, noga
+from zeigmers_etl import companies, config, noga
 
 
 def _row(**overrides):
@@ -30,6 +30,7 @@ def _row(**overrides):
             "fiscal_year": "2024",
             "report_url": "https://example.test/gb2024.pdf",
             "researched": "yes",
+            "org_form": "boersenkotiert",
         }
     )
     row.update(overrides)
@@ -260,6 +261,13 @@ def test_build_artifact_marks_missing_profit_as_none():
     assert entry["foundingYear"] is None
 
 
+def test_build_artifact_traegt_org_form_und_sammelt_die_vorkommenden():
+    table = noga.load_table()
+    artifact = companies.build_artifact([_row(org_form="boersenkotiert")], table)
+    assert artifact["companies"][0]["orgForm"] == "boersenkotiert"
+    assert artifact["stats"]["orgForms"] == ["boersenkotiert"]
+
+
 def test_load_csv_roundtrip(tmp_path):
     path = tmp_path / "c.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -288,6 +296,11 @@ def _unresearched_row(**overrides):
         "city": "Zürich", "lon": "8.54", "lat": "47.37",
         "geocode_query": "Teststrasse 1 8000 Zürich",
         "researched": "no",
+        # org_form ist auch fuer unrecherchierte Zeilen Pflicht (siehe
+        # test_org_form_gilt_auch_fuer_unrecherchierte_zeilen) — ohne diesen
+        # Eintrag wuerden alle Tests, die _unresearched_row() nutzen, an
+        # validate() scheitern, nicht an der Eigenschaft, die sie pruefen.
+        "org_form": "boersenkotiert",
     })
     row.update(overrides)
     return row
@@ -353,6 +366,45 @@ def test_validate_rejects_missing_isin():
 def test_validate_rejects_duplicate_isin():
     with pytest.raises(ValueError, match="isin .* doppelt"):
         companies.validate([_row(), _row(uid="CHE-999", name="Andere AG")])
+
+
+def test_validate_verlangt_org_form():
+    with pytest.raises(ValueError, match="org_form"):
+        companies.validate([_row(org_form="")])
+
+
+def test_validate_lehnt_unbekannte_org_form_ab():
+    with pytest.raises(ValueError, match="org_form"):
+        companies.validate([_row(org_form="genossenschaft_vielleicht")])
+
+
+def test_org_form_gilt_auch_fuer_unrecherchierte_zeilen():
+    """Anders als revenue/profit ist die Organisationsform keine
+    Rechercheleistung — sie steht schon fest, wenn die Zeile entsteht."""
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    # isin ist unabhaengig von org_form Pflicht (validate() prueft sie fuer
+    # jede Zeile) — hier gesetzt, damit der Test tatsaechlich org_form
+    # prueft und nicht an einem unbeteiligten Feld scheitert.
+    row.update({"uid": "CHE-100.000.009", "name": "Noch Nichts AG",
+                "isin": "CH0000000009",
+                "researched": "no", "org_form": "boersenkotiert"})
+    companies.validate([row])
+
+
+def test_validate_verlangt_org_form_auch_bei_unrecherchierter_zeile():
+    # Gegenprobe zu test_org_form_gilt_auch_fuer_unrecherchierte_zeilen: dieselbe
+    # Zeilenart (researched=no), aber ohne org_form. Ohne diesen Test bemerkt
+    # keiner der vier org_form-Tests, wenn die Pruefung spaeter versehentlich in
+    # ein `if researched == "yes":` verschachtelt wird — die beiden anderen
+    # Ablehnungstests laufen ueber _row() (researched=yes), und der einzige
+    # researched=no-Test prueft bisher nur den Zulassungsfall, nicht die
+    # Ablehnung.
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    row.update({"uid": "CHE-100.000.009", "name": "Noch Nichts AG",
+                "isin": "CH0000000009",
+                "researched": "no", "org_form": ""})
+    with pytest.raises(ValueError, match="org_form"):
+        companies.validate([row])
 
 
 def test_build_artifact_marks_researched_flag_per_entry():
@@ -906,6 +958,46 @@ def test_build_artifact_falls_back_to_reported_amounts_when_one_rate_is_missing(
     assert "GBP" in artifact["stats"]["fxMissing"][0]["error"]
 
 
+def test_build_artifact_rechnet_gewinn_in_chf_um():
+    monthly = {("USD", 2024): [0.9] * 12}
+    table = noga.load_table()
+    rows = [_row(profit="200000000", profit_currency="USD", profit_unit="1",
+                 revenue_currency="USD", consolidation_basis="total_group",
+                 fiscal_year="2024")]
+    artifact = companies.build_artifact(rows, table, monthly_fx=monthly)
+    entry = artifact["companies"][0]
+    assert entry["profit"] == 200_000_000.0        # berichtet, unverändert
+    assert entry["profitChf"] == pytest.approx(180_000_000.0)
+    assert artifact["stats"]["profitInChf"] is True
+
+
+def test_build_artifact_rechnet_auch_verluste_um():
+    monthly = {("EUR", 2024): [0.95] * 12}
+    table = noga.load_table()
+    rows = [_row(profit="-40000000", profit_currency="EUR", profit_unit="1",
+                 revenue_currency="EUR", consolidation_basis="total_group",
+                 fiscal_year="2024")]
+    entry = companies.build_artifact(rows, table, monthly_fx=monthly)["companies"][0]
+    assert entry["profitChf"] == pytest.approx(-38_000_000.0)
+
+
+def test_profit_in_chf_ist_falsch_wenn_eine_umrechnung_fehlt():
+    """Alles oder nichts — wie bei revenueInChf. Halb umgerechnet stünden
+    zwei Massstäbe nebeneinander, ohne dass man es sieht."""
+    monthly = {("CHF", 2024): [1.0] * 12}
+    table = noga.load_table()
+    rows = [
+        _row(name="A AG", uid="CHE-100.000.001", profit="1000", profit_currency="CHF",
+             profit_unit="1", consolidation_basis="total_group", fiscal_year="2024"),
+        _row(name="B AG", uid="CHE-100.000.002", lon="8.05", lat="47.40",
+             profit="2000", profit_currency="JPY", profit_unit="1",
+             consolidation_basis="total_group", fiscal_year="2024"),
+    ]
+    artifact = companies.build_artifact(rows, table, monthly_fx=monthly)
+    assert artifact["stats"]["profitInChf"] is False
+    assert any(m["currency"] == "JPY" for m in artifact["stats"]["fxMissing"])
+
+
 # --- Recherche in die CSV uebernehmen -------------------------------------
 
 
@@ -1106,6 +1198,30 @@ def test_build_artifact_treats_a_reported_zero_revenue_as_a_placeholder_bar():
     assert entry["placeholder"] is True, "aber sie traegt keine Hoehenaussage"
 
 
+def test_build_artifact_excludes_placeholder_rows_from_with_revenue():
+    """Finding I7 (Abschluss-Review): `stats.withRevenue` zaehlte bisher jede
+    Zeile mit `revenue is not None`, auch eine ausgewiesene Null
+    (`placeholder=True`, siehe Test oben) — das Artefakt meldete damit eine
+    Zahl, die grosser war als das, was die Karte tatsaechlich als "Umsatz
+    mit Wert" zeigt (`domain/metric.ts`, `metricValue`: `placeholder` schlaegt
+    den Umsatzwert). `withRevenue` muss dieselbe Menge zaehlen wie die
+    Oberflaeche, nicht mehr."""
+    artifact = companies.build_artifact(
+        [
+            _row(name="Echte AG", revenue="500", revenue_unit="1000000"),
+            _row(name="Null AG", six_symbol="NUL", isin="CH0000000099",
+                 revenue="0", revenue_unit="1"),
+        ],
+        noga.load_table(),
+    )
+    by_name = {c["name"]: c for c in artifact["companies"]}
+    assert by_name["Echte AG"]["placeholder"] is False
+    assert by_name["Null AG"]["placeholder"] is True
+    assert artifact["stats"]["withRevenue"] == 1, (
+        "eine ausgewiesene Null zaehlt nicht als Umsatz mit Hoehenaussage"
+    )
+
+
 def test_build_artifact_separates_companies_that_share_exact_coordinates():
     """Zwei Saeulen am selben Punkt: die hoehere verdeckt die niedrigere ganz.
 
@@ -1146,3 +1262,26 @@ def test_build_artifact_keeps_the_spread_small_enough_to_stay_in_the_municipalit
     # sie nur sichtbar. Waere der Versatz gross, waere die Aussage der Karte
     # ("hier sitzt diese Firma") beschaedigt.
     assert companies.POSITION_SPREAD_M <= 200
+
+
+def test_placeholder_und_umsatz_null_sind_dieselbe_aussage():
+    """Ein ausgewiesener Umsatz von 0 traegt keine Hoehenaussage. Die Karte
+    darf daraus keine echte Saeule rechnen — die Invariante hier ist, worauf
+    sich `domain/metric.ts` verlaesst."""
+    table = noga.load_table()
+    artifact = companies.build_artifact(
+        [_row(name="Null AG", revenue="0", revenue_unit="1")], table
+    )
+    entry = artifact["companies"][0]
+    assert entry["revenue"] == 0.0        # die echte Null bleibt fuers Panel
+    assert entry["placeholder"] is True   # aber keine Hoehe daraus
+
+
+def test_jede_placeholder_zeile_hat_keinen_verwertbaren_umsatz():
+    """Regressionswache ueber das echte Artefakt, nicht ueber ein Fixture."""
+    artifact = json.loads(
+        (config.PUBLIC_DATA / "companies.json").read_text(encoding="utf-8")
+    )
+    for entry in artifact["companies"]:
+        has_value = entry["revenue"] is not None and entry["revenue"] != 0
+        assert entry["placeholder"] is not has_value, entry["name"]

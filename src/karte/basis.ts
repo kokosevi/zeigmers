@@ -1,16 +1,16 @@
-import type { Geometry } from 'geojson'
+import type { FeatureCollection, Geometry } from 'geojson'
 import {
   loadCantons,
+  loadLakes,
   joinCantonGeometry,
   type BoundaryFeatureCollection,
 } from '../data/boundaries'
 import { loadLevel, loadMeta, type Level, type Meta } from '../data/loader'
 import { boundsOfGeometries, type LngLatBounds } from '../domain/bounds'
-import type { ScaleMode } from '../domain/scale'
 import { buildCantonBorderLayer } from '../layers/cantons'
 import { createMap, type MapHandle } from '../map'
 import { showError } from '../ui/error'
-import { createNav, type ViewName } from '../ui/nav'
+import { createNav, type NavOptions } from '../ui/nav'
 
 /** Alles, was beide Kartenseiten gemeinsam brauchen — einmal geladen und
  *  hergeleitet. Bewusst ein einfacher Datenhalter ohne Methoden: was damit
@@ -24,6 +24,10 @@ export interface Basis {
   kantone: Level
   cantonGeometries: Geometry[]
   nationalBounds: LngLatBounds
+  /** `null`, wenn `loadLakes()` das Artefakt nicht laden konnte — die Seen
+   *  sind Orientierung, kein Inhalt, ihr Fehlen darf die Karte nicht
+   *  verhindern (siehe `data/boundaries.ts`, `loadLakes`). */
+  lakesGeo: FeatureCollection | null
 }
 
 /** Legt die Karte an und lädt, was beide Seiten brauchen.
@@ -37,7 +41,12 @@ export interface Basis {
  *  5.6 KB. `companies.json` (320 KB) lädt dagegen nur die Firmen-Seite.
  *
  *  Wirft statt selbst zu melden: die Seiten-Einstiege (`src/firmen.ts`,
- *  `src/beschaeftigte.ts`) haben den einen Fehlerweg nach `showError`. */
+ *  `src/beschaeftigte.ts`) haben den einen Fehlerweg nach `showError`. Eine
+ *  Ausnahme darin ist `loadLakes()` (19.6 KB): sie liefert bei einem Fehler
+ *  `null` statt zu werfen (siehe dort) und läuft trotzdem in **diesem**
+ *  `Promise.all` mit, nicht in einem zweiten, seriellen Ladeschritt danach —
+ *  ein fehlendes Seenartefakt darf die Karte verzögern und nicht, ein
+ *  vorhandenes soll die Seite nicht langsamer starten lassen als nötig. */
 export async function createBasis(): Promise<Basis> {
   const container = document.getElementById('map')
   if (!container) throw new Error('Kartencontainer #map fehlt im HTML.')
@@ -45,10 +54,11 @@ export async function createBasis(): Promise<Basis> {
   const handle = createMap(container)
   handle.onError((message) => showError(`Basiskarte: ${message}`))
 
-  const [meta, kantone, cantonsGeo] = await Promise.all([
+  const [meta, kantone, cantonsGeo, lakesGeo] = await Promise.all([
     loadMeta(),
     loadLevel('ch_kantone'),
     loadCantons(),
+    loadLakes(),
   ])
 
   const cantonGeometries = joinCantonGeometry(kantone, cantonsGeo)
@@ -70,14 +80,16 @@ export async function createBasis(): Promise<Basis> {
     kantone,
     cantonGeometries,
     nationalBounds,
+    lakesGeo,
   }
 }
 
-/** Hängt die Steuerung in `#ui` ein. `createNav` ruft `onModeChange` schon bei
- *  der Konstruktion einmal auf — das übernimmt den ersten Render. */
-export function mountNav(
-  view: ViewName,
-  onModeChange: (mode: ScaleMode) => void,
-): void {
-  document.getElementById('ui')?.appendChild(createNav(view, onModeChange))
+/** Hängt die Steuerung in `#ui` ein. Reicht `options` unverändert an
+ *  `createNav` durch — `mountNav` selbst entscheidet nichts über Kennzahl
+ *  oder Organisationsform, das tut allein die jeweilige Kartenseite über das,
+ *  was sie hier übergibt (Task 12: beide Optionen sind optional, siehe
+ *  `ui/nav.ts`, `NavOptions`). `createNav` ruft `onModeChange` schon bei der
+ *  Konstruktion einmal auf — das übernimmt den ersten Render. */
+export function mountNav(options: NavOptions): void {
+  document.getElementById('ui')?.appendChild(createNav(options))
 }

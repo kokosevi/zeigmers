@@ -1,17 +1,22 @@
 import type { LayersList } from '@deck.gl/core'
-import type { Geometry } from 'geojson'
+import type { FeatureCollection, Geometry } from 'geojson'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level } from '../data/loader'
 import type { PresentGroups } from '../domain/legendGroups'
+import { formatMetric, metricValue, type Metric } from '../domain/metric'
+import { NOGA_GROUPS } from '../domain/noga.generated'
 import type { ScaleMode } from '../domain/scale'
+import type { SelectionResult } from '../domain/selection'
 import type { NoticeLevel } from '../ui/notices'
 import { formatNumber } from '../ui/format'
 import { hideHoverLabel, showHoverLabel } from '../ui/hoverLabel'
 import { municipalityName } from '../ui/panel'
 import { buildCantonBorderLayer, buildCantonsLayer } from './cantons'
+import { buildLakesLayer } from './lakes'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
 import {
   buildCompanyLayer,
+  buildCompanyShadowLayer,
   buildUnresearchedCompanyLayer,
   type Company,
   type CompanyData,
@@ -67,12 +72,40 @@ export function kantonRowInfo(
   return entries[gemeindeIdx[index] ?? -1]
 }
 
-/** In beiden Ansichten gebraucht: die Basiskarte und die Höhenskala. */
+/** Die beiden Zeilen des Hover-Labels für eine recherchierte Firmensäule
+ *  (`buildCompanyLayer`, Ansicht «Börsennotierte Firmen»): Name, dann Wert
+ *  der AKTIVEN Kennzahl (nicht fest `'umsatz'`, siehe `metric`-Parameter)
+ *  und Branche. Eigene, exportierte Funktion statt eines Einzeilers in der
+ *  Hover-Closure — hier fällt die fachliche Entscheidung (welche Kennzahl,
+ *  welcher Fallback-Text bei fehlendem Wert), die deshalb ohne DOM prüfbar
+ *  sein muss (`viewLayers.test.ts`).
+ *
+ *  Fehlt der Wert (`metricValue` liefert `null` — dieselbe Firma bekommt
+ *  dann die Platzhaltersäule, siehe `companyElevations` in `layers/visible.ts`),
+ *  sagt die zweite Zeile das explizit statt einer Lücke oder eines
+ *  «undefined»: ein Label, das nur den Namen zeigt, wäre nicht ehrlicher,
+ *  nur unauffälliger, und liesse offen, ob der Wert vergessen ging oder
+ *  tatsächlich nicht bekannt ist. */
+export function companyHoverLines(company: Company, metric: Metric): [string, string] {
+  const value = metricValue(company, metric)
+  const valueText =
+    value === null ? 'Keine Zahl für diese Kennzahl' : formatMetric(value, metric)
+  const branch = NOGA_GROUPS[company.nogaGroupIndex]?.label ?? 'unbekannt'
+  return [company.name, `${valueText} · ${branch}`]
+}
+
+/** In beiden Ansichten gebraucht: die Basiskarte und die Höhenskala.
+ *
+ *  `lakes` ist `null`, wenn `loadLakes()` (`data/boundaries.ts`) das Artefakt
+ *  nicht laden konnte — die Seen sind Orientierung, kein Inhalt, ihr Fehlen
+ *  ist deshalb kein Fehlerfall dieser Funktion, sondern eine dritte,
+ *  legitime Eingabe neben einer geladenen `FeatureCollection`. */
 interface ViewLayersBasis {
   mode: ScaleMode
   cantonsGeo: BoundaryFeatureCollection
   activeBfsNr: number | null
   cantonBorderLayer: ReturnType<typeof buildCantonBorderLayer>
+  lakes: FeatureCollection | null
 }
 
 /** Seit der Aufteilung in zwei Seiten (2026-08-15) ist `view` keine
@@ -89,6 +122,18 @@ export type ViewLayersInput =
   | (ViewLayersBasis & {
       view: 'sichtbare'
       companies: CompanyData
+      /** Gefilterte und bewertete Auswahl (`applySelection`, `domain/selection.ts`)
+       *  — Task 18 verdrahtet Kennzahl und Filter über `karte/firmen.ts`s
+       *  `render()`; diese Funktion filtert selbst nicht mehr (kein zweiter
+       *  Ort, siehe dort). `companies` bleibt daneben nötig für
+       *  `buildUnresearchedCompanyLayer` unten, der immer alle platzierten,
+       *  aber unrecherchierten Marker zeigt — ungefiltert, weil sie gar nicht
+       *  Teil von `applySelection`s `visible` sind (siehe dort, `researched`-
+       *  Bedingung). */
+      result: SelectionResult
+      /** Die an der Steuerung aktive Kennzahl — bestimmt Säulenhöhe und
+       *  Hover-Zweitzeile. */
+      metric: Metric
       onShowCompanyPanel: (company: Company) => void
     })
   | (ViewLayersBasis & {
@@ -111,24 +156,63 @@ export type ViewLayersInput =
  *  ohne geladenen Kanton (sollte nicht vorkommen, siehe dort) fällt auf die
  *  Schweiz-Stufe zurück statt eine leere oder falsche Liste zu bauen. */
 export function buildViewLayers(input: ViewLayersInput): LayersList {
-  const { mode, cantonsGeo, activeBfsNr, cantonBorderLayer } = input
+  const { mode, cantonsGeo, activeBfsNr, cantonBorderLayer, lakes } = input
   const cantonsLayer = buildCantonsLayer({ data: cantonsGeo, activeBfsNr })
+  // Nur einreihen, wenn das Artefakt tatsächlich geladen werden konnte (siehe
+  // `ViewLayersBasis.lakes` oben) — fehlt es, bleibt die Karte unverändert,
+  // ohne Lücke in der Layer-Liste.
+  const lakesLayer = lakes ? buildLakesLayer(lakes) : null
 
   // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
-  // auf einen einzelnen, vorher geladenen Kanton) — zwei Layer, nicht eine:
-  // Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
-  // flache neutrale Marker für alle übrigen kotierten Titel
-  // (`buildUnresearchedCompanyLayer`, Kontext — siehe `layers/visible.ts`).
+  // auf einen einzelnen, vorher geladenen Kanton) — drei Layer: Bodenschatten
+  // (`buildCompanyShadowLayer`, verankert die Säule am Boden) und Säulen für
+  // die recherchierten Firmen (`buildCompanyLayer`, Inhalt), flache neutrale
+  // Marker für alle übrigen kotierten Titel (`buildUnresearchedCompanyLayer`,
+  // Kontext). Keine eigene Nulllinie mehr (Aufgabe 18, siehe
+  // `layers/visible.ts`, `zeroPlaneHeight`): Säulen stehen bei jeder Kennzahl
+  // auf der Plattenoberkante, ein Verlust trägt sein Vorzeichen über die
+  // Farbe.
   if (input.view === 'sichtbare') {
-    const { companies, onShowCompanyPanel } = input
+    const { companies, result, metric, onShowCompanyPanel } = input
+
+    // Nur der Name — für die unrecherchierten Marker (`buildUnresearchedCompanyLayer`
+    // unten) gibt es nichts Zweites zu sagen: weder Kennzahl noch Branche sind
+    // für sie belegt.
+    const onHoverCompany = (company: Company | null, x: number, y: number) => {
+      if (!company) return hideHoverLabel()
+      showHoverLabel(company.name, x, y)
+    }
+    // Zweite Zeile für die recherchierten Säulen (`buildCompanyLayer` unten):
+    // Wert der aktiven Kennzahl und Branche, dieselbe Herleitung wie die
+    // Säulenhöhe (`metricValue`) bzw. das Klick-Panel (`ui/panel.ts`,
+    // `nogaGroupLabel`). Fehlt der Wert (`metricValue` liefert `null` — dieselbe
+    // Firma bekommt dann die Platzhaltersäule, siehe `companyElevations`), sagt
+    // die Zeile das explizit: ein leerer Platz oder ein "undefined" wäre nicht
+    // ehrlicher, nur unauffälliger, und liesse offen, ob der Wert vergessen
+    // oder tatsächlich nicht bekannt ist. Als eigene, exportierte Funktion statt
+    // eines Closure-Einzeilers, weil hier die eigentliche fachliche Entscheidung
+    // fällt (welcher Wert, welche Kennzahl, welcher Fallback-Text) — die gehört
+    // ohne DOM prüfbar, siehe `companyHoverLines` in `viewLayers.test.ts`.
+    const onHoverResearchedCompany = (company: Company | null, x: number, y: number) => {
+      if (!company) return hideHoverLabel()
+      showHoverLabel(companyHoverLines(company, metric), x, y)
+    }
+
     return [
       cantonsLayer,
+      ...(lakesLayer ? [lakesLayer] : []),
       cantonBorderLayer,
-      buildCompanyLayer(companies, mode, onShowCompanyPanel),
-      buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, (company, x, y) => {
-        if (!company) return hideHoverLabel()
-        showHoverLabel(company.name, x, y)
+      // Vor der Säule eingereiht, sonst zeichnet deck.gl den Schatten über
+      // die Säule statt darunter.
+      buildCompanyShadowLayer(result),
+      buildCompanyLayer({
+        result,
+        metric,
+        mode,
+        onClick: onShowCompanyPanel,
+        onHover: onHoverResearchedCompany,
       }),
+      buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, onHoverCompany),
     ]
   }
 
@@ -138,6 +222,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     const entry = activeCanton
     return [
       cantonsLayer,
+      ...(lakesLayer ? [lakesLayer] : []),
       cantonBorderLayer,
       buildMunicipalityLayer('gemeinde', {
         level: entry.gemeinde,
@@ -161,6 +246,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   // (`level === 'kanton'` ohne `activeCanton`) ab.
   return [
     cantonsLayer,
+    ...(lakesLayer ? [lakesLayer] : []),
     cantonBorderLayer,
     buildMunicipalityLayer(KANTONE_BARS_LAYER_ID, {
       level: kantone,

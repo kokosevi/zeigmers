@@ -40,6 +40,50 @@ export function loadCantons(base = '/data'): Promise<BoundaryFeatureCollection> 
   return loadGeojson(`${base}/ch_kantone.geojson`)
 }
 
+/** Seeflächen (`lakes.geojson`, aus Natural Earth UND swissBOUNDARIES3D
+ *  kombiniert — siehe `etl/…/lakes.py`, Moduldocstring), rein zur
+ *  Orientierung: erst mit ihnen ist die Silhouette der Schweiz als Schweiz
+ *  erkennbar, sie tragen aber keine Zahl und keine Auswahl. Anders
+ *  als `loadCantons`/`loadGeojson` oben deshalb bewusst NICHT dasselbe
+ *  Wurf-Muster: ein fehlendes oder kaputtes Artefakt (HTTP-Fehler oder
+ *  ungültiges JSON) fällt still auf `null` zurück statt die Karte zum
+ *  Abbruch zu bringen — `createBasis()` zeichnet ohne Seen weiter, ohne
+ *  Fehlermeldung, weil ihr Fehlen kein Fehler ist.
+ *
+ *  Fix (Review, 2026-08-16): `response.json()` liefert bei gültigem, aber
+ *  strukturell falschem JSON (`{}`, `[]`, ein Objekt ohne `features`) einen
+ *  truthy Wert zurück, der kein `FeatureCollection` ist — ein `as` allein
+ *  hätte das ungeprüft durchgereicht, `buildLakesLayer`s `data.features.
+ *  flatMap(...)` (`layers/lakes.ts`) wäre dann mit einem `TypeError`
+ *  abgestürzt, ungefangen bis in `showError`: genau der Karten-Abbruch, den
+ *  diese Funktion verhindern soll. Eine Feature-Sammlung ist deshalb erst
+ *  eine, wenn `features` tatsächlich ein Array ist — alles andere wird
+ *  genau wie ein HTTP-Fehler zu `null`. */
+export async function loadLakes(base = '/data'): Promise<FeatureCollection | null> {
+  try {
+    const response = await fetch(`${base}/lakes.geojson`)
+    if (!response.ok) return null
+    const parsed: unknown = await response.json()
+    if (!isFeatureCollection(parsed)) return null
+    return parsed
+  } catch {
+    return null
+  }
+}
+
+/** Struktur-Wächter für `loadLakes` oben: prüft nur, was `buildLakesLayer`
+ *  (`layers/lakes.ts`) tatsächlich anfasst — ein Objekt mit einem
+ *  `features`-Array. Kein vollständiger GeoJSON-Validator (der wäre für ein
+ *  reines Schmuckartefakt Overkill), aber genug, um den `TypeError` aus dem
+ *  Review-Fund oben strukturell auszuschliessen. */
+function isFeatureCollection(value: unknown): value is FeatureCollection {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    Array.isArray((value as { features?: unknown }).features)
+  )
+}
+
 /** Gemeinsame Join-Logik hinter `joinMunicipalityGeometry` und
  *  `joinCantonGeometry` unten: beide ordnen jeder Zeile eines Levels
  *  (indiziert wie `level.arrays.values`) über `gemeindeIdx` und eine Liste von

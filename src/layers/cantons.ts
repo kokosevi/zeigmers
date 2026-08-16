@@ -11,6 +11,22 @@ import { MAP_MATERIAL } from './material'
 // Overlay-Füllung — die Kantone sind jetzt echte, wenn auch flache
 // Extrusionskörper („eine Platte, aus der die Gemeinden wachsen"), keine
 // durchscheinende Orientierungsebene mehr über einer fremden Basiskarte.
+//
+// Aufgabe 17 (Kontrast dünner Säulen gegen die Platte): geprüft, aber
+// verworfen wurde eine dunklere Platte (`#C3CEDC`/`[195, 206, 220, 255]`,
+// ein Schritt dunkler als hier). Die elf Branchenfarben (`etl/tests/
+// test_palette.py`, farbenblind geprüft) sind alle heller als `--land` —
+// eine dunklere Platte rückt ihr Leuchtdichteniveau NÄHER an sie heran statt
+// weiter weg und senkt den WCAG-Kontrast damit für JEDE der elf Farben,
+// nicht nur für einzelne. Gegen `#C3CEDC` fallen «Bau» (1.56 → 1.41), «Ver-
+// kehr und Logistik» (1.60 → 1.45, neu unter die geforderten 1.6), «Infor-
+// mation und Kommunikation» (1.09 → 1.02) und «Unternehmensdienstleistungen»
+// (1.12 → 1.06) unter den Schwellenwert bzw. tiefer darunter — laut Auftrag
+// wird in diesem Fall die Plattenfarbe zurückgenommen, nicht die Branchen-
+// farbe geändert. `--land`/`LAND_FILL` bleiben deshalb beim bisherigen Wert;
+// die vollständige Kontrasttabelle (auch für den unveränderten Wert, der für
+// dieselben drei Branchen bereits unter 1.6 liegt — ein von dieser Aufgabe
+// unabhängiger, bereits bestehender Befund) steht im Bericht.
 const LAND_FILL: [number, number, number, number] = [207, 216, 227, 255] // --land
 const LAND_LINE: [number, number, number, number] = [168, 182, 198, 220] // --land-kante
 

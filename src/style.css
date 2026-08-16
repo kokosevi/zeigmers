@@ -5,6 +5,12 @@
    knappen, kühlen Kartenpalette drumherum, nicht aus neuen Farbtönen. */
 :root {
   --grund: #E8EDF2;
+  /* Aufgabe 17: eine dunklere Platte (`#C3CEDC`) wurde geprüft und wieder
+     verworfen, weil sie den WCAG-Kontrast aller elf Branchenfarben senkt
+     (sie liegen alle heller als `--land`) statt ihn zu erhöhen — vier davon
+     fielen dadurch unter den geforderten Wert 1.6. Details/Zahlen siehe
+     `layers/cantons.ts` (`LAND_FILL`, derselbe Wert, dort ausführlich
+     begründet) und der Bericht zu Aufgabe 17. */
   --land: #CFD8E3;
   --land-kante: #A8B6C6;
   --aargau: #DDE5EE;
@@ -81,6 +87,24 @@ a:focus-visible, button:focus-visible {
 #steuerung {
   position: absolute; top: 1rem; left: 1rem;
   display: flex; flex-direction: column; gap: .5rem;
+}
+
+/* Task 14: schmale Summenzeile, die ohne Klick zeigt, was die Karte gerade
+   summiert — bislang liess sich das nirgends ablesen, nur einzelne Säulen.
+   Oben mittig, damit sie weder `#steuerung` (oben links) noch MapLibres
+   `NavigationControl` (oben rechts, `map.ts`) überdeckt; `max-width` hält
+   sie auch bei langem Text (Gewinn-Zeile mit Saldo UND Verlustzahl) von
+   beiden Ecken fern. Dieselbe Oberflächenfarbe/Rundung wie Legende und
+   Panel (`--oberflaeche`), damit sie als Teil derselben Karte gelesen wird,
+   nicht als Fremdkörper obendrauf. */
+#kennzahlen {
+  position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
+  max-width: min(34rem, calc(100vw - 2rem));
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  color: var(--tinte);
+  border-radius: .5rem; padding: .5rem .875rem;
+  font-size: .8125rem; line-height: 1.4; text-align: center;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
 }
 #steuerung .gruppe {
   display: flex; gap: .25rem;
@@ -186,6 +210,57 @@ a:focus-visible, button:focus-visible {
    `ui/legend.ts` für die Begründung — die Regeln wurden mitentfernt statt
    als tote CSS liegen zu bleiben. */
 
+/* Task 13: aus der Farbliste wird ein Bedienelement. «Alle Branchen» steht
+   über der Liste, deshalb eigene Zeile statt `.legende-branchen`-Kind. Look
+   an `#steuerung button` angelehnt (dieselbe Stimme: unauffällig, bis auf
+   Klick/Zustand), aber kleiner — die Legende bleibt die leiseste Ecke der
+   Karte, auch als Bedienelement. */
+.legende-alle {
+  display: block; margin: 0 0 .5rem; border: 1px solid var(--oberflaeche-rand);
+  background: transparent; color: var(--tinte-leise);
+  padding: .3rem .6rem; border-radius: .375rem;
+  font-size: .625rem; text-transform: uppercase; letter-spacing: .05em;
+  cursor: pointer; font-family: inherit; width: 100%; text-align: left;
+}
+.legende-alle:hover { color: var(--tinte); }
+
+/* Eine Branchenzeile ist jetzt zwei Schaltflächen nebeneinander: der
+   Umschalter (Farbtupfer, Label, Anzahl, Anteil/Saldo) und «nur diese».
+   `.legende-branchen li` bleibt für die unveränderten Zeilen (Rand-
+   markierung, unrecherchierte Marker, Mindesthöhen-Hinweis) die reine
+   Text+Punkt-Zeile von vorher — `.legende-branche-zeile` überschreibt hier
+   gezielt `align-items`/`justify-content`, statt eine zweite Zeilenart mit
+   eigenem Grundlayout zu duplizieren. */
+.legende-branchen li.legende-branche-zeile {
+  justify-content: space-between; gap: .35rem;
+}
+.legende-branche {
+  display: flex; align-items: center; gap: .4rem; flex: 1; min-width: 0;
+  border: none; background: transparent; color: inherit;
+  padding: .15rem 0; font: inherit; text-transform: inherit;
+  letter-spacing: inherit; cursor: pointer; text-align: left;
+}
+/* Abgewähltes `aria-pressed="false"`: gedämpft statt ausgeblendet — die
+   Farbe bleibt lesbar (sie erklärt weiterhin, was fehlt), nur die
+   Textfarbe fällt auf die generische Fussnotenfarbe zurück. */
+.legende-branche[aria-pressed='false'] { opacity: .5; }
+.legende-branche[aria-pressed='false'] .legende-punkt { opacity: .6; }
+.legende-nur {
+  flex: none; border: none; background: transparent; color: var(--tinte-leise);
+  font-size: .625rem; text-transform: none; letter-spacing: normal;
+  padding: 0; cursor: pointer; font-family: inherit; text-decoration: underline;
+  text-underline-offset: .15em;
+}
+.legende-nur:hover { color: var(--tinte); }
+
+/* Bezugs-, Verlust- und Leerauswahl-Zeile (Task 13) — Fliesstext, keine
+   Liste: anders als die Branchenfarben sind das ganze Sätze, keine
+   Aufzählung gleichartiger Einträge. */
+.legende-bezug {
+  font-size: .6875rem; color: var(--tinte-leise); margin-top: .35rem;
+}
+.legende-bezug:first-of-type { margin-top: 0; }
+
 #panel {
   position: absolute; right: 1rem; top: 6.5rem;
   max-width: 21rem; max-height: calc(100vh - 8rem); overflow-y: auto;
@@ -235,16 +310,49 @@ a:focus-visible, button:focus-visible {
   text-transform: uppercase; letter-spacing: .05em;
   padding: .25rem .5rem; border-radius: .25rem;
   box-shadow: 0 1px 3px rgba(27, 39, 51, .15);
-  white-space: nowrap;
 }
 #hover-label[hidden] { display: none; }
+/* Task 16: `white-space: nowrap` gilt je Zeile (`<span>`, siehe
+   `showHoverLabel`), nicht mehr für den ganzen Block — sonst liefe der Name
+   der recherchierten Firma und die zweite Zeile (Kennzahl · Branche)
+   ineinander statt untereinander zu stehen. Die zweite Zeile ist
+   Nebeninformation, nicht der Name selbst — kleiner und in `--tinte-leise`,
+   demselben Ton, in dem die App sonst Nebensächliches setzt (z.B.
+   `.legende-nur`). Grossbuchstaben bleiben (geerbt von `#hover-label`) auch
+   für Zahlen und Branchennamen: die Legende zeigt Prozent- und
+   Frankenbeträge («80 %», Beträge in `.legende-bezug`) bereits durchgehend
+   versal und bleibt dabei lesbar — dieselbe Stimme für die zweite
+   Hover-Zeile wahrt die Konsistenz, statt für eine Zeile eine Ausnahme zu
+   öffnen. */
+#hover-label > span { display: block; white-space: nowrap; }
+#hover-label > span:nth-child(2) { font-size: .625rem; color: var(--tinte-leise); margin-top: .15rem; }
 
 /* Unter ~800px stehen #legende (unten links) und #hinweis (jetzt unten
    rechts) sich nicht mehr im Weg wie zuvor (#hinweis war bodenmittig) —
    auf sehr schmalen Viewports reicht die Breite trotzdem nicht für zwei
    nebeneinanderliegende Eckboxen. Löst beide aus der Absolut-Positionierung
    und stapelt sie im normalen Fluss am unteren Rand von #ui. #fehler,
-   #steuerung und #panel bleiben unberührt: weiterhin absolut positioniert. */
+   #steuerung und #panel bleiben unberührt: weiterhin absolut positioniert.
+
+   #kennzahlen sitzt in der Standardansicht oben mittig, genau zwischen
+   #steuerung (oben links) und dem NavigationControl (oben rechts) — auf
+   einem schmalen Viewport wächst #steuerung selbst schon in die Breite
+   (Marke + zwei Gruppen, siehe `#steuerung .marke`) und lässt dort keinen
+   Platz mehr für eine dritte, mittig zentrierte Box, ohne eine der beiden
+   Ecken zu überdecken. #kennzahlen reiht sich deshalb hier bei #legende und
+   #hinweis in denselben Fluss ein: alle drei "man sieht sie ohne Klick,
+   aber sie brauchen keinen festen Platz oben" gehören auf schmalen
+   Bildschirmen zusammen an den unteren Rand, statt sich um die knappe
+   Kopfzeile zu streiten.
+
+   `order: -1` statt auf die DOM-Einfügereihenfolge zu vertrauen: welche der
+   drei Aufrufstellen (`renderKennzahlen`/`renderLegend`/`renderNotices`)
+   ihr Element zuerst an #ui hängt, entscheidet die Seite (`karte/firmen.
+   ts`), nicht dieses CSS — und deren Verdrahtung ist eigene Folgearbeit
+   (siehe Kommentar in `ui/kennzahlen.ts`). Die Summenzeile soll trotzdem
+   zuverlässig zuoberst in der von unten aufgebauten Spalte
+   (`justify-content: flex-end`) stehen, am nächsten am sichtbaren unteren
+   Rand: `order` legt das unabhängig von der Aufrufreihenfolge fest. */
 @media (max-width: 800px) {
   #ui {
     display: flex;
@@ -254,9 +362,10 @@ a:focus-visible, button:focus-visible {
     gap: .5rem;
     padding-bottom: 1rem;
   }
-  #legende, #hinweis {
+  #kennzahlen, #legende, #hinweis {
     position: static;
-    left: auto; right: auto; bottom: auto; transform: none;
+    left: auto; right: auto; bottom: auto; top: auto; transform: none;
     max-width: calc(100vw - 2rem);
   }
+  #kennzahlen { order: -1; }
 }

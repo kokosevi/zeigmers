@@ -17,10 +17,26 @@ function box(): HTMLElement {
 /** `x`/`y` sind Bildschirmkoordinaten aus deck.gls `PickingInfo` (relativ zum
  *  Karten-Canvas, der bei `#map { position: absolute; inset: 0 }` deckungsgleich
  *  mit dem Viewport ist) — direkt als `left`/`top` einer `position: fixed`
- *  verwendbar. */
-export function showHoverLabel(name: string, x: number, y: number): void {
+ *  verwendbar.
+ *
+ *  `lines` nimmt sowohl eine einzelne Zeichenkette als auch mehrere entgegen
+ *  (Task 16): die unrecherchierten Marker haben nur einen Namen zu zeigen,
+ *  die recherchierten Firmen zusätzlich Kennzahl und Branche — je Zeile ein
+ *  eigenes `<span>` statt `textContent`, sonst liesse sich die zweite Zeile
+ *  in CSS nicht kleiner und in `--tinte-leise` setzen (siehe `style.css`,
+ *  `#hover-label > span`). Bestehende Aufrufstellen mit einer einzelnen
+ *  Zeichenkette bleiben unverändert lauffähig, ohne selbst ein Array zu
+ *  bauen. */
+export function showHoverLabel(lines: string | readonly string[], x: number, y: number): void {
   const el = box()
-  el.textContent = name
+  const rows = typeof lines === 'string' ? [lines] : lines
+  el.replaceChildren(
+    ...rows.map((line) => {
+      const span = document.createElement('span')
+      span.textContent = line
+      return span
+    }),
+  )
   el.style.left = `${x}px`
   el.style.top = `${y}px`
   el.hidden = false

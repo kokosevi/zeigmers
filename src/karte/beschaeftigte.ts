@@ -29,8 +29,15 @@ function reportNavigationError(context: string): (error: unknown) => void {
  *  Bildschirm, löst keine Kameraüberblendung „hinein" aus. */
 export async function startBeschaeftigte(): Promise<void> {
   const basis = await createBasis()
-  const { handle, kantone, cantonsGeo, cantonGeometries, cantonBorderLayer, nationalBounds } =
-    basis
+  const {
+    handle,
+    kantone,
+    cantonsGeo,
+    cantonGeometries,
+    cantonBorderLayer,
+    nationalBounds,
+    lakesGeo,
+  } = basis
 
   // Titel der Gemeindezelle im Panel — nur diese Ansicht zeigt Gemeinden,
   // deshalb steht der Aufruf hier und nicht im geteilten `createBasis`.
@@ -124,6 +131,7 @@ export async function startBeschaeftigte(): Promise<void> {
         cantonsGeo,
         activeBfsNr: level === 'kanton' && activeCanton ? activeCanton.bfsNr : null,
         cantonBorderLayer,
+        lakes: lakesGeo,
         level,
         kantone,
         cantonGeometries,
@@ -144,11 +152,12 @@ export async function startBeschaeftigte(): Promise<void> {
       scopeLabel: level === 'kanton' && activeCanton ? `Kanton ${activeCanton.name}` : undefined,
     })
     // Diese Seite lädt `companies.json` nicht (siehe `karte/basis.ts`,
-    // `createBasis`-Dokumentation) und hat deshalb kein `stats.revenueInChf`
-    // zur Hand — unbeachtlich, `renderNotices` liest den Parameter nur bei
-    // `view === 'sichtbare'` (siehe dort). `true` ist hier ein neutraler
-    // Platzhalter, kein Fakt über diese Ansicht.
-    renderNotices('beschaeftigte', level, true)
+    // `createBasis`-Dokumentation) und hat deshalb weder eine Kennzahl noch
+    // `stats.revenueInChf`/`stats.profitInChf` zur Hand — unbeachtlich,
+    // `renderNotices` liest beide Parameter nur bei `view === 'sichtbare'`
+    // (siehe dort). `'umsatz'`/`true` sind hier neutrale Platzhalter, kein
+    // Fakt über diese Ansicht.
+    renderNotices('beschaeftigte', level, 'umsatz', true)
     renderBackControl(level === 'kanton', exitToSwitzerland)
   }
 
@@ -182,9 +191,16 @@ export async function startBeschaeftigte(): Promise<void> {
     render()
   }
 
-  mountNav('beschaeftigte', (newMode) => {
-    mode = newMode
-    render()
+  // Weder `metrics` noch `orgForms`: diese Seite kennt keine Kennzahlwahl
+  // (die Säule ist immer die Kopfzahl der Ebene) und keine Organisationsform
+  // (die gibt es nur bei den Firmen) — deshalb erscheinen die beiden neuen
+  // Gruppen aus `ui/nav.ts` hier nicht (siehe `NavOptions`).
+  mountNav({
+    view: 'beschaeftigte',
+    onModeChange: (newMode) => {
+      mode = newMode
+      render()
+    },
   })
 
   // Auftrag: „Escape should do it too" — derselbe Weg zurück wie der

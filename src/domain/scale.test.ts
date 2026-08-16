@@ -61,3 +61,13 @@ describe('computeElevations', () => {
 // 2026-08-14, siehe `ui/legend.ts`) — mit ihrem einzigen Aufrufer verschwand
 // auch die Funktion selbst und diese Tests, statt als toter Code liegen zu
 // bleiben (siehe Git-Historie für den vorigen Stand).
+
+// `computeSignedElevations` (Dämpfung auf den Betrag, Vorzeichen bleibt
+// stehen) und diese drei Tests sind aus demselben Grund entfernt (Nachbesserung
+// zu Aufgabe 18): sie gehörten zur ersten, im Browser verworfenen Lösung für
+// Verlustsäulen (eine angehobene Nulllinie). Seit dem Fallback auf «Betrag als
+// Höhe, Verlustfarbe als Vorzeichen» (siehe `layers/visible.ts`,
+// `companyElevations`/`zeroPlaneHeight`) hatte die Funktion ausserhalb ihrer
+// eigenen Tests keinen Aufrufer mehr — derselbe Fall wie `buildZeroPlaneLayer`/
+// `ZERO_PLANE_CLEARANCE_M`, die dieselbe Aufgabe bereits entfernt hat. Siehe
+// Git-Historie für den vorigen Stand.
