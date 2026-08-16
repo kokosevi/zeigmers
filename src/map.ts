@@ -191,12 +191,22 @@ function cappedPadding(map: maplibregl.Map): PaddingOptions {
 // («Compagnie Financière Richemont SA») dabei aber unter die Legende-Box
 // links (deren eigener 1rem-Sicherheitsabstand, siehe `DERIVED_FRAME_
 // PADDING`, ist für das *flache* `fitBounds`-Modell gerechnet, nicht für den
-// tatsächlich weiter herausgezoomten Rand bei `pitch: 50`); `0.3` liess davon
-// noch zwei Buchstaben unter der Box verschwinden. `0.15` ist der grösste
-// getestete Wert, bei dem die Schweiz spürbar mehr Bildfläche füllt als ohne
-// Ausgleich UND kein Firmenname mehr unter einer Chrome-Box verschwindet —
-// der gewählte Wert.
-const PITCH_FILL_BOOST = 0.15
+// tatsächlich weiter herausgezoomten Rand bei `pitch: 50`).
+//
+// Nachbesserung (selbes Datum): `0.15` war die erste Wahl, verworfen nach
+// Sichtprüfung der ganzen Reihe (`0.15`/`0.2`/`0.3`/`0.5`) — bei `0.15`
+// bleiben rund 40 % der Bildfläche leer, praktisch der Ausgangszustand, wegen
+// dem die Rahmung überhaupt angefasst wurde. Bei `0.5` füllt die Landesfläche
+// den Rahmen spürbar besser, die Seen treten deutlicher hervor, und
+// Beschriftungen wie NOVARTIS AG, NESTLÉ S.A. und Kühne + Nagel werden
+// dadurch deutlich lesbarer. Massgeblich für die Wahl: bei `0.5` berührt die
+// Landesfläche selbst die Legende-Box weiterhin nicht — sie endet an deren
+// Kante, wie bei `0.15` auch. Einzige neue Einschränkung: der
+// Beschriftungstext von «Compagnie Financière Richemont SA» am Westrand
+// streift jetzt den Rand der Legende-Box (Text, nicht Landfläche) — in
+// Kauf genommen, weil kein Buchstabe darunter verschwindet und der Zugewinn
+// an gefüllter Fläche und Lesbarkeit den kleinen Kontaktpunkt aufwiegt.
+const PITCH_FILL_BOOST = 0.5
 
 const FRAME_DURATION_MS = 900
 
