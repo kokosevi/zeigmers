@@ -86,7 +86,7 @@ In `etl/tests/test_companies.py` ergänzen (das Modul hat bereits `_row()` und F
 
 ```python
 def test_build_artifact_rechnet_gewinn_in_chf_um():
-    monthly = {"USD": {2024: [0.9] * 12}}
+    monthly = {("USD", 2024): [0.9] * 12}
     table = noga.load_table()
     rows = [_row(profit="200000000", profit_currency="USD", profit_unit="1",
                  revenue_currency="USD", consolidation_basis="total_group",
@@ -99,7 +99,7 @@ def test_build_artifact_rechnet_gewinn_in_chf_um():
 
 
 def test_build_artifact_rechnet_auch_verluste_um():
-    monthly = {"EUR": {2024: [0.95] * 12}}
+    monthly = {("EUR", 2024): [0.95] * 12}
     table = noga.load_table()
     rows = [_row(profit="-40000000", profit_currency="EUR", profit_unit="1",
                  revenue_currency="EUR", consolidation_basis="total_group",
@@ -111,7 +111,7 @@ def test_build_artifact_rechnet_auch_verluste_um():
 def test_profit_in_chf_ist_falsch_wenn_eine_umrechnung_fehlt():
     """Alles oder nichts — wie bei revenueInChf. Halb umgerechnet stünden
     zwei Massstäbe nebeneinander, ohne dass man es sieht."""
-    monthly = {"CHF": {2024: [1.0] * 12}}
+    monthly = {("CHF", 2024): [1.0] * 12}
     table = noga.load_table()
     rows = [
         _row(name="A AG", uid="CHE-100.000.001", profit="1000", profit_currency="CHF",

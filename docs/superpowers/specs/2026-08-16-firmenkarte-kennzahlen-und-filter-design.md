@@ -60,6 +60,19 @@ Aus der Vorbesprechung, hier als Kontext für alles Weitere:
    enthält nur 11 Seeflächen — Genfersee, Vierwaldstättersee, Lago Maggiore,
    Zugersee und Walensee stecken dort in den Gemeindeflächen und sind nicht
    einzeln herauszulösen.
+
+   **Korrektur (16. August 2026, bei der Umsetzung):** Natural Earth 10m
+   enthält im Schweizer Fenster nur vier Polygone — Lake Geneva, Bodensee,
+   ein unbenanntes und Lago di Como. Die Annahme, es lägen dort «alle grossen
+   Seen» vor, war falsch; sie stammt aus der Entscheidungsfrage, nicht aus den
+   Daten. Das Artefakt entsteht deshalb aus **beiden** bereits vorhandenen
+   Quellen: Natural Earth liefert Genfersee und Bodensee, swissBOUNDARIES3D
+   über `objektart == 'Kantonsgebiet'` **und** `see_flaeche > 0` zusätzlich
+   Zürichsee, Lac de Neuchâtel, Bielersee, Thunersee, Brienzersee und
+   Greifensee. Der Flächenfilter ist Pflicht: dieselbe Objektart führt auch
+   «Staatswald Galm» — ein Wald. Vierwaldstättersee, Zugersee, Walensee und
+   die Tessiner Seen fehlen weiterhin in beiden Quellen; das nennt der
+   Moduldocstring, statt es zu beschweigen.
 2. **Verluste als negative Höhe**, wenn sie sich sichtbar zeichnen lassen;
    sonst als Betrag mit eindeutig anderer Farbe.
 3. **Höhenskala an die Auswahl angepasst** — das Maximum ist das Maximum der
@@ -322,12 +335,15 @@ Artefakt bekommt dafür eine Kennzeichnung analog zu `stats.revenueInChf`.
 Zeile, keine Ableitung aus der Quelle — eine später ergänzte Genossenschaft
 trägt ihn genauso, ohne dass die Ladeseite Sonderfälle kennt.
 
-**`lakes.py`**: Natural Earth 10m lakes laden (neuer Eintrag in `fetch.py`
-und `data/raw/manifest.json`), auf das Landesgebiet zuschneiden,
+**`lakes.py`**: Seeflächen aus zwei Quellen (siehe Korrektur bei Entscheidung
+1) — Natural Earth 10m lakes laden (neuer Eintrag in `fetch.py` und
+`data/raw/manifest.json`) und die Seezeilen aus der bereits vorhandenen
+swissBOUNDARIES3D-Datei dazunehmen, beide auf das Landesgebiet zuschneiden,
 vereinfachen, als `public/data/lakes.geojson` schreiben. Natural Earth ist die
 einzige nicht-amtliche Quelle dieser Karte und wird in der Eckbox
 (`src/ui/notices.ts`) namentlich als solche genannt, zusammen mit dem
-Hinweis, dass die Seeumrisse generalisiert sind.
+Hinweis, dass die Seeumrisse generalisiert sind und dass mehrere grosse Seen
+in beiden Quellen fehlen.
 
 ## 10 — Randfälle
 
