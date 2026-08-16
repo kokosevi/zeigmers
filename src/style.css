@@ -5,6 +5,12 @@
    knappen, kühlen Kartenpalette drumherum, nicht aus neuen Farbtönen. */
 :root {
   --grund: #E8EDF2;
+  /* Aufgabe 17: eine dunklere Platte (`#C3CEDC`) wurde geprüft und wieder
+     verworfen, weil sie den WCAG-Kontrast aller elf Branchenfarben senkt
+     (sie liegen alle heller als `--land`) statt ihn zu erhöhen — vier davon
+     fielen dadurch unter den geforderten Wert 1.6. Details/Zahlen siehe
+     `layers/cantons.ts` (`LAND_FILL`, derselbe Wert, dort ausführlich
+     begründet) und der Bericht zu Aufgabe 17. */
   --land: #CFD8E3;
   --land-kante: #A8B6C6;
   --aargau: #DDE5EE;

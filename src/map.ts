@@ -1,7 +1,7 @@
 import { MapboxOverlay } from '@deck.gl/mapbox'
 import type { LayersList } from '@deck.gl/core'
 import maplibregl from 'maplibre-gl'
-import type { StyleSpecification } from 'maplibre-gl'
+import type { PaddingOptions, StyleSpecification } from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { LngLatBounds } from './domain/bounds'
 import { mapLightingEffect } from './layers/lighting'
@@ -54,14 +54,63 @@ export const INITIAL_VIEW = {
   bearing: -15,
 }
 
-// Kamera-Padding für `frameBounds` (Pixel je Seite) — grosszügig genug, dass
-// die UI-Chrome (Steuerung oben links, Legende/Hinweis unten, siehe
-// `style.css`) eine gerahmte Fläche nicht verdeckt, und dass die durch
-// `pitch` gestauchte Ferne (siehe `FitBoundsOptions`, die den `pitch` selbst
-// nicht in die Bounds-Rechnung einbezieht) nicht am Bildrand abgeschnitten
-// wirkt. Von Hand gewählt, nicht hergeleitet — wie stark eine Kantonsfläche
-// dadurch tatsächlich ausgefüllt wird, ist unverifiziert (siehe Bericht).
-const FRAME_PADDING_PX = 64
+// Kamera-Padding für `frameBounds`, je Seite einzeln (Pixel) — hergeleitet
+// aus der tatsächlichen UI-Chrome in `style.css`, nicht mehr ein einzelner,
+// von Hand gewählter Wert für alle vier Seiten (siehe Bericht Aufgabe 17).
+// Zeilenhöhe, wo `style.css` kein eigenes `line-height` setzt: angenommener
+// Browser-Normalwert ≈ 1,2 × Schriftgrösse (gängige Faustregel für
+// serifenlose Systemschriften, exakter Wert erst im Browser messbar).
+//
+// oben (140px = 1rem + 6,75rem + 1rem): #steuerung (Marke + zwei
+// `.gruppe`-Zeilen) ist bereits an anderer Stelle in dieser CSS-Datei
+// kalibriert — `#zurueck-gruppe { top: 7.75rem }` misst genau 1rem
+// Randabstand + 6,75rem Höhe von #steuerung selbst, diese Zahl wird hier
+// übernommen statt ein zweites Mal von Grund auf neu geschätzt.
+// #kennzahlen bleibt mit ein bis zwei Zeilen (Padding 2×.5rem + Zeilenhöhe
+// 1,4×.8125rem) bei rund 4,4rem deutlich darunter — #steuerung bestimmt die
+// Seite. +1rem Sicherheitsabstand (derselbe Randabstand, den jede Box in
+// diesem Stylesheet vom Viewport-Rand hat) ergibt 1rem+6,75rem+1rem=8,75rem.
+//
+// links (320px = 1rem + 18rem + 1rem): #legende (`max-width: 18rem`) ist
+// breiter als die Button-Reihen von #steuerung und bestimmt die Seite.
+// Randabstand 1rem + Breite 18rem + 1rem Sicherheitsabstand = 20rem.
+//
+// rechts (368px = 1rem + 21rem + 1rem): #panel (`max-width: 21rem`) ist
+// breiter als #hinweis (16rem) und bestimmt die Seite. Randabstand 1rem +
+// Breite 21rem + 1rem Sicherheitsabstand = 23rem.
+//
+// unten (280px ≈ 1rem + 15,5rem + 1rem): #legende (Titel + „Alle
+// Branchen"-Knopf + bis zu elf Branchenzeilen + eine Bezugszeile, alle
+// Zeilenhöhen/Gaps/Padding aus `.legende-titel`, `.legende-alle`,
+// `.legende-branchen li`, `.legende-bezug`) summiert sich auf rund 15,5rem
+// Innenhöhe und bestimmt die Seite. #hinweis trägt in Ansicht «Börsennotierte
+// Firmen» bis zu sechs Pflichttext-Absätze (`ui/notices.ts`,
+// `renderNotices`) und kann im ungünstigsten Fall höher werden — bewusst
+// nicht die bestimmende Grösse, weil sein Umfang stark ansichtsabhängig
+// schwankt (vier bis sechs Absätze) und eine Bemessung auf den
+// ungünstigsten Fall die Rahmung unverhältnismässig stark einschränken
+// würde. Aufgabe 18 prüft am Screenshot, ob dieser Wert genügt.
+const FRAME_PADDING: PaddingOptions = {
+  top: 140,
+  bottom: 280,
+  left: 320,
+  right: 368,
+}
+
+// Zusätzlicher Zoom, nach der aus `FRAME_PADDING` hergeleiteten Kamera
+// aufaddiert (siehe `frameBounds` unten): `cameraForBounds` — wie
+// `fitBounds`, das intern denselben Weg geht — rechnet `pitch` nicht in die
+// Bounds-Berechnung ein (siehe `CameraForBoundsOptions`, die keinen
+// `pitch`-Parameter kennt), obwohl die Kamera anschliessend mit `pitch: 50`
+// aus `INITIAL_VIEW` schwenkt. Dadurch bleibt die gerahmte Fläche kleiner als
+// vom Padding beabsichtigt (Screenshot-Befund: rund 45 % Bildfläche statt der
+// angestrebten Ausfüllung). Der richtige Ausgleichswert lässt sich nur am
+// gerenderten Bild ablesen, nicht aus CSS oder Geometrie herleiten — deshalb
+// hier bewusst nicht geraten: `PITCH_FILL_BOOST` bleibt `0` (unverändertes
+// Verhalten gegenüber vor dieser Aufgabe), bis Aufgabe 18 anhand von
+// Screenshots den tatsächlich passenden Wert misst und einträgt.
+const PITCH_FILL_BOOST = 0
+
 const FRAME_DURATION_MS = 900
 
 function prefersReducedMotion(): boolean {
@@ -89,9 +138,11 @@ export interface MapHandle {
   /** Bewegt die Kamera so, dass `bounds` (Lng/Lat, siehe `domain/bounds.ts`)
    *  im Bild liegt, bei fester `pitch`/`bearing` aus `INITIAL_VIEW` — die
    *  Herleitung „von der Geometrie, nicht von 26 Handpositionen" (Auftrag).
-   *  `instant: true` (Erstladung der Schweiz-Übersicht) und ein aktives
-   *  `prefers-reduced-motion` überspringen die Animation (`duration: 0`);
-   *  sonst wird über `FRAME_DURATION_MS` sanft geschwenkt. */
+   *  Padding je Seite aus `FRAME_PADDING`, zusätzlich um `PITCH_FILL_BOOST`
+   *  ausgeglichen (siehe dort — `pitch` selbst bleibt in der Bounds-Rechnung
+   *  unberücksichtigt). `instant: true` (Erstladung der Schweiz-Übersicht)
+   *  und ein aktives `prefers-reduced-motion` überspringen die Animation
+   *  (`duration: 0`); sonst wird über `FRAME_DURATION_MS` sanft geschwenkt. */
   frameBounds(bounds: LngLatBounds, options?: { instant?: boolean }): void
 }
 
@@ -134,10 +185,28 @@ export function createMap(container: HTMLElement): MapHandle {
     setLayers: (layers) => overlay.setProps({ layers }),
     frameBounds: (bounds, options) => {
       const instant = options?.instant === true || prefersReducedMotion()
-      map.fitBounds(bounds, {
+      // `cameraForBounds` statt `fitBounds` direkt: dieselbe Zentrum/Zoom-
+      // Herleitung aus den Bounds (siehe `PITCH_FILL_BOOST`-Kommentar oben),
+      // aber als eigener Zwischenschritt, damit der Ausgleichswert auf den
+      // berechneten Zoom aufaddiert werden kann, bevor in einer einzigen
+      // Animation dorthin geschwenkt wird — kein zweiter, sichtbar
+      // nachruckender Kameraschritt.
+      const camera = map.cameraForBounds(bounds, {
+        padding: FRAME_PADDING,
+        bearing: INITIAL_VIEW.bearing,
+      })
+      // `cameraForBounds` liefert laut eigener Dokumentation `undefined`,
+      // wenn es nicht rahmen kann (z. B. entartete Bounds), und warnt dann
+      // bereits selbst in die Konsole — hier bleibt in dem Fall nur, die
+      // Kamera unverändert zu lassen statt mit `undefined`-Werten
+      // weiterzurechnen.
+      if (!camera) return
+      map.easeTo({
+        center: camera.center,
+        zoom: (camera.zoom ?? map.getZoom()) + PITCH_FILL_BOOST,
         pitch: INITIAL_VIEW.pitch,
         bearing: INITIAL_VIEW.bearing,
-        padding: FRAME_PADDING_PX,
+        padding: FRAME_PADDING,
         duration: instant ? 0 : FRAME_DURATION_MS,
       })
     },
