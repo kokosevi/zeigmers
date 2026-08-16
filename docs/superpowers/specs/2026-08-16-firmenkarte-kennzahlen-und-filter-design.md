@@ -30,6 +30,13 @@ an einem Screenshot der laufenden Seite:
 | Summe Umsatz (CHF) | 762.1 Mrd. |
 | Summe Mitarbeitende weltweit | 2'052'630 |
 
+Messstand der 188: eine spätere Korrektur (Finding I7, Abschluss-Review) hat
+`stats.withRevenue` auf 187 gestellt, weil Molecular Partners AGs ausgewiesene
+Null keine Höhenaussage trägt. Die 188 oben und in den folgenden Absätzen ist
+die am 15. August 2026 tatsächlich gemessene Zahl und bleibt unverändert
+stehen, statt nachträglich auf 187 umgerechnet zu werden — die aktuelle Zahl
+steht in `src/layers/visible.ts` und in der README.
+
 Die drei Befunde, aus denen die Arbeit folgt:
 
 **1. Der Default zerstört das Bild.** `DEFAULT_MODE.sichtbare` ist `'linear'`

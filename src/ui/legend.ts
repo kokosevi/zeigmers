@@ -66,7 +66,7 @@ const UNRESEARCHED_LEGEND_TEXT =
 // hier nicht verlangte Änderung).
 const LOSS_LEGEND_TEXT =
   'Diese Farbe: Verlust in der Kennzahl Reingewinn — ersetzt hier die Branchenfarbe, Höhe ' +
-  'bleibt der Betrag. Anzahl und Saldo der Branche unten zählen die Firma trotzdem mit.'
+  'bleibt der Betrag. Anzahl und Saldo der Branche oben zählen die Firma trotzdem mit.'
 
 // Finding I4: `branchTotals` (unten) zählt und summiert über `withValue`,
 // nicht über `visible` — eine Firma ohne Wert in der aktiven Kennzahl trägt
@@ -208,9 +208,15 @@ function unresearchedSwatch(): HTMLLIElement {
  *  negativen Wert zeichnet, unabhängig von der Branche der Firma (siehe
  *  Finding C2, Kommentar bei `LOSS_LEGEND_TEXT` oben). Nur in der
  *  Gewinn-Ansicht sinnvoll — die anderen beiden Kennzahlen kennen keine
- *  negativen Werte (`metricAllowsNegative`). */
+ *  negativen Werte (`metricAllowsNegative`).
+ *
+ *  Durch `litTopFaceColor`, wie jeder Branchentupfer (siehe `branchRow`/
+ *  `swatch` unten, Finding 2a): eine Verlustsäule ist dieselbe beleuchtete
+ *  Deckfläche wie jede andere, `LOSS_COLOR` ist ihre Rohfarbe vor dem Licht
+ *  — die Begründung für die Näherung gilt hier genauso wie bei den
+ *  Branchenfarben. */
 function lossSwatch(): HTMLLIElement {
-  const [r, g, b] = LOSS_COLOR
+  const [r, g, b] = litTopFaceColor(LOSS_COLOR)
   return swatch([r, g, b], LOSS_LEGEND_TEXT)
 }
 
@@ -384,8 +390,12 @@ export function renderLegend(options: LegendOptions): void {
     hinweise.appendChild(unresearchedSwatch())
     // Nur in der Gewinn-Ansicht: die anderen beiden Kennzahlen kennen keine
     // negativen Werte, `LOSS_COLOR` erscheint dort nie auf der Karte
-    // (Finding C2).
-    if (metric === 'gewinn') hinweise.appendChild(lossSwatch())
+    // (Finding C2). Zusätzlich nur, wenn die aktuelle AUSWAHL tatsächlich
+    // eine Verlustfirma enthält (`result.losses > 0`, dieselbe Bedingung wie
+    // bei der Verlustzeile weiter unten) — sonst erklärt der Swatch eine
+    // Farbe, die auf der gefilterten Karte gar nicht vorkommt, das Spiegelbild
+    // des Befunds (C2), den er eigentlich behebt.
+    if (metric === 'gewinn' && result && result.losses > 0) hinweise.appendChild(lossSwatch())
     const floorNote = document.createElement('li')
     // Ohne aktive Kennzahl (Ansicht «Beschäftigte» erreicht diesen Zweig nie,
     // aber `metric` bleibt hier typisiert optional, siehe `LegendOptions`)

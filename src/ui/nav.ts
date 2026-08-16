@@ -42,7 +42,14 @@ export type ViewName = 'sichtbare' | 'beschaeftigte'
  *  gleich hoher Stummel. Derselbe Befund, der Ansicht «Beschäftigte» schon
  *  immer den gedämpften Default gab, gilt für «Börsennotierte Firmen» also
  *  ebenso — beide Ansichten stehen jetzt aus demselben Grund auf
- *  `'logarithmisch'`, keine ist mehr die Ausnahme. */
+ *  `'logarithmisch'`, keine ist mehr die Ausnahme.
+ *
+ *  Messstand der 188 (2026-08-16, vor Finding I7): `stats.withRevenue`
+ *  zählte damals noch Molecular Partners AGs ausgewiesene Null als Umsatz
+ *  mit. Die Fixwelle hat das auf 187 korrigiert (siehe `layers/visible.ts`).
+ *  153/188 bleibt hier unverändert stehen, weil es die tatsächlich gemessene
+ *  Zahl von damals ist — sie umzurechnen wäre eine erfundene Zahl, keine
+ *  gemessene. */
 export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
   sichtbare: 'logarithmisch',
   beschaeftigte: 'logarithmisch',

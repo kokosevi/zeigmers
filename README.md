@@ -569,7 +569,7 @@ Verträgen, nach denen recherchiert und gegengelesen wurde.
 | Gesellschaften nach Zusammenfassung von Namen-/PS-Aktien und zweiten Handelslinien | 202 |
 | davon auf der Karte platziert | **201** |
 | davon recherchiert | **201** |
-| davon mit belegtem Umsatz | **188** |
+| davon mit belegtem Umsatz | **187** |
 | unabhängig gegengeprüfte Zeilen | **alle 193** |
 | davon bestätigt | 183 |
 | davon mit Fund | 10 — alle eingearbeitet |
@@ -641,7 +641,7 @@ niedrigere vollständig — Infracore mit 66 Mio. verschwand hinter AEVIS mit
 weit unter der Auflösung, in der diese Karte etwas aussagt, und das Panel
 nennt den Versatz.
 
-**Elf Säulen steckten in der Kantonsplatte.** Mit 188 echten Umsätzen spannt
+**Elf Säulen steckten in der Kantonsplatte.** Mit 187 echten Umsätzen spannt
 die Ansicht einen Faktor von rund 325'000 (Nestlé 89.5 Mrd. gegen Xlife
 Sciences 0.28 Mio.); am unteren Ende ergab die Skala 75 und 105 m, weniger
 als die 300 m hohe Platte. Zwei Schwellen lösen das, weil zwei Zusicherungen

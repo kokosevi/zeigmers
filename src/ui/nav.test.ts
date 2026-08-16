@@ -5,7 +5,10 @@ import { createNav, DEFAULT_MODE } from './nav'
 describe('DEFAULT_MODE', () => {
   it('startet die Firmenseite gedämpft', () => {
     // Linear sitzen 153 von 188 Säulen auf der Mindesthöhe — die Karte
-    // öffnete mit zwei sichtbaren Säulen und einem Feld Stummel.
+    // öffnete mit zwei sichtbaren Säulen und einem Feld Stummel. 188 ist der
+    // Messstand vom 2026-08-16, vor Finding I7 (`stats.withRevenue` zählt
+    // seither 187, siehe `nav.ts`) — unverändert, weil es die damals
+    // tatsächlich gemessene Zahl ist.
     expect(DEFAULT_MODE.sichtbare).toBe('logarithmisch')
   })
 })

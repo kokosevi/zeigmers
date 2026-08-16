@@ -202,6 +202,16 @@ describe('renderLegend — Verlustfarbe (Finding C2)', () => {
       expect(document.getElementById('legende')!.textContent).not.toMatch(/Diese Farbe/)
     }
   })
+
+  // Regressionsschutz: `lossSwatch` hing bisher nur an `metric === 'gewinn'`,
+  // nicht daran, ob die aktuelle AUSWAHL überhaupt eine Verlustfirma enthält
+  // — eine auf eine verlustfreie Branche gefilterte Karte erklärte damit eine
+  // Farbe, die sie gar nicht zeichnete (das Spiegelbild von Finding C2).
+  it('zeigt den Verlust-Swatch nicht, wenn die Auswahl keine Verlustfirma enthält', () => {
+    const companies = [company({ nogaGroupIndex: 1, profitChf: 10_000_000 })]
+    renderLegend(options(companies, 'gewinn'))
+    expect(document.getElementById('legende')!.textContent).not.toMatch(/Diese Farbe/)
+  })
 })
 
 describe('renderLegend — Mindesthöhen-Hinweis folgt der Kennzahl (Finding I1)', () => {
