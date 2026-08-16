@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import type { Level, LevelMeta } from './loader'
 import {
   joinCantonGeometry,
   joinMunicipalityGeometry,
+  loadLakes,
   type BoundaryFeatureCollection,
 } from './boundaries'
 
@@ -129,6 +130,36 @@ function kantoneLevel(gemeindeIdx: number[], kantone: LevelMeta['kantone']): Lev
     },
   }
 }
+
+// `loadLakes` ist die wichtigste Zusicherung dieser Aufgabe: die Seen sind
+// Orientierung, kein Inhalt (siehe `layers/lakes.ts`) — anders als
+// `loadCantons`/`loadGeojson` darf ein fehlendes oder kaputtes Artefakt die
+// Karte nicht zum Absturz bringen (`loadCantons()` wirft absichtlich weiter,
+// das ist hier ausdrücklich anders).
+describe('loadLakes', () => {
+  const originalFetch = globalThis.fetch
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch
+  })
+
+  it('liefert null statt zu werfen, wenn das Artefakt fehlt (HTTP-Fehler)', async () => {
+    globalThis.fetch = (async () => new Response('not found', { status: 404 })) as typeof fetch
+    await expect(loadLakes()).resolves.toBeNull()
+  })
+
+  it('liefert null statt zu werfen, wenn das Artefakt kaputtes JSON enthält', async () => {
+    globalThis.fetch = (async () => new Response('{nicht json', { status: 200 })) as typeof fetch
+    await expect(loadLakes()).resolves.toBeNull()
+  })
+
+  it('liefert das FeatureCollection, wenn das Artefakt gültig ist', async () => {
+    const fc = { type: 'FeatureCollection', features: [] }
+    globalThis.fetch = (async () =>
+      new Response(JSON.stringify(fc), { status: 200 })) as typeof fetch
+    await expect(loadLakes()).resolves.toEqual(fc)
+  })
+})
 
 describe('joinCantonGeometry', () => {
   it('matches each row to its polygon by bfs_nr, reading meta.kantone (not gemeinden)', () => {

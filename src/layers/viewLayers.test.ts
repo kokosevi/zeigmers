@@ -1,4 +1,4 @@
-import type { Geometry } from 'geojson'
+import type { FeatureCollection, Geometry } from 'geojson'
 import { describe, expect, it } from 'vitest'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level, LevelMeta } from '../data/loader'
@@ -117,11 +117,20 @@ const COMPANIES: CompanyData = {
 
 const CANTON_BORDER_LAYER = buildCantonBorderLayer({ data: CANTONS_GEO })
 
+// Fixture für den Seenlayer — Geometrie ist hier egal (kein Test prüft die
+// tatsächliche Fläche), nur dass `buildViewLayers` sie in eine `'seen'`-Layer
+// mit der richtigen Einreihung übersetzt.
+const LAKES_GEO: FeatureCollection = {
+  type: 'FeatureCollection',
+  features: [{ type: 'Feature', properties: { name: 'Thunersee' }, geometry: SWITZERLAND_POLYGON }],
+}
+
 const BASIS = {
   mode: 'logarithmisch' as const,
   cantonsGeo: CANTONS_GEO,
   activeBfsNr: null,
   cantonBorderLayer: CANTON_BORDER_LAYER,
+  lakes: null as FeatureCollection | null,
 }
 
 function beschaeftigteInput(
@@ -187,5 +196,17 @@ describe('buildViewLayers', () => {
     const input = beschaeftigteInput()
     expect('companies' in input).toBe(false)
     expect(idsOf(buildViewLayers(input)).length).toBeGreaterThan(0)
+  })
+
+  it('reiht die Seen zwischen Kantonsfläche und Säulen ein', () => {
+    const ids = idsOf(buildViewLayers({ ...firmenInput(), lakes: LAKES_GEO }))
+    expect(ids.indexOf('seen')).toBeGreaterThan(ids.indexOf('kantone'))
+    expect(ids.indexOf('seen')).toBeLessThan(ids.indexOf('firmen'))
+  })
+
+  it('zeichnet ohne Seen weiter, wenn das Artefakt fehlt', () => {
+    // Die Seen sind Orientierung, kein Inhalt — ihr Fehlen ist kein Fehler.
+    const ids = idsOf(buildViewLayers({ ...firmenInput(), lakes: null }))
+    expect(ids).not.toContain('seen')
   })
 })

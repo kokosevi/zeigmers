@@ -29,8 +29,15 @@ function reportNavigationError(context: string): (error: unknown) => void {
  *  Bildschirm, löst keine Kameraüberblendung „hinein" aus. */
 export async function startBeschaeftigte(): Promise<void> {
   const basis = await createBasis()
-  const { handle, kantone, cantonsGeo, cantonGeometries, cantonBorderLayer, nationalBounds } =
-    basis
+  const {
+    handle,
+    kantone,
+    cantonsGeo,
+    cantonGeometries,
+    cantonBorderLayer,
+    nationalBounds,
+    lakesGeo,
+  } = basis
 
   // Titel der Gemeindezelle im Panel — nur diese Ansicht zeigt Gemeinden,
   // deshalb steht der Aufruf hier und nicht im geteilten `createBasis`.
@@ -124,6 +131,7 @@ export async function startBeschaeftigte(): Promise<void> {
         cantonsGeo,
         activeBfsNr: level === 'kanton' && activeCanton ? activeCanton.bfsNr : null,
         cantonBorderLayer,
+        lakes: lakesGeo,
         level,
         kantone,
         cantonGeometries,

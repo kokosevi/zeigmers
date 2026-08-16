@@ -1,5 +1,5 @@
 import type { LayersList } from '@deck.gl/core'
-import type { Geometry } from 'geojson'
+import type { FeatureCollection, Geometry } from 'geojson'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level } from '../data/loader'
 import type { PresentGroups } from '../domain/legendGroups'
@@ -11,6 +11,7 @@ import { formatNumber } from '../ui/format'
 import { hideHoverLabel, showHoverLabel } from '../ui/hoverLabel'
 import { municipalityName } from '../ui/panel'
 import { buildCantonBorderLayer, buildCantonsLayer, CANTON_ELEVATION_M } from './cantons'
+import { buildLakesLayer } from './lakes'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
 import {
   buildCompanyLayer,
@@ -74,12 +75,18 @@ export function kantonRowInfo(
   return entries[gemeindeIdx[index] ?? -1]
 }
 
-/** In beiden Ansichten gebraucht: die Basiskarte und die Höhenskala. */
+/** In beiden Ansichten gebraucht: die Basiskarte und die Höhenskala.
+ *
+ *  `lakes` ist `null`, wenn `loadLakes()` (`data/boundaries.ts`) das Artefakt
+ *  nicht laden konnte — die Seen sind Orientierung, kein Inhalt, ihr Fehlen
+ *  ist deshalb kein Fehlerfall dieser Funktion, sondern eine dritte,
+ *  legitime Eingabe neben einer geladenen `FeatureCollection`. */
 interface ViewLayersBasis {
   mode: ScaleMode
   cantonsGeo: BoundaryFeatureCollection
   activeBfsNr: number | null
   cantonBorderLayer: ReturnType<typeof buildCantonBorderLayer>
+  lakes: FeatureCollection | null
 }
 
 /** Seit der Aufteilung in zwei Seiten (2026-08-15) ist `view` keine
@@ -118,8 +125,12 @@ export type ViewLayersInput =
  *  ohne geladenen Kanton (sollte nicht vorkommen, siehe dort) fällt auf die
  *  Schweiz-Stufe zurück statt eine leere oder falsche Liste zu bauen. */
 export function buildViewLayers(input: ViewLayersInput): LayersList {
-  const { mode, cantonsGeo, activeBfsNr, cantonBorderLayer } = input
+  const { mode, cantonsGeo, activeBfsNr, cantonBorderLayer, lakes } = input
   const cantonsLayer = buildCantonsLayer({ data: cantonsGeo, activeBfsNr })
+  // Nur einreihen, wenn das Artefakt tatsächlich geladen werden konnte (siehe
+  // `ViewLayersBasis.lakes` oben) — fehlt es, bleibt die Karte unverändert,
+  // ohne Lücke in der Layer-Liste.
+  const lakesLayer = lakes ? buildLakesLayer(lakes) : null
 
   // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
   // auf einen einzelnen, vorher geladenen Kanton) — drei bis vier Layer:
@@ -159,6 +170,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
 
     return [
       cantonsLayer,
+      ...(lakesLayer ? [lakesLayer] : []),
       cantonBorderLayer,
       // Nur einreihen, wenn sie tatsächlich über der Plattenoberkante liegt
       // — bei einer Kennzahl ohne Verluste fiele sie sonst exakt mit
@@ -186,6 +198,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     const entry = activeCanton
     return [
       cantonsLayer,
+      ...(lakesLayer ? [lakesLayer] : []),
       cantonBorderLayer,
       buildMunicipalityLayer('gemeinde', {
         level: entry.gemeinde,
@@ -209,6 +222,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   // (`level === 'kanton'` ohne `activeCanton`) ab.
   return [
     cantonsLayer,
+    ...(lakesLayer ? [lakesLayer] : []),
     cantonBorderLayer,
     buildMunicipalityLayer(KANTONE_BARS_LAYER_ID, {
       level: kantone,

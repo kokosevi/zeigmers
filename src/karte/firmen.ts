@@ -76,6 +76,7 @@ export async function startFirmen(): Promise<void> {
         // immer Aargau, unabhängig davon, wo die Firmen tatsächlich lagen).
         activeBfsNr: null,
         cantonBorderLayer: basis.cantonBorderLayer,
+        lakes: basis.lakesGeo,
         companies,
         onShowCompanyPanel: showCompanyPanel,
       }),

@@ -40,6 +40,24 @@ export function loadCantons(base = '/data'): Promise<BoundaryFeatureCollection> 
   return loadGeojson(`${base}/ch_kantone.geojson`)
 }
 
+/** Seeflächen (`lakes.geojson`, Natural Earth — siehe `etl/…/lakes.py`), rein
+ *  zur Orientierung: erst mit ihnen ist die Silhouette der Schweiz als
+ *  Schweiz erkennbar, sie tragen aber keine Zahl und keine Auswahl. Anders
+ *  als `loadCantons`/`loadGeojson` oben deshalb bewusst NICHT dasselbe
+ *  Wurf-Muster: ein fehlendes oder kaputtes Artefakt (HTTP-Fehler oder
+ *  ungültiges JSON) fällt still auf `null` zurück statt die Karte zum
+ *  Abbruch zu bringen — `createBasis()` zeichnet ohne Seen weiter, ohne
+ *  Fehlermeldung, weil ihr Fehlen kein Fehler ist. */
+export async function loadLakes(base = '/data'): Promise<FeatureCollection | null> {
+  try {
+    const response = await fetch(`${base}/lakes.geojson`)
+    if (!response.ok) return null
+    return (await response.json()) as FeatureCollection
+  } catch {
+    return null
+  }
+}
+
 /** Gemeinsame Join-Logik hinter `joinMunicipalityGeometry` und
  *  `joinCantonGeometry` unten: beide ordnen jeder Zeile eines Levels
  *  (indiziert wie `level.arrays.values`) über `gemeindeIdx` und eine Liste von

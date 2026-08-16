@@ -161,6 +161,20 @@ const FOOTER_COMPANIES =
   'Geschäftsberichten der recherchierten Firmen selbst (Quelle je Firma im ' +
   'Panel, «Geschäftsbericht öffnen»).'
 
+// Task 10 (Seenlayer, `layers/lakes.ts`): die Seeflächen sind die einzige
+// Quelle dieser Karte, die nicht von BFS oder swisstopo stammt — `FOOTER`
+// oben nennt sie deshalb nicht, eine eigene Zeile ist nötig, sonst schriebe
+// die Box sie stillschweigend swisstopo zu. Zweiter Satz hält fest, was
+// fehlt, statt es zu beschweigen: vier grosse Seen tauchen auf der Karte
+// nicht als eigene Fläche auf, weil sowohl swisstopo (Gemeindeflächen) als
+// auch Natural Earth (dieses Artefakt) sie in die umliegenden
+// Gemeindeflächen einschliessen statt sie auszusparen.
+const FOOTER_LAKES =
+  'Seeflächen: Natural Earth (10m lakes), generalisierte Umrisse — die ' +
+  'einzige nicht-amtliche Quelle dieser Karte. Vierwaldstättersee, ' +
+  'Zugersee, Walensee und Lago di Lugano fehlen: Sie stecken in beiden ' +
+  'Quellen in den Gemeindeflächen.'
+
 // Redesign Change 2 (2026-08-15): vorher stand dieser Jahrgangs-Hinweis direkt
 // neben der «Beschäftigte je Einwohner»-Zeile im Klick-Panel
 // (`ui/panel.ts`), wortgleich bei jeder angeklickten Gemeinde wiederholt.
@@ -216,6 +230,7 @@ export function renderNotices(view: ViewName, level: NoticeLevel, revenueInChf: 
   // nur in Ansicht B.
   box.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
   if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
+  if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_LAKES, 'hinweis-quelle'))
   // Nur auf der Kantonsstufe: die «Beschäftigte je Einwohner»-Zeile, die
   // dieser Hinweis erklärt, steht ausschliesslich im Gemeinde-Klick-Panel
   // (`ui/panel.ts`) — auf der Schweiz-Stufe öffnet ein Klick keinen Panel
