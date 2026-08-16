@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeElevations, computeSignedElevations } from './scale'
+import { computeElevations } from './scale'
 
 describe('computeElevations', () => {
   it('maps zero to zero in both modes', () => {
@@ -62,32 +62,12 @@ describe('computeElevations', () => {
 // auch die Funktion selbst und diese Tests, statt als toter Code liegen zu
 // bleiben (siehe Git-Historie für den vorigen Stand).
 
-describe('computeSignedElevations', () => {
-  it('spiegelt Betrag und Vorzeichen symmetrisch um null', () => {
-    const heights = computeSignedElevations(
-      new Float32Array([100, -100]), 100, 1000, 'linear',
-    )
-    expect(heights[0]).toBeCloseTo(1000)
-    expect(heights[1]).toBeCloseTo(-1000)
-  })
-
-  it('dämpft den Betrag, nicht das Vorzeichen', () => {
-    const heights = computeSignedElevations(
-      new Float32Array([-1]), 100, 1000, 'logarithmisch',
-    )
-    // -(1/100)^0.4 * 1000
-    expect(heights[0]).toBeCloseTo(-Math.pow(0.01, 0.4) * 1000)
-  })
-
-  it('gibt bei vmax = 0 lauter Nullen statt NaN', () => {
-    // Eine Auswahl ohne einen einzigen Wert darf keine Division durch null werden.
-    const heights = computeSignedElevations(new Float32Array([5, -5]), 0, 1000, 'linear')
-    expect(Array.from(heights)).toEqual([0, 0])
-  })
-
-  it('lässt computeElevations unverändert', () => {
-    const heights = computeElevations(new Float32Array([-5, 5]), 5, 1000, 'linear')
-    expect(heights[0]).toBe(0) // negative Werte bleiben dort ausgeschlossen
-    expect(heights[1]).toBeCloseTo(1000)
-  })
-})
+// `computeSignedElevations` (Dämpfung auf den Betrag, Vorzeichen bleibt
+// stehen) und diese drei Tests sind aus demselben Grund entfernt (Nachbesserung
+// zu Aufgabe 18): sie gehörten zur ersten, im Browser verworfenen Lösung für
+// Verlustsäulen (eine angehobene Nulllinie). Seit dem Fallback auf «Betrag als
+// Höhe, Verlustfarbe als Vorzeichen» (siehe `layers/visible.ts`,
+// `companyElevations`/`zeroPlaneHeight`) hatte die Funktion ausserhalb ihrer
+// eigenen Tests keinen Aufrufer mehr — derselbe Fall wie `buildZeroPlaneLayer`/
+// `ZERO_PLANE_CLEARANCE_M`, die dieselbe Aufgabe bereits entfernt hat. Siehe
+// Git-Historie für den vorigen Stand.

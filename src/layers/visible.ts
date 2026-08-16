@@ -164,9 +164,10 @@ export const MAX_BAR_HEIGHT_M = 12000
 
 /** Höhe je Firma, in Metern — immer positiv, auch bei einem Verlust (siehe
  *  `zeroPlaneHeight` oben: der Betrag trägt die Höhe, `LOSS_COLOR` trägt das
- *  Vorzeichen). `computeElevations` statt `computeSignedElevations`, über den
- *  BETRAG der Kennzahl (`Math.abs`) — für Umsatz/Mitarbeitende (nie negativ)
- *  ändert das nichts, für Gewinn ist es der Kern der Aufgabe-18-Korrektur. */
+ *  Vorzeichen). Deshalb rechnet `computeElevations` hier über den BETRAG der
+ *  Kennzahl (`Math.abs`) statt über den vorzeichenbehafteten Wert — für
+ *  Umsatz/Mitarbeitende (nie negativ) ändert das nichts, für Gewinn ist es
+ *  der Kern der Aufgabe-18-Korrektur. */
 export function companyElevations(
   companies: Company[],
   metric: Metric,

@@ -218,7 +218,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
       buildCompanyShadowLayer(result),
       buildCompanyLayer({
         result,
-        metric: metric,
+        metric,
         mode,
         onClick: onShowCompanyPanel,
         onHover: onHoverResearchedCompany,
