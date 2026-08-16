@@ -169,4 +169,57 @@ describe('renderLegend als Filter', () => {
     expect(document.getElementById('legende')!.textContent).toContain('Höchste Säule')
     expect(document.getElementById('legende')!.textContent).toContain('Nestlé')
   })
+
+  // Finding I8: `result.vmax` ist der vorzeichenlose BETRAG (siehe
+  // `applySelection`, `Math.abs`) — bei einer Verlustfirma an der Spitze
+  // stand hier bisher ein positiver Betrag ohne das Wort «Verlust».
+  it('nennt bei einem Verlust an der Spitze das Wort «Verlust», nicht den blossen Betrag', () => {
+    const companies = [
+      company({ nogaGroupIndex: 1, name: 'Grösster Verlust AG', profitChf: -900_000_000 }),
+      company({ nogaGroupIndex: 1, name: 'Kleiner Gewinn AG', profitChf: 10_000_000 }),
+    ]
+    renderLegend(options(companies, 'gewinn'))
+    const text = document.getElementById('legende')!.textContent!
+    expect(text).toContain('Höchste Säule')
+    expect(text).toContain('Grösster Verlust AG')
+    expect(text).toMatch(/Höchste Säule:[^]*Verlust/)
+  })
+})
+
+describe('renderLegend — Verlustfarbe (Finding C2)', () => {
+  it('zeigt in der Gewinn-Ansicht einen Swatch für die Verlustfarbe', () => {
+    const companies = [company({ nogaGroupIndex: 1, profitChf: -1 })]
+    renderLegend(options(companies, 'gewinn'))
+    const text = document.getElementById('legende')!.textContent!
+    expect(text).toContain('Verlust')
+    expect(text).toMatch(/Diese Farbe/)
+  })
+
+  it('zeigt den Verlust-Swatch nicht bei Umsatz oder Mitarbeitende', () => {
+    for (const metric of ['umsatz', 'mitarbeitende'] as const) {
+      const companies = [company({ nogaGroupIndex: 1 })]
+      renderLegend(options(companies, metric))
+      expect(document.getElementById('legende')!.textContent).not.toMatch(/Diese Farbe/)
+    }
+  })
+})
+
+describe('renderLegend — Mindesthöhen-Hinweis folgt der Kennzahl (Finding I1)', () => {
+  it.each([
+    ['umsatz' as const, 'nicht mehr den Umsatz'],
+    ['mitarbeitende' as const, 'nicht mehr die Mitarbeitendenzahl'],
+    ['gewinn' as const, 'nicht mehr den Reingewinn'],
+  ])('nennt bei Kennzahl %s die richtige Grösse', (metric, expected) => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, metric))
+    expect(document.getElementById('legende')!.textContent).toContain(expected)
+  })
+})
+
+describe('renderLegend — Branchenzahl-Hinweis (Finding I4)', () => {
+  it('sagt, dass die Branchenzahl nur Gesellschaften mit Wert zählt', () => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, 'umsatz'))
+    expect(document.getElementById('legende')!.textContent).toContain('Branchenzahl')
+  })
 })

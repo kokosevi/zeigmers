@@ -12,7 +12,8 @@ export interface Selection {
 
 export interface SelectionResult {
   /** Gefiltert, aber noch nicht bewertet — auch Firmen ohne Wert in dieser
-   *  Kennzahl stehen hier: sie bekommen eine Platzhaltersäule, keine keine. */
+   *  Kennzahl stehen hier: sie bekommen eine Platzhaltersäule, keine Lücke
+   *  auf der Karte. */
   visible: Company[]
   withValue: Company[]
   /** Maximum der BETRÄGE über `withValue`. 0, wenn nichts vorliegt. */
@@ -55,8 +56,14 @@ export function applySelection(companies: Company[], selection: Selection): Sele
 
 /** Anzahl und Summe je Branchengruppe — die Zahlen, die die Legende neben
  *  ihre Farbtupfer schreibt. Über `withValue`, nicht über `visible`: eine
- *  Firma ohne Wert zählt in der Anzahl der Auswahl mit, aber nicht in einer
- *  Summe, zu der sie nichts beiträgt. */
+ *  Firma ohne Wert in der aktiven Kennzahl zählt HIER weder in die Anzahl
+ *  noch in die Summe — anders als in der Kennzahlenzeile
+ *  (`ui/kennzahlen.ts`), deren Gesellschaftszahl über `visible` läuft. Die
+ *  Legende zeigt damit «wie viele Gesellschaften tragen zu dieser
+ *  Branchensumme bei», nicht «wie viele Balken stehen in dieser Branche auf
+ *  der Karte» — ein Unterschied, der beim Kennzahlwechsel sichtbar wird und
+ *  seit Finding I4 einen eigenen Hinweis in der Legende trägt
+ *  (`ui/legend.ts`, `BRANCH_COUNT_LEGEND_TEXT`). */
 export function branchTotals(
   result: SelectionResult,
   metric: Metric,

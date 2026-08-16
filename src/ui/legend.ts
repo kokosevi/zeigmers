@@ -1,9 +1,15 @@
 import type { PresentGroups } from '../domain/legendGroups'
-import { formatMetric, metricAllowsNegative, metricLabel, type Metric } from '../domain/metric'
+import {
+  formatMetric,
+  metricAllowsNegative,
+  metricLabel,
+  metricValue,
+  type Metric,
+} from '../domain/metric'
 import { NOGA_GROUPS, UNKNOWN_COLOR, type NogaGroup } from '../domain/noga.generated'
 import { branchTotals, type SelectionResult } from '../domain/selection'
 import { litTopFaceColor } from '../layers/litColor'
-import { OUTLINE_COLOR, UNRESEARCHED_MARKER_COLOR } from '../layers/visible'
+import { LOSS_COLOR, OUTLINE_COLOR, UNRESEARCHED_MARKER_COLOR } from '../layers/visible'
 import { formatNumber } from './format'
 import type { ViewName } from './nav'
 
@@ -16,17 +22,66 @@ const OUTLINE_LEGEND_TEXT =
 // oben — ohne eigenen Legendeneintrag liesse sich aus der Karte allein nicht
 // ablesen, dass ein grauer Punkt etwas grundsätzlich anderes bedeutet als
 // ein grauer ("nicht eindeutig bestimmbar") Balken.
-// Elf Säulen (alle unter rund 19 Mio. CHF Umsatz) sitzen auf einer
+// Elf Umsatz-Säulen (alle unter rund 19 Mio. CHF) sitzen auf einer
 // Sichtbarkeitsschwelle: darunter würden sie in der Kantonsplatte
-// verschwinden. Ihre Höhe bildet den Umsatz dort nicht mehr ab, sondern nur
-// noch, DASS es die Firma gibt — das gehört gesagt, sonst behauptet die
-// Karte eine Grösse, die sie nicht misst.
-const FLOOR_LEGEND_TEXT =
-  'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — ' +
-  'unterhalb davon zeigt die Höhe nicht mehr den Umsatz. Genaue Zahl im Panel.'
+// verschwinden. Ihre Höhe bildet den jeweiligen Wert dort nicht mehr ab,
+// sondern nur noch, DASS es die Firma gibt — das gehört gesagt, sonst
+// behauptet die Karte eine Grösse, die sie nicht misst.
+//
+// Fix-Runde (2026-08-16, Abschluss-Review Finding I1): derselbe Mechanismus
+// (`MIN_VISIBLE_BAR_M`/`MIN_REAL_BAR_M`, `layers/visible.ts`,
+// `companyElevations`) floort JEDE der drei Kennzahlen gleich — vermessen
+// wurde die Schwelle nur für Umsatz (siehe Kommentar dort), der Text war
+// aber auch bei aktiver Kennzahl Mitarbeitende oder Gewinn fest auf «den
+// Umsatz» formuliert. Jetzt ein `Record<Metric, string>`, dasselbe Muster
+// wie `UNIT_LABEL` unten.
+const FLOOR_LEGEND_TEXT: Record<Metric, string> = {
+  umsatz:
+    'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — unterhalb davon ' +
+    'zeigt die Höhe nicht mehr den Umsatz. Genaue Zahl im Panel.',
+  mitarbeitende:
+    'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — unterhalb davon ' +
+    'zeigt die Höhe nicht mehr die Mitarbeitendenzahl. Genaue Zahl im Panel.',
+  gewinn:
+    'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — unterhalb davon ' +
+    'zeigt die Höhe nicht mehr den Reingewinn. Genaue Zahl im Panel.',
+}
 
 const UNRESEARCHED_LEGEND_TEXT =
   'Kleiner Punkt: an der SIX kotiert, aber noch nicht recherchiert — Sitz bekannt, keine Höhenaussage.'
+
+// Abschluss-Review, Finding C2: seit der zweiten Wahl für Verluste (Betrag
+// als Höhe, `LOSS_COLOR` trägt allein das Vorzeichen — siehe
+// `layers/visible.ts`, Kommentar bei `zeroPlaneHeight`) ist diese Farbe die
+// EINZIGE Stelle auf der Karte, an der ein Verlust überhaupt ablesbar ist.
+// Ohne eigenen Legendeneintrag hatte sie keinerlei Erklärung: ein Betrachter
+// sah eine dritte, unbenannte Farbe neben den Branchentönen, ohne zu wissen,
+// dass sie „Verlust" bedeutet — und für die 41 von 197 Säulen, die sie
+// tragen, stimmte der Farbschlüssel der Legende (nur Branchenfarben) nicht
+// mehr mit dem der Karte überein. Eine Verlustfirma behält dabei bewusst
+// ihren Branchentupfer UND ihren Platz in Anzahl/Saldo der eigenen Branche
+// (`branchRow`/`branchTotals` unten bleiben unverändert) — dieser Swatch
+// macht nur die auf der Karte tatsächlich gezeichnete Farbe kenntlich,
+// ändert aber nicht, wie Branchen gezählt werden (das wäre eine grössere,
+// hier nicht verlangte Änderung).
+const LOSS_LEGEND_TEXT =
+  'Diese Farbe: Verlust in der Kennzahl Reingewinn — ersetzt hier die Branchenfarbe, Höhe ' +
+  'bleibt der Betrag. Anzahl und Saldo der Branche unten zählen die Firma trotzdem mit.'
+
+// Finding I4: `branchTotals` (unten) zählt und summiert über `withValue`,
+// nicht über `visible` — eine Firma ohne Wert in der aktiven Kennzahl trägt
+// weder zur Anzahl noch zur Summe einer Branche bei, obwohl ihre
+// Platzhaltersäule weiterhin auf der Karte steht (`layers/visible.ts`,
+// `buildCompanyLayer` zeichnet `result.visible`, nicht `result.withValue`).
+// Die Kennzahlenzeile (`ui/kennzahlen.ts`) nennt für dieselbe Unterscheidung
+// ihren Nenner («aus X Angaben») explizit — die Legende tat das bisher
+// nicht, obwohl ihre Branchenzahl bei jedem Kennzahlwechsel unbegründet
+// schwankte (unterschiedliche Firmen haben unterschiedliche Lücken je
+// Kennzahl). Dieser Hinweis schliesst dieselbe Lücke wie die Kennzahlenzeile,
+// an der Stelle, an der die Zahl tatsächlich steht.
+const BRANCH_COUNT_LEGEND_TEXT =
+  'Branchenzahl: nur Gesellschaften mit Wert in der aktiven Kennzahl — ändert sich deshalb ' +
+  'bei einem Kennzahlwechsel, auch ohne neuen Filter.'
 
 // Die beiden Ansichten sind nicht ineinander umrechenbar (Geld vs. Personen),
 // liegen aber einen Tastendruck auseinander — die Legende muss deshalb die
@@ -146,6 +201,17 @@ function outlineSwatch(): HTMLLIElement {
 function unresearchedSwatch(): HTMLLIElement {
   const [r, g, b] = UNRESEARCHED_MARKER_COLOR
   return swatch([r, g, b], UNRESEARCHED_LEGEND_TEXT)
+}
+
+/** Swatch für Verlustsäulen (Kennzahl Gewinn) — dieselbe `LOSS_COLOR`, die
+ *  `buildCompanyLayer` (`layers/visible.ts`) tatsächlich für jeden
+ *  negativen Wert zeichnet, unabhängig von der Branche der Firma (siehe
+ *  Finding C2, Kommentar bei `LOSS_LEGEND_TEXT` oben). Nur in der
+ *  Gewinn-Ansicht sinnvoll — die anderen beiden Kennzahlen kennen keine
+ *  negativen Werte (`metricAllowsNegative`). */
+function lossSwatch(): HTMLLIElement {
+  const [r, g, b] = LOSS_COLOR
+  return swatch([r, g, b], LOSS_LEGEND_TEXT)
 }
 
 /** Anteil einer Branchensumme an der Gesamtsumme der aktuellen Auswahl, als
@@ -316,9 +382,24 @@ export function renderLegend(options: LegendOptions): void {
     hinweise.className = 'legende-branchen'
     hinweise.appendChild(outlineSwatch())
     hinweise.appendChild(unresearchedSwatch())
+    // Nur in der Gewinn-Ansicht: die anderen beiden Kennzahlen kennen keine
+    // negativen Werte, `LOSS_COLOR` erscheint dort nie auf der Karte
+    // (Finding C2).
+    if (metric === 'gewinn') hinweise.appendChild(lossSwatch())
     const floorNote = document.createElement('li')
-    floorNote.textContent = FLOOR_LEGEND_TEXT
+    // Ohne aktive Kennzahl (Ansicht «Beschäftigte» erreicht diesen Zweig nie,
+    // aber `metric` bleibt hier typisiert optional, siehe `LegendOptions`)
+    // bleibt Umsatz derselbe Fallback wie bei `UNIT_LABEL` oben.
+    floorNote.textContent = FLOOR_LEGEND_TEXT[metric ?? 'umsatz']
     hinweise.appendChild(floorNote)
+    // Nur zusammen mit Branchenzahlen sinnvoll (Finding I4) — ohne
+    // `metric`/`result` zeigt die Legende ohnehin keine Zahlen neben den
+    // Branchentupfern (siehe `branchRow` vs. `swatch` oben).
+    if (metric !== undefined && result !== undefined) {
+      const branchCountNote = document.createElement('li')
+      branchCountNote.textContent = BRANCH_COUNT_LEGEND_TEXT
+      hinweise.appendChild(branchCountNote)
+    }
     el.appendChild(hinweise)
   }
 
@@ -326,12 +407,24 @@ export function renderLegend(options: LegendOptions): void {
     // Bezugszeile: seit die Höhenskala sich an die Auswahl anpasst (statt an
     // ein fixes Maximum über allen Firmen), behauptet die Karte ohne diese
     // Zeile einen absoluten Massstab, den sie nicht hat. `result.vmax` ist
-    // exakt der Betrag, den die höchste Säule gerade zeigt — dieselbe Zahl,
-    // aus der `domain/scale.ts` die Höhe berechnet.
+    // exakt der BETRAG, den die höchste Säule als Höhe zeigt — dieselbe
+    // Zahl, aus der `domain/scale.ts` die Höhe berechnet.
+    //
+    // Fix-Runde (2026-08-16, Abschluss-Review Finding I8): `result.vmax` ist
+    // vorzeichenlos (`applySelection` rechnet mit `Math.abs`, siehe
+    // `domain/selection.ts`) — bei Kennzahl Gewinn stand hier deshalb ein
+    // positiver Betrag, selbst wenn `result.top` die Firma mit dem grössten
+    // VERLUST war, ohne das Wort «Verlust». `metricValue(result.top, metric)`
+    // liest stattdessen den echten, vorzeichenbehafteten Wert; der Fallback
+    // auf `result.vmax` greift nur, falls `metricValue` wider Erwarten `null`
+    // liefert (kann laut `applySelection` nicht vorkommen, `result.top` wird
+    // nur bei einem echten Wert gesetzt — der Fallback ist reine
+    // Typsicherheit, keine erwartete Laufzeit-Situation).
     if (result.top) {
+      const topValue = metricValue(result.top, metric) ?? result.vmax
       const bezug = document.createElement('div')
       bezug.className = 'legende-bezug'
-      bezug.textContent = `Höchste Säule: ${result.top.name}, ${formatMetric(result.vmax, metric)}`
+      bezug.textContent = `Höchste Säule: ${result.top.name}, ${formatMetric(topValue, metric)}`
       el.appendChild(bezug)
     }
     // Nur bei Gewinn kann es Verluste geben (siehe `metricAllowsNegative`) —
@@ -340,8 +433,8 @@ export function renderLegend(options: LegendOptions): void {
       const verlust = document.createElement('div')
       verlust.className = 'legende-bezug'
       verlust.textContent =
-        `${result.losses} von ${result.withValue.length} Gesellschaften in der Auswahl ` +
-        'mit Verlust.'
+        `${formatNumber(result.losses)} von ${formatNumber(result.withValue.length)} ` +
+        'Gesellschaften in der Auswahl mit Verlust.'
       el.appendChild(verlust)
     }
     if (selected.size === 0) {
