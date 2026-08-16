@@ -320,6 +320,16 @@ describe('companyContent', () => {
     expect(content.notes).toContain('Reingewinn nicht öffentlich verfügbar.')
   })
 
+  // Finding I5: Umsatz und Reingewinn hatten je einen Hinweis für den Fall
+  // einer fehlenden Zahl — bei Mitarbeitende fehlte die Zeile bisher
+  // kommentarlos, obwohl dieselbe Firma in Ansicht Mitarbeitende eine
+  // Platzhaltersäule trägt.
+  it('notes instead of fabricating when employees could not be sourced', () => {
+    const content = companyContent(company({ employees: null }), ctx())
+    expect(content.fields.find((f) => f.label === 'Mitarbeitende')).toBeUndefined()
+    expect(content.notes).toContain('Mitarbeitende nicht öffentlich verfügbar.')
+  })
+
   // Diese vier Tests prüfen dieselbe Art Regression wie die revenueType-Tests
   // oben (siehe Kommentar am Dateianfang): `consolidationBasis` steht seit
   // kurzem in `companies.json`, muss aber im Panel in Klartext erscheinen —

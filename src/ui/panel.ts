@@ -363,6 +363,15 @@ export function companyContent(company: Company, context: CompanyContext): Panel
   }
   if (company.employees !== null) {
     fields.push({ label: 'Mitarbeitende', value: formatNumber(company.employees) })
+  } else {
+    // Fix-Runde (2026-08-16, Abschluss-Review Finding I5): Umsatz und
+    // Reingewinn hatten je einen Hinweis für den Fall einer fehlenden Zahl
+    // (siehe oben) — bei den Mitarbeitenden (9 der 201 recherchierten
+    // Gesellschaften) fehlte die Zeile bisher kommentarlos, obwohl dieselbe
+    // Firma in Ansicht Mitarbeitende eine Platzhaltersäule trägt. Spec
+    // Abschnitt 10 verlangt für alle drei Lücken denselben Grundsatz: das
+    // Panel nennt den Grund, statt die Lücke unerklärt zu lassen.
+    notes.push('Mitarbeitende nicht öffentlich verfügbar.')
   }
   // Sechs Beteiligungsgesellschaften ohne eigenes Personal melden 0
   // Mitarbeitende — `employees > 0` statt nur `!== null` schützt vor
