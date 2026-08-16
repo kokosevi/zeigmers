@@ -1,5 +1,5 @@
 import type { PresentGroups } from '../domain/legendGroups'
-import { formatMetric, metricAllowsNegative, type Metric } from '../domain/metric'
+import { formatMetric, metricAllowsNegative, metricLabel, type Metric } from '../domain/metric'
 import { NOGA_GROUPS, UNKNOWN_COLOR, type NogaGroup } from '../domain/noga.generated'
 import { branchTotals, type SelectionResult } from '../domain/selection'
 import { litTopFaceColor } from '../layers/litColor'
@@ -31,6 +31,15 @@ const UNRESEARCHED_LEGEND_TEXT =
 // Die beiden Ansichten sind nicht ineinander umrechenbar (Geld vs. Personen),
 // liegen aber einen Tastendruck auseinander — die Legende muss deshalb die
 // Einheit selbst nennen, nicht nur "Skala".
+//
+// `sichtbare` ist hier bewusst noch der Umsatz-Text — dieser Eintrag greift
+// erst dann, wenn kein `metric` übergeben ist (siehe `renderLegend` unten).
+// Task 18, Browser-Fund: mit der Kennzahl-Verdrahtung zeigt Ansicht
+// «Börsennotierte Firmen» jetzt auch Mitarbeitende und Reingewinn — der
+// Titel muss der AKTIVEN Kennzahl folgen (`metricLabel(metric)`), sonst
+// stünde über einer Gewinn-Karte weiterhin «Jahresumsatz». Dieser Fallback
+// bleibt trotzdem bestehen: ohne `metric` (Ansicht «Beschäftigte», die keine
+// Kennzahlwahl kennt) ist er der einzige Titeltext.
 const UNIT_LABEL: Record<ViewName, string> = {
   beschaeftigte: 'Beschäftigte',
   sichtbare: 'Jahresumsatz',
@@ -216,7 +225,12 @@ export function renderLegend(options: LegendOptions): void {
   const title = document.createElement('div')
   title.className = 'legende-titel'
   const scopePart = scopeLabel ? ` · ${scopeLabel}` : ''
-  title.textContent = `${UNIT_LABEL[view]}${scopePart} · Datenjahr ${year}`
+  // Mit aktiver Kennzahl (Ansicht «Börsennotierte Firmen», Task 13/18) nennt
+  // der Titel die tatsächlich gewählte Grösse, nicht statisch «Jahresumsatz»
+  // — sonst behauptete die Legende bei Kennzahl Gewinn oder Mitarbeitende
+  // weiterhin eine Einheit, die die Säulen gar nicht mehr zeigen.
+  const unitLabel = metric !== undefined ? metricLabel(metric) : UNIT_LABEL[view]
+  title.textContent = `${unitLabel}${scopePart} · Datenjahr ${year}`
   el.appendChild(title)
 
   // Filter-Modus nur mit `metric` UND `result` zusammen (siehe
