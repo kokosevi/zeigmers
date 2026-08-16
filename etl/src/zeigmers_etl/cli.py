@@ -373,10 +373,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             config.NATURAL_EARTH_LAKES, config.DATA_RAW / "ne_10m_lakes.zip",
             force=args.force,
         )
-        cantons = boundaries_module.build_cantons(
-            config.DATA_RAW / "swissboundaries3d.gpkg.zip"
+        swissboundaries_zip = config.DATA_RAW / "swissboundaries3d.gpkg.zip"
+        cantons = boundaries_module.build_cantons(swissboundaries_zip)
+        report = lakes_module.build(
+            ne_zip, swissboundaries_zip, cantons, config.PUBLIC_DATA / "lakes.geojson"
         )
-        report = lakes_module.build(ne_zip, cantons, config.PUBLIC_DATA / "lakes.geojson")
         print(f"[lakes] {report['count']} Seen, {report['bytes'] / 1024:.0f} KB")
         if report["bytes"] > lakes_module.MAX_ARTIFACT_BYTES:
             print("[lakes] FEHLER: Artefakt zu gross")
