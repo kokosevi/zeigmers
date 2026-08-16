@@ -1,4 +1,5 @@
 import type { Level } from '../data/loader'
+import { metricLabel, type Metric } from '../domain/metric'
 import { NOGA_GROUPS } from '../domain/noga.generated'
 import type { Company } from '../layers/visible'
 import { formatNumber, formatProfit, formatRatio, formatRevenue } from './format'
@@ -38,6 +39,31 @@ export interface PanelContent {
    *  in kleinerer Schrift (`.panel-fussnote`, siehe `style.css`) — Wortlaut
    *  unverändert, nur Gewicht und Position. */
   footnote?: string
+}
+
+/** Der Teil des Panelinhalts, den `companyContent` nicht selbst herleiten
+ *  kann, weil er von der aktuellen Auswahl abhängt statt von der Firma
+ *  allein: Rang und Anteil ändern sich mit jedem Filter, wenn man sie über
+ *  die gefilterte Auswahl statt über alle recherchierten Gesellschaften
+ *  rechnet — das wäre keine Eigenschaft der Firma mehr. `companyContent`
+ *  bekommt Rang und Nenner deshalb fertig gereicht, statt selbst über die
+ *  Gesamtliste zu iterieren. Wer diesen Kontext aus den 201 Gesellschaften
+ *  befüllt, ist eine Folgeaufgabe — `showCompanyPanel` unten reicht bis
+ *  dahin einen Platzhalter ohne Rang durch. */
+export interface CompanyContext {
+  /** Die an der Karte aktuell gewählte Kennzahl — bestimmt, wonach `Rang`
+   *  benannt ist (z. B. "nach Jahresumsatz"). */
+  metric: Metric
+  /** 1-basiert; `null`, wenn die Firma in dieser Kennzahl keinen Wert trägt
+   *  (dieselbe Firma, die auch keine Säule hätte). */
+  rank: number | null
+  /** Anzahl der Gesellschaften mit Wert, über die `rank` zählt — immer alle
+   *  recherchierten, nie nur die gefilterte Auswahl (siehe oben). */
+  rankTotal: number
+  /** Summe der `revenueChf`-Werte über alle recherchierten Gesellschaften —
+   *  der Nenner für "Anteil am Gesamtumsatz". In CHF, damit er zu
+   *  `revenueChf` passt, nicht zu `revenue` in Berichtswährung. */
+  revenueTotal: number
 }
 
 // Titel der Kantonszelle (Ansicht B, Kantonstufe). Default nur ein Fallback
@@ -167,19 +193,41 @@ function nogaGroupLabel(nogaGroupIndex: number): string {
   return NOGA_GROUPS[nogaGroupIndex]?.label ?? 'unbekannt'
 }
 
+/** Anteil `part` an `total`, als Prozentzahl mit zwei Nachkommastellen —
+ *  dieselbe `formatRatio`, die schon die Beschäftigte-je-Einwohner-Zeile
+ *  benutzt, nur mit "%" statt einer nackten Verhältniszahl. Kein eigener
+ *  Prozent-Formatter in `format.ts` dafür, weil `formatRatio` genügt. Ruft
+ *  niemand mit `total <= 0` auf — beide Aufrufstellen unten prüfen das vorher
+ *  (siehe Kommentare dort), damit hier keine Division durch 0 versteckt ist. */
+function formatShare(part: number, total: number): string {
+  return `${formatRatio((part / total) * 100)} %`
+}
+
 /** Firma: ein Steckbrief zum Anklicken — Sitz, Branche und Kerngeschäft
  *  zuerst, dann die Kennzahlen mit Geschäftsjahr, dann Mitarbeitende, dann
- *  der Link zum Geschäftsbericht. Nennt die gemeldete Umsatz-Kennzahl beim
- *  Namen — sieben Firmen weisen Nettoumsatz aus, die Hypothekarbank Lenzburg
- *  Geschäftsertrag (nicht mit Nettoumsatz vergleichbar); der Reingewinn
- *  braucht diese Unterscheidung nicht (siehe `companies.py`, Kommentar bei
- *  `REVENUE_TYPES` — anders als Umsatz ist er branchenübergreifend
- *  vergleichbar). Für jede fehlende Zahl: ein expliziter Hinweis statt einer
- *  erfundenen. Nennt ausserdem, für welchen Unternehmensumfang Umsatz und
- *  Reingewinn gelten (`consolidationBasis` — Gesamtkonzern oder fortgeführte
- *  Geschäfte, siehe Kommentar direkt unten bei ihrer Verwendung): die Angabe
- *  landet bislang nur in `companies.json`, nirgends im Interface — derselbe
- *  Fehler, den `revenueType` schon einmal gemacht hat.
+ *  die Links zum Geschäftsbericht und zur Produktquelle. Nennt die gemeldete
+ *  Umsatz-Kennzahl beim Namen — sieben Firmen weisen Nettoumsatz aus, die
+ *  Hypothekarbank Lenzburg Geschäftsertrag (nicht mit Nettoumsatz
+ *  vergleichbar); der Reingewinn braucht diese Unterscheidung nicht (siehe
+ *  `companies.py`, Kommentar bei `REVENUE_TYPES` — anders als Umsatz ist er
+ *  branchenübergreifend vergleichbar). Für jede fehlende Zahl: ein
+ *  expliziter Hinweis statt einer erfundenen. Nennt ausserdem, für welchen
+ *  Unternehmensumfang Umsatz und Reingewinn gelten (`consolidationBasis` —
+ *  Gesamtkonzern oder fortgeführte Geschäfte, siehe Kommentar direkt unten
+ *  bei ihrer Verwendung): die Angabe landet bislang nur in
+ *  `companies.json`, nirgends im Interface — derselbe Fehler, den
+ *  `revenueType` schon einmal gemacht hat.
+ *
+ *  Task 15: dieselbe Marge ist zwei verschiedene Kennzahlen, je nach Nenner
+ *  (Geschäftsertrag bei Banken, sonst Nettoumsatz) — das Feld heisst deshalb
+ *  nach seinem Nenner, genau wie die Umsatzzeile selbst. Rang und Anteil am
+ *  Gesamtumsatz gelten immer über alle recherchierten Gesellschaften, nie
+ *  über eine gefilterte Auswahl — deshalb reicht `context` (siehe
+ *  `CompanyContext`) Rang und beide Nenner fertig gereicht statt sie hier
+ *  aus der vollen Firmenliste herzuleiten. Umsatz je Mitarbeitenden bleibt
+ *  weg, wo 0 Mitarbeitende gemeldet sind (sechs Beteiligungsgesellschaften
+ *  ohne eigenes Personal) — derselbe Schutz vor Division durch 0 wie bei der
+ *  Einwohnerzahl in `aggregateCellContent` oben.
  *
  *  Phase 3: für `researched=false` (die flachen Marker, siehe
  *  `layers/visible.ts`) ein bewusst kurzes Panel — nur Name und Sitz, ein
@@ -187,7 +235,7 @@ function nogaGroupLabel(nogaGroupIndex: number): string {
  *  öffentlich verfügbar" (der `placeholder`-Fall unten): dort wurde
  *  recherchiert und nichts Öffentliches gefunden, hier wurde noch gar nicht
  *  recherchiert — dieselbe Formulierung für beide wäre irreführend. */
-export function companyContent(company: Company): PanelContent {
+export function companyContent(company: Company, context: CompanyContext): PanelContent {
   if (!company.researched) {
     return {
       title: company.name,
@@ -200,6 +248,9 @@ export function companyContent(company: Company): PanelContent {
   const notes: string[] = []
 
   if (company.city) fields.push({ label: 'Sitz', value: company.city })
+  // Der SIX-Tickercode gehört zur Identität der Firma, nicht zu ihren
+  // Kennzahlen — deshalb bei Sitz und Branche statt bei Umsatz und Gewinn.
+  if (company.sixSymbol) fields.push({ label: 'SIX-Symbol', value: company.sixSymbol })
   if (company.positionAdjusted !== null) {
     notes.push(
       `An dieser Adresse sitzt mehr als eine kotierte Gesellschaft — die Säule ` +
@@ -228,6 +279,16 @@ export function companyContent(company: Company): PanelContent {
       label,
       value: company.revenue !== null ? formatRevenue(company.revenue, company.currency) : '–',
     })
+    // `revenueChf` statt `revenue`: der Anteil vergleicht über Firmen mit
+    // drei verschiedenen Berichtswährungen hinweg, das geht nur umgerechnet.
+    // `revenueTotal > 0` schützt vor Division durch 0, falls der Kontext
+    // (noch) keine echte Summe trägt (siehe `showCompanyPanel` unten).
+    if (company.revenueChf !== null && context.revenueTotal > 0) {
+      fields.push({
+        label: 'Anteil am Gesamtumsatz',
+        value: formatShare(company.revenueChf, context.revenueTotal),
+      })
+    }
   }
 
   if (company.profit !== null) {
@@ -237,6 +298,35 @@ export function companyContent(company: Company): PanelContent {
     })
   } else {
     notes.push('Reingewinn nicht öffentlich verfügbar.')
+  }
+
+  // Die Marge ist zwei Kennzahlen, nicht eine: 42 der 185 Gesellschaften mit
+  // Umsatz und Gewinn sind Banken, deren Nenner der Geschäftsertrag ist statt
+  // des Nettoumsatzes (siehe Kommentar bei `companyContent` oben) — das Feld
+  // heisst deshalb nach seinem Nenner, wie die Umsatzzeile selbst. `revenue`
+  // und `profit` (nicht die CHF-Varianten): beide liegen für dieselbe Firma
+  // stets in derselben Berichtswährung vor, eine Marge ist dimensionslos und
+  // braucht keine Umrechnung. `revenue !== 0` schliesst eine (in den Daten
+  // nicht vorkommende, aber theoretisch mögliche) Division durch 0 aus.
+  if (company.revenue !== null && company.revenue !== 0 && company.profit !== null) {
+    const marginLabel =
+      company.revenueType === 'operating_income'
+        ? 'Marge auf Geschäftsertrag'
+        : 'Marge auf Nettoumsatz'
+    fields.push({ label: marginLabel, value: formatShare(company.profit, company.revenue) })
+  }
+
+  // Der Rang gilt immer über alle recherchierten Gesellschaften mit Wert in
+  // der aktuell gewählten Kennzahl, nie über eine gefilterte Auswahl (siehe
+  // `CompanyContext`) — `companyContent` rechnet ihn deshalb nicht selbst,
+  // sondern übernimmt ihn aus `context`. `null` heisst: diese Firma trägt in
+  // dieser Kennzahl keinen Wert, also keine Zeile statt eines erfundenen
+  // Rangs.
+  if (context.rank !== null) {
+    fields.push({
+      label: 'Rang',
+      value: `#${context.rank} von ${context.rankTotal} nach ${metricLabel(context.metric)}`,
+    })
   }
 
   // `consolidationBasis` bindet Umsatz und Reingewinn derselben Zeile an
@@ -266,14 +356,29 @@ export function companyContent(company: Company): PanelContent {
   if (company.employees !== null) {
     fields.push({ label: 'Mitarbeitende', value: formatNumber(company.employees) })
   }
+  // Sechs Beteiligungsgesellschaften ohne eigenes Personal melden 0
+  // Mitarbeitende — `employees > 0` statt nur `!== null` schützt vor
+  // Division durch 0 (dieselbe Falle wie `einwohnerzahl` oben) und vor einer
+  // Zeile, die für diese sechs ohnehin nichts Sinnvolles aussagte.
+  if (company.revenueChf !== null && company.employees !== null && company.employees > 0) {
+    fields.push({
+      label: 'Umsatz je Mitarbeitenden',
+      value: formatRevenue(company.revenueChf / company.employees, 'CHF'),
+    })
+  }
+
+  const links: PanelLink[] = []
+  if (company.reportUrl) links.push({ label: 'Geschäftsbericht öffnen', href: company.reportUrl })
+  // `productsUrl` ist bei 195 der 201 Gesellschaften gefüllt und belegt die
+  // Kerngeschäft-Zeile oben mit einer Primärquelle — bisher stand die Quelle
+  // nur in `companies.json`, nirgends im Panel.
+  if (company.productsUrl) links.push({ label: 'Kerngeschäft belegen', href: company.productsUrl })
 
   return {
     title: company.name,
     fields,
     notes,
-    links: company.reportUrl
-      ? [{ label: 'Geschäftsbericht öffnen', href: company.reportUrl }]
-      : [],
+    links,
   }
 }
 
@@ -359,9 +464,21 @@ export function showMunicipalityPanel(level: Level, index: number): void {
   renderContent(box, aggregateCellContent(level, index))
 }
 
+// Platzhalter, solange niemand Rang und Summen aus den 201 recherchierten
+// Gesellschaften befüllt (Folgeaufgabe, siehe Kommentar bei `CompanyContext`)
+// — `rank: null` lässt die Rang-Zeile weg statt einen falschen Rang 1 zu
+// behaupten, `revenueTotal: 0` lässt den Anteil-am-Gesamtumsatz weg statt
+// durch 0 zu teilen. Kein Zustand in `karte/firmen.ts` dafür nötig.
+const PLACEHOLDER_CONTEXT: CompanyContext = {
+  metric: 'umsatz',
+  rank: null,
+  rankTotal: 0,
+  revenueTotal: 0,
+}
+
 export function showCompanyPanel(company: Company): void {
   const box = panelBox()
-  renderContent(box, companyContent(company))
+  renderContent(box, companyContent(company, PLACEHOLDER_CONTEXT))
 }
 
 export function hidePanel(): void {
