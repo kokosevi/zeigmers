@@ -391,6 +391,22 @@ def test_org_form_gilt_auch_fuer_unrecherchierte_zeilen():
     companies.validate([row])
 
 
+def test_validate_verlangt_org_form_auch_bei_unrecherchierter_zeile():
+    # Gegenprobe zu test_org_form_gilt_auch_fuer_unrecherchierte_zeilen: dieselbe
+    # Zeilenart (researched=no), aber ohne org_form. Ohne diesen Test bemerkt
+    # keiner der vier org_form-Tests, wenn die Pruefung spaeter versehentlich in
+    # ein `if researched == "yes":` verschachtelt wird — die beiden anderen
+    # Ablehnungstests laufen ueber _row() (researched=yes), und der einzige
+    # researched=no-Test prueft bisher nur den Zulassungsfall, nicht die
+    # Ablehnung.
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    row.update({"uid": "CHE-100.000.009", "name": "Noch Nichts AG",
+                "isin": "CH0000000009",
+                "researched": "no", "org_form": ""})
+    with pytest.raises(ValueError, match="org_form"):
+        companies.validate([row])
+
+
 def test_build_artifact_marks_researched_flag_per_entry():
     table = noga.load_table()
     artifact = companies.build_artifact([_row(), _unresearched_row()], table)
