@@ -3,6 +3,7 @@ import type { FeatureCollection, Geometry } from 'geojson'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level } from '../data/loader'
 import type { PresentGroups } from '../domain/legendGroups'
+import { formatMetric, metricValue } from '../domain/metric'
 import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX } from '../domain/noga.generated'
 import type { ScaleMode } from '../domain/scale'
 import { applySelection, type Selection } from '../domain/selection'
@@ -167,9 +168,28 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     )
     const zeroPlane = zeroPlaneHeight(heights)
     const topCompanies = topByMetric(result, selection.metric, TOP_LABEL_COUNT)
+    // Nur der Name — für die unrecherchierten Marker (`buildUnresearchedCompanyLayer`
+    // unten) gibt es nichts Zweites zu sagen: weder Kennzahl noch Branche sind
+    // für sie belegt.
     const onHoverCompany = (company: Company | null, x: number, y: number) => {
       if (!company) return hideHoverLabel()
       showHoverLabel(company.name, x, y)
+    }
+    // Zweite Zeile für die recherchierten Säulen (`buildCompanyLayer` unten):
+    // Wert der aktiven Kennzahl und Branche, dieselbe Herleitung wie die
+    // Säulenhöhe (`metricValue`) bzw. das Klick-Panel (`ui/panel.ts`,
+    // `nogaGroupLabel`). Fehlt der Wert (`metricValue` liefert `null` — dieselbe
+    // Firma bekommt dann die Platzhaltersäule, siehe `companyElevations`), sagt
+    // die Zeile das explizit: ein leerer Platz oder ein "undefined" wäre nicht
+    // ehrlicher, nur unauffälliger, und liesse offen, ob der Wert vergessen
+    // oder tatsächlich nicht bekannt ist.
+    const onHoverResearchedCompany = (company: Company | null, x: number, y: number) => {
+      if (!company) return hideHoverLabel()
+      const value = metricValue(company, selection.metric)
+      const valueText =
+        value === null ? 'Keine Zahl für diese Kennzahl' : formatMetric(value, selection.metric)
+      const branch = NOGA_GROUPS[company.nogaGroupIndex]?.label ?? 'unbekannt'
+      showHoverLabel([company.name, `${valueText} · ${branch}`], x, y)
     }
 
     return [
@@ -190,7 +210,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
         metric: selection.metric,
         mode,
         onClick: onShowCompanyPanel,
-        onHover: onHoverCompany,
+        onHover: onHoverResearchedCompany,
       }),
       buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, onHoverCompany),
       // Zuoberst eingereiht (letztes Element): deck.gl zeichnet spätere

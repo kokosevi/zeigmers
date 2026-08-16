@@ -304,9 +304,22 @@ a:focus-visible, button:focus-visible {
   text-transform: uppercase; letter-spacing: .05em;
   padding: .25rem .5rem; border-radius: .25rem;
   box-shadow: 0 1px 3px rgba(27, 39, 51, .15);
-  white-space: nowrap;
 }
 #hover-label[hidden] { display: none; }
+/* Task 16: `white-space: nowrap` gilt je Zeile (`<span>`, siehe
+   `showHoverLabel`), nicht mehr für den ganzen Block — sonst liefe der Name
+   der recherchierten Firma und die zweite Zeile (Kennzahl · Branche)
+   ineinander statt untereinander zu stehen. Die zweite Zeile ist
+   Nebeninformation, nicht der Name selbst — kleiner und in `--tinte-leise`,
+   demselben Ton, in dem die App sonst Nebensächliches setzt (z.B.
+   `.legende-nur`). Grossbuchstaben bleiben (geerbt von `#hover-label`) auch
+   für Zahlen und Branchennamen: die Legende zeigt Prozent- und
+   Frankenbeträge («80 %», Beträge in `.legende-bezug`) bereits durchgehend
+   versal und bleibt dabei lesbar — dieselbe Stimme für die zweite
+   Hover-Zeile wahrt die Konsistenz, statt für eine Zeile eine Ausnahme zu
+   öffnen. */
+#hover-label > span { display: block; white-space: nowrap; }
+#hover-label > span:nth-child(2) { font-size: .625rem; color: var(--tinte-leise); margin-top: .15rem; }
 
 /* Unter ~800px stehen #legende (unten links) und #hinweis (jetzt unten
    rechts) sich nicht mehr im Weg wie zuvor (#hinweis war bodenmittig) —
