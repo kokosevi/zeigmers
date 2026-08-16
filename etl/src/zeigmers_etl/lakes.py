@@ -11,16 +11,19 @@ dort in den Gemeindeflächen und liessen sich nicht herauslösen, ohne die
 Gemeindegeometrie selbst zu zerschneiden.
 
 Natural Earth 10m "lakes" führt umgekehrt nur die international bekannten
-Seen — im Schweizer Fenster sind das Genfersee, Bodensee und der (nicht
-schweizerische) Lago di Como, aber keiner der oben genannten elf. Eine Karte
+Seen — im Schweizer Fenster sind das Genfersee, Bodensee und ein drittes
+Feature, das die Quelle "Lago di Como" nennt, in Wahrheit aber Lago Maggiore
+ist (Fehlbeschriftung, siehe `_NATURAL_EARTH_NAME_CORRECTIONS`). Eine Karte
 der Schweiz ohne Genfersee ist keine; deshalb kombiniert dieses Modul beide
-Quellen: Natural Earth für Genfersee/Bodensee, swissBOUNDARIES3D für den Rest.
-Bodensee liefern beide — dort hat Natural Earth Vorrang (siehe `build()`),
-swissBOUNDARIES3D nur den Schweizer Uferstreifen zweigeteilt.
+Quellen: Natural Earth für Genfersee/Bodensee/Lago Maggiore, swissBOUNDARIES3D
+für den Rest. Bodensee liefern beide — dort hat Natural Earth Vorrang (siehe
+`build()`), swissBOUNDARIES3D nur den Schweizer Uferstreifen zweigeteilt.
 
 **Bleibt trotzdem unvollständig:** Vierwaldstättersee, Zugersee, Walensee und
-die Tessiner Seen (Lago Maggiore, Lago di Lugano) sind in keiner der beiden
-Quellen als eigene Fläche enthalten und fehlen deshalb auf der Karte.
+Lago di Lugano sind in keiner der beiden Quellen als eigene Fläche enthalten
+und fehlen deshalb auf der Karte. Lago Maggiore dagegen ist mit seinem
+Schweizer Teil enthalten (siehe oben) — eine frühere Fassung dieses Docstrings
+zählte ihn fälschlich zu den fehlenden Seen.
 
 Natural Earth ist damit die einzige nicht-amtliche Quelle dieser Karte. Sie
 wird in der Eckbox (`ui/notices.ts`) namentlich genannt, zusammen mit dem
@@ -64,6 +67,15 @@ _SWISSBOUNDARIES_OBJEKTART = "Kantonsgebiet"
 # einer Fläche.
 _CANTON_SUFFIX_PATTERN = r"\s*\([A-Z]{2}\)$"
 
+# Natural Earth beschriftet ein Feature falsch: Das einzige Polygon namens
+# "Lago di Como" hat die Ausdehnung 8.49–8.85° O / 45.72–46.17° N (nachgemessen
+# gegen ne_10m_lakes.zip, Stand 16. August 2026) — das ist Lago Maggiore bei
+# Locarno, nicht der Comer See (der liegt bei 9.05–9.40° O). Ein Feature
+# namens "Lago Maggiore" existiert im Datensatz nicht. Ohne diese Korrektur
+# stünde der falsche Name auf der Karte; die Zuordnung ist an der Geometrie
+# geprüft, nicht am Namen der Quelle vertraut.
+_NATURAL_EARTH_NAME_CORRECTIONS = {"Lago di Como": "Lago Maggiore"}
+
 
 def _extract_gpkg(gpkg_zip: Path) -> Path:
     """Entpackt das GeoPackage aus dem swissBOUNDARIES3D-ZIP in dieselbe
@@ -98,6 +110,7 @@ def _read_natural_earth(ne_zip: Path) -> gpd.GeoDataFrame:
     gdf = gdf.to_crs(config.DST_WGS84)
     name_col = next((c for c in gdf.columns if c.lower() == "name"), None)
     name = gdf[name_col] if name_col is not None else pd.Series([None] * len(gdf))
+    name = name.replace(_NATURAL_EARTH_NAME_CORRECTIONS)
     return gpd.GeoDataFrame(
         {"name": name.reset_index(drop=True), "geometry": gdf.geometry.reset_index(drop=True)},
         crs=config.DST_WGS84,
@@ -140,6 +153,18 @@ def build(
     # zwei einander überlappende Polygone für denselben See — wo Natural Earth
     # den Namen schon liefert, hat es Vorrang, die swissBOUNDARIES3D-Zeile
     # entfällt.
+    #
+    # Fragil, bewusst in Kauf genommen: Der Vergleich ist ein reiner
+    # Namensabgleich (getrimmt, kleingeschrieben) — er setzt voraus, dass
+    # derselbe See in beiden Quellen exakt gleich geschrieben ist. Heute
+    # trifft das nur auf "Bodensee" zu (in beiden Quellen identisch). Würde
+    # eine künftige Ausgabe einer Quelle denselben See anders schreiben (z. B.
+    # "Lake Constance" statt "Bodensee"), erkennt dieser Abgleich das nicht —
+    # der See erschiene dann fälschlich zweimal, überlappend, ohne Fehler oder
+    # Warnung. Eine geometrische Dedup (Überlappungsfläche statt Name) wäre
+    # robuster, ist hier aber bewusst nicht gebaut: der einzige heutige
+    # Überschneidungsfall ist bekannt und geprüft (siehe Testfall
+    # `test_dedupliziert_see_der_in_beiden_quellen_vorkommt`).
     ne_names = {str(n).strip().lower() for n in ne["name"] if pd.notna(n)}
     sb = sb[~sb["name"].str.strip().str.lower().isin(ne_names)]
 

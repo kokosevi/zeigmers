@@ -161,6 +161,22 @@ def test_ignoriert_kantonsgebiet_ohne_seeflaeche(tmp_path):
     assert report["count"] == 0
 
 
+def test_korrigiert_falsch_beschriftetes_lago_di_como_zu_lago_maggiore(tmp_path):
+    """Fund vom Task-Review: Natural Earth führt genau ein Feature namens
+    "Lago di Como" — seine Ausdehnung (8.49–8.85° O / 45.72–46.17° N) liegt
+    aber bei Locarno, nicht beim Comer See (9.05–9.40° O). Ein Feature namens
+    "Lago Maggiore" existiert im Datensatz nicht; die Quelle beschriftet die
+    Fläche schlicht falsch. `lakes.py` korrigiert das explizit (siehe
+    `_NATURAL_EARTH_NAME_CORRECTIONS`), dieser Test hält die Korrektur fest."""
+    see = Polygon([(8.5, 46.0), (8.7, 46.0), (8.7, 46.1), (8.5, 46.1)])
+    ne_zip = _ne_zip(tmp_path, [see], ["Lago di Como"])
+    sb_zip = _keine_swissboundaries_seen(tmp_path, "sb_maggiore")
+    out = tmp_path / "lakes.geojson"
+    lakes.build(ne_zip, sb_zip, _switzerland(), out)
+    data = json.loads(out.read_text(encoding="utf-8"))
+    assert [f["properties"]["name"] for f in data["features"]] == ["Lago Maggiore"]
+
+
 def test_dedupliziert_see_der_in_beiden_quellen_vorkommt(tmp_path):
     """Der Bodensee kommt aus beiden Quellen — er darf nur einmal auf der
     Karte landen, nicht als zwei einander überlappende Polygone."""

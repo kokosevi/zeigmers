@@ -12,7 +12,7 @@ from . import config
 COMMANDS: dict[str, str] = {
     "inspect-statent": "Rohdaten laden und Spaltenbericht ausgeben",
     "boundaries": "Kantons- und Gemeindegrenzen aufbereiten",
-    "lakes": "Seeflächen aus Natural Earth bauen",
+    "lakes": "Seeflächen aus Natural Earth und swissBOUNDARIES3D bauen",
     "noga": "NOGA-Tabelle prüfen und TypeScript erzeugen",
     "statent": "Hektardaten aufbereiten und Artefakte schreiben",
     "companies": "Ansicht A: CSV validieren, geokodieren, Artefakt schreiben",
