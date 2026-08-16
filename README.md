@@ -323,7 +323,7 @@ App ist mit dieser Unschärfe zu lesen, nicht als amtlich verbindliche Zahl.
 | Basiskarte (`ch_kantone.geojson`, selbst gezeichnet) | swisstopo (aus swissBOUNDARIES3D, `tlm_kantonsgebiet`) | Kantonsflächen als deck.gl-Layer, `src/layers/cantons.ts` — seit dem 13. August 2026 keine externen Vektorkacheln mehr, siehe „Warum die Karte keine externe Basiskarte mehr lädt" |
 | Liste kotierter Titel (seit Phase 3, national) | SIX Group, `six-group.com/fqs/ref.json` (`ProductLine=BC`+`DS`) | Ansicht A: Nenner der Abdeckungsangabe, Kandidatenliste für `companies-sync` |
 | Firmen-Stammdaten (LINDAS/Zefix, Geokodierung) | LINDAS SPARQL-Endpunkt, swisstopo SearchServer | Sitz je Titel (wo eindeutig auffindbar) und Adresse→Koordinate für Ansicht A |
-| Umsatz, Mitarbeitende, Geschäftsjahr je Firma | Geschäftsberichte der acht Unternehmen selbst | Ansicht A (siehe `report_url` je Zeile) |
+| Umsatz, Mitarbeitende, Geschäftsjahr je Firma | Geschäftsberichte der 201 recherchierten Unternehmen selbst | Ansicht A (siehe `report_url` je Zeile) |
 | Seeflächen (`lakes.geojson`) | Natural Earth 10m «lakes» (Genfersee, Bodensee, Lago Maggiore), swissBOUNDARIES3D (`tlm_hoheitsgebiet`, die übrigen amtlich geführten Seen) | Orientierung in beiden Ansichten (`src/layers/lakes.ts`) — die einzige nicht-amtliche Quelle dieser Karte, deshalb namentlich in der Eckbox genannt. **Bleibt unvollständig:** Vierwaldstättersee, Zugersee, Walensee und Lago di Lugano stecken in keiner der beiden Quellen als eigene Fläche und fehlen auf der Karte (siehe `etl/src/zeigmers_etl/lakes.py`, Moduldocstring) |
 
 Abgerufen: 13. August 2026 (Datum, an dem die zugrundeliegenden Rohdaten

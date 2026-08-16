@@ -618,17 +618,17 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "fiscalYear": int(row["fiscal_year"]) if row.get("fiscal_year") else None,
                 "reportUrl": row.get("report_url") or None,
                 "note": row.get("note") or None,
-                # Auch ein ausgewiesener Umsatz von NULL traegt keine
-                # Hoehenaussage: als echte Hoehe gerechnet ergaebe er eine
-                # Saeule von null Metern, und die Firma verschwaende von der
+                # Auch ein ausgewiesener Umsatz von NULL trägt keine
+                # Höhenaussage: als echte Höhe gerechnet ergäbe er eine
+                # Säule von null Metern, und die Firma verschwände von der
                 # Karte, obwohl sie recherchiert ist und es sie gibt
                 # (Molecular Partners, 2025: CHF 0, Vorjahr 5.0 Mio. — ein
                 # klinisches Biotech ohne zugelassenes Produkt). Die echte
                 # Null bleibt in `revenue` und damit im Panel stehen.
                 # Diese Invariante ist keine ETL-Interna: `domain/metric.ts`
-                # liefert fuer die Kennzahl «Umsatz» genau dann `null`, wenn
-                # `placeholder` gesetzt ist — sonst zeichnete die Karte fuer
-                # eine echte Null eine Saeule auf Mindesthehe und faerbte sie
+                # liefert für die Kennzahl «Umsatz» genau dann `null`, wenn
+                # `placeholder` gesetzt ist — sonst zeichnete die Karte für
+                # eine echte Null eine Säule auf Mindesthöhe und färbte sie
                 # zugleich als «keine Zahl gefunden».
                 "placeholder": not revenue or float(revenue) == 0,
                 "researched": researched,
