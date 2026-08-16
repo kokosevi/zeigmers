@@ -141,6 +141,23 @@ describe('renderLegend als Filter', () => {
       .toContain('Keine Branche ausgewählt')
   })
 
+  it('bildet für die Branchenschaltflächen eine benannte ARIA-Gruppe', () => {
+    // Ohne `role="group"` gibt der Container seinen `aria-label` nicht aus
+    // (dasselbe Muster, das Task 12 für die Organisationsform in `ui/nav.ts`
+    // schon einmal geschlossen hat) — eine Screenreader-Nutzerin hörte sonst
+    // nur "Button, gedrückt, Industrie und Energie, 3, 45 %", ohne jeden
+    // Hinweis, dass die Zeilen eine zusammengehörige Gruppe bilden.
+    const companies = [
+      company({ nogaGroupIndex: 1 }),
+      company({ nogaGroupIndex: 2 }),
+    ]
+    renderLegend(options(companies, 'umsatz'))
+    const gruppe = document.querySelector('[aria-label="Branchen"]')
+    expect(gruppe?.getAttribute('role')).toBe('group')
+    expect(gruppe?.contains(document.querySelector('[data-branch="1"]'))).toBe(true)
+    expect(gruppe?.contains(document.querySelector('[data-branch="2"]'))).toBe(true)
+  })
+
   it('nennt, worauf sich die Höhe gerade bezieht', () => {
     // Auswahlabhängiges vmax ohne Bezugszeile behauptete einen absoluten
     // Massstab, den die Karte nicht hat.

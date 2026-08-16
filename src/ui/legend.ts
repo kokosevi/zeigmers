@@ -240,6 +240,31 @@ export function renderLegend(options: LegendOptions): void {
   const selected = options.selectedBranches ?? new Set(presentGroups.indices)
   const totals = metric !== undefined && result !== undefined ? branchTotals(result, metric) : null
 
+  // Fix-Runde (2026-08-16, Review): die Branchenschaltflächen bildeten keine
+  // benannte Gruppe — `aria-pressed` sass korrekt je Umschalter, aber ohne
+  // Rolle/Label am Container liest ein Screenreader nur "Button, gedrückt,
+  // Industrie und Energie, 3, 45 %", ohne dass die Zeilen als eine
+  // zusammengehörige Gruppe erkennbar wären. Dasselbe Muster, das Task 12
+  // für die Organisationsform in `ui/nav.ts` schon durchgespielt hat: ein
+  // Container ohne Rolle gibt seinen `aria-label` nicht zuverlässig aus.
+  //
+  // `role="group"` sitzt hier bewusst auf einem umschliessenden `<div>`,
+  // nicht auf der `<ul>` selbst: eine `<ul>` mit einer expliziten
+  // ARIA-Rolle verliert ihre implizite Listen-Rolle (kein "Liste, N
+  // Einträge" mehr für Screenreader) — bei `ui/nav.ts` stellte sich diese
+  // Frage nicht (dort schon ein `<div>`, keine Liste), hier schon, und die
+  // Antwort ist: Listensemantik UND Gruppenname sind beide zumutbar, es
+  // kostet nur ein zusätzliches Element.
+  //
+  // Die Gruppe umfasst nur die eigentlichen Branchen (NOGA-Gruppen und
+  // "nicht bestimmbar") — die Rand-, Marker- und Mindesthöhen-Hinweise
+  // darunter sind eine eigene, dritte Kategorie (siehe Kommentar oben bei
+  // `FLOOR_LEGEND_TEXT`) und stehen deshalb in einer zweiten, ungruppierten
+  // Liste: als "Branche" vorgelesen wären sie irreführend gewesen.
+  const branchGroup = document.createElement('div')
+  branchGroup.setAttribute('role', 'group')
+  branchGroup.setAttribute('aria-label', 'Branchen')
+
   const branchen = document.createElement('ul')
   branchen.className = 'legende-branchen'
   // Nur Gruppen, die in der aktuellen Ansicht tatsächlich eine Fläche/einen
@@ -269,14 +294,19 @@ export function renderLegend(options: LegendOptions): void {
   if (presentGroups.hasUnknown) {
     branchen.appendChild(swatch(litTopFaceColor(UNKNOWN_COLOR), 'nicht eindeutig bestimmbar'))
   }
+  branchGroup.appendChild(branchen)
+  el.appendChild(branchGroup)
+
   if (view === 'sichtbare') {
-    branchen.appendChild(outlineSwatch())
-    branchen.appendChild(unresearchedSwatch())
+    const hinweise = document.createElement('ul')
+    hinweise.className = 'legende-branchen'
+    hinweise.appendChild(outlineSwatch())
+    hinweise.appendChild(unresearchedSwatch())
     const floorNote = document.createElement('li')
     floorNote.textContent = FLOOR_LEGEND_TEXT
-    branchen.appendChild(floorNote)
+    hinweise.appendChild(floorNote)
+    el.appendChild(hinweise)
   }
-  el.appendChild(branchen)
 
   if (metric !== undefined && result !== undefined) {
     // Bezugszeile: seit die Höhenskala sich an die Auswahl anpasst (statt an
