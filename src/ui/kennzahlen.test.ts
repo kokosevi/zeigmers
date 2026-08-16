@@ -134,12 +134,14 @@ describe('renderKennzahlen', () => {
     expect(document.getElementById('kennzahlen')!.textContent).toContain('Keine Gesellschaft ausgewählt')
   })
 
-  it('zeigt den Nenner des Filters, wenn dieser die Auswahl verkleinert hat', () => {
+  it('nennt bei aktivem Filter die Auswahl, nicht die Kartenabdeckung', () => {
     // `totalCompanies` ist die Grundgesamtheit VOR dem Branchen-/
     // Organisationsformfilter (z. B. `companies.stats.count`) — schrumpft
-    // ein Filter die Auswahl, sagt die Zeile das («X von Y»), sonst liesse
-    // sich aus ihr allein nicht ablesen, dass gerade nicht alle
-    // Gesellschaften mitgezählt werden.
+    // ein Filter die Auswahl, sagt die Zeile das («X von Y … ausgewählt»).
+    // Das Wort «ausgewählt» ist Pflicht, nicht Zierrat: die Legende zeigt
+    // auf derselben Seite bereits ein anderes «X von Y» über Gesellschaften
+    // (Kartenabdeckung ggü. kotierten SIX-Titeln) — ohne benannten Bezug
+    // liessen sich die beiden Aussagen verwechseln.
     const companies = [
       company({ nogaGroupIndex: 1 }),
       company({ nogaGroupIndex: 2 }),
@@ -155,6 +157,92 @@ describe('renderKennzahlen', () => {
     })
 
     const text = document.getElementById('kennzahlen')!.textContent!
-    expect(text).toContain('1 von 2 Gesellschaften')
+    expect(text).toContain('1 von 2 Gesellschaften ausgewählt')
+  })
+
+  it('lässt «ausgewählt» weg, wenn kein Filter aktiv ist', () => {
+    // Gegenprobe zum vorigen Test: ohne Filter (`totalCompanies ===
+    // result.visible.length`) bliebe «ausgewählt» eine Behauptung über
+    // einen Filter, den es gerade nicht gibt.
+    const companies = [company({ nogaGroupIndex: 1 }), company({ nogaGroupIndex: 1 })]
+    const result = applySelection(companies, auswahl('umsatz', [1]))
+    expect(result.visible).toHaveLength(2)
+
+    renderKennzahlen({
+      result,
+      metric: 'umsatz',
+      totalCompanies: companies.length,
+      nationalEmployees: null,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    expect(text).toContain('2 Gesellschaften')
+    expect(text).not.toContain('ausgewählt')
+    expect(text).not.toContain(' von ')
+  })
+
+  it('behauptet keine Null, wenn die Auswahl sichtbar, aber wertlos ist', () => {
+    // Eine Branche voller Platzhalterfirmen bei Kennzahl Umsatz: sichtbar
+    // (`visible.length > 0`), aber ohne einen einzigen Wert
+    // (`withValue.length === 0`, siehe `domain/metric.ts`, `metricValue`).
+    // `result.sum` ist dabei technisch `0` — dieselbe Ziffer wie eine
+    // tatsächlich gemessene Nullsumme. Die Zeile darf diesen Unterschied
+    // nicht verschweigen.
+    const companies = Array.from({ length: 5 }, () => company({ placeholder: true }))
+    const result = applySelection(companies, auswahl('umsatz', [1]))
+    expect(result.visible).toHaveLength(5)
+    expect(result.withValue).toHaveLength(0)
+
+    renderKennzahlen({
+      result,
+      metric: 'umsatz',
+      totalCompanies: result.visible.length,
+      nationalEmployees: null,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    expect(text).not.toContain('0 CHF')
+    expect(text).not.toContain('aus 0 Angaben')
+    expect(text).toContain('keine')
+  })
+
+  it('zeigt den Vergleich nicht bei Umsatz oder Gewinn, selbst mit echter Vergleichszahl', () => {
+    // Regressionsschutz: alle bisherigen Umsatz-/Gewinn-Tests übergeben
+    // `nationalEmployees: null` — eine Regression, die die Kennzahl-Prüfung
+    // entfernt und nur die Null-Prüfung stehen lässt, bliebe ohne diesen
+    // Test unbemerkt. Der Vergleich «Mitarbeitende weltweit gegen
+    // Beschäftigte in der Schweiz» ergibt neben einer Umsatz- oder
+    // Gewinnsumme keinen Sinn.
+    for (const metric of ['umsatz', 'gewinn'] as const) {
+      const companies = [company()]
+      const result = applySelection(companies, auswahl(metric, [1]))
+
+      renderKennzahlen({ result, metric, totalCompanies: result.visible.length, nationalEmployees: 5_876_865 })
+
+      expect(document.getElementById('kennzahlen')!.textContent).not.toContain('Vergleich')
+    }
+  })
+
+  it('schreibt die Einzahl bei genau einer Gesellschaft bzw. einer Angabe', () => {
+    // Bei engem Filter (eine einzige übrig gebliebene Branche mit genau
+    // einer Gesellschaft) ist «1 Gesellschaften»/«aus 1 Angaben» ein
+    // erreichbarer, falscher Plural.
+    const companies = [company()]
+    const result = applySelection(companies, auswahl('umsatz', [1]))
+    expect(result.visible).toHaveLength(1)
+    expect(result.withValue).toHaveLength(1)
+
+    renderKennzahlen({
+      result,
+      metric: 'umsatz',
+      totalCompanies: result.visible.length,
+      nationalEmployees: null,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    expect(text).toContain('1 Gesellschaft')
+    expect(text).not.toContain('1 Gesellschaften')
+    expect(text).toContain('aus 1 Angabe')
+    expect(text).not.toContain('aus 1 Angaben')
   })
 })

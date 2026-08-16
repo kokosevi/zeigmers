@@ -12,9 +12,15 @@ export interface KennzahlenOptions {
    *  Organisationsformfilter (auf der Firmenseite z. B.
    *  `companies.stats.count`). Nur zum Vergleich mit `result.visible.length`
    *  gedacht: schrumpft ein Filter die Auswahl, sagt die Zeile «X von Y
-   *  Gesellschaften» statt nur «X Gesellschaften» — sonst liesse sich aus
-   *  ihr allein nicht ablesen, dass gerade nicht alle Gesellschaften
-   *  mitgezählt werden. */
+   *  Gesellschaften ausgewählt» statt nur «X Gesellschaften» — sonst liesse
+   *  sich aus ihr allein nicht ablesen, dass gerade nicht alle
+   *  Gesellschaften mitgezählt werden. Das Wort «ausgewählt» ist dabei kein
+   *  Zierrat: die Legende (`ui/legend.ts`, `scopeLabel`) zeigt auf derselben
+   *  Seite bereits ein anderes «X von Y» über Gesellschaften (Karten-
+   *  abdeckung ggü. kotierten SIX-Titeln, z. B. «201 Gesellschaften von 224
+   *  kotierten SIX-Titeln») — ohne benannten Bezug wären zwei verschiedene
+   *  «X von Y»-Aussagen gleichzeitig auf dem Bildschirm leicht zu
+   *  verwechseln. */
   totalCompanies: number
   /** Beschäftigte der Schweiz insgesamt, für den Vergleich bei der Kennzahl
    *  «Mitarbeitende» — der Vergleich, für den dieses Projekt besteht: rund
@@ -25,6 +31,14 @@ export interface KennzahlenOptions {
    *  bekannt ist — dann bleibt der Vergleich schlicht weg, statt eine
    *  erfundene Zahl zu zeigen. */
   nationalEmployees: number | null
+}
+
+/** Zahl mit passender Endung — «1 Gesellschaft», aber «2 Gesellschaften».
+ *  Bei einem engen Filter (eine einzige übrig gebliebene Branche, eine
+ *  einzige Gesellschaft mit Wert) ist die Einzahl ein erreichbarer Fall,
+ *  keine theoretische Feinheit. */
+function zahlwort(count: number, einzahl: string, mehrzahl: string): string {
+  return `${formatNumber(count)} ${count === 1 ? einzahl : mehrzahl}`
 }
 
 function box(): HTMLElement {
@@ -54,35 +68,56 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
     return
   }
 
+  // «ausgewählt» ist ausschliesslich bei aktivem Filter dabei (siehe
+  // `KennzahlenOptions.totalCompanies`) — ungefiltert (`totalCompanies ===
+  // result.visible.length`) bleibt es bei der einfachen Zahl, sonst
+  // behauptete die Zeile auch ohne Filter einen Bezug zu einer
+  // Grundgesamtheit. `totalCompanies` ist in diesem Zweig immer mindestens
+  // 2 (sonst wäre es nicht grösser als `visible.length >= 1`), «Gesellschaf-
+  // ten» braucht hier deshalb keine Einzahlprüfung.
   const anzahl =
     totalCompanies > result.visible.length
-      ? `${formatNumber(result.visible.length)} von ${formatNumber(totalCompanies)} Gesellschaften`
-      : `${formatNumber(result.visible.length)} Gesellschaften`
+      ? `${formatNumber(result.visible.length)} von ${formatNumber(totalCompanies)} ` +
+        'Gesellschaften ausgewählt'
+      : zahlwort(result.visible.length, 'Gesellschaft', 'Gesellschaften')
 
-  // Der Nenner ist der Kern dieser Zeile: die Summe entsteht aus
-  // `withValue.length` Angaben, nicht aus der (meist grösseren) Anzahl
-  // sichtbarer Gesellschaften — «201 Gesellschaften · 762.1 Mrd. CHF» allein
-  // würde eine Summe über eine Grundgesamtheit stellen, zu der sie nicht
-  // gehört (manche Gesellschaft hat für genau diese Kennzahl keinen Wert,
-  // siehe `domain/metric.ts`, `metricValue`). Beide Zahlen stehen deshalb
-  // nebeneinander.
-  const teile = [`${anzahl} · aus ${formatNumber(result.withValue.length)} Angaben`]
+  const teile = [anzahl]
 
-  if (metric === 'gewinn') {
-    // Gewinn nennt den Saldo, nicht «die Summe» — in ihn gehen negative
-    // Beträge ein (`metricAllowsNegative`), eine reine Summenangabe
-    // verschwiege, dass darunter Verluste sind. Die Verlustzahl steht
-    // zusätzlich für sich: ein positiver Saldo kann einzelne Verlustfirmen
-    // trotzdem überdecken.
-    teile.push(`Saldo ${formatMetric(result.sum, metric)}`)
-    if (result.losses > 0) {
-      teile.push(
-        `${formatNumber(result.losses)} von ${formatNumber(result.withValue.length)} ` +
-          'Gesellschaften mit Verlust',
-      )
-    }
+  if (result.withValue.length === 0) {
+    // Eine Auswahl kann sichtbar, aber vollständig wertlos sein — etwa eine
+    // Branche voller Platzhalterfirmen bei Kennzahl Umsatz
+    // (`domain/metric.ts`, `metricValue`: `placeholder` ergibt `null`).
+    // `result.sum` ist dann zwar `0`, aber eine gemessene Summe UND eine
+    // Summe aus null Datenpunkten sehen als «0 CHF» identisch aus — die
+    // Zeile müsste sonst eine Messung behaupten, die nicht stattgefunden
+    // hat. Deshalb hier ein Satz statt einer Zahl, kein Sonderfall der
+    // Formatierung von `0`.
+    teile.push('keine davon mit einem Wert in dieser Kennzahl')
   } else {
-    teile.push(`${metricLabel(metric)} ${formatMetric(result.sum, metric)}`)
+    // Der Nenner ist der Kern dieser Zeile: die Summe entsteht aus
+    // `withValue.length` Angaben, nicht aus der (meist grösseren) Anzahl
+    // sichtbarer Gesellschaften — «201 Gesellschaften · 762.1 Mrd. CHF»
+    // allein würde eine Summe über eine Grundgesamtheit stellen, zu der sie
+    // nicht gehört (manche Gesellschaft hat für genau diese Kennzahl keinen
+    // Wert). Beide Zahlen stehen deshalb nebeneinander.
+    teile.push(`aus ${zahlwort(result.withValue.length, 'Angabe', 'Angaben')}`)
+
+    if (metric === 'gewinn') {
+      // Gewinn nennt den Saldo, nicht «die Summe» — in ihn gehen negative
+      // Beträge ein (`metricAllowsNegative`), eine reine Summenangabe
+      // verschwiege, dass darunter Verluste sind. Die Verlustzahl steht
+      // zusätzlich für sich: ein positiver Saldo kann einzelne
+      // Verlustfirmen trotzdem überdecken.
+      teile.push(`Saldo ${formatMetric(result.sum, metric)}`)
+      if (result.losses > 0) {
+        teile.push(
+          `${formatNumber(result.losses)} von ${formatNumber(result.withValue.length)} ` +
+            'Gesellschaften mit Verlust',
+        )
+      }
+    } else {
+      teile.push(`${metricLabel(metric)} ${formatMetric(result.sum, metric)}`)
+    }
   }
 
   const zeile = document.createElement('div')
@@ -93,8 +128,11 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
   // kotierten Gesellschaften WELTWEIT (Konzernzahl — `metricValue` liest
   // `company.employees` ohne Schweiz-Filter) gegen die Beschäftigten IN der
   // Schweiz. Nur bei dieser Kennzahl sinnvoll — Umsatz und Gewinn haben
-  // keine nationale Vergleichszahl, die dasselbe misst.
-  if (metric === 'mitarbeitende' && nationalEmployees !== null) {
+  // keine nationale Vergleichszahl, die dasselbe misst, und ohne einen
+  // einzigen Mitarbeitenden-Datenpunkt (`withValue.length === 0`) wäre die
+  // «Mitarbeitende weltweit»-Seite des Vergleichs dieselbe erfundene Null
+  // wie oben, deshalb hier dieselbe Bedingung.
+  if (metric === 'mitarbeitende' && nationalEmployees !== null && result.withValue.length > 0) {
     const vergleich = document.createElement('div')
     vergleich.textContent =
       `Vergleich: ${formatMetric(result.sum, metric)} Mitarbeitende der kotierten ` +
