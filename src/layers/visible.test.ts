@@ -4,8 +4,11 @@ import type { Metric } from '../domain/metric'
 import { CANTON_ELEVATION_M } from './cantons'
 import {
   buildCompanyLayer,
+  buildCompanyShadowLayer,
   buildUnresearchedCompanyLayer,
   companyElevations,
+  COMPANY_RADIUS_MAX_PX,
+  COMPANY_RADIUS_MIN_PX,
   LOSS_COLOR,
   MIN_REAL_BAR_M,
   MIN_VISIBLE_BAR_M,
@@ -226,6 +229,31 @@ describe('Höhenlage der Marker über der Kantonsplatte', () => {
     const getPosition = layer.props.getPosition as unknown as (c: Company) => number[]
     const position = getPosition(data.companies[0]!)
     expect(position[2]).toBe(CANTON_ELEVATION_M)
+  })
+})
+
+describe('Bodenschatten der Firmensäule', () => {
+  it('legt den Bodenschatten auf Plattenhöhe, nicht auf z = 0', () => {
+    const c = company()
+    const layer = buildCompanyShadowLayer(applySelection([c], selectionFor('umsatz')))
+    const [, , z] = (layer.props.getPosition as Function)(c)
+    expect(z).toBe(CANTON_ELEVATION_M)
+  })
+
+  it('ist nicht anklickbar — die Säule darüber nimmt den Klick', () => {
+    const c = company()
+    const layer = buildCompanyShadowLayer(applySelection([c], selectionFor('umsatz')))
+    expect(layer.props.pickable).toBe(false)
+  })
+
+  it('begrenzt den Schatten zoomunabhängig in Bildpunkten', () => {
+    // `ScatterplotLayer` (anders als die `ColumnLayer`-Säule darüber, siehe
+    // Kommentar bei `buildCompanyLayer`) kennt `radiusMinPixels`/
+    // `radiusMaxPixels` tatsächlich — hier trägt die Pixelgrenze also
+    // spürbar zur Behebung des Zürich/Jura-Problems bei.
+    const layer = buildCompanyShadowLayer(applySelection([company()], selectionFor('umsatz')))
+    expect(layer.props.radiusMinPixels).toBe(COMPANY_RADIUS_MIN_PX + 2)
+    expect(layer.props.radiusMaxPixels).toBe(COMPANY_RADIUS_MAX_PX + 4)
   })
 })
 

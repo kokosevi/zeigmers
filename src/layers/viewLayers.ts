@@ -14,6 +14,7 @@ import { buildCantonBorderLayer, buildCantonsLayer, CANTON_ELEVATION_M } from '.
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
 import {
   buildCompanyLayer,
+  buildCompanyShadowLayer,
   buildUnresearchedCompanyLayer,
   buildZeroPlaneLayer,
   companyElevations,
@@ -121,8 +122,9 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   const cantonsLayer = buildCantonsLayer({ data: cantonsGeo, activeBfsNr })
 
   // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
-  // auf einen einzelnen, vorher geladenen Kanton) — zwei bis drei Layer:
-  // Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
+  // auf einen einzelnen, vorher geladenen Kanton) — drei bis vier Layer:
+  // Bodenschatten (`buildCompanyShadowLayer`, verankert die Säule am Boden)
+  // und Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
   // flache neutrale Marker für alle übrigen kotierten Titel
   // (`buildUnresearchedCompanyLayer`, Kontext), dazu die Nulllinie
   // (`buildZeroPlaneLayer`), sobald sie über der Kantonsplatte liegt (siehe
@@ -164,6 +166,9 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
       // (Z-Fighting zweier koplanarer Flächen), ohne einen sichtbaren
       // Nutzen zu bieten.
       ...(zeroPlane > CANTON_ELEVATION_M ? [buildZeroPlaneLayer(cantonsGeo, zeroPlane)] : []),
+      // Vor der Säule eingereiht, sonst zeichnet deck.gl den Schatten über
+      // die Säule statt darunter.
+      buildCompanyShadowLayer(result),
       buildCompanyLayer({
         result,
         metric: selection.metric,

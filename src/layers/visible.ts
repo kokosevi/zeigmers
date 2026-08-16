@@ -213,6 +213,12 @@ export function companyElevations(
   return heights
 }
 
+// Sichtbarkeitsschranken der Säule in Bildpunkten, unabhängig vom Zoom —
+// dasselbe Muster wie `UNRESEARCHED_MARKER_MIN_PX`/`_MAX_PX` unten, hier für
+// die Säule selbst statt für den Marker der unrecherchierten Firmen.
+export const COMPANY_RADIUS_MIN_PX = 3
+export const COMPANY_RADIUS_MAX_PX = 14
+
 export function buildCompanyLayer(options: {
   result: SelectionResult
   metric: Metric
@@ -254,6 +260,15 @@ export function buildCompanyLayer(options: {
     getLineWidth: (c) => (c.revenueType === 'net_sales' ? 0 : 60),
     lineWidthUnits: 'meters',
     diskResolution: 16,
+    // `radius: 900` bleibt Grundmass in Metern. `ColumnLayer` kennt anders
+    // als `ScatterplotLayer` kein `radiusMinPixels`/`radiusMaxPixels` (siehe
+    // `node_modules/@deck.gl/layers` v9.3.10, `_ColumnLayerProps` — die
+    // Felder fehlen im Typ, und der Column-Vertexshader liest sie nicht):
+    // eine zoomunabhängige Pixelgrenze der Säule selbst lässt sich mit dieser
+    // Bibliotheksversion auf diesem Layertyp nicht abbilden. Der
+    // Bodenschatten (`buildCompanyShadowLayer`, `ScatterplotLayer`) trägt die
+    // Pixelgrenze stattdessen — er markiert denselben Ort und bleibt beim
+    // Herauszoomen sichtbar, auch wenn die Säule darüber in Metern schrumpft.
     radius: 900,
     radiusUnits: 'meters',
     extruded: true,
@@ -280,6 +295,29 @@ export function buildCompanyLayer(options: {
       if (info.object) onClick(info.object)
     },
     onHover: (info) => onHover(info.object ?? null, info.x, info.y),
+  })
+}
+
+/** Eine dunkle, halbtransparente Scheibe unter jeder Säule, auf
+ *  Plattenhöhe (`CANTON_ELEVATION_M`) — nicht auf der Nulllinie: der Schatten
+ *  markiert den Ort am Boden, nicht den Ansatzpunkt der Säule. In der
+ *  Gewinn-Ansicht liegt die Säule deshalb höher als ihr Schatten, das ist so
+ *  gewollt. Auf einer so hellen Kantonsplatte steht eine dünne Säule sonst
+ *  ohne Kontakt zum Boden — der Schatten verankert sie an ihrem Ort, statt
+ *  sie schweben zu lassen. Trägt keine eigene Aussage und ist nicht
+ *  anklickbar; die Säule darüber nimmt den Klick. */
+export function buildCompanyShadowLayer(result: SelectionResult): ScatterplotLayer<Company> {
+  return new ScatterplotLayer<Company>({
+    id: 'firmen-schatten',
+    data: result.visible,
+    pickable: false,
+    stroked: false,
+    getPosition: (c) => [c.lon, c.lat, CANTON_ELEVATION_M],
+    getRadius: 1400,
+    radiusUnits: 'meters',
+    radiusMinPixels: COMPANY_RADIUS_MIN_PX + 2,
+    radiusMaxPixels: COMPANY_RADIUS_MAX_PX + 4,
+    getFillColor: [27, 39, 51, 38],
   })
 }
 
