@@ -241,4 +241,13 @@ describe('buildViewLayers', () => {
     const ids = idsOf(buildViewLayers({ ...firmenInput(), lakes: null }))
     expect(ids).not.toContain('seen')
   })
+
+  it('reiht die Beschriftung der grössten Gesellschaften zuoberst ein, über Säulen und Markern', () => {
+    // deck.gl zeichnet spätere Layer über frühere — die Namen sollen von
+    // keiner Säule und keinem Marker verdeckt werden können. `COMPANIES` ist
+    // in dieser Suite leer, aber die Layer-id steht unabhängig davon in der
+    // Liste, ob überhaupt eine Firma beschriftet wird.
+    const ids = idsOf(buildViewLayers({ ...firmenInput(), lakes: LAKES_GEO }))
+    expect(ids[ids.length - 1]).toBe('firmen-beschriftung')
+  })
 })

@@ -13,6 +13,7 @@ import { municipalityName } from '../ui/panel'
 import { buildCantonBorderLayer, buildCantonsLayer, CANTON_ELEVATION_M } from './cantons'
 import { buildLakesLayer } from './lakes'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
+import { buildLabelLayer, topByMetric, TOP_LABEL_COUNT } from './labels'
 import {
   buildCompanyLayer,
   buildCompanyShadowLayer,
@@ -139,7 +140,9 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   // flache neutrale Marker für alle übrigen kotierten Titel
   // (`buildUnresearchedCompanyLayer`, Kontext), dazu die Nulllinie
   // (`buildZeroPlaneLayer`), sobald sie über der Kantonsplatte liegt (siehe
-  // `layers/visible.ts`).
+  // `layers/visible.ts`), und zuoberst die Namen der zwölf grössten
+  // Gesellschaften nach der aktiven Kennzahl (`buildLabelLayer`,
+  // `layers/labels.ts`).
   if (input.view === 'sichtbare') {
     const { companies, onShowCompanyPanel } = input
 
@@ -163,6 +166,7 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
       mode,
     )
     const zeroPlane = zeroPlaneHeight(heights)
+    const topCompanies = topByMetric(result, selection.metric, TOP_LABEL_COUNT)
     const onHoverCompany = (company: Company | null, x: number, y: number) => {
       if (!company) return hideHoverLabel()
       showHoverLabel(company.name, x, y)
@@ -189,6 +193,24 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
         onHover: onHoverCompany,
       }),
       buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, onHoverCompany),
+      // Zuoberst eingereiht (letztes Element): deck.gl zeichnet spätere
+      // Layer über frühere. Die Namen der grössten Gesellschaften sollen von
+      // keiner Säule und keinem Marker verdeckt werden, egal wie die anderen
+      // Layer sich überlagern.
+      //
+      // `topCompanies` trägt eigene Höhen statt aus `heights` (oben, über
+      // `result.visible`) herausgegriffen zu werden: `companyElevations` ist
+      // je Firma unabhängig von den übrigen Firmen im Array (nur `vmax`,
+      // `mode`, `maxHeight` sind geteilt) — mit denselben drei Werten liefert
+      // sie für dieselbe Firma exakt dieselbe Höhe wie oben, nur bereits in
+      // der Reihenfolge von `topCompanies`, wie `buildLabelLayer`s
+      // `getPosition` sie braucht (Zugriff über den deck.gl-Datenindex).
+      buildLabelLayer(
+        topCompanies,
+        selection.metric,
+        companyElevations(topCompanies, selection.metric, result.vmax, MAX_BAR_HEIGHT_M, mode),
+        zeroPlane,
+      ),
     ]
   }
 
