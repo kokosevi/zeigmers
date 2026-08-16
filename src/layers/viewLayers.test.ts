@@ -110,6 +110,7 @@ const COMPANIES: CompanyData = {
   companies: [],
   stats: {
     count: 0, withRevenue: 0, max: 0, revenueInChf: false,
+    profitInChf: false, orgForms: ['boersenkotiert'],
     researched: 0, totalListed: 0, sixRetrievedDate: null,
   },
 }

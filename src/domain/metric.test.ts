@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatMetric, metricAllowsNegative, metricValue, type Metric } from './metric'
+import { formatMetric, metricAllowsNegative, metricValue } from './metric'
 import type { Company } from '../layers/visible'
 
 function company(overrides: Partial<Company> = {}): Company {

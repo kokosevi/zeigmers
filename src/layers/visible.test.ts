@@ -15,8 +15,9 @@ import {
 function company(overrides: Partial<Company> = {}): Company {
   return {
     uid: 'CHE-1', name: 'Test AG', sixSymbol: null, lon: 8, lat: 47.4,
-    nogaGroupIndex: 1, revenue: 1e9, revenueChf: null, currency: 'CHF', revenueType: 'net_sales',
-    profit: null, profitCurrency: null, consolidationBasis: null,
+    nogaGroupIndex: 1, orgForm: 'boersenkotiert',
+    revenue: 1e9, revenueChf: null, currency: 'CHF', revenueType: 'net_sales',
+    profit: null, profitChf: null, profitCurrency: null, consolidationBasis: null,
     coreProducts: null, productsUrl: null,
     foundingYear: null,
     employees: null, fiscalYear: 2024, reportUrl: null, note: null,
@@ -28,9 +29,10 @@ function company(overrides: Partial<Company> = {}): Company {
 function companiesOf(revenues: (number | null)[]): Company[] {
   return revenues.map((revenue, i) => ({
     uid: `CHE-${i}`, name: `F${i}`, sixSymbol: null, lon: 8, lat: 47.4,
-    nogaGroupIndex: 1, revenue, revenueChf: null, currency: 'CHF',
+    nogaGroupIndex: 1, orgForm: 'boersenkotiert',
+    revenue, revenueChf: null, currency: 'CHF',
     revenueType: revenue === null ? null : 'net_sales',
-    profit: null, profitCurrency: null, consolidationBasis: null,
+    profit: null, profitChf: null, profitCurrency: null, consolidationBasis: null,
     coreProducts: null, productsUrl: null,
     foundingYear: null,
     employees: null,
@@ -81,7 +83,7 @@ describe('buildCompanyLayer researched filter', () => {
         company({ uid: 'A', researched: true }),
         company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
       ],
-      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, researched: 1, totalListed: 2, sixRetrievedDate: null },
+      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'], researched: 1, totalListed: 2, sixRetrievedDate: null },
     }
     const layer = buildCompanyLayer(d, 'logarithmisch', () => {})
     expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['A'])
@@ -95,7 +97,7 @@ describe('buildUnresearchedCompanyLayer', () => {
         company({ uid: 'A', researched: true }),
         company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
       ],
-      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, researched: 1, totalListed: 2, sixRetrievedDate: null },
+      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'], researched: 1, totalListed: 2, sixRetrievedDate: null },
     }
     const layer = buildUnresearchedCompanyLayer(d, () => {}, () => {})
     expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['B'])
@@ -105,7 +107,7 @@ describe('buildUnresearchedCompanyLayer', () => {
   it('reports hover by name, not just index', () => {
     const d: CompanyData = {
       companies: [company({ uid: 'B', researched: false, revenue: null, revenueType: null })],
-      stats: { count: 1, withRevenue: 0, max: 0, revenueInChf: false, researched: 0, totalListed: 1, sixRetrievedDate: null },
+      stats: { count: 1, withRevenue: 0, max: 0, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'], researched: 0, totalListed: 1, sixRetrievedDate: null },
     }
     let hovered: Company | null = null
     const layer = buildUnresearchedCompanyLayer(d, () => {}, (c) => {
@@ -130,7 +132,7 @@ describe('buildCompanyLayer outline predicate', () => {
       {
         companies: [company({ revenueType })],
         stats: {
-          count: 1, withRevenue: 1, max: 1e9, revenueInChf: false,
+          count: 1, withRevenue: 1, max: 1e9, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'],
           researched: 1, totalListed: 1, sixRetrievedDate: null,
         },
       },
@@ -200,7 +202,7 @@ describe('Marker der unrecherchierten Firmen', () => {
   const data: CompanyData = {
     companies: [company({ researched: false })],
     stats: {
-      count: 1, withRevenue: 0, max: 0, revenueInChf: false,
+      count: 1, withRevenue: 0, max: 0, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'],
       researched: 0, totalListed: 1, sixRetrievedDate: null,
     },
   }
@@ -225,7 +227,7 @@ describe('Höhenlage der Marker über der Kantonsplatte', () => {
   const data: CompanyData = {
     companies: [company({ researched: false, lon: 8, lat: 47.4 })],
     stats: {
-      count: 1, withRevenue: 0, max: 0, revenueInChf: false,
+      count: 1, withRevenue: 0, max: 0, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'],
       researched: 0, totalListed: 1, sixRetrievedDate: null,
     },
   }
