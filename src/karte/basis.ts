@@ -7,11 +7,10 @@ import {
 } from '../data/boundaries'
 import { loadLevel, loadMeta, type Level, type Meta } from '../data/loader'
 import { boundsOfGeometries, type LngLatBounds } from '../domain/bounds'
-import type { ScaleMode } from '../domain/scale'
 import { buildCantonBorderLayer } from '../layers/cantons'
 import { createMap, type MapHandle } from '../map'
 import { showError } from '../ui/error'
-import { createNav, type ViewName } from '../ui/nav'
+import { createNav, type NavOptions } from '../ui/nav'
 
 /** Alles, was beide Kartenseiten gemeinsam brauchen — einmal geladen und
  *  hergeleitet. Bewusst ein einfacher Datenhalter ohne Methoden: was damit
@@ -85,11 +84,12 @@ export async function createBasis(): Promise<Basis> {
   }
 }
 
-/** Hängt die Steuerung in `#ui` ein. `createNav` ruft `onModeChange` schon bei
- *  der Konstruktion einmal auf — das übernimmt den ersten Render. */
-export function mountNav(
-  view: ViewName,
-  onModeChange: (mode: ScaleMode) => void,
-): void {
-  document.getElementById('ui')?.appendChild(createNav(view, onModeChange))
+/** Hängt die Steuerung in `#ui` ein. Reicht `options` unverändert an
+ *  `createNav` durch — `mountNav` selbst entscheidet nichts über Kennzahl
+ *  oder Organisationsform, das tut allein die jeweilige Kartenseite über das,
+ *  was sie hier übergibt (Task 12: beide Optionen sind optional, siehe
+ *  `ui/nav.ts`, `NavOptions`). `createNav` ruft `onModeChange` schon bei der
+ *  Konstruktion einmal auf — das übernimmt den ersten Render. */
+export function mountNav(options: NavOptions): void {
+  document.getElementById('ui')?.appendChild(createNav(options))
 }

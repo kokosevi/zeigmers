@@ -190,9 +190,16 @@ export async function startBeschaeftigte(): Promise<void> {
     render()
   }
 
-  mountNav('beschaeftigte', (newMode) => {
-    mode = newMode
-    render()
+  // Weder `metrics` noch `orgForms`: diese Seite kennt keine Kennzahlwahl
+  // (die Säule ist immer die Kopfzahl der Ebene) und keine Organisationsform
+  // (die gibt es nur bei den Firmen) — deshalb erscheinen die beiden neuen
+  // Gruppen aus `ui/nav.ts` hier nicht (siehe `NavOptions`).
+  mountNav({
+    view: 'beschaeftigte',
+    onModeChange: (newMode) => {
+      mode = newMode
+      render()
+    },
   })
 
   // Auftrag: „Escape should do it too" — derselbe Weg zurück wie der

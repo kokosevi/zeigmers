@@ -91,5 +91,9 @@ export async function startFirmen(): Promise<void> {
     renderNotices('sichtbare', 'schweiz', companies.stats.revenueInChf)
   }
 
-  mountNav('sichtbare', render)
+  // Task 12 ändert nur `createNav`/`mountNav` selbst auf ein Optionsobjekt;
+  // das Verdrahten von `metrics`/`orgForms` mit echtem Zustand ist eigene
+  // Folgearbeit (Task 13/14) — hier deshalb nur der Aufruf an die neue
+  // Signatur angepasst, ohne neue Optionen zu übergeben.
+  mountNav({ view: 'sichtbare', onModeChange: render })
 }
