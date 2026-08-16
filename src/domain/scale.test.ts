@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeElevations } from './scale'
+import { computeElevations, computeSignedElevations } from './scale'
 
 describe('computeElevations', () => {
   it('maps zero to zero in both modes', () => {
@@ -61,3 +61,33 @@ describe('computeElevations', () => {
 // 2026-08-14, siehe `ui/legend.ts`) — mit ihrem einzigen Aufrufer verschwand
 // auch die Funktion selbst und diese Tests, statt als toter Code liegen zu
 // bleiben (siehe Git-Historie für den vorigen Stand).
+
+describe('computeSignedElevations', () => {
+  it('spiegelt Betrag und Vorzeichen symmetrisch um null', () => {
+    const heights = computeSignedElevations(
+      new Float32Array([100, -100]), 100, 1000, 'linear',
+    )
+    expect(heights[0]).toBeCloseTo(1000)
+    expect(heights[1]).toBeCloseTo(-1000)
+  })
+
+  it('dämpft den Betrag, nicht das Vorzeichen', () => {
+    const heights = computeSignedElevations(
+      new Float32Array([-1]), 100, 1000, 'logarithmisch',
+    )
+    // -(1/100)^0.4 * 1000
+    expect(heights[0]).toBeCloseTo(-Math.pow(0.01, 0.4) * 1000)
+  })
+
+  it('gibt bei vmax = 0 lauter Nullen statt NaN', () => {
+    // Eine Auswahl ohne einen einzigen Wert darf keine Division durch null werden.
+    const heights = computeSignedElevations(new Float32Array([5, -5]), 0, 1000, 'linear')
+    expect(Array.from(heights)).toEqual([0, 0])
+  })
+
+  it('lässt computeElevations unverändert', () => {
+    const heights = computeElevations(new Float32Array([-5, 5]), 5, 1000, 'linear')
+    expect(heights[0]).toBe(0) // negative Werte bleiben dort ausgeschlossen
+    expect(heights[1]).toBeCloseTo(1000)
+  })
+})

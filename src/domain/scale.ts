@@ -45,3 +45,29 @@ export function computeElevations(
   }
   return out
 }
+
+/** Wie `computeElevations`, aber vorzeichenfähig: die Dämpfung wirkt auf den
+ *  Betrag, das Vorzeichen bleibt stehen.
+ *
+ *  Gebraucht für die Kennzahl «Gewinn», bei der 41 der 201 Gesellschaften
+ *  einen Verlust ausweisen. `vmax` ist deshalb das Maximum der **Beträge**,
+ *  nicht der Werte — sonst normierte eine Auswahl aus lauter Verlustfirmen
+ *  gegen ein Maximum von null. */
+export function computeSignedElevations(
+  values: Float32Array,
+  vmax: number,
+  maxHeight: number,
+  mode: ScaleMode,
+): Float32Array {
+  const out = new Float32Array(values.length)
+  if (vmax <= 0) return out
+
+  for (let i = 0; i < values.length; i++) {
+    const value = values[i]!
+    if (value === 0) continue
+    const fraction = Math.abs(value) / vmax
+    const scaled = mode === 'logarithmisch' ? Math.pow(fraction, DAMPENING_EXPONENT) : fraction
+    out[i] = Math.sign(value) * scaled * maxHeight
+  }
+  return out
+}
