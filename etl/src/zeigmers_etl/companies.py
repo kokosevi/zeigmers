@@ -556,6 +556,22 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 revenue_chf = float(revenue) * unit * converted["rate"]
                 fx_used[f"{currency}/{fiscal_year}"] = converted
 
+        # Dieselbe Umrechnung wie beim Umsatz, aus demselben Grund: als
+        # Säulenhöhe verglichen misst ein EUR-Gewinn neben einem CHF-Gewinn
+        # nicht dasselbe. Vorzeichen bleibt erhalten — ein Verlust wird
+        # umgerechnet, nicht unterschlagen.
+        profit_chf = None
+        profit_currency = (row.get("profit_currency") or "").strip()
+        if profit and monthly_fx is not None and profit_currency and fiscal_year:
+            try:
+                converted = fx_module.rate(profit_currency, int(fiscal_year), monthly_fx)
+            except (KeyError, LookupError) as exc:
+                fx_missing.append({"name": row["name"], "currency": profit_currency,
+                                   "fiscalYear": fiscal_year, "error": str(exc)})
+            else:
+                profit_chf = float(profit) * profit_unit * converted["rate"]
+                fx_used[f"{profit_currency}/{fiscal_year}"] = converted
+
         entries.append(
             {
                 "uid": row["uid"] or None,
@@ -569,6 +585,7 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "currency": row.get("revenue_currency") or None,
                 "revenueType": row.get("revenue_type") or None,
                 "profit": float(profit) * profit_unit if profit else None,
+                "profitChf": profit_chf,
                 "profitCurrency": row.get("profit_currency") or None,
                 "consolidationBasis": row.get("consolidation_basis") or None,
                 "coreProducts": row.get("core_products") or None,
@@ -602,6 +619,8 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
     # auftrat (jede Stufe auf ihr eigenes Maximum normiert, siehe README).
     revenues_chf = [e["revenueChf"] for e in entries if e.get("revenueChf") is not None]
     height_values = revenues_chf if len(revenues_chf) == len(revenues) else revenues
+    profits = [e["profit"] for e in entries if e["profit"] is not None]
+    profits_chf = [e["profitChf"] for e in entries if e.get("profitChf") is not None]
     six_meta = six_meta or {}
     return {
         "companies": entries,
@@ -615,6 +634,7 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
             # umgerechnet wäre schlimmer als gar nicht, weil dann zwei
             # Massstäbe nebeneinander stünden, ohne dass man es sieht.
             "revenueInChf": bool(revenues) and len(revenues_chf) == len(revenues),
+            "profitInChf": bool(profits) and len(profits_chf) == len(profits),
             "fxRates": fx_used,
             "fxMissing": fx_missing,
             "researched": researched_count,
