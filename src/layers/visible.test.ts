@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest'
+import { applySelection } from '../domain/selection'
+import type { Metric } from '../domain/metric'
 import { CANTON_ELEVATION_M } from './cantons'
 import {
   buildCompanyLayer,
   buildUnresearchedCompanyLayer,
   companyElevations,
-  UNKNOWN_BAR_FRACTION,
-  UNRESEARCHED_MARKER_COLOR,
-  heightValue,
+  LOSS_COLOR,
   MIN_REAL_BAR_M,
+  MIN_VISIBLE_BAR_M,
+  UNRESEARCHED_MARKER_COLOR,
+  zeroPlaneHeight,
   type Company,
   type CompanyData,
 } from './visible'
@@ -30,7 +33,7 @@ function companiesOf(revenues: (number | null)[]): Company[] {
   return revenues.map((revenue, i) => ({
     uid: `CHE-${i}`, name: `F${i}`, sixSymbol: null, lon: 8, lat: 47.4,
     nogaGroupIndex: 1, orgForm: 'boersenkotiert',
-    revenue, revenueChf: null, currency: 'CHF',
+    revenue, revenueChf: revenue, currency: 'CHF',
     revenueType: revenue === null ? null : 'net_sales',
     profit: null, profitChf: null, profitCurrency: null, consolidationBasis: null,
     coreProducts: null, productsUrl: null,
@@ -41,51 +44,67 @@ function companiesOf(revenues: (number | null)[]): Company[] {
   }))
 }
 
+// Dieselbe Auswahl wie in `domain/selection.test.ts`: alle elf Branchen plus
+// «unbestimmt» (255), nur die Rechtsform, die der Datensatz heute kennt —
+// damit lässt applySelection keine Firma aus, die diese Suite selbst anlegt.
+const selectionFor = (metric: Metric) => ({
+  metric, branches: new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 255]),
+  orgForms: new Set(['boersenkotiert']),
+})
 
 describe('companyElevations', () => {
-  it('gives the largest revenue the full height', () => {
+  it('gibt dem grössten Umsatz die volle Höhe', () => {
     const c = companiesOf([1e9, 1e10])
-    const h = companyElevations(c, 1e10, 5000, 'logarithmisch')
+    const h = companyElevations(c, 'umsatz', 1e10, 5000, 'logarithmisch')
     expect(h[1]).toBeCloseTo(5000, 3)
   })
 
-  it('gives companies without revenue a fixed fraction of the smallest bar', () => {
+  it('gibt einer Firma ohne Wert die Platzhalterhöhe MIN_VISIBLE_BAR_M', () => {
     const c = companiesOf([1e9, 1e10, null])
-    const h = companyElevations(c, 1e10, 5000, 'logarithmisch')
-    const smallest = Math.min(h[0]!, h[1]!)
-    expect(h[2]).toBeCloseTo(smallest * UNKNOWN_BAR_FRACTION, 3)
+    const h = companyElevations(c, 'umsatz', 1e10, 5000, 'logarithmisch')
+    expect(h[2]).toBe(MIN_VISIBLE_BAR_M)
   })
 
-  it('never gives a placeholder a height of zero', () => {
+  it('gibt einem Platzhalter nie die Höhe null', () => {
     const c = companiesOf([null])
-    const h = companyElevations(c, 0, 5000, 'logarithmisch')
+    const h = companyElevations(c, 'umsatz', 0, 5000, 'logarithmisch')
     expect(h[0]!).toBeGreaterThan(0)
   })
 
-  it('keeps placeholders below every real bar', () => {
+  it('hält Platzhalter unter jeder echten Säule', () => {
     const c = companiesOf([1e6, 1e12, null])
-    const h = companyElevations(c, 1e12, 5000, 'logarithmisch')
+    const h = companyElevations(c, 'umsatz', 1e12, 5000, 'logarithmisch')
     expect(h[2]!).toBeLessThan(Math.min(h[0]!, h[1]!))
   })
 
-  it('handles a dataset where no company has revenue', () => {
+  it('kommt mit einem Datensatz ohne jeden Umsatz zurecht', () => {
     const c = companiesOf([null, null])
-    const h = companyElevations(c, 0, 5000, 'logarithmisch')
+    const h = companyElevations(c, 'umsatz', 0, 5000, 'logarithmisch')
     expect(h[0]!).toBeGreaterThan(0)
     expect(Number.isFinite(h[0]!)).toBe(true)
+  })
+
+  it('zeichnet die Höhe aus dem umgerechneten, nicht dem berichteten Betrag', () => {
+    // Zwei Firmen mit gleichem berichtetem Betrag, aber verschiedener
+    // Währung, dürfen NICHT gleich hoch werden — dieselbe Zusicherung wie in
+    // `domain/metric.test.ts`, hier über die volle Höhenberechnung geprüft.
+    const chf = company({ revenue: 1e9, revenueChf: 1e9 })
+    const usd = company({ revenue: 1e9, revenueChf: 8.3e8 })
+    const heights = companyElevations([chf, usd], 'umsatz', 1e9, 12000, 'linear')
+    expect(heights[0]).toBeGreaterThan(heights[1]!)
   })
 })
 
 describe('buildCompanyLayer researched filter', () => {
   it('only includes researched companies as bars', () => {
-    const d: CompanyData = {
-      companies: [
-        company({ uid: 'A', researched: true }),
-        company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
-      ],
-      stats: { count: 2, withRevenue: 1, max: 1e9, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'], researched: 1, totalListed: 2, sixRetrievedDate: null },
-    }
-    const layer = buildCompanyLayer(d, 'logarithmisch', () => {})
+    const companies = [
+      company({ uid: 'A', researched: true }),
+      company({ uid: 'B', researched: false, revenue: null, revenueType: null }),
+    ]
+    const layer = buildCompanyLayer({
+      result: applySelection(companies, selectionFor('umsatz')),
+      metric: 'umsatz', mode: 'logarithmisch', onClick: () => {}, onHover: () => {},
+    })
     expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['A'])
   })
 })
@@ -128,17 +147,10 @@ describe('buildUnresearchedCompanyLayer', () => {
 // Company object, exactly as deck.gl would call them per row when drawing.
 describe('buildCompanyLayer outline predicate', () => {
   function accessors(revenueType: Company['revenueType']) {
-    const layer = buildCompanyLayer(
-      {
-        companies: [company({ revenueType })],
-        stats: {
-          count: 1, withRevenue: 1, max: 1e9, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'],
-          researched: 1, totalListed: 1, sixRetrievedDate: null,
-        },
-      },
-      'logarithmisch',
-      () => {},
-    )
+    const layer = buildCompanyLayer({
+      result: applySelection([company({ revenueType })], selectionFor('umsatz')),
+      metric: 'umsatz', mode: 'logarithmisch', onClick: () => {}, onHover: () => {},
+    })
     const getLineColor = layer.props.getLineColor as unknown as (c: Company) => number[]
     const getLineWidth = layer.props.getLineWidth as unknown as (c: Company) => number
     return { getLineColor, getLineWidth, lineWidthUnits: layer.props.lineWidthUnits }
@@ -168,33 +180,6 @@ describe('buildCompanyLayer outline predicate', () => {
   it('measures the outline width in metres, not pixels', () => {
     const { lineWidthUnits } = accessors('operating_income')
     expect(lineWidthUnits).toBe('meters')
-  })
-})
-
-
-describe('heightValue', () => {
-  it('nimmt den in CHF umgerechneten Betrag, wo er vorliegt', () => {
-    // Ohne Umrechnung vergliche die Höhe CHF, EUR und USD, als wären sie
-    // dasselbe: ein USD-Betrag als CHF gezeichnet überzeichnet die Firma
-    // 2025 um rund ein Fünftel.
-    expect(heightValue(company({ revenue: 1e9, revenueChf: 8.3e8 }))).toBe(8.3e8)
-  })
-
-  it('fällt auf den berichteten Betrag zurück, solange keine Kurse vorliegen', () => {
-    expect(heightValue(company({ revenue: 1e9, revenueChf: null }))).toBe(1e9)
-  })
-
-  it('bleibt null, wenn gar kein Umsatz bekannt ist', () => {
-    expect(heightValue(company({ revenue: null, revenueChf: null }))).toBeNull()
-  })
-
-  it('zeichnet die Höhe aus dem umgerechneten, nicht dem berichteten Betrag', () => {
-    // Zwei Firmen mit gleichem berichtetem Betrag, aber verschiedener
-    // Währung, dürfen NICHT gleich hoch werden.
-    const chf = company({ revenue: 1e9, revenueChf: 1e9 })
-    const usd = company({ revenue: 1e9, revenueChf: 8.3e8 })
-    const heights = companyElevations([chf, usd], 1e9, 12000, 'linear')
-    expect(heights[0]).toBeGreaterThan(heights[1]!)
   })
 })
 
@@ -253,7 +238,7 @@ describe('Sichtbarkeitsschwelle der Säulen', () => {
     // obwohl sie recherchiert sind und einen belegten Umsatz tragen.
     const winzig = company({ revenue: 2.8e5, revenueChf: 2.8e5 })
     const gross = company({ revenue: 8.9e10, revenueChf: 8.9e10 })
-    const heights = companyElevations([gross, winzig], 8.9e10, 12000, 'logarithmisch')
+    const heights = companyElevations([gross, winzig], 'umsatz', 8.9e10, 12000, 'logarithmisch')
 
     expect(heights[1]).toBeGreaterThan(CANTON_ELEVATION_M)
     expect(heights[1]).toBe(MIN_REAL_BAR_M)
@@ -262,7 +247,63 @@ describe('Sichtbarkeitsschwelle der Säulen', () => {
 
   it('lässt Säulen oberhalb der Schwelle unverändert', () => {
     const mittel = company({ revenue: 1e9, revenueChf: 1e9 })
-    const heights = companyElevations([mittel], 8.9e10, 12000, 'logarithmisch')
+    const heights = companyElevations([mittel], 'umsatz', 8.9e10, 12000, 'logarithmisch')
     expect(heights[0]).toBeGreaterThan(MIN_REAL_BAR_M)
+  })
+})
+
+describe('Nulllinie', () => {
+  it('liegt über der Kantonsplatte, auch beim tiefsten Ausschlag', () => {
+    const heights = new Float32Array([1000, -1900, 500])
+    expect(zeroPlaneHeight(heights)).toBe(CANTON_ELEVATION_M + 1900 + 200)
+  })
+
+  it('bleibt auf Plattenhöhe, wenn nichts negativ ist', () => {
+    expect(zeroPlaneHeight(new Float32Array([1000, 500]))).toBe(CANTON_ELEVATION_M)
+  })
+})
+
+describe('buildCompanyLayer mit Kennzahl', () => {
+  it('zeichnet Verluste nach unten', () => {
+    const gewinner = company({ name: 'Plus', profitChf: 1000 })
+    const verlierer = company({ name: 'Minus', profitChf: -1000 })
+    const layer = buildCompanyLayer({
+      result: applySelection([gewinner, verlierer], selectionFor('gewinn')),
+      metric: 'gewinn', mode: 'linear', onClick: () => {}, onHover: () => {},
+    })
+    const elevation = (c: Company, i: number) =>
+      (layer.props.getElevation as Function)(c, { index: i })
+    expect(elevation(gewinner, 0)).toBeGreaterThan(0)
+    expect(elevation(verlierer, 1)).toBeLessThan(0)
+  })
+
+  it('färbt Verluste in einem eigenen Ton, nicht in der Branchenfarbe', () => {
+    const verlierer = company({ name: 'Minus', profitChf: -1000, nogaGroupIndex: 1 })
+    const layer = buildCompanyLayer({
+      result: applySelection([verlierer], selectionFor('gewinn')),
+      metric: 'gewinn', mode: 'linear', onClick: () => {}, onHover: () => {},
+    })
+    const color = (layer.props.getFillColor as Function)(verlierer)
+    expect(color.slice(0, 3)).toEqual([...LOSS_COLOR])
+  })
+
+  it('gibt einer Firma ohne Wert die Platzhalterhöhe, nicht null', () => {
+    const ohne = company({ name: 'Ohne', employees: null })
+    const layer = buildCompanyLayer({
+      result: applySelection([ohne], selectionFor('mitarbeitende')),
+      metric: 'mitarbeitende', mode: 'linear', onClick: () => {}, onHover: () => {},
+    })
+    const h = (layer.props.getElevation as Function)(ohne, { index: 0 })
+    expect(h).toBe(MIN_VISIBLE_BAR_M)
+  })
+
+  it('hebt in der Gewinn-Ansicht alle Säulen auf die Nulllinie', () => {
+    const verlierer = company({ profitChf: -1000 })
+    const layer = buildCompanyLayer({
+      result: applySelection([verlierer], selectionFor('gewinn')),
+      metric: 'gewinn', mode: 'linear', onClick: () => {}, onHover: () => {},
+    })
+    const [, , z] = (layer.props.getPosition as Function)(verlierer)
+    expect(z).toBeGreaterThan(CANTON_ELEVATION_M)
   })
 })

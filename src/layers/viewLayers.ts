@@ -3,16 +3,22 @@ import type { Geometry } from 'geojson'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level } from '../data/loader'
 import type { PresentGroups } from '../domain/legendGroups'
+import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX } from '../domain/noga.generated'
 import type { ScaleMode } from '../domain/scale'
+import { applySelection, type Selection } from '../domain/selection'
 import type { NoticeLevel } from '../ui/notices'
 import { formatNumber } from '../ui/format'
 import { hideHoverLabel, showHoverLabel } from '../ui/hoverLabel'
 import { municipalityName } from '../ui/panel'
-import { buildCantonBorderLayer, buildCantonsLayer } from './cantons'
+import { buildCantonBorderLayer, buildCantonsLayer, CANTON_ELEVATION_M } from './cantons'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
 import {
   buildCompanyLayer,
   buildUnresearchedCompanyLayer,
+  buildZeroPlaneLayer,
+  companyElevations,
+  MAX_BAR_HEIGHT_M,
+  zeroPlaneHeight,
   type Company,
   type CompanyData,
 } from './visible'
@@ -115,20 +121,57 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   const cantonsLayer = buildCantonsLayer({ data: cantonsGeo, activeBfsNr })
 
   // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
-  // auf einen einzelnen, vorher geladenen Kanton) — zwei Layer, nicht eine:
+  // auf einen einzelnen, vorher geladenen Kanton) — zwei bis drei Layer:
   // Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
   // flache neutrale Marker für alle übrigen kotierten Titel
-  // (`buildUnresearchedCompanyLayer`, Kontext — siehe `layers/visible.ts`).
+  // (`buildUnresearchedCompanyLayer`, Kontext), dazu die Nulllinie
+  // (`buildZeroPlaneLayer`), sobald sie über der Kantonsplatte liegt (siehe
+  // `layers/visible.ts`).
   if (input.view === 'sichtbare') {
     const { companies, onShowCompanyPanel } = input
+
+    // Platzhalter-Auswahl: Kennzahl- und Filterzustand landen erst in einer
+    // späteren Aufgabe in `karte/firmen.ts` (siehe Implementierungsplan).
+    // Bis dahin bleibt die Auswahl das, was diese Ansicht vor der Umstellung
+    // ohnehin zeigte — alle Branchen, alle Organisationsformen, Kennzahl
+    // Umsatz —, nur über denselben `applySelection()`-Pfad wie die künftige
+    // Filter-UI, statt einen zweiten, parallelen Weg zu öffnen.
+    const selection: Selection = {
+      metric: 'umsatz',
+      branches: new Set([...NOGA_GROUPS.map((_, index) => index), NOGA_UNKNOWN_INDEX]),
+      orgForms: new Set(companies.stats.orgForms),
+    }
+    const result = applySelection(companies.companies, selection)
+    const heights = companyElevations(
+      result.visible,
+      selection.metric,
+      result.vmax,
+      MAX_BAR_HEIGHT_M,
+      mode,
+    )
+    const zeroPlane = zeroPlaneHeight(heights)
+    const onHoverCompany = (company: Company | null, x: number, y: number) => {
+      if (!company) return hideHoverLabel()
+      showHoverLabel(company.name, x, y)
+    }
+
     return [
       cantonsLayer,
       cantonBorderLayer,
-      buildCompanyLayer(companies, mode, onShowCompanyPanel),
-      buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, (company, x, y) => {
-        if (!company) return hideHoverLabel()
-        showHoverLabel(company.name, x, y)
+      // Nur einreihen, wenn sie tatsächlich über der Plattenoberkante liegt
+      // — bei einer Kennzahl ohne Verluste fiele sie sonst exakt mit
+      // `cantonsLayer`s Oberseite zusammen und würde mit ihr flackern
+      // (Z-Fighting zweier koplanarer Flächen), ohne einen sichtbaren
+      // Nutzen zu bieten.
+      ...(zeroPlane > CANTON_ELEVATION_M ? [buildZeroPlaneLayer(cantonsGeo, zeroPlane)] : []),
+      buildCompanyLayer({
+        result,
+        metric: selection.metric,
+        mode,
+        onClick: onShowCompanyPanel,
+        onHover: onHoverCompany,
       }),
+      buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, onHoverCompany),
     ]
   }
 

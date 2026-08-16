@@ -1,18 +1,13 @@
-import { ColumnLayer, ScatterplotLayer } from '@deck.gl/layers'
+import { ColumnLayer, GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
+import type { FeatureCollection, Geometry } from 'geojson'
+import type { BoundaryFeatureCollection, BoundaryProperties } from '../data/boundaries'
+import { metricValue, type Metric } from '../domain/metric'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
-import { computeElevations, type ScaleMode } from '../domain/scale'
+import { computeSignedElevations, type ScaleMode } from '../domain/scale'
+import type { SelectionResult } from '../domain/selection'
 import { CANTON_ELEVATION_M } from './cantons'
+import { withBaseElevation } from './elevation'
 import { MAP_MATERIAL } from './material'
-
-/** Firmen ohne auffindbaren Umsatz erscheinen als Hinweis-Balken auf 40 % der
- *  Höhe des kleinsten echten Balkens — sichtbar, aber unverwechselbar klein. */
-export const UNKNOWN_BAR_FRACTION = 0.4
-
-// Absoluter Fallback für den Fall, dass keine Firma im Datensatz einen Umsatz
-// hat — dann gibt es keinen "kleinsten echten Balken", von dem sich ein Anteil
-// ableiten liesse. Anders als UNKNOWN_BAR_FRACTION ist dies bewusst kein
-// Bruchteil, sondern eine feste Höhe in Metern.
-const PLACEHOLDER_BASE_HEIGHT = 200
 
 // Exportiert, damit die Legende (`ui/legend.ts`) denselben Wert für ihren
 // Muster-Swatch verwendet statt eine zweite, potenziell abweichende Zahl zu
@@ -101,10 +96,12 @@ export interface CompanyData {
      *  (`etl/src/zeigmers_etl/companies.py`, `build_artifact`).
      *
      *  Re-Review (2026-08-15): das ist ein **Meldewert**, keine Garantie —
-     *  er hält fest, DASS ein Teilausfall vorliegt, erzwingt aber keinen
-     *  einheitlichen Rückfall auf Berichtswährungen. Siehe `heightValue()`
-     *  unten für den tatsächlichen (abweichenden) Rückfallmechanismus und
-     *  was ein Teilausfall dafür bedeuten würde. */
+     *  er hält fest, DASS ein Teilausfall vorliegt. Anders als die frühere
+     *  `heightValue()` fällt `metricValue()` (`domain/metric.ts`) bei
+     *  fehlendem Kurs NICHT auf die Berichtswährung zurück, sondern liefert
+     *  `null` — eine Firma ohne Kurs bekommt eine Platzhaltersäule statt
+     *  einer Höhe in falscher Währung. Kein Rückfallmechanismus mehr, den
+     *  ein Teilausfall unterschiedlich behandeln könnte. */
     revenueInChf: boolean
     /** Dieselbe Meldung wie `revenueInChf`, für den Reingewinn: `true`,
      *  sobald jede Gewinnzahl umgerechnet ist. */
@@ -128,86 +125,108 @@ export interface CompanyData {
   }
 }
 
-/** Nur die recherchierten Firmen tragen eine Säule — `researched=false`
- *  bekommt einen flachen Marker (`buildUnresearchedCompanyLayer`), keine
- *  Höhenaussage, die es nicht einlösen könnte. */
-function researchedCompanies(data: CompanyData): Company[] {
-  return data.companies.filter((c) => c.researched)
+/** Ein Verlust bekommt einen Ton, der weder eine Branchenfarbe ist noch der
+ *  Platzhalter-Grauton («keine Zahl gefunden»). Die Branche einer
+ *  Verlustfirma ist in der Gewinn-Ansicht damit nicht ablesbar — beabsichtigt:
+ *  Vorzeichen schlägt Branche, wenn beide um dieselbe Fläche konkurrieren. */
+export const LOSS_COLOR: readonly [number, number, number] = [176, 76, 76]
+
+/** Luft zwischen dem tiefsten hängenden Verlust und der Kantonsplatte. */
+export const ZERO_PLANE_CLEARANCE_M = 200
+
+/** Höhe, auf der die Säulen ansetzen. Bei nichtnegativen Kennzahlen die
+ *  Plattenoberkante wie bisher; bei der Gewinn-Kennzahl so hoch, dass der
+ *  tiefste Verlust noch über der Platte endet.
+ *
+ *  Zur Laufzeit aus der Auswahl hergeleitet statt fest verdrahtet: bei
+ *  auswahlabhängigem `vmax` ändert sich der tiefste Ausschlag mit jedem
+ *  Filter. Ohne diese Ebene wäre eine negative Säule unsichtbar — sie wüchse
+ *  unter eine opake Platte, die man bei `pitch: 50` von oben sieht. */
+export function zeroPlaneHeight(heights: Float32Array): number {
+  let deepest = 0
+  for (const h of heights) if (h < deepest) deepest = h
+  return deepest < 0
+    ? CANTON_ELEVATION_M + Math.abs(deepest) + ZERO_PLANE_CLEARANCE_M
+    : CANTON_ELEVATION_M
 }
 
-/** Die Grösse, aus der die Höhe entsteht: der in CHF umgerechnete Umsatz,
- *  wo er vorliegt, sonst der berichtete. Nestlé berichtet in CHF, Novartis in
- *  USD, Richemont in EUR — ohne Umrechnung vergliche die Höhe Beträge, die
- *  nicht dasselbe messen (ein USD-Betrag als CHF gezeichnet überzeichnet die
- *  Firma 2025 um rund ein Fünftel).
- *
- *  Re-Review (2026-08-15): der vorige Wortlaut hier behauptete, das ETL
- *  sorge dafür, „dass nie ein Teil der Firmen umgerechnet ist und ein
- *  anderer nicht" — das stimmt nicht. Der Rückfall auf `revenue`
- *  geschieht **je Firma einzeln** (`company.revenueChf ?? company.revenue`,
- *  unten), nicht kollektiv für die ganze Ansicht. `stats.revenueInChf`
- *  (`CompanyData` oben) *meldet*, ob jede Umrechnung gelang, *erzwingt*
- *  aber keinen einheitlichen Rückfall: `companies.py` setzt `revenueChf`
- *  pro Zeile und nimmt bei einem Teilausfall die bereits gelungenen
- *  Umrechnungen der übrigen Firmen nicht zurück. Fiele der Kurs für eine
- *  Firma aus, während die übrigen 200 einen Kurs haben, stünden hier
- *  200 Balken in CHF neben einem Balken in Berichtswährung, ohne dass die
- *  Karte das anzeigt — genau die „zwei Massstäbe nebeneinander, ohne dass
- *  man es sieht", vor der `stats.revenueInChf`s eigene Dokumentation warnt.
- *
- *  Das ist ein bekannter, bewusst offengelassener Punkt, kein übersehener:
- *  heute ohne Wirkung, weil `stats.fxMissing` leer ist — jede der 201
- *  platzierten Firmen hat einen Kurs. Ein Fix bräuchte eine eigene
- *  Entscheidung (`heightValue()`/`companyElevations()` müssten
- *  `revenueInChf` lesen und bei `false` für ALLE Firmen auf `revenue`
- *  zurückfallen, nicht nur für die einzelne ohne Kurs) und eigene Tests —
- *  nicht Teil dieses Abschlusses. */
-export function heightValue(company: Company): number | null {
-  return company.revenueChf ?? company.revenue
+/** Sichtbare Referenzfläche auf der Nulllinie — ohne sie schwebt eine
+ *  hängende Verlustsäule im leeren Raum, ohne erkennbaren Bezugspunkt, ab
+ *  wann «unten» beginnt. Gefüllt und halbtransparent statt wie
+ *  `buildCantonBorderLayer` nur ein Rand: das Auge braucht hier eine Fläche,
+ *  keine Linie, um «das ist der Nullpunkt» zu lesen. Auf `height` gehoben
+ *  wie die Kantonsgrenzen (`withBaseElevation`), sonst läge sie bei z=0, in
+ *  der Kantonsplatte. */
+export function buildZeroPlaneLayer(
+  cantonsGeo: BoundaryFeatureCollection,
+  height: number,
+): GeoJsonLayer<BoundaryProperties> {
+  const lifted: FeatureCollection<Geometry, BoundaryProperties> = {
+    type: 'FeatureCollection',
+    features: cantonsGeo.features.flatMap((f) =>
+      f.geometry ? [{ ...f, geometry: withBaseElevation(f.geometry, height) }] : [],
+    ),
+  }
+  return new GeoJsonLayer<BoundaryProperties>({
+    id: 'firmen-nulllinie',
+    data: lifted,
+    filled: true,
+    stroked: false,
+    extruded: false,
+    pickable: false,
+    getFillColor: [27, 39, 51, 28],
+  })
 }
+
+/** Höhendecke der Firmenkarte — eigene Konstante statt eines Literals, weil
+ *  `zeroPlaneHeight()` (unten) dieselbe Decke unabhängig von
+ *  `buildCompanyLayer` braucht: die Nulllinie muss mit derselben `maxHeight`
+ *  rechnen wie die Säulen, sonst weicht ihre Höhe von der tatsächlichen
+ *  Säulenbasis ab. Ansicht «Beschäftigte» hat mit `MAX_BAR_HEIGHT_M`
+ *  (`layers/many.ts`, 3000) eine eigene, niedrigere Decke — beide Ansichten
+ *  teilen den Namen nicht, weil sie unterschiedliche Werte brauchen. */
+export const MAX_BAR_HEIGHT_M = 12000
 
 export function companyElevations(
   companies: Company[],
+  metric: Metric,
   vmax: number,
   maxHeight: number,
   mode: ScaleMode,
 ): Float32Array {
-  const values = new Float32Array(companies.map((c) => heightValue(c) ?? 0))
-  const heights = computeElevations(values, vmax, maxHeight, mode)
-
-  let smallest = Infinity
-  for (let i = 0; i < heights.length; i++) {
-    if (heightValue(companies[i]!) !== null) smallest = Math.min(smallest, heights[i]!)
-  }
-  const placeholder = Number.isFinite(smallest)
-    ? smallest * UNKNOWN_BAR_FRACTION
-    : PLACEHOLDER_BASE_HEIGHT
+  const values = new Float32Array(companies.map((c) => metricValue(c, metric) ?? 0))
+  const heights = computeSignedElevations(values, vmax, maxHeight, mode)
 
   for (let i = 0; i < heights.length; i++) {
-    // Sichtbarkeitsschwelle zuletzt: eine Säule unter der Kantonsplatte ist
-    // keine Säule. Platzhalter und echte Säulen bekommen verschiedene
-    // Untergrenzen, damit die Ordnung "Platzhalter < jede echte Säule"
-    // erhalten bleibt (siehe MIN_VISIBLE_BAR_M und MIN_REAL_BAR_M).
-    if (heightValue(companies[i]!) === null) {
-      heights[i] = Math.max(placeholder, MIN_VISIBLE_BAR_M)
-    } else if (heights[i]! < MIN_REAL_BAR_M) {
-      heights[i] = MIN_REAL_BAR_M
+    const value = metricValue(companies[i]!, metric)
+    if (value === null) {
+      // Kein Wert in dieser Kennzahl — Platzhalterhöhe, unverwechselbar
+      // niedriger als jede echte Säule (siehe MIN_VISIBLE_BAR_M).
+      heights[i] = MIN_VISIBLE_BAR_M
+      continue
+    }
+    const magnitude = Math.abs(heights[i]!)
+    if (magnitude < MIN_REAL_BAR_M) {
+      heights[i] = (heights[i]! < 0 ? -1 : 1) * MIN_REAL_BAR_M
     }
   }
   return heights
 }
 
-export function buildCompanyLayer(
-  data: CompanyData,
-  mode: ScaleMode,
-  onClick: (company: Company) => void,
-): ColumnLayer<Company> {
-  const bars = researchedCompanies(data)
-  const heights = companyElevations(bars, data.stats.max, 12000, mode)
+export function buildCompanyLayer(options: {
+  result: SelectionResult
+  metric: Metric
+  mode: ScaleMode
+  onClick: (company: Company) => void
+  onHover: (company: Company | null, x: number, y: number) => void
+}): ColumnLayer<Company> {
+  const { result, metric, mode, onClick, onHover } = options
+  const heights = companyElevations(result.visible, metric, result.vmax, MAX_BAR_HEIGHT_M, mode)
+  const zeroPlane = zeroPlaneHeight(heights)
 
   return new ColumnLayer<Company>({
     id: 'firmen',
-    data: bars,
+    data: result.visible,
     // Firmen mit abweichender Kennzahl (Banken weisen Geschaeftsertrag statt
     // Nettoumsatz aus) bekommen einen sichtbaren Rand. Ohne diese Markierung
     // vergleicht der Betrachter Balkenhoehen, die Verschiedenes messen.
@@ -245,16 +264,22 @@ export function buildCompanyLayer(
     // Säulen (seit Phase 3, national) — der Mehraufwand bleibt irrelevant.
     material: MAP_MATERIAL,
     pickable: true,
-    getPosition: (c) => [c.lon, c.lat],
+    // Basis auf der Nulllinie statt auf Höhe 0 (Change 8): bei der Kennzahl
+    // «Gewinn» hängt eine Verlustsäule von hier aus nach unten, statt unter
+    // der Kantonsplatte zu verschwinden (siehe `zeroPlaneHeight` unten).
+    getPosition: (c) => [c.lon, c.lat, zeroPlane],
     getElevation: (_c, { index }) => heights[index]!,
-    getFillColor: (c) =>
-      c.placeholder
-        ? [...UNKNOWN_COLOR, 180]
-        : [...(NOGA_GROUPS[c.nogaGroupIndex]?.color ?? UNKNOWN_COLOR), 235],
-    updateTriggers: { getElevation: [mode], getFillColor: [] },
+    getFillColor: (c) => {
+      const value = metricValue(c, metric)
+      if (value === null) return [...UNKNOWN_COLOR, 180]
+      if (value < 0) return [...LOSS_COLOR, 235]
+      return [...(NOGA_GROUPS[c.nogaGroupIndex]?.color ?? UNKNOWN_COLOR), 235]
+    },
+    updateTriggers: { getElevation: [metric, mode, result.vmax], getFillColor: [metric] },
     onClick: (info) => {
       if (info.object) onClick(info.object)
     },
+    onHover: (info) => onHover(info.object ?? null, info.x, info.y),
   })
 }
 
