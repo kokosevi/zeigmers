@@ -1,3 +1,4 @@
+import type { Metric } from '../domain/metric'
 import type { ViewName } from './nav'
 
 /** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
@@ -59,11 +60,31 @@ const HAUPT_BESCHAEFTIGTE: Record<NoticeLevel, string> = {
 }
 
 // Der frühere zweite Satz zur Währungsvermischung ist entfallen: dieselbe
-// Aussage steht jetzt, wortgleich mit der Legende zuvor, in `CURRENCY_NOTE`
+// Aussage steht jetzt, wortgleich mit der Legende zuvor, in `currencyNote()`
 // direkt darunter — zwei Sätze für dieselbe Tatsache in derselben Box wären
 // in einer bewusst ruhigen Ecke Redundanz, keine zusätzliche Information.
-const HAUPT_SICHTBARE =
-  'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.'
+//
+// Fix-Runde (2026-08-16, Abschluss-Review C1): bis dahin ein einzelner,
+// hartkodiert auf Umsatz formulierter String, unabhängig davon, welche der
+// drei Kennzahlen (Task 18: Umsatz/Mitarbeitende/Reingewinn) gerade die
+// Säulenhöhe trägt — über einer Mitarbeitenden- oder Gewinn-Karte stand
+// weiterhin „Dargestellt ist der weltweite Konzernumsatz …", eine Aussage
+// über eine Grösse, die die Karte in diesem Moment gar nicht zeigt. Das ist
+// genau die Box, die laut Projektgrundsatz „trägt, was man zum Vertrauen
+// braucht" — sie muss deshalb der AKTIVEN Kennzahl folgen, wie
+// `ui/legend.ts`s Titelzeile das für `metricLabel(metric)` bereits tut.
+// `renderNotices` bekommt die Kennzahl dafür als weiteren Pflichtparameter
+// (siehe dort), keyed als `Record<Metric, string>` statt einer
+// `if`-Kaskade, im selben Stil wie `UNIT_LABEL` in `ui/legend.ts`.
+const HAUPT_SICHTBARE: Record<Metric, string> = {
+  umsatz: 'Dargestellt ist der weltweite Konzernumsatz, nicht die Wertschöpfung am Standort.',
+  mitarbeitende:
+    'Dargestellt ist die Mitarbeitendenzahl des gesamten Konzerns weltweit, nicht die ' +
+    'Beschäftigung am Standort.',
+  gewinn:
+    'Dargestellt ist der weltweite Konzern-Reingewinn (auf die Aktionäre entfallend), nicht ' +
+    'die Wertschöpfung am Standort.',
+}
 
 // Verschoben aus `ui/legend.ts` (Redesign Change 2/3, siehe `ui/legend.ts`
 // für die Begründung): „die Legende trägt, was man zum Lesen braucht, die
@@ -98,25 +119,62 @@ const HAUPT_SICHTBARE =
 //    veralten kann) gilt hier für ein Flag statt einer Zahl. `currencyNote()`
 //    unten liest deshalb `stats.revenueInChf` zur Laufzeit; `renderNotices`
 //    bekommt dafür einen weiteren Pflichtparameter (siehe dort).
-const CURRENCY_NOTE_CHF =
-  'Balkenhöhe: Umsatz in CHF umgerechnet (SNB-Monatsmittelkurse, gemittelt ' +
-  'über das Kalenderjahr oder — ist dieses noch nicht abgeschlossen — die ' +
-  'letzten verfügbaren Monate) — das Panel zeigt weiterhin die berichtete ' +
-  'Zahl in der jeweiligen Konzernwährung (CHF, EUR, USD).'
+//
+// Fix-Runde (2026-08-16, Abschluss-Review C1/I6): beide Texte waren fest auf
+// „Umsatz" formuliert, unabhängig von der aktiven Kennzahl — bei Kennzahl
+// Gewinn stand hier weiterhin eine Aussage über den Umsatz, obwohl die
+// Balkenhöhe den Reingewinn zeigt, und das Flag kam ausserdem IMMER aus
+// `stats.revenueInChf`, selbst wenn `stats.profitInChf` (vom ETL längst
+// geschrieben, siehe `companies.py`, `build_artifact`) die eigentlich
+// zutreffende Vollständigkeitsmeldung gewesen wäre — der Reingewinn hat eine
+// eigene Alles-oder-nichts-Regel, unabhängig von der des Umsatzes (dieselbe
+// Firma kann beim Umsatz vollständig umgerechnet sein und beim Gewinn nicht,
+// oder umgekehrt). Beide Konstanten sind deshalb `Record<'umsatz' |
+// 'gewinn', string>` geworden; `currencyNote()` liest die Kennzahl, um
+// zwischen ihnen zu wählen. Bei Kennzahl Mitarbeitende ist die Höhe eine
+// Personenzahl ohne Währung — dort gibt es gar keine Währungszeile,
+// `currencyNote()` liefert `null` und `renderNotices` hängt dann keinen
+// Absatz an.
+const CURRENCY_NOTE_CHF: Record<'umsatz' | 'gewinn', string> = {
+  umsatz:
+    'Balkenhöhe: Umsatz in CHF umgerechnet (SNB-Monatsmittelkurse, gemittelt ' +
+    'über das Kalenderjahr oder — ist dieses noch nicht abgeschlossen — die ' +
+    'letzten verfügbaren Monate) — das Panel zeigt weiterhin die berichtete ' +
+    'Zahl in der jeweiligen Konzernwährung (CHF, EUR, USD).',
+  gewinn:
+    'Balkenhöhe: Reingewinn in CHF umgerechnet (SNB-Monatsmittelkurse, ' +
+    'gemittelt über das Kalenderjahr oder — ist dieses noch nicht ' +
+    'abgeschlossen — die letzten verfügbaren Monate) — das Panel zeigt ' +
+    'weiterhin die berichtete Zahl in der jeweiligen Konzernwährung (CHF, ' +
+    'EUR, USD).',
+}
 
-// Seltener Fall (`stats.revenueInChf === false`): mindestens eine Firma
-// blieb ohne SNB-Kurs (fehlende Reihe, Geschäftsjahr ausserhalb der Daten,
-// siehe `fx.py`, `rate()`). Keine CHF-Zusicherung mehr, aber auch keine
-// falsche „nicht umgerechnet"-Aussage wie im ursprünglichen Fund 2 — nur so
-// viel, wie für jeden Einzelfall stimmt.
-const CURRENCY_NOTE_FALLBACK =
-  'Umsätze in der jeweiligen Konzernwährung (CHF, EUR, USD) — für einzelne ' +
-  'Firmen fehlt die Umrechnung nach CHF, deshalb zeigt die Balkenhöhe hier ' +
-  'ausnahmsweise ebenfalls den berichteten statt eines einheitlich ' +
-  'umgerechneten Betrags.'
+// Seltener Fall (`stats.revenueInChf`/`stats.profitInChf === false`):
+// mindestens eine Firma blieb ohne SNB-Kurs (fehlende Reihe, Geschäftsjahr
+// ausserhalb der Daten, siehe `fx.py`, `rate()`). Keine CHF-Zusicherung mehr,
+// aber auch keine falsche „nicht umgerechnet"-Aussage wie im ursprünglichen
+// Fund 2 — nur so viel, wie für jeden Einzelfall stimmt.
+const CURRENCY_NOTE_FALLBACK: Record<'umsatz' | 'gewinn', string> = {
+  umsatz:
+    'Umsätze in der jeweiligen Konzernwährung (CHF, EUR, USD) — für ' +
+    'einzelne Firmen fehlt die Umrechnung nach CHF, deshalb zeigt die ' +
+    'Balkenhöhe hier ausnahmsweise ebenfalls den berichteten statt eines ' +
+    'einheitlich umgerechneten Betrags.',
+  gewinn:
+    'Reingewinne in der jeweiligen Konzernwährung (CHF, EUR, USD) — für ' +
+    'einzelne Firmen fehlt die Umrechnung nach CHF, deshalb zeigt die ' +
+    'Balkenhöhe hier ausnahmsweise ebenfalls den berichteten statt eines ' +
+    'einheitlich umgerechneten Betrags.',
+}
 
-function currencyNote(revenueInChf: boolean): string {
-  return revenueInChf ? CURRENCY_NOTE_CHF : CURRENCY_NOTE_FALLBACK
+/** Währungszeile für Umsatz/Gewinn, `null` bei Mitarbeitende (keine
+ *  Währung, siehe Kommentar oben bei `CURRENCY_NOTE_CHF`). `metricInChf`
+ *  ist bei Umsatz `stats.revenueInChf`, bei Gewinn `stats.profitInChf` —
+ *  welches der beiden Flags gilt, entscheidet die Aufrufstelle
+ *  (`karte/firmen.ts`), nicht diese Funktion. */
+function currencyNote(metric: Metric, metricInChf: boolean): string | null {
+  if (metric !== 'umsatz' && metric !== 'gewinn') return null
+  return metricInChf ? CURRENCY_NOTE_CHF[metric] : CURRENCY_NOTE_FALLBACK[metric]
 }
 
 // Lizenzpflichtig (STATENT: „Freie Nutzung, Quellenangabe Pflicht"; swisstopo-
@@ -156,16 +214,21 @@ const SCALE_NOTE =
 // Zahl mehr. „Ansicht A:" ist ebenfalls entfallen — das Label ist seit der
 // Aufteilung in drei benannte Seiten (`/`, `/firmen/`, `/beschaeftigte/`) tot,
 // es gibt kein A/B mehr in der Oberfläche.
+//
+// Kleinigkeit (2026-08-16, Abschluss-Review): der Satz nannte «Umsatz,
+// Mitarbeitende und Geschäftsjahr» — seit Task 18 (Kennzahl-Verdrahtung)
+// trägt auch der Reingewinn eine Höhenachse und stammt aus derselben Quelle
+// (Geschäftsbericht), fehlte hier aber.
 const FOOTER_COMPANIES =
-  'Börsennotierte Firmen: Umsatz, Mitarbeitende und Geschäftsjahr aus den ' +
+  'Börsennotierte Firmen: Umsatz, Mitarbeitende, Reingewinn und Geschäftsjahr aus den ' +
   'Geschäftsberichten der recherchierten Firmen selbst (Quelle je Firma im ' +
   'Panel, «Geschäftsbericht öffnen»).'
 
-// Task 10 (Seenlayer, `layers/lakes.ts`): die Seeflächen sind die einzige
-// Quelle dieser Karte, die nicht von BFS oder swisstopo stammt — `FOOTER`
-// oben nennt sie deshalb nicht, eine eigene Zeile ist nötig, sonst schriebe
-// die Box sie stillschweigend swisstopo zu. Zweiter Satz hält fest, was
-// fehlt, statt es zu beschweigen: vier grosse Seen tauchen auf der Karte
+// Task 10 (Seenlayer, `layers/lakes.ts`): die Seeflächen sind teilweise die
+// einzige Quelle dieser Karte, die nicht von BFS oder swisstopo stammt —
+// `FOOTER` oben nennt sie deshalb nicht, eine eigene Zeile ist nötig, sonst
+// schriebe die Box sie stillschweigend swisstopo zu. Zweiter Satz hält fest,
+// was fehlt, statt es zu beschweigen: vier grosse Seen tauchen auf der Karte
 // nicht als eigene Fläche auf, weil sowohl swisstopo (Gemeindeflächen) als
 // auch Natural Earth (dieses Artefakt) sie in die umliegenden
 // Gemeindeflächen einschliessen statt sie auszusparen.
@@ -175,15 +238,29 @@ const FOOTER_COMPANIES =
 // denn der Seenlayer selbst zeichnet auf BEIDEN Kartenseiten
 // (`layers/viewLayers.ts`, `buildViewLayers`). Eine Quelle zu nennen ist
 // eine Eigenschaft der gezeigten Daten, nicht der Ansicht: die
-// Beschäftigten-Seite hätte sonst Natural-Earth-Flächen gezeigt, ohne ihre
-// Quelle zu nennen. `renderNotices` unten hängt diese Zeile deshalb
-// bedingungslos an, direkt neben `FOOTER` (der anderen Quellenzeile), nicht
-// unter den ansichtsspezifischen Vorbehalten.
+// Beschäftigten-Seite hätte sonst Seeflächen gezeigt, ohne ihre Quelle zu
+// nennen. `renderNotices` unten hängt diese Zeile deshalb bedingungslos an,
+// direkt neben `FOOTER` (der anderen Quellenzeile), nicht unter den
+// ansichtsspezifischen Vorbehalten.
+//
+// Zweite Korrektur (Abschluss-Review, Finding C3): der Satz schrieb bis
+// dahin ALLE zehn Seepolygone Natural Earth zu — tatsächlich liefert Natural
+// Earth nur vier (Genfersee, Bodensee, ein unbenanntes Untersee-Teilbecken,
+// Lago Maggiore), die übrigen sechs (Zürichsee, Lac de Neuchâtel, Bielersee,
+// Thunersee, Brienzersee, Greifensee) stammen aus swissBOUNDARIES3D — also
+// von swisstopo, amtlich. Der zweite Satz verriet den Fehler bereits selbst
+// ("in beiden Quellen", nachdem nur eine genannt worden war). Beide
+// Aussagen bestehen jetzt nebeneinander: Natural Earth bleibt namentlich die
+// einzige NICHT-amtliche Quelle, swissBOUNDARIES3D liefert den Rest amtlich
+// (siehe `etl/src/zeigmers_etl/lakes.py`, Moduldocstring, für die Aufteilung
+// im Detail).
 const FOOTER_LAKES =
-  'Seeflächen: Natural Earth (10m lakes), generalisierte Umrisse — die ' +
-  'einzige nicht-amtliche Quelle dieser Karte. Vierwaldstättersee, ' +
-  'Zugersee, Walensee und Lago di Lugano fehlen: Sie stecken in beiden ' +
-  'Quellen in den Gemeindeflächen.'
+  'Seeflächen: Natural Earth (10m lakes; Genfersee, Bodensee, Lago Maggiore) ' +
+  'und swissBOUNDARIES3D (Zürichsee, Lac de Neuchâtel, Bielersee, ' +
+  'Thunersee, Brienzersee, Greifensee) — Natural Earth ist davon die ' +
+  'einzige nicht-amtliche Quelle dieser Karte, generalisierte Umrisse. ' +
+  'Vierwaldstättersee, Zugersee, Walensee und Lago di Lugano fehlen: Sie ' +
+  'stecken in beiden Quellen in den Gemeindeflächen.'
 
 // Redesign Change 2 (2026-08-15): vorher stand dieser Jahrgangs-Hinweis direkt
 // neben der «Beschäftigte je Einwohner»-Zeile im Klick-Panel
@@ -217,13 +294,26 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
  *  `karte/beschaeftigte.ts`), der ihn vergisst, soll ein Typfehler sein,
  *  kein still falscher Text zur Laufzeit.
  *
- *  `revenueInChf` (Re-Review, 2026-08-15, dieselbe Begründung wie `level`):
- *  nur bei `view === 'sichtbare'` gelesen — `companies.json`s
- *  `stats.revenueInChf`, entscheidet zwischen `CURRENCY_NOTE_CHF` und
- *  `CURRENCY_NOTE_FALLBACK` (siehe dort). Bei `view === 'beschaeftigte'`
- *  bedeutungslos, aber ebenfalls Pflichtparameter statt optional — aus
- *  demselben Grund wie bei `level`. */
-export function renderNotices(view: ViewName, level: NoticeLevel, revenueInChf: boolean): void {
+ *  `metric` (Abschluss-Review, 2026-08-16, Finding C1, dieselbe Begründung
+ *  wie `level`): nur bei `view === 'sichtbare'` gelesen — wählt die
+ *  zutreffende Zeile aus `HAUPT_SICHTBARE` und, zusammen mit `metricInChf`,
+ *  aus `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK` (siehe dort). Bei
+ *  `view === 'beschaeftigte'` bedeutungslos, aber ebenfalls Pflichtparameter
+ *  statt optional — aus demselben Grund wie bei `level`.
+ *
+ *  `metricInChf` (Re-Review 2026-08-15, erweitert 2026-08-16 um Finding I6):
+ *  nur bei `view === 'sichtbare'` gelesen — bei Kennzahl Umsatz
+ *  `companies.json`s `stats.revenueInChf`, bei Kennzahl Gewinn
+ *  `stats.profitInChf` (die Aufrufstelle, `karte/firmen.ts`, wählt das
+ *  passende Flag aus, siehe dort). Bei Kennzahl Mitarbeitende oder
+ *  `view === 'beschaeftigte'` bedeutungslos, aber ebenfalls Pflichtparameter
+ *  statt optional — aus demselben Grund wie bei `level`. */
+export function renderNotices(
+  view: ViewName,
+  level: NoticeLevel,
+  metric: Metric,
+  metricInChf: boolean,
+): void {
   let box = document.getElementById('hinweis')
   if (!box) {
     box = document.createElement('div')
@@ -231,9 +321,12 @@ export function renderNotices(view: ViewName, level: NoticeLevel, revenueInChf: 
     document.getElementById('ui')?.appendChild(box)
   }
   box.replaceChildren()
-  const haupt = view === 'sichtbare' ? HAUPT_SICHTBARE : HAUPT_BESCHAEFTIGTE[level]
+  const haupt = view === 'sichtbare' ? HAUPT_SICHTBARE[metric] : HAUPT_BESCHAEFTIGTE[level]
   box.appendChild(paragraph(haupt, 'hinweis-haupt'))
-  if (view === 'sichtbare') box.appendChild(paragraph(currencyNote(revenueInChf), 'hinweis-haupt'))
+  if (view === 'sichtbare') {
+    const note = currencyNote(metric, metricInChf)
+    if (note) box.appendChild(paragraph(note, 'hinweis-haupt'))
+  }
   box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Seenlayer zeichnet auf beiden Karten
   // (`layers/viewLayers.ts`), die Quelle gehört deshalb neben `FOOTER`, nicht

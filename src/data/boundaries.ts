@@ -40,9 +40,10 @@ export function loadCantons(base = '/data'): Promise<BoundaryFeatureCollection> 
   return loadGeojson(`${base}/ch_kantone.geojson`)
 }
 
-/** Seeflächen (`lakes.geojson`, Natural Earth — siehe `etl/…/lakes.py`), rein
- *  zur Orientierung: erst mit ihnen ist die Silhouette der Schweiz als
- *  Schweiz erkennbar, sie tragen aber keine Zahl und keine Auswahl. Anders
+/** Seeflächen (`lakes.geojson`, aus Natural Earth UND swissBOUNDARIES3D
+ *  kombiniert — siehe `etl/…/lakes.py`, Moduldocstring), rein zur
+ *  Orientierung: erst mit ihnen ist die Silhouette der Schweiz als Schweiz
+ *  erkennbar, sie tragen aber keine Zahl und keine Auswahl. Anders
  *  als `loadCantons`/`loadGeojson` oben deshalb bewusst NICHT dasselbe
  *  Wurf-Muster: ein fehlendes oder kaputtes Artefakt (HTTP-Fehler oder
  *  ungültiges JSON) fällt still auf `null` zurück statt die Karte zum

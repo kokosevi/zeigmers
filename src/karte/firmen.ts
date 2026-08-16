@@ -198,12 +198,24 @@ export async function startFirmen(): Promise<void> {
       nationalEmployees,
     })
 
-    // Re-Review Fund 2 (2026-08-15): `renderNotices` liest `revenueInChf` nur
+    // Re-Review Fund 2 (2026-08-15): `renderNotices` liest `metricInChf` nur
     // in dieser Ansicht — ob die Balkenhöhe die «in CHF umgerechnet»-Aussage
-    // tragen darf, entscheidet `companies.json`s `stats.revenueInChf` zur
-    // Laufzeit, nicht ein hartkodierter Satz (siehe `ui/notices.ts`,
-    // `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK`).
-    renderNotices('sichtbare', 'schweiz', companies.stats.revenueInChf)
+    // tragen darf, entscheidet `companies.json`s `stats.revenueInChf`/
+    // `stats.profitInChf` zur Laufzeit, nicht ein hartkodierter Satz (siehe
+    // `ui/notices.ts`, `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK`).
+    //
+    // Fix-Runde (2026-08-16, Abschluss-Review C1/I6): `renderNotices` bekommt
+    // jetzt zusätzlich die aktive Kennzahl, damit Hinweistext und
+    // Währungszeile ihr folgen (bis dahin stand über einer Mitarbeitenden-
+    // oder Gewinn-Karte weiterhin ein Umsatz-Satz). Welches der beiden
+    // Vollständigkeits-Flags gilt, hängt an derselben Kennzahl: Umsatz und
+    // Gewinn haben je eine eigene Alles-oder-nichts-Umrechnungsregel
+    // (`companies.py`, `build_artifact`) — `stats.profitInChf` existiert im
+    // Artefakt schon länger, wurde aber bis zu diesem Fix von keinem
+    // Produktivpfad gelesen (Finding I6).
+    const metricInChf =
+      selection.metric === 'gewinn' ? companies.stats.profitInChf : companies.stats.revenueInChf
+    renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf)
   }
 
   const navOptions: NavOptions = {

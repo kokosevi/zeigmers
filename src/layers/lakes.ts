@@ -5,11 +5,14 @@ import { withBaseElevation } from './elevation'
 
 /** Seeflächen auf Plattenhöhe. Sie tragen keine Zahl — sie sind der Grund,
  *  aus dem eine Silhouette der Schweiz als Schweiz erkennbar ist. Quelle ist
- *  Natural Earth (siehe `etl/…/lakes.py`), die einzige nicht-amtliche Quelle
- *  dieser Karte; die Eckbox (`ui/notices.ts`) nennt sie. Literal statt eines
- *  CSS-Tokens wie `LAND_FILL` in `layers/cantons.ts`: die Seenfarbe ist keine
- *  Design-Entscheidung dieser Aufgabe, nur ein ruhiger, klar von der
- *  Kantonsplatte unterscheidbarer Blauton. */
+ *  eine Kombination aus Natural Earth und swissBOUNDARIES3D (siehe
+ *  `etl/…/lakes.py`, Moduldocstring) — Natural Earth liefert vier Seen
+ *  (u. a. Genfersee), swissBOUNDARIES3D die restlichen sechs; nur Natural
+ *  Earth ist dabei die einzige nicht-amtliche Quelle dieser Karte (Abschluss-
+ *  Review, Finding C3 — die Eckbox, `ui/notices.ts`, nennt beide). Literal
+ *  statt eines CSS-Tokens wie `LAND_FILL` in `layers/cantons.ts`: die
+ *  Seenfarbe ist keine Design-Entscheidung dieser Aufgabe, nur ein ruhiger,
+ *  klar von der Kantonsplatte unterscheidbarer Blauton. */
 const LAKE_FILL: [number, number, number, number] = [176, 198, 219, 255]
 
 /** Vier Feature-Eigenschaften eines Sees fehlen absichtlich in diesem
