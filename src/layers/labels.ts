@@ -33,10 +33,14 @@ export function topByMetric(result: SelectionResult, metric: Metric, count: numb
  *  — und `heights` muss in derselben Reihenfolge wie `companies` stehen,
  *  denn `getPosition` liest `heights[index]` über den von deck.gl gelieferten
  *  Datenindex. Die Spitze liegt auf `zeroPlane + heights[i]`, nicht auf
- *  `heights[i]` allein: seit dem Umbau der Säulen auf eine auswahlabhängige
- *  Nulllinie (Kennzahl «Gewinn» hängt Verluste von einer gehobenen Ebene
- *  herab) wäre ein Name ohne diesen Summanden unter seiner Säule
- *  eingezeichnet.
+ *  `heights[i]` allein, weil jede Säule auf der Plattenoberkante ansetzt
+ *  (`zeroPlaneHeight` — immer `CANTON_ELEVATION_M`, unabhängig von der
+ *  Kennzahl): ein Name ohne diesen Summanden läge unter der Kantonsplatte,
+ *  nicht auf der Säulenspitze. Frühere Erste-Wahl-Variante (Task 8): eine
+ *  bei Verlusten angehobene Nulllinie, von der ein Verlust nach unten hängt
+ *  — im Browser geprüft und verworfen (siehe `layers/visible.ts`,
+ *  Kommentar bei `zeroPlaneHeight`), heute ansetzt jede Säule gleich, nur
+ *  `LOSS_COLOR` trägt das Vorzeichen.
  *
  *  `characterSet: 'auto'` statt der `TextLayer`-Vorgabe (ein festes
  *  ASCII-Set): Firmennamen wie «Bâloise», «Zürcher Kantonalbank» oder «DKSH»

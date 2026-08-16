@@ -1,5 +1,8 @@
-"""Seeflächen für die Basiskarte — aus zwei nicht-amtlichen Quellen, weil
-keine amtliche Quelle allein die Silhouette der Schweiz erkennbar macht.
+"""Seeflächen für die Basiskarte — aus zwei Quellen kombiniert, weil keine
+allein die Silhouette der Schweiz erkennbar macht. Nur eine der beiden ist
+nicht-amtlich (siehe letzter Absatz) — swissBOUNDARIES3D ist swisstopo,
+also amtlich; eine frühere Fassung dieses Docstrings nannte fälschlich
+beide "nicht-amtlich" (Abschluss-Review, Finding I9).
 
 swissBOUNDARIES3D, das dieses ETL ohnehin lädt, führt in `tlm_hoheitsgebiet`
 nur elf Seeflächen als eigene Zeilen (Objektart "Kantonsgebiet"): Zürichsee,
@@ -57,8 +60,11 @@ MAX_ARTIFACT_BYTES = 60 * 1024
 # Interna eines anderen Moduls zu, siehe `_extract_gpkg` unten.
 _HOHEITSGEBIET_LAYER_NEEDLES = ["hoheitsgebiet"]
 
-# Nur diese Objektart führt Seeflächen; siehe Moduldocstring für die anderen
-# zwölf Zeilen derselben Objektart (Gemeinden, Kommunanzen).
+# Diese Objektart führt die elf Seeflächen, aber nicht nur sie: siehe
+# Moduldocstring für die eine zusätzliche Zeile derselben Objektart ohne
+# Seefläche ("Staatswald Galm", ein Wald, `see_flaeche == 0`) — deshalb der
+# `see_flaeche > 0`-Filter unten in `_read_swissboundaries_lakes`, nicht ein
+# blosser Objektart-Filter allein.
 _SWISSBOUNDARIES_OBJEKTART = "Kantonsgebiet"
 
 # Manche Seen sind je Kanton in zwei Zeilen geteilt, der Name trägt dann das
@@ -99,8 +105,9 @@ def _extract_gpkg(gpkg_zip: Path) -> Path:
 
 def _read_natural_earth(ne_zip: Path) -> gpd.GeoDataFrame:
     """Lädt die Natural-Earth-Seen roh und reduziert auf `name`/`geometry` in
-    WGS84 — liefert Genfersee und Bodensee (siehe Moduldocstring), aber keinen
-    der Schweizer Binnenseen."""
+    WGS84 — liefert Genfersee, Bodensee und (unter dem korrigierten Namen,
+    siehe `_NATURAL_EARTH_NAME_CORRECTIONS`) Lago Maggiore (siehe
+    Moduldocstring), aber keinen der Schweizer Binnenseen."""
     with tempfile.TemporaryDirectory() as tmp:
         with zipfile.ZipFile(ne_zip) as zf:
             zf.extractall(tmp)

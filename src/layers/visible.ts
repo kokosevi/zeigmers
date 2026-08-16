@@ -310,25 +310,36 @@ export function buildCompanyShadowLayer(result: SelectionResult): ScatterplotLay
 // einzigen Marker; er greift automatisch, sobald ein künftiger SIX-Sync
 // platzierte, aber noch unrecherchierte Titel hinzufügt (siehe
 // `companies.json`, `stats`).
-/** Untergrenze für die Höhe einer Firmensäule.
+/** Untergrenze für die Höhe einer Firmensäule ohne Wert in der aktiven
+ *  Kennzahl (`companyElevations` setzt sie, sobald `metricValue` `null`
+ *  liefert) — bei Umsatz eine Platzhalterzeile (`placeholder=true`), bei
+ *  Mitarbeitende/Reingewinn eine fehlende Zahl. Der Mechanismus gilt für
+ *  alle drei Kennzahlen gleich; vermessen wurde die konkrete Schwelle nur
+ *  einmal, für Umsatz — die Kennzahl mit den meisten recherchierten Firmen
+ *  und der grössten Wertspanne (Task 18, Browser-Fund):
  *
- *  Mit 188 echten Umsätzen (`stats.withRevenue`) spannt Ansicht «Börsennotierte
- *  Firmen» einen Faktor von rund 325'000 — Nestlé mit 89.5 Mrd. CHF gegen
- *  Xlife Sciences mit 0.28 Mio. Am unteren Ende ergibt die Skala Höhen von 75
- *  und 105 m, also WENIGER als die 300 m hohe Kantonsplatte: diese Firmen
- *  wären auf der Karte nicht vorhanden, obwohl sie recherchiert sind und
- *  einen belegten Umsatz tragen — derselbe Fehler, der die flachen Marker
- *  unsichtbar machte.
+ *  Mit 187 echten Umsätzen (`stats.withRevenue`, Abschluss-Review Finding
+ *  I7: schliesst eine ausgewiesene Null wie bei Molecular Partners AG aus —
+ *  sie ist recherchiert, trägt aber keine Höhenaussage, siehe `metricValue`)
+ *  spannt Ansicht «Börsennotierte Firmen» einen Faktor von rund 325'000 —
+ *  Nestlé mit 89.5 Mrd. CHF gegen Xlife Sciences mit 0.28 Mio. Am unteren
+ *  Ende ergibt die Skala Höhen von 75 und 105 m, also WENIGER als die 300 m
+ *  hohe Kantonsplatte: diese Firmen wären auf der Karte nicht vorhanden,
+ *  obwohl sie recherchiert sind und einen belegten Umsatz tragen — derselbe
+ *  Fehler, der die flachen Marker unsichtbar machte.
  *
- *  Elf Säulen (alle unter rund 19 Mio. CHF Umsatz) sitzen deshalb auf dieser
- *  Schwelle. Ihre Höhe bildet den Umsatz dort nicht mehr ab, sondern nur
- *  noch, DASS es die Firma gibt — bei diesen Grössen unterscheidet das Auge
- *  75 von 105 Metern ohnehin nicht. Die Legende sagt es, und das Panel nennt
- *  die echte Zahl. */
+ *  Elf Umsatz-Säulen (alle unter rund 19 Mio. CHF) sitzen deshalb auf dieser
+ *  Schwelle. Ihre Höhe bildet den jeweiligen Wert dort nicht mehr ab,
+ *  sondern nur noch, DASS es die Firma gibt — bei diesen Grössen
+ *  unterscheidet das Auge 75 von 105 Metern ohnehin nicht. Die Legende sagt
+ *  es (`FLOOR_LEGEND_TEXT`, `ui/legend.ts`, seit Kennzahl-Wahl je Kennzahl
+ *  formuliert), und das Panel nennt die echte Zahl. */
 export const MIN_VISIBLE_BAR_M = 400
 
-/** Untergrenze für Säulen MIT belegtem Umsatz — bewusst höher als
- *  `MIN_VISIBLE_BAR_M`.
+/** Untergrenze für Säulen MIT Wert in der aktiven Kennzahl — bewusst höher
+ *  als `MIN_VISIBLE_BAR_M`. Vermessen wurde auch diese Schwelle nur für
+ *  Umsatz (siehe Kommentar dort); dieselben 400/550 m gelten mechanisch für
+ *  Mitarbeitende und Reingewinn.
  *
  *  Zwei Zusicherungen stossen hier aneinander: jede Säule muss die
  *  Kantonsplatte überragen, UND ein Platzhalter ("keine Zahl gefunden") muss
