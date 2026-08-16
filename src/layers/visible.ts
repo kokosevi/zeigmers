@@ -40,6 +40,10 @@ export interface Company {
   lon: number
   lat: number
   nogaGroupIndex: number
+  /** Rechtsform-Dimension der Karte, heute für alle Zeilen
+   *  `'boersenkotiert'`. Die Karte filtert danach; Genossenschaften und
+   *  grosse nicht kotierte Firmen kommen später als weitere Werte hinzu. */
+  orgForm: string | null
   revenue: number | null
   /** Derselbe Umsatz zum SNB-Jahresmittelkurs des Geschäftsjahres in CHF —
    *  die Grösse, aus der die Säulenhöhe entsteht. `revenue`/`currency`
@@ -50,6 +54,10 @@ export interface Company {
   currency: string | null
   revenueType: RevenueType | null
   profit: number | null
+  /** Reingewinn zum SNB-Jahresmittelkurs in CHF — dieselbe Rolle wie
+   *  `revenueChf` beim Umsatz, siehe `etl/…/companies.py`. `null`, solange
+   *  keine Kurse vorliegen. */
+  profitChf: number | null
   profitCurrency: string | null
   consolidationBasis: ConsolidationBasis | null
   coreProducts: string | null
@@ -98,6 +106,13 @@ export interface CompanyData {
      *  unten für den tatsächlichen (abweichenden) Rückfallmechanismus und
      *  was ein Teilausfall dafür bedeuten würde. */
     revenueInChf: boolean
+    /** Dieselbe Meldung wie `revenueInChf`, für den Reingewinn: `true`,
+     *  sobald jede Gewinnzahl umgerechnet ist. */
+    profitInChf: boolean
+    /** Rechtsformen, die im Datensatz tatsächlich vorkommen — heute nur
+     *  `['boersenkotiert']`. Grundlage für die Filterauswahl, damit die
+     *  Karte keine Rechtsform anbietet, die keine Firma trägt. */
+    orgForms: string[]
     /** Anzahl Zeilen mit `researched=yes` — der Zähler in der
      *  Abdeckungsangabe (Beispiel: „201 Gesellschaften von 224 kotierten
      *  SIX-Titeln auf der Karte gezeigt, davon 201 recherchiert", siehe
