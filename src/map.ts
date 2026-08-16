@@ -148,7 +148,17 @@ const MAX_PADDING_FRACTION = 0.25
 /** Wendet `MAX_PADDING_FRACTION` auf `DERIVED_FRAME_PADDING` an, bezogen auf
  *  die tatsächliche Grösse des Kartencontainers — muss deshalb zur Laufzeit
  *  in `frameBounds` berechnet werden, nicht als Modulkonstante, weil sich
- *  die Fenstergrösse zwischen Aufrufen ändern kann (Resize, andere Seite). */
+ *  die Fenstergrösse zwischen Aufrufen ändern kann (Resize, andere Seite).
+ *
+ *  Aufgabe 18, festgehalten statt stillschweigend hingenommen: ist der
+ *  Container beim Aufruf noch nicht gelayoutet (`clientWidth`/`clientHeight`
+ *  liefern dann `0`, z. B. ein `frameBounds()` vor dem ersten Browser-Reflow),
+ *  ergibt sich ein Padding von `0` auf allen vier Seiten — unschädlich
+ *  (`cameraForBounds` rahmt dann ungepolstert, keine Exception, kein NaN),
+ *  aber ohne die hier sonst geltende Rahmung. In der Praxis tritt der Fall
+ *  nicht auf: `createBasis()` ruft `frameBounds()` erst, nachdem `#map` im DOM
+ *  hängt und der erste Layout-Pass gelaufen ist (siehe dort). Kein Abfangen
+ *  nötig, nur die Randbedingung dieser Herleitung dokumentiert. */
 function cappedPadding(map: maplibregl.Map): PaddingOptions {
   const { clientWidth, clientHeight } = map.getContainer()
   const maxHorizontal = clientWidth * MAX_PADDING_FRACTION
@@ -161,8 +171,8 @@ function cappedPadding(map: maplibregl.Map): PaddingOptions {
   }
 }
 
-// Zusätzlicher Zoom, nach der aus `FRAME_PADDING` hergeleiteten Kamera
-// aufaddiert (siehe `frameBounds` unten): `cameraForBounds` — wie
+// Zusätzlicher Zoom, nach der aus `DERIVED_FRAME_PADDING` hergeleiteten
+// Kamera aufaddiert (siehe `frameBounds` unten): `cameraForBounds` — wie
 // `fitBounds`, das intern denselben Weg geht — rechnet `pitch` nicht in die
 // Bounds-Berechnung ein (siehe `CameraForBoundsOptions`, die keinen
 // `pitch`-Parameter kennt), obwohl die Kamera anschliessend mit `pitch: 50`
@@ -170,10 +180,23 @@ function cappedPadding(map: maplibregl.Map): PaddingOptions {
 // vom Padding beabsichtigt (Screenshot-Befund: rund 45 % Bildfläche statt der
 // angestrebten Ausfüllung). Der richtige Ausgleichswert lässt sich nur am
 // gerenderten Bild ablesen, nicht aus CSS oder Geometrie herleiten — deshalb
-// hier bewusst nicht geraten: `PITCH_FILL_BOOST` bleibt `0` (unverändertes
+// hier bewusst nicht geraten: `PITCH_FILL_BOOST` blieb `0` (unverändertes
 // Verhalten gegenüber vor dieser Aufgabe), bis Aufgabe 18 anhand von
-// Screenshots den tatsächlich passenden Wert misst und einträgt.
-const PITCH_FILL_BOOST = 0
+// Screenshots den tatsächlich passenden Wert mass.
+//
+// Aufgabe 18, Messreihe (Kennzahl Umsatz, 1600×1000, headless Chrome/
+// SwiftShader, `PITCH_FILL_BOOST` testweise verändert und jeweils neu
+// geschossen): `0` rahmte die Schweiz auf rund 45 % Bildfläche (Befund oben
+// bestätigt); `1.0` füllte den Rahmen deutlich, schob den Genfersee-Rand
+// («Compagnie Financière Richemont SA») dabei aber unter die Legende-Box
+// links (deren eigener 1rem-Sicherheitsabstand, siehe `DERIVED_FRAME_
+// PADDING`, ist für das *flache* `fitBounds`-Modell gerechnet, nicht für den
+// tatsächlich weiter herausgezoomten Rand bei `pitch: 50`); `0.3` liess davon
+// noch zwei Buchstaben unter der Box verschwinden. `0.15` ist der grösste
+// getestete Wert, bei dem die Schweiz spürbar mehr Bildfläche füllt als ohne
+// Ausgleich UND kein Firmenname mehr unter einer Chrome-Box verschwindet —
+// der gewählte Wert.
+const PITCH_FILL_BOOST = 0.15
 
 const FRAME_DURATION_MS = 900
 
