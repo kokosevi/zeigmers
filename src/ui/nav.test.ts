@@ -34,4 +34,35 @@ describe('createNav', () => {
     expect(nav.querySelector('[data-orgform="boersenkotiert"]')?.textContent)
       .toBe('Börsenkotiert')
   })
+
+  it('Kennzahl ist eine Auswahl von genau einer Option (radiogroup)', () => {
+    const nav = createNav({
+      view: 'sichtbare', onModeChange: () => {},
+      metrics: { available: ['umsatz', 'mitarbeitende', 'gewinn'], onChange: () => {} },
+    })
+    const gruppe = nav.querySelector('[aria-label="Kennzahl"]')
+    expect(gruppe?.getAttribute('role')).toBe('radiogroup')
+
+    nav.querySelector<HTMLButtonElement>('[data-metric="gewinn"]')!.click()
+    const gewaehlt = nav.querySelectorAll('[data-metric][aria-checked="true"]')
+    expect(gewaehlt.length).toBe(1)
+    expect(gewaehlt[0]?.getAttribute('data-metric')).toBe('gewinn')
+  })
+
+  it('Organisationsform ist eine Mehrfachauswahl (group, nicht radiogroup)', () => {
+    const nav = createNav({
+      view: 'sichtbare', onModeChange: () => {},
+      orgForms: {
+        available: ['boersenkotiert', 'genossenschaft'],
+        onChange: () => {},
+      },
+    })
+    const gruppe = nav.querySelector('[aria-label="Organisationsform"]')
+    expect(gruppe?.getAttribute('role')).toBe('group')
+
+    // Startzustand: alle verfügbaren Formen ausgewählt — anders als bei der
+    // Kennzahl dürfen hier mehrere Knöpfe gleichzeitig aktiv sein.
+    const gewaehlt = nav.querySelectorAll('[data-orgform][aria-pressed="true"]')
+    expect(gewaehlt.length).toBe(2)
+  })
 })

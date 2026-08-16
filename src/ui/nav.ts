@@ -111,10 +111,13 @@ export interface NavOptions {
  *    dasselbe Muster: `role="radiogroup"`, `aria-checked` je Knopf.
  *  - Die Organisationsform ist dagegen eine **Mehrfachauswahl** (mehrere
  *    Formen können gleichzeitig sichtbar sein) — kein `radiogroup`, sondern
- *    eine Gruppe unabhängiger Umschaltknöpfe mit `aria-pressed` je Knopf.
- *    Sie erscheint auch mit nur einem Wert: der Knopf zeigt heute schon die
- *    Richtung, in der später weitere Organisationsformen dazukommen, auch
- *    wenn er mit einem einzigen Wert noch nichts filtert.
+ *    `role="group"` mit unabhängigen Umschaltknöpfen (`aria-pressed` je
+ *    Knopf). `role="group"` statt der impliziten `<div>`-Rolle `generic`,
+ *    weil nur benannte Rollen ein `aria-label` zuverlässig tragen (siehe
+ *    Begründung unten bei der Organisationsform-Gruppe). Sie erscheint auch
+ *    mit nur einem Wert: der Knopf zeigt heute schon die Richtung, in der
+ *    später weitere Organisationsformen dazukommen, auch wenn er mit einem
+ *    einzigen Wert noch nichts filtert.
  *
  *  Ruft `onModeChange` — und, falls übergeben, `metrics.onChange` und
  *  `orgForms.onChange` — je einmal bei der Konstruktion auf: das übernimmt
@@ -224,7 +227,14 @@ export function createNav(options: NavOptions): HTMLElement {
   // Organisationsform: wie die Kennzahl nur gerendert, wenn übergeben.
   // Anders als Ansicht/Höhenskala/Kennzahl ist das hier eine Mehrfachauswahl
   // (mehrere Formen gleichzeitig sichtbar) — deshalb kein `radiogroup`,
-  // sondern unabhängige Umschaltknöpfe mit `aria-pressed`. Startzustand: alle
+  // sondern unabhängige Umschaltknöpfe mit `aria-pressed`. `role="group"`
+  // statt der impliziten `<div>`-Rolle `generic`: die ARIA-Spezifikation
+  // verbietet Autoren die Namensvergabe an `generic` — ein `aria-label` ohne
+  // passende Rolle würde von Screenreadern nicht zuverlässig vorgelesen, der
+  // Gruppenname («Organisationsform») ginge verloren und übrig bliebe nur
+  // «Börsenkotiert, Umschalter» ohne Kontext, wovon das eine Gruppe ist.
+  // `role="group"` ist die für eine Sammlung unabhängiger Umschalter
+  // passende Rolle und erlaubt die Namensvergabe. Startzustand: alle
   // verfügbaren Formen ausgewählt, die Karte startet ungefiltert.
   if (options.orgForms) {
     const { available, onChange: onOrgFormChange } = options.orgForms
@@ -232,6 +242,7 @@ export function createNav(options: NavOptions): HTMLElement {
 
     const organisationsform = document.createElement('div')
     organisationsform.className = 'gruppe'
+    organisationsform.setAttribute('role', 'group')
     organisationsform.setAttribute('aria-label', 'Organisationsform')
     const orgFormButtons = available.map((form) => {
       const button = document.createElement('button')
