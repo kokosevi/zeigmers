@@ -65,6 +65,12 @@ SWISSBOUNDARIES_STAC = (
 GEOCODE_URL = "https://api3.geo.admin.ch/rest/services/api/SearchServer"
 LINDAS_SPARQL = "https://ld.admin.ch/query"
 
+# Natural Earth 10m «lakes» — die einzige nicht-amtliche Quelle dieser Karte,
+# siehe `lakes.py` für den Grund.
+NATURAL_EARTH_LAKES = (
+    "https://naciscdn.org/naturalearth/10m/physical/ne_10m_lakes.zip"
+)
+
 SRC_LV95 = "EPSG:2056"
 DST_WGS84 = "EPSG:4326"
 HECTARE_SIZE_M = 100.0

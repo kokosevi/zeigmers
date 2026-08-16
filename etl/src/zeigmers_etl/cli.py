@@ -12,6 +12,7 @@ from . import config
 COMMANDS: dict[str, str] = {
     "inspect-statent": "Rohdaten laden und Spaltenbericht ausgeben",
     "boundaries": "Kantons- und Gemeindegrenzen aufbereiten",
+    "lakes": "Seeflächen aus Natural Earth bauen",
     "noga": "NOGA-Tabelle prüfen und TypeScript erzeugen",
     "statent": "Hektardaten aufbereiten und Artefakte schreiben",
     "companies": "Ansicht A: CSV validieren, geokodieren, Artefakt schreiben",
@@ -363,6 +364,25 @@ def main(argv: Sequence[str] | None = None) -> int:
               f"({cantons_out.stat().st_size / 1024:.0f} KB)")
         return 0
 
+    if args.command == "lakes":
+        from . import boundaries as boundaries_module
+        from . import fetch
+        from . import lakes as lakes_module
+
+        ne_zip = fetch.download(
+            config.NATURAL_EARTH_LAKES, config.DATA_RAW / "ne_10m_lakes.zip",
+            force=args.force,
+        )
+        cantons = boundaries_module.build_cantons(
+            config.DATA_RAW / "swissboundaries3d.gpkg.zip"
+        )
+        report = lakes_module.build(ne_zip, cantons, config.PUBLIC_DATA / "lakes.geojson")
+        print(f"[lakes] {report['count']} Seen, {report['bytes'] / 1024:.0f} KB")
+        if report["bytes"] > lakes_module.MAX_ARTIFACT_BYTES:
+            print("[lakes] FEHLER: Artefakt zu gross")
+            return 1
+        return 0
+
     if args.command in ("statent", "all", "sanity-map"):
         result = _run_statent(args.force)
         if args.command == "statent":
@@ -580,7 +600,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # über die tatsächliche Netzlast.
         startup_names = (
             "meta.json", "ch_kantone.bin", "ch_kantone.json",
-            "ch_kantone.geojson", "companies.json",
+            "ch_kantone.geojson", "companies.json", "lakes.geojson",
         )
         startup_total = sum(
             (config.PUBLIC_DATA / name).stat().st_size
