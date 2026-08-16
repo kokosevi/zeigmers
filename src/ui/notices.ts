@@ -169,6 +169,16 @@ const FOOTER_COMPANIES =
 // nicht als eigene Fläche auf, weil sowohl swisstopo (Gemeindeflächen) als
 // auch Natural Earth (dieses Artefakt) sie in die umliegenden
 // Gemeindeflächen einschliessen statt sie auszusparen.
+//
+// Korrektur (2026-08-16): stand anfangs unter denselben `view ===
+// 'sichtbare'`-Bedingungen wie `FOOTER_COMPANIES`/`CURRENCY_NOTE` — falsch,
+// denn der Seenlayer selbst zeichnet auf BEIDEN Kartenseiten
+// (`layers/viewLayers.ts`, `buildViewLayers`). Eine Quelle zu nennen ist
+// eine Eigenschaft der gezeigten Daten, nicht der Ansicht: die
+// Beschäftigten-Seite hätte sonst Natural-Earth-Flächen gezeigt, ohne ihre
+// Quelle zu nennen. `renderNotices` unten hängt diese Zeile deshalb
+// bedingungslos an, direkt neben `FOOTER` (der anderen Quellenzeile), nicht
+// unter den ansichtsspezifischen Vorbehalten.
 const FOOTER_LAKES =
   'Seeflächen: Natural Earth (10m lakes), generalisierte Umrisse — die ' +
   'einzige nicht-amtliche Quelle dieser Karte. Vierwaldstättersee, ' +
@@ -225,12 +235,16 @@ export function renderNotices(view: ViewName, level: NoticeLevel, revenueInChf: 
   box.appendChild(paragraph(haupt, 'hinweis-haupt'))
   if (view === 'sichtbare') box.appendChild(paragraph(currencyNote(revenueInChf), 'hinweis-haupt'))
   box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
+  // Unabhängig von der Ansicht: der Seenlayer zeichnet auf beiden Karten
+  // (`layers/viewLayers.ts`), die Quelle gehört deshalb neben `FOOTER`, nicht
+  // hinter eine `view`-Prüfung (siehe Korrektur-Kommentar an `FOOTER_LAKES`
+  // oben).
+  box.appendChild(paragraph(FOOTER_LAKES, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Skalenschalter (und damit die Formel, um
   // die es hier geht) ist in beiden Ansichten sichtbar und bedienbar, nicht
   // nur in Ansicht B.
   box.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
   if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
-  if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_LAKES, 'hinweis-quelle'))
   // Nur auf der Kantonsstufe: die «Beschäftigte je Einwohner»-Zeile, die
   // dieser Hinweis erklärt, steht ausschliesslich im Gemeinde-Klick-Panel
   // (`ui/panel.ts`) — auf der Schweiz-Stufe öffnet ein Klick keinen Panel
