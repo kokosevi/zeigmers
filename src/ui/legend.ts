@@ -1,7 +1,10 @@
 import type { PresentGroups } from '../domain/legendGroups'
-import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
+import { formatMetric, metricAllowsNegative, type Metric } from '../domain/metric'
+import { NOGA_GROUPS, UNKNOWN_COLOR, type NogaGroup } from '../domain/noga.generated'
+import { branchTotals, type SelectionResult } from '../domain/selection'
 import { litTopFaceColor } from '../layers/litColor'
 import { OUTLINE_COLOR, UNRESEARCHED_MARKER_COLOR } from '../layers/visible'
+import { formatNumber } from './format'
 import type { ViewName } from './nav'
 
 const OUTLINE_LEGEND_TEXT =
@@ -70,6 +73,29 @@ export interface LegendOptions {
    *    Zeile liesse sich aus der Karte selbst nicht ablesen, dass ein Teil
    *    der kotierten Titel überhaupt nicht auf der Karte erscheint. */
   scopeLabel?: string
+  /** Task 13: aus der Farbliste wird ein Bedienelement, aber nur, wo eine
+   *  Kennzahl UND ein Ergebnis vorliegen — heute nur die Firmenseite
+   *  (`karte/firmen.ts`). Ansicht «Beschäftigte» kennt keine Kennzahlwahl
+   *  (siehe `ui/nav.ts`, `NavOptions.metrics`) und lässt beide Felder weg;
+   *  die Legende bleibt dort unverändert eine reine Farbliste. `metric` und
+   *  `result` sind ein Paar — eines ohne das andere ergibt keine Zahl, die
+   *  sich anzeigen liesse. */
+  metric?: Metric
+  result?: SelectionResult
+  /** Welche Branchen aktuell sichtbar sind. Fehlt sie trotz gesetzter
+   *  `metric`/`result` (z. B. beim ersten Aufruf einer Seite, die den Filter
+   *  noch nicht verdrahtet), gilt "alle vorhandenen Branchen ausgewählt" als
+   *  Startzustand — dieselbe Konvention wie bei der Organisationsform in
+   *  `ui/nav.ts`. */
+  selectedBranches?: ReadonlySet<number>
+  /** Meldet einen Klick auf eine Branchenschaltfläche. Die Legende hält
+   *  selbst keinen Auswahlzustand — sie meldet nur, wer ihn hält (und ihn
+   *  über `selectedBranches` zurückreicht), ist Sache der Aufrufstelle. */
+  onToggleBranch?: (index: number) => void
+  /** "nur diese": ersetzt die Auswahl durch genau eine Branche. */
+  onOnlyBranch?: (index: number) => void
+  /** "alle": wählt wieder alle vorhandenen Branchen. */
+  onAllBranches?: () => void
 }
 
 function box(): HTMLElement {
@@ -113,12 +139,78 @@ function unresearchedSwatch(): HTMLLIElement {
   return swatch([r, g, b], UNRESEARCHED_LEGEND_TEXT)
 }
 
-/** Zeigt fix: Branchenfarben, graue Restkategorie, Datenjahr und die Einheit
- *  der aktuellen Ansicht. Wird bei jedem Wechsel von Ansicht oder Skala neu
- *  aufgerufen — die Legende ist ohne Interaktion sichtbar und aktualisiert
- *  sich mit. */
+/** Anteil einer Branchensumme an der Gesamtsumme der aktuellen Auswahl, als
+ *  gerundete Prozentzahl. Nur für Kennzahlen ohne negative Werte sinnvoll
+ *  (siehe `metricAllowsNegative`) — bei Gewinn tritt an ihre Stelle der
+ *  Saldo. `total <= 0` (leere Auswahl oder — bei Gewinn nie hier, siehe
+ *  oben — eine Gesamtsumme von 0) ergibt 0 %, statt durch 0 zu teilen. */
+function formatShare(part: number, total: number): string {
+  const pct = total > 0 ? Math.round((part / total) * 100) : 0
+  return `${formatNumber(pct)} %`
+}
+
+/** Eine Branchenzeile — seit Task 13 eine Schaltfläche (Umschalter,
+ *  `aria-pressed`) statt eines reinen Farbtupfers: ein Klick meldet
+ *  `onToggleBranch`, die Legende selbst hält keinen Auswahlzustand (wer ihn
+ *  hält und die Kartenlayer entsprechend filtert, ist Sache der
+ *  Aufrufstelle). Daneben ein zweiter, unabhängiger Knopf «nur diese» —
+ *  sichtbare Bedienelemente statt versteckter Gesten (Doppelklick,
+ *  Modifikatortaste), die es auf einem Touchgerät ohnehin nicht gäbe. */
+function branchRow(
+  index: number,
+  group: NogaGroup,
+  entry: { count: number; sum: number } | undefined,
+  metric: Metric,
+  totalSum: number,
+  selected: ReadonlySet<number>,
+  onToggleBranch: ((index: number) => void) | undefined,
+  onOnlyBranch: ((index: number) => void) | undefined,
+): HTMLLIElement {
+  const li = document.createElement('li')
+  li.className = 'legende-branche-zeile'
+
+  const toggle = document.createElement('button')
+  toggle.type = 'button'
+  toggle.className = 'legende-branche'
+  toggle.dataset.branch = String(index)
+  toggle.setAttribute('aria-pressed', String(selected.has(index)))
+
+  const dot = document.createElement('span')
+  dot.className = 'legende-punkt'
+  const [r, g, b] = litTopFaceColor(group.color)
+  dot.style.background = `rgb(${r}, ${g}, ${b})`
+
+  const count = entry?.count ?? 0
+  // Gewinn: Saldo (kann negativ sein, `formatMetric` schreibt dann
+  // "Verlust …" davor) — ein Anteil an einer Summe aus Gewinnen UND
+  // Verlusten wäre eine Zahl ohne Bedeutung, sie könnte über 100 % liegen
+  // oder negativ werden. Andere Kennzahlen: Anteil an der Gesamtsumme.
+  const zahl = metricAllowsNegative(metric)
+    ? formatMetric(entry?.sum ?? 0, metric)
+    : formatShare(entry?.sum ?? 0, totalSum)
+  toggle.append(dot, document.createTextNode(`${group.label} · ${count} · ${zahl}`))
+  toggle.addEventListener('click', () => onToggleBranch?.(index))
+
+  const nur = document.createElement('button')
+  nur.type = 'button'
+  nur.className = 'legende-nur'
+  nur.dataset.only = String(index)
+  nur.textContent = 'nur diese'
+  nur.addEventListener('click', () => onOnlyBranch?.(index))
+
+  li.append(toggle, nur)
+  return li
+}
+
+/** Zeigt Branchenfarben, graue Restkategorie, Datenjahr und die Einheit der
+ *  aktuellen Ansicht — mit `metric`/`result` (siehe `LegendOptions`) je
+ *  Branche zusätzlich Anzahl und Anteil/Saldo, als Umschalter statt reiner
+ *  Farbtupfer (Task 13). Wird bei jedem Wechsel von Ansicht, Skala oder
+ *  Auswahl neu aufgerufen — die Legende hält selbst keinen Zustand, sie
+ *  zeichnet nur, was man ihr übergibt, und aktualisiert sich damit. */
 export function renderLegend(options: LegendOptions): void {
-  const { view, year, presentGroups, scopeLabel } = options
+  const { view, year, presentGroups, scopeLabel, metric, result, onToggleBranch, onOnlyBranch } =
+    options
   const el = box()
 
   const title = document.createElement('div')
@@ -126,6 +218,27 @@ export function renderLegend(options: LegendOptions): void {
   const scopePart = scopeLabel ? ` · ${scopeLabel}` : ''
   title.textContent = `${UNIT_LABEL[view]}${scopePart} · Datenjahr ${year}`
   el.appendChild(title)
+
+  // Filter-Modus nur mit `metric` UND `result` zusammen (siehe
+  // `LegendOptions`) — ohne die beiden bleibt die Legende die reine
+  // Farbliste von vorher (Ansicht «Beschäftigte»). `metric`/`result` als
+  // direkte Bedingung (nicht über eine zwischengespeicherte Bool-Variable),
+  // damit TypeScript die beiden im jeweiligen Block als vorhanden erkennt.
+  if (metric !== undefined && result !== undefined) {
+    const alleButton = document.createElement('button')
+    alleButton.type = 'button'
+    alleButton.className = 'legende-alle'
+    alleButton.dataset.allBranches = ''
+    alleButton.textContent = 'Alle Branchen'
+    alleButton.addEventListener('click', () => options.onAllBranches?.())
+    el.appendChild(alleButton)
+  }
+
+  // Startzustand ohne explizite `selectedBranches`: alle vorhandenen
+  // Branchen ausgewählt (dieselbe Konvention wie die Organisationsform in
+  // `ui/nav.ts`) — die Karte startet ungefiltert.
+  const selected = options.selectedBranches ?? new Set(presentGroups.indices)
+  const totals = metric !== undefined && result !== undefined ? branchTotals(result, metric) : null
 
   const branchen = document.createElement('ul')
   branchen.className = 'legende-branchen'
@@ -136,7 +249,22 @@ export function renderLegend(options: LegendOptions): void {
   // zeigt, nicht der rohe, ungeshadete Messwert.
   for (const [index, group] of NOGA_GROUPS.entries()) {
     if (!presentGroups.indices.includes(index)) continue
-    branchen.appendChild(swatch(litTopFaceColor(group.color), group.label))
+    if (metric !== undefined && result !== undefined) {
+      branchen.appendChild(
+        branchRow(
+          index,
+          group,
+          totals?.get(index),
+          metric,
+          result.sum,
+          selected,
+          onToggleBranch,
+          onOnlyBranch,
+        ),
+      )
+    } else {
+      branchen.appendChild(swatch(litTopFaceColor(group.color), group.label))
+    }
   }
   if (presentGroups.hasUnknown) {
     branchen.appendChild(swatch(litTopFaceColor(UNKNOWN_COLOR), 'nicht eindeutig bestimmbar'))
@@ -149,6 +277,36 @@ export function renderLegend(options: LegendOptions): void {
     branchen.appendChild(floorNote)
   }
   el.appendChild(branchen)
+
+  if (metric !== undefined && result !== undefined) {
+    // Bezugszeile: seit die Höhenskala sich an die Auswahl anpasst (statt an
+    // ein fixes Maximum über allen Firmen), behauptet die Karte ohne diese
+    // Zeile einen absoluten Massstab, den sie nicht hat. `result.vmax` ist
+    // exakt der Betrag, den die höchste Säule gerade zeigt — dieselbe Zahl,
+    // aus der `domain/scale.ts` die Höhe berechnet.
+    if (result.top) {
+      const bezug = document.createElement('div')
+      bezug.className = 'legende-bezug'
+      bezug.textContent = `Höchste Säule: ${result.top.name}, ${formatMetric(result.vmax, metric)}`
+      el.appendChild(bezug)
+    }
+    // Nur bei Gewinn kann es Verluste geben (siehe `metricAllowsNegative`) —
+    // und nur, wenn die aktuelle Auswahl tatsächlich welche enthält.
+    if (metric === 'gewinn' && result.losses > 0) {
+      const verlust = document.createElement('div')
+      verlust.className = 'legende-bezug'
+      verlust.textContent =
+        `${result.losses} von ${result.withValue.length} Gesellschaften in der Auswahl ` +
+        'mit Verlust.'
+      el.appendChild(verlust)
+    }
+    if (selected.size === 0) {
+      const leer = document.createElement('div')
+      leer.className = 'legende-bezug'
+      leer.textContent = 'Keine Branche ausgewählt — die Karte zeigt keine Säule.'
+      el.appendChild(leer)
+    }
+  }
 
   // Redesign Change 3 (2026-08-14): zwei Zeilen sind hier entfallen —
   //
@@ -173,6 +331,9 @@ export function renderLegend(options: LegendOptions): void {
   //
   // Quellenangabe und Währungshinweis stehen seit demselben Redesign
   // ohnehin in der Eckbox (`ui/notices.ts`) — „die Legende trägt, was man
-  // zum Lesen braucht, die Eckbox, was man zum Vertrauen braucht". Die
-  // Legende endet deshalb jetzt mit den Branchenfarben oben.
+  // zum Lesen braucht, die Eckbox, was man zum Vertrauen braucht". Ohne
+  // Filter-Modus (kein `metric`/`result`) endet die Legende deshalb mit den
+  // Branchenfarben oben; mit Filter-Modus (Task 13) kommen die Bezugs-,
+  // Verlust- und Leerauswahl-Zeilen darunter dazu — beide gehören ins Lesen
+  // der Karte, nicht ins Vertrauen in sie.
 }

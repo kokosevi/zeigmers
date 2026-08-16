@@ -186,6 +186,57 @@ a:focus-visible, button:focus-visible {
    `ui/legend.ts` für die Begründung — die Regeln wurden mitentfernt statt
    als tote CSS liegen zu bleiben. */
 
+/* Task 13: aus der Farbliste wird ein Bedienelement. «Alle Branchen» steht
+   über der Liste, deshalb eigene Zeile statt `.legende-branchen`-Kind. Look
+   an `#steuerung button` angelehnt (dieselbe Stimme: unauffällig, bis auf
+   Klick/Zustand), aber kleiner — die Legende bleibt die leiseste Ecke der
+   Karte, auch als Bedienelement. */
+.legende-alle {
+  display: block; margin: 0 0 .5rem; border: 1px solid var(--oberflaeche-rand);
+  background: transparent; color: var(--tinte-leise);
+  padding: .3rem .6rem; border-radius: .375rem;
+  font-size: .625rem; text-transform: uppercase; letter-spacing: .05em;
+  cursor: pointer; font-family: inherit; width: 100%; text-align: left;
+}
+.legende-alle:hover { color: var(--tinte); }
+
+/* Eine Branchenzeile ist jetzt zwei Schaltflächen nebeneinander: der
+   Umschalter (Farbtupfer, Label, Anzahl, Anteil/Saldo) und «nur diese».
+   `.legende-branchen li` bleibt für die unveränderten Zeilen (Rand-
+   markierung, unrecherchierte Marker, Mindesthöhen-Hinweis) die reine
+   Text+Punkt-Zeile von vorher — `.legende-branche-zeile` überschreibt hier
+   gezielt `align-items`/`justify-content`, statt eine zweite Zeilenart mit
+   eigenem Grundlayout zu duplizieren. */
+.legende-branchen li.legende-branche-zeile {
+  justify-content: space-between; gap: .35rem;
+}
+.legende-branche {
+  display: flex; align-items: center; gap: .4rem; flex: 1; min-width: 0;
+  border: none; background: transparent; color: inherit;
+  padding: .15rem 0; font: inherit; text-transform: inherit;
+  letter-spacing: inherit; cursor: pointer; text-align: left;
+}
+/* Abgewähltes `aria-pressed="false"`: gedämpft statt ausgeblendet — die
+   Farbe bleibt lesbar (sie erklärt weiterhin, was fehlt), nur die
+   Textfarbe fällt auf die generische Fussnotenfarbe zurück. */
+.legende-branche[aria-pressed='false'] { opacity: .5; }
+.legende-branche[aria-pressed='false'] .legende-punkt { opacity: .6; }
+.legende-nur {
+  flex: none; border: none; background: transparent; color: var(--tinte-leise);
+  font-size: .625rem; text-transform: none; letter-spacing: normal;
+  padding: 0; cursor: pointer; font-family: inherit; text-decoration: underline;
+  text-underline-offset: .15em;
+}
+.legende-nur:hover { color: var(--tinte); }
+
+/* Bezugs-, Verlust- und Leerauswahl-Zeile (Task 13) — Fliesstext, keine
+   Liste: anders als die Branchenfarben sind das ganze Sätze, keine
+   Aufzählung gleichartiger Einträge. */
+.legende-bezug {
+  font-size: .6875rem; color: var(--tinte-leise); margin-top: .35rem;
+}
+.legende-bezug:first-of-type { margin-top: 0; }
+
 #panel {
   position: absolute; right: 1rem; top: 6.5rem;
   max-width: 21rem; max-height: calc(100vh - 8rem); overflow-y: auto;
