@@ -414,6 +414,36 @@ describe('companyContent — Rang, Marge, Kennzahlen aus abgeleiteten Werten', (
     expect(labels(ohneGewinn).some((l) => l.startsWith('Marge'))).toBe(false)
   })
 
+  it('rendert eine Verlustmarge als «Verlust», nie als Minuszeichen', () => {
+    // 41 der 185 Gesellschaften weisen einen Verlust aus — dieselbe
+    // Konvention wie beim Reingewinn selbst (`ui/format.ts`, `formatProfit`):
+    // ein Minuszeichen vor einer Prozentzahl übersieht man genauso leicht
+    // wie vor einem grossen Betrag.
+    const content = companyContent(
+      company({ revenueType: 'net_sales', revenue: 1000, profit: -100 }),
+      ctx(),
+    )
+    const marge = field(content, 'Marge auf Nettoumsatz')
+    expect(marge).toBe('Verlust 10.00 %')
+    expect(marge).not.toContain('-')
+  })
+
+  // Molecular Partners AG: recherchiert, aber ohne öffentlichen Umsatz —
+  // `revenueChf: 0` ist hier die ETL-Invariante für «kein Wert»
+  // (`placeholder: true`, dasselbe Muster wie `metricValue()` in
+  // `domain/metric.ts`), nicht eine gemessene Null. Ohne den
+  // `placeholder`-Schutz stünde «Umsatz je Mitarbeitenden: 0 CHF» direkt
+  // unter dem Hinweis «Umsatz nicht öffentlich verfügbar.» — ein
+  // erfundener Wert aus einer bereits als fehlend ausgewiesenen Zahl.
+  it('rechnet keinen Umsatz je Mitarbeitenden für eine Platzhalterfirma mit revenueChf 0', () => {
+    const content = companyContent(
+      company({ placeholder: true, revenue: null, revenueChf: 0, employees: 134 }),
+      ctx(),
+    )
+    expect(labels(content)).not.toContain('Umsatz je Mitarbeitenden')
+    expect(content.notes).toContain('Umsatz nicht öffentlich verfügbar.')
+  })
+
   it('rechnet keinen Umsatz je Mitarbeitenden bei 0 Mitarbeitenden', () => {
     const content = companyContent(company({ employees: 0 }), ctx())
     expect(labels(content)).not.toContain('Umsatz je Mitarbeitenden')

@@ -198,9 +198,17 @@ function nogaGroupLabel(nogaGroupIndex: number): string {
  *  benutzt, nur mit "%" statt einer nackten Verhältniszahl. Kein eigener
  *  Prozent-Formatter in `format.ts` dafür, weil `formatRatio` genügt. Ruft
  *  niemand mit `total <= 0` auf — beide Aufrufstellen unten prüfen das vorher
- *  (siehe Kommentare dort), damit hier keine Division durch 0 versteckt ist. */
+ *  (siehe Kommentare dort), damit hier keine Division durch 0 versteckt ist.
+ *
+ *  Eine negative Marge (Verlustfirma) bekommt dasselbe Wort wie der
+ *  Reingewinn in `formatProfit` (`ui/format.ts`) — ein Minuszeichen vor
+ *  einer Prozentzahl übersieht man genauso leicht wie vor einem grossen
+ *  Betrag. Nur die Marge kann hier negativ werden (`profit` kann negativ
+ *  sein, `revenue`/`revenueChf` als Nenner nie), der Anteil am Gesamtumsatz
+ *  braucht diesen Zweig also nie, verträgt ihn aber ohne Schaden. */
 function formatShare(part: number, total: number): string {
-  return `${formatRatio((part / total) * 100)} %`
+  const pct = (part / total) * 100
+  return pct < 0 ? `Verlust ${formatRatio(-pct)} %` : `${formatRatio(pct)} %`
 }
 
 /** Firma: ein Steckbrief zum Anklicken — Sitz, Branche und Kerngeschäft
@@ -360,7 +368,19 @@ export function companyContent(company: Company, context: CompanyContext): Panel
   // Mitarbeitende — `employees > 0` statt nur `!== null` schützt vor
   // Division durch 0 (dieselbe Falle wie `einwohnerzahl` oben) und vor einer
   // Zeile, die für diese sechs ohnehin nichts Sinnvolles aussagte.
-  if (company.revenueChf !== null && company.employees !== null && company.employees > 0) {
+  // `!company.placeholder` zusätzlich zu `revenueChf !== null`: Molecular
+  // Partners AG ist recherchiert, aber ohne öffentlichen Umsatz — sie führt
+  // `revenueChf: 0` als ETL-Invariante für "kein Wert" (dasselbe Muster wie
+  // `metricValue()` in `domain/metric.ts`), nicht als gemessene Null. Ohne
+  // diese Prüfung stünde "Umsatz je Mitarbeitenden: 0 CHF" direkt unter dem
+  // Hinweis "Umsatz nicht öffentlich verfügbar." — ein erfundener Wert aus
+  // einer Zahl, die selbst schon als fehlend ausgewiesen ist.
+  if (
+    !company.placeholder &&
+    company.revenueChf !== null &&
+    company.employees !== null &&
+    company.employees > 0
+  ) {
     fields.push({
       label: 'Umsatz je Mitarbeitenden',
       value: formatRevenue(company.revenueChf / company.employees, 'CHF'),
