@@ -62,14 +62,16 @@ export const INITIAL_VIEW = {
 // serifenlose Systemschriften, exakter Wert erst im Browser messbar).
 //
 // oben (140px = 1rem + 6,75rem + 1rem): #steuerung (Marke + zwei
-// `.gruppe`-Zeilen) ist bereits an anderer Stelle in dieser CSS-Datei
-// kalibriert — `#zurueck-gruppe { top: 7.75rem }` misst genau 1rem
-// Randabstand + 6,75rem Höhe von #steuerung selbst, diese Zahl wird hier
-// übernommen statt ein zweites Mal von Grund auf neu geschätzt.
-// #kennzahlen bleibt mit ein bis zwei Zeilen (Padding 2×.5rem + Zeilenhöhe
-// 1,4×.8125rem) bei rund 4,4rem deutlich darunter — #steuerung bestimmt die
-// Seite. +1rem Sicherheitsabstand (derselbe Randabstand, den jede Box in
-// diesem Stylesheet vom Viewport-Rand hat) ergibt 1rem+6,75rem+1rem=8,75rem.
+// `.gruppe`-Zeilen) wird nicht neu vermessen, sondern von `#zurueck-gruppe`s
+// eigenem `top: 7.75rem` übernommen (= 1rem Randabstand + 6,75rem Höhe von
+// #steuerung selbst) — dessen Kommentar in `style.css` bezeichnet diese
+// 7.75rem selbst als «unverifiziert»; dieselbe geerbte Unsicherheit gilt
+// deshalb auch für die 6,75rem hier, ungeglättet, bis Aufgabe 18 sie am
+// Screenshot prüft. #kennzahlen bleibt mit ein bis zwei Zeilen (Padding
+// 2×.5rem=1rem + Zeilenhöhe 2×1,4×.8125rem=2,275rem + 2×1px Rand ≈ 3,4rem
+// Boxhöhe) deutlich darunter — #steuerung bestimmt die Seite so oder so.
+// +1rem Sicherheitsabstand (derselbe Randabstand, den jede Box in diesem
+// Stylesheet vom Viewport-Rand hat) ergibt 1rem+6,75rem+1rem=8,75rem.
 //
 // links (320px = 1rem + 18rem + 1rem): #legende (`max-width: 18rem`) ist
 // breiter als die Button-Reihen von #steuerung und bestimmt die Seite.
@@ -79,20 +81,38 @@ export const INITIAL_VIEW = {
 // breiter als #hinweis (16rem) und bestimmt die Seite. Randabstand 1rem +
 // Breite 21rem + 1rem Sicherheitsabstand = 23rem.
 //
-// unten (280px ≈ 1rem + 15,5rem + 1rem): #legende (Titel + „Alle
-// Branchen"-Knopf + bis zu elf Branchenzeilen + eine Bezugszeile, alle
-// Zeilenhöhen/Gaps/Padding aus `.legende-titel`, `.legende-alle`,
-// `.legende-branchen li`, `.legende-bezug`) summiert sich auf rund 15,5rem
-// Innenhöhe und bestimmt die Seite. #hinweis trägt in Ansicht «Börsennotierte
-// Firmen» bis zu sechs Pflichttext-Absätze (`ui/notices.ts`,
-// `renderNotices`) und kann im ungünstigsten Fall höher werden — bewusst
-// nicht die bestimmende Grösse, weil sein Umfang stark ansichtsabhängig
-// schwankt (vier bis sechs Absätze) und eine Bemessung auf den
-// ungünstigsten Fall die Rahmung unverhältnismässig stark einschränken
-// würde. Aufgabe 18 prüft am Screenshot, ob dieser Wert genügt.
+// unten (528px ≈ 1rem + 31rem + 1rem): #legende bestimmt die Seite,
+// vollständig aufgeschlüsselt für Ansicht «Börsennotierte Firmen» (Filter-
+// Modus, `ui/legend.ts`, `renderLegend`) — die dort dichteste Kombination:
+//   - `.legende-titel`: 1 Zeile × 13,2px (11px×1,2) + .5rem Marge = 21,2px
+//   - `.legende-alle`-Knopf: 12px Zeile + 2×.3rem Padding + .5rem Marge = 29,6px
+//   - Branchenliste: bis zu 12 Zeilen (elf NOGA-Gruppen + „nicht eindeutig
+//     bestimmbar" bei `presentGroups.hasUnknown`) × 13,2px + 11×.25rem Gap
+//     + .55rem Listen-Marge = 211,2px
+//   - zweite Liste, nur hier (Randmarkierung/unrecherchierter Marker/
+//     Mindesthöhen-Hinweis, `outlineSwatch`/`unresearchedSwatch`/
+//     `floorNote` in `ui/legend.ts`): drei ganze Sätze, die bei 18rem
+//     Boxbreite umbrechen. Textbreite mit Punkt+Gap ≈ 18rem − 2×.875rem
+//     Padding − 2px Rand − .55rem Punkt − .45rem Gap ≈ 242px, ohne Punkt
+//     (Mindesthöhen-Hinweis, reiner Text-Li) ≈ 258px; bei ≈5,5px/Zeichen
+//     (Faustregel für proportionale 11px-Schrift) ≈44 bzw. ≈47 Zeichen/
+//     Zeile. Randmarkierungs-Text (145 Zeichen) → 4 Zeilen, Marker-Text
+//     (99 Zeichen) → 3 Zeilen, Mindesthöhen-Text (144 Zeichen) → 4 Zeilen,
+//     macht 11 Zeilen × 13,2px + 2×.25rem Gap + .55rem Listen-Marge = 162px
+//   - Bezugszeilen (bis zu zwei: „Höchste Säule" + Verlustzeile,
+//     `.legende-bezug`): angenommen 3 Zeilen × 13,2px + eine .35rem-Marge
+//     = 45,2px
+// Summe Innenhalt 469,2px + 2×.75rem Boxpadding + 2×1px Rand ≈ 495,2px
+// Boxhöhe (≈31rem) + 1rem Randabstand + 1rem Sicherheitsabstand ≈ 33rem.
+// #hinweis trägt in derselben Ansicht bis zu sechs Pflichttext-Absätze
+// (`ui/notices.ts`, `renderNotices`) und bleibt nach derselben Rechnung
+// (vier bis sechs Absätze statt fixer drei Zeilen) knapp darunter — beide
+// Boxen sind also ähnlich raumgreifend, #legende bleibt die etwas grössere
+// und damit bestimmende. Aufgabe 18 prüft am Screenshot, ob dieser
+// grosszügige Wert übertrieben wirkt oder tatsächlich gebraucht wird.
 const FRAME_PADDING: PaddingOptions = {
   top: 140,
-  bottom: 280,
+  bottom: 528,
   left: 320,
   right: 368,
 }
