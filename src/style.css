@@ -82,6 +82,24 @@ a:focus-visible, button:focus-visible {
   position: absolute; top: 1rem; left: 1rem;
   display: flex; flex-direction: column; gap: .5rem;
 }
+
+/* Task 14: schmale Summenzeile, die ohne Klick zeigt, was die Karte gerade
+   summiert — bislang liess sich das nirgends ablesen, nur einzelne Säulen.
+   Oben mittig, damit sie weder `#steuerung` (oben links) noch MapLibres
+   `NavigationControl` (oben rechts, `map.ts`) überdeckt; `max-width` hält
+   sie auch bei langem Text (Gewinn-Zeile mit Saldo UND Verlustzahl) von
+   beiden Ecken fern. Dieselbe Oberflächenfarbe/Rundung wie Legende und
+   Panel (`--oberflaeche`), damit sie als Teil derselben Karte gelesen wird,
+   nicht als Fremdkörper obendrauf. */
+#kennzahlen {
+  position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
+  max-width: min(34rem, calc(100vw - 2rem));
+  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  color: var(--tinte);
+  border-radius: .5rem; padding: .5rem .875rem;
+  font-size: .8125rem; line-height: 1.4; text-align: center;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
+}
 #steuerung .gruppe {
   display: flex; gap: .25rem;
   background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
@@ -295,7 +313,27 @@ a:focus-visible, button:focus-visible {
    auf sehr schmalen Viewports reicht die Breite trotzdem nicht für zwei
    nebeneinanderliegende Eckboxen. Löst beide aus der Absolut-Positionierung
    und stapelt sie im normalen Fluss am unteren Rand von #ui. #fehler,
-   #steuerung und #panel bleiben unberührt: weiterhin absolut positioniert. */
+   #steuerung und #panel bleiben unberührt: weiterhin absolut positioniert.
+
+   #kennzahlen sitzt in der Standardansicht oben mittig, genau zwischen
+   #steuerung (oben links) und dem NavigationControl (oben rechts) — auf
+   einem schmalen Viewport wächst #steuerung selbst schon in die Breite
+   (Marke + zwei Gruppen, siehe `#steuerung .marke`) und lässt dort keinen
+   Platz mehr für eine dritte, mittig zentrierte Box, ohne eine der beiden
+   Ecken zu überdecken. #kennzahlen reiht sich deshalb hier bei #legende und
+   #hinweis in denselben Fluss ein: alle drei "man sieht sie ohne Klick,
+   aber sie brauchen keinen festen Platz oben" gehören auf schmalen
+   Bildschirmen zusammen an den unteren Rand, statt sich um die knappe
+   Kopfzeile zu streiten.
+
+   `order: -1` statt auf die DOM-Einfügereihenfolge zu vertrauen: welche der
+   drei Aufrufstellen (`renderKennzahlen`/`renderLegend`/`renderNotices`)
+   ihr Element zuerst an #ui hängt, entscheidet die Seite (`karte/firmen.
+   ts`), nicht dieses CSS — und deren Verdrahtung ist eigene Folgearbeit
+   (siehe Kommentar in `ui/kennzahlen.ts`). Die Summenzeile soll trotzdem
+   zuverlässig zuoberst in der von unten aufgebauten Spalte
+   (`justify-content: flex-end`) stehen, am nächsten am sichtbaren unteren
+   Rand: `order` legt das unabhängig von der Aufrufreihenfolge fest. */
 @media (max-width: 800px) {
   #ui {
     display: flex;
@@ -305,9 +343,10 @@ a:focus-visible, button:focus-visible {
     gap: .5rem;
     padding-bottom: 1rem;
   }
-  #legende, #hinweis {
+  #kennzahlen, #legende, #hinweis {
     position: static;
-    left: auto; right: auto; bottom: auto; transform: none;
+    left: auto; right: auto; bottom: auto; top: auto; transform: none;
     max-width: calc(100vw - 2rem);
   }
+  #kennzahlen { order: -1; }
 }
