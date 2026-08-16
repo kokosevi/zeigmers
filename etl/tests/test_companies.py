@@ -1198,6 +1198,30 @@ def test_build_artifact_treats_a_reported_zero_revenue_as_a_placeholder_bar():
     assert entry["placeholder"] is True, "aber sie traegt keine Hoehenaussage"
 
 
+def test_build_artifact_excludes_placeholder_rows_from_with_revenue():
+    """Finding I7 (Abschluss-Review): `stats.withRevenue` zaehlte bisher jede
+    Zeile mit `revenue is not None`, auch eine ausgewiesene Null
+    (`placeholder=True`, siehe Test oben) — das Artefakt meldete damit eine
+    Zahl, die grosser war als das, was die Karte tatsaechlich als "Umsatz
+    mit Wert" zeigt (`domain/metric.ts`, `metricValue`: `placeholder` schlaegt
+    den Umsatzwert). `withRevenue` muss dieselbe Menge zaehlen wie die
+    Oberflaeche, nicht mehr."""
+    artifact = companies.build_artifact(
+        [
+            _row(name="Echte AG", revenue="500", revenue_unit="1000000"),
+            _row(name="Null AG", six_symbol="NUL", isin="CH0000000099",
+                 revenue="0", revenue_unit="1"),
+        ],
+        noga.load_table(),
+    )
+    by_name = {c["name"]: c for c in artifact["companies"]}
+    assert by_name["Echte AG"]["placeholder"] is False
+    assert by_name["Null AG"]["placeholder"] is True
+    assert artifact["stats"]["withRevenue"] == 1, (
+        "eine ausgewiesene Null zaehlt nicht als Umsatz mit Hoehenaussage"
+    )
+
+
 def test_build_artifact_separates_companies_that_share_exact_coordinates():
     """Zwei Saeulen am selben Punkt: die hoehere verdeckt die niedrigere ganz.
 

@@ -639,13 +639,32 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
 
     _spread_shared_positions(entries)
 
-    revenues = [e["revenue"] for e in entries if e["revenue"] is not None]
+    # Fix-Runde (2026-08-16, Abschluss-Review Finding I7): "echter Umsatz"
+    # schliesst Platzhalterzeilen (`placeholder=True`) aus — dieselbe
+    # Invariante, die `domain/metric.ts`s `metricValue()` im Frontend erzwingt
+    # (`company.placeholder ? null : company.revenueChf`). Vorher zählte
+    # `revenues` jede Zeile mit `revenue is not None`, auch Molecular
+    # Partners AG (FY2025: CHF 0, `placeholder=True`, siehe Kommentar bei
+    # `"placeholder"` oben) — das Artefakt meldete `stats.withRevenue = 188`,
+    # während die Karte (`result.withValue`, weil `metricValue` für diese
+    # Zeile `null` liefert) nur 187 zeigte: zwei Zahlen für dieselbe Menge.
+    # Die Oberfläche (Kennzahlenzeile, Legende, Panel-Rang) zählt konsequent
+    # nach "trägt eine Höhe bei" — `stats.withRevenue` zieht hier nach, statt
+    # umgekehrt die Karte an eine Zahl anzupassen, die einen Platzhalter ohne
+    # Höhenaussage mitzählt.
+    revenues = [e["revenue"] for e in entries if e["revenue"] is not None and not e["placeholder"]]
     # Höhenmassstab über die umgerechneten Beträge, sonst über die
     # berichteten: `max` und die einzelnen Höhen müssen aus DERSELBEN Grösse
     # stammen. Ein Maximum in CHF neben Höhen in Berichtswährung wäre genau
     # der Fehler, der bei den Detailstufen von Ansicht B schon einmal
     # auftrat (jede Stufe auf ihr eigenes Maximum normiert, siehe README).
-    revenues_chf = [e["revenueChf"] for e in entries if e.get("revenueChf") is not None]
+    # Dieselbe Platzhalter-Ausnahme wie bei `revenues` oben, aus demselben
+    # Grund: eine Platzhalterzeile trägt ohnehin nie das Maximum (ihr Wert
+    # ist 0 oder fehlt), aber sie soll auch nicht in der Vollständigkeits-
+    # meldung `revenueInChf` unten mitzählen.
+    revenues_chf = [
+        e["revenueChf"] for e in entries if e.get("revenueChf") is not None and not e["placeholder"]
+    ]
     height_values = revenues_chf if len(revenues_chf) == len(revenues) else revenues
     profits = [e["profit"] for e in entries if e["profit"] is not None]
     profits_chf = [e["profitChf"] for e in entries if e.get("profitChf") is not None]
