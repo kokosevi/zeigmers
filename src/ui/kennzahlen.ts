@@ -100,7 +100,16 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
     // allein würde eine Summe über eine Grundgesamtheit stellen, zu der sie
     // nicht gehört (manche Gesellschaft hat für genau diese Kennzahl keinen
     // Wert). Beide Zahlen stehen deshalb nebeneinander.
-    teile.push(`aus ${zahlwort(result.withValue.length, 'Angabe', 'Angaben')}`)
+    //
+    // Fix-Runde (2026-08-16, Abschluss-Review Finding I2): der Nenner stand
+    // bis dahin VOR der Summe, die er qualifiziert («201 Gesellschaften ·
+    // aus 188 Angaben · Jahresumsatz 762.14 Mrd. CHF») — dadurch las er sich
+    // als Zusatz zur ERSTEN Zahl («201 Gesellschaften»), nicht zur Summe,
+    // die zwei Wörter weiter erst folgt. Die Spec (Abschnitt 6) formuliert
+    // umgekehrt: die Summe zuerst, der Nenner direkt danach («762.1 Mrd. CHF
+    // Umsatz aus 188 Angaben»). `teile.push('aus … Angaben')` steht deshalb
+    // jetzt NACH der Summen-/Saldozeile, in beiden Zweigen unten.
+    const angabenTeil = `aus ${zahlwort(result.withValue.length, 'Angabe', 'Angaben')}`
 
     if (metric === 'gewinn') {
       // Gewinn nennt den Saldo, nicht «die Summe» — in ihn gehen negative
@@ -109,6 +118,7 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
       // zusätzlich für sich: ein positiver Saldo kann einzelne
       // Verlustfirmen trotzdem überdecken.
       teile.push(`Saldo ${formatMetric(result.sum, metric)}`)
+      teile.push(angabenTeil)
       if (result.losses > 0) {
         teile.push(
           `${formatNumber(result.losses)} von ${formatNumber(result.withValue.length)} ` +
@@ -117,6 +127,7 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
       }
     } else {
       teile.push(`${metricLabel(metric)} ${formatMetric(result.sum, metric)}`)
+      teile.push(angabenTeil)
     }
   }
 
@@ -132,12 +143,32 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
   // einzigen Mitarbeitenden-Datenpunkt (`withValue.length === 0`) wäre die
   // «Mitarbeitende weltweit»-Seite des Vergleichs dieselbe erfundene Null
   // wie oben, deshalb hier dieselbe Bedingung.
+  //
+  // Fix-Runde (2026-08-16, Abschluss-Review Finding I3), zwei Korrekturen:
+  //
+  // 1. `result.sum` ist die GEFILTERTE Summe (Branchen-/Organisationsform-
+  //    filter, siehe `applySelection`), der Satz sprach aber unqualifiziert
+  //    von «der kotierten Gesellschaften weltweit» — als wäre stets die
+  //    Gesamtheit gemeint. Ein Filter (z. B. «nur diese» Branche) verändert
+  //    `result.sum` sichtbar, ohne dass der Satz das ausweist. «der
+  //    ausgewählten kotierten Gesellschaften» stimmt in beiden Fällen: auch
+  //    ungefiltert ist «alle Branchen» eine (die grösstmögliche) Auswahl.
+  // 2. `nationalEmployees` ist keine exakte Zahl: dieselbe App weist sie im
+  //    Klick-Panel der Kantonsseite als OBERGRENZE aus (`ui/panel.ts`,
+  //    `aggregateCellContent`, `footnote`) — die BFS-Rundung «unter 4 → 4»
+  //    treibt jede Kantonssumme systematisch nach oben, und
+  //    `nationalEmployees` ist die Summe über alle 26 Kantone. Hier stand
+  //    sie bisher ohne diesen Vorbehalt, obwohl sie exakt derselben Quelle
+  //    entstammt. Kein hartkodierter Prozentwert (der veralten könnte, siehe
+  //    `ui/notices.ts`, Fund 1) — nur die qualitative Aussage, die auch das
+  //    Panel trägt.
   if (metric === 'mitarbeitende' && nationalEmployees !== null && result.withValue.length > 0) {
     const vergleich = document.createElement('div')
     vergleich.textContent =
-      `Vergleich: ${formatMetric(result.sum, metric)} Mitarbeitende der kotierten ` +
-      `Gesellschaften weltweit gegenüber ${formatNumber(nationalEmployees)} Beschäftigten ` +
-      'in der Schweiz.'
+      `Vergleich: ${formatMetric(result.sum, metric)} Mitarbeitende der ausgewählten ` +
+      `kotierten Gesellschaften weltweit gegenüber rund ${formatNumber(nationalEmployees)} ` +
+      'Beschäftigten in der Schweiz (Obergrenze: das BFS rundet kleine Betriebe auf ' +
+      'mindestens 4 Beschäftigte auf).'
     el.appendChild(vergleich)
   }
 }

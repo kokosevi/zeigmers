@@ -245,4 +245,89 @@ describe('renderKennzahlen', () => {
     expect(text).toContain('aus 1 Angabe')
     expect(text).not.toContain('aus 1 Angaben')
   })
+
+  // Finding I2: der Nenner («aus X Angaben») stand bisher VOR der Summe, die
+  // er qualifiziert, und las sich dadurch als Zusatz zur Gesellschaftszahl
+  // statt zur Summe. Die Spec (Abschnitt 6) will die Summe zuerst, den
+  // Nenner direkt danach.
+  it('nennt den Nenner direkt nach der Summe, die er qualifiziert, nicht davor', () => {
+    const companies = [
+      ...Array.from({ length: 5 }, () => company({ revenueChf: 0 })),
+      company({ revenueChf: 762_100_000_000 }),
+    ]
+    const result = applySelection(companies, auswahl('umsatz', [1]))
+
+    renderKennzahlen({
+      result,
+      metric: 'umsatz',
+      totalCompanies: result.visible.length,
+      nationalEmployees: null,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    const summenIndex = text.indexOf('762.1 Mrd. CHF')
+    const angabenIndex = text.indexOf('aus 6 Angaben')
+    expect(summenIndex).toBeGreaterThan(-1)
+    expect(angabenIndex).toBeGreaterThan(summenIndex)
+  })
+
+  it('nennt den Nenner bei Gewinn direkt nach dem Saldo, nicht davor', () => {
+    const companies = [
+      company({ profitChf: -1_000_000 }),
+      company({ profitChf: 500_000 }),
+    ]
+    const result = applySelection(companies, auswahl('gewinn', [1]))
+
+    renderKennzahlen({
+      result,
+      metric: 'gewinn',
+      totalCompanies: result.visible.length,
+      nationalEmployees: null,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    const saldoIndex = text.indexOf('Saldo')
+    const angabenIndex = text.indexOf('aus 2 Angaben')
+    expect(saldoIndex).toBeGreaterThan(-1)
+    expect(angabenIndex).toBeGreaterThan(saldoIndex)
+  })
+})
+
+describe('renderKennzahlen — Vergleichszeile (Finding I3)', () => {
+  it('nennt die Vergleichszahl als gefilterte Auswahl, nicht als Gesamtheit', () => {
+    // Gefiltert auf Branche 1 — Branche 2 bleibt aussen vor. `result.sum`
+    // ist deshalb die SUMME DER AUSWAHL, nicht «aller kotierten
+    // Gesellschaften weltweit».
+    const companies = [
+      company({ nogaGroupIndex: 1, employees: 400_000 }),
+      company({ nogaGroupIndex: 2, employees: 999_000_000 }),
+    ]
+    const result = applySelection(companies, auswahl('mitarbeitende', [1]))
+
+    renderKennzahlen({
+      result,
+      metric: 'mitarbeitende',
+      totalCompanies: companies.length,
+      nationalEmployees: 5_876_865,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    expect(text).toContain('ausgewählten')
+    expect(text).not.toContain('999')
+  })
+
+  it('weist die nationale Vergleichszahl als Obergrenze aus, nicht als exakte Zahl', () => {
+    const companies = [company({ employees: 400_000 })]
+    const result = applySelection(companies, auswahl('mitarbeitende', [1]))
+
+    renderKennzahlen({
+      result,
+      metric: 'mitarbeitende',
+      totalCompanies: result.visible.length,
+      nationalEmployees: 5_876_865,
+    })
+
+    const text = document.getElementById('kennzahlen')!.textContent!
+    expect(text).toContain('Obergrenze')
+  })
 })
