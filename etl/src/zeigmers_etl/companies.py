@@ -625,6 +625,11 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 # (Molecular Partners, 2025: CHF 0, Vorjahr 5.0 Mio. — ein
                 # klinisches Biotech ohne zugelassenes Produkt). Die echte
                 # Null bleibt in `revenue` und damit im Panel stehen.
+                # Diese Invariante ist keine ETL-Interna: `domain/metric.ts`
+                # liefert fuer die Kennzahl «Umsatz» genau dann `null`, wenn
+                # `placeholder` gesetzt ist — sonst zeichnete die Karte fuer
+                # eine echte Null eine Saeule auf Mindesthehe und faerbte sie
+                # zugleich als «keine Zahl gefunden».
                 "placeholder": not revenue or float(revenue) == 0,
                 "researched": researched,
                 "city": row.get("city") or None,

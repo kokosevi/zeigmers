@@ -4,7 +4,7 @@ import urllib.parse
 
 import pytest
 
-from zeigmers_etl import companies, noga
+from zeigmers_etl import companies, config, noga
 
 
 def _row(**overrides):
@@ -1238,3 +1238,26 @@ def test_build_artifact_keeps_the_spread_small_enough_to_stay_in_the_municipalit
     # sie nur sichtbar. Waere der Versatz gross, waere die Aussage der Karte
     # ("hier sitzt diese Firma") beschaedigt.
     assert companies.POSITION_SPREAD_M <= 200
+
+
+def test_placeholder_und_umsatz_null_sind_dieselbe_aussage():
+    """Ein ausgewiesener Umsatz von 0 traegt keine Hoehenaussage. Die Karte
+    darf daraus keine echte Saeule rechnen — die Invariante hier ist, worauf
+    sich `domain/metric.ts` verlaesst."""
+    table = noga.load_table()
+    artifact = companies.build_artifact(
+        [_row(name="Null AG", revenue="0", revenue_unit="1")], table
+    )
+    entry = artifact["companies"][0]
+    assert entry["revenue"] == 0.0        # die echte Null bleibt fuers Panel
+    assert entry["placeholder"] is True   # aber keine Hoehe daraus
+
+
+def test_jede_placeholder_zeile_hat_keinen_verwertbaren_umsatz():
+    """Regressionswache ueber das echte Artefakt, nicht ueber ein Fixture."""
+    artifact = json.loads(
+        (config.PUBLIC_DATA / "companies.json").read_text(encoding="utf-8")
+    )
+    for entry in artifact["companies"]:
+        has_value = entry["revenue"] is not None and entry["revenue"] != 0
+        assert entry["placeholder"] is not has_value, entry["name"]
