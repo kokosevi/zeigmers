@@ -47,9 +47,9 @@ export interface PanelContent {
  *  die gefilterte Auswahl statt über alle recherchierten Gesellschaften
  *  rechnet — das wäre keine Eigenschaft der Firma mehr. `companyContent`
  *  bekommt Rang und Nenner deshalb fertig gereicht, statt selbst über die
- *  Gesamtliste zu iterieren. Wer diesen Kontext aus den 201 Gesellschaften
- *  befüllt, ist eine Folgeaufgabe — `showCompanyPanel` unten reicht bis
- *  dahin einen Platzhalter ohne Rang durch. */
+ *  Gesamtliste zu iterieren. Gebaut wird er in `karte/firmen.ts`s `render()`
+ *  aus allen recherchierten Gesellschaften (nie aus der gefilterten Auswahl)
+ *  und per Closure an `showCompanyPanel` unten gebunden (Task 18). */
 export interface CompanyContext {
   /** Die an der Karte aktuell gewählte Kennzahl — bestimmt, wonach `Rang`
    *  benannt ist (z. B. "nach Jahresumsatz"). */
@@ -484,21 +484,14 @@ export function showMunicipalityPanel(level: Level, index: number): void {
   renderContent(box, aggregateCellContent(level, index))
 }
 
-// Platzhalter, solange niemand Rang und Summen aus den 201 recherchierten
-// Gesellschaften befüllt (Folgeaufgabe, siehe Kommentar bei `CompanyContext`)
-// — `rank: null` lässt die Rang-Zeile weg statt einen falschen Rang 1 zu
-// behaupten, `revenueTotal: 0` lässt den Anteil-am-Gesamtumsatz weg statt
-// durch 0 zu teilen. Kein Zustand in `karte/firmen.ts` dafür nötig.
-const PLACEHOLDER_CONTEXT: CompanyContext = {
-  metric: 'umsatz',
-  rank: null,
-  rankTotal: 0,
-  revenueTotal: 0,
-}
-
-export function showCompanyPanel(company: Company): void {
+// Task 18: Rang und Nenner kommen jetzt als `CompanyContext` herein, aus den
+// 201 recherchierten Gesellschaften gebaut und per Closure gebunden — siehe
+// `karte/firmen.ts`, `render()`. Kein Platzhalter mehr nötig: `showCompanyPanel`
+// hat ohne einen echten Kontext keinen Aufrufer mehr (weder in der App noch in
+// den Tests, siehe `companyContent` in `panel.test.ts`).
+export function showCompanyPanel(company: Company, context: CompanyContext): void {
   const box = panelBox()
-  renderContent(box, companyContent(company, PLACEHOLDER_CONTEXT))
+  renderContent(box, companyContent(company, context))
 }
 
 export function hidePanel(): void {

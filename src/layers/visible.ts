@@ -1,12 +1,9 @@
-import { ColumnLayer, GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers'
-import type { FeatureCollection, Geometry } from 'geojson'
-import type { BoundaryFeatureCollection, BoundaryProperties } from '../data/boundaries'
+import { ColumnLayer, ScatterplotLayer } from '@deck.gl/layers'
 import { metricValue, type Metric } from '../domain/metric'
 import { NOGA_GROUPS, UNKNOWN_COLOR } from '../domain/noga.generated'
-import { computeSignedElevations, type ScaleMode } from '../domain/scale'
+import { computeElevations, type ScaleMode } from '../domain/scale'
 import type { SelectionResult } from '../domain/selection'
 import { CANTON_ELEVATION_M } from './cantons'
-import { withBaseElevation } from './elevation'
 import { MAP_MATERIAL } from './material'
 
 // Exportiert, damit die Legende (`ui/legend.ts`) denselben Wert für ihren
@@ -131,62 +128,45 @@ export interface CompanyData {
  *  Vorzeichen schlägt Branche, wenn beide um dieselbe Fläche konkurrieren. */
 export const LOSS_COLOR: readonly [number, number, number] = [176, 76, 76]
 
-/** Luft zwischen dem tiefsten hängenden Verlust und der Kantonsplatte. */
-export const ZERO_PLANE_CLEARANCE_M = 200
-
-/** Höhe, auf der die Säulen ansetzen. Bei nichtnegativen Kennzahlen die
- *  Plattenoberkante wie bisher; bei der Gewinn-Kennzahl so hoch, dass der
- *  tiefste Verlust noch über der Platte endet.
+/** Höhe, auf der die Säulen ansetzen — bei jeder Kennzahl die
+ *  Plattenoberkante.
  *
- *  Zur Laufzeit aus der Auswahl hergeleitet statt fest verdrahtet: bei
- *  auswahlabhängigem `vmax` ändert sich der tiefste Ausschlag mit jedem
- *  Filter. Ohne diese Ebene wäre eine negative Säule unsichtbar — sie wüchse
- *  unter eine opake Platte, die man bei `pitch: 50` von oben sieht. */
-export function zeroPlaneHeight(heights: Float32Array): number {
-  let deepest = 0
-  for (const h of heights) if (h < deepest) deepest = h
-  return deepest < 0
-    ? CANTON_ELEVATION_M + Math.abs(deepest) + ZERO_PLANE_CLEARANCE_M
-    : CANTON_ELEVATION_M
+ *  Erste Wahl (Task 8) war eine bei Verlusten angehobene Nulllinie, von der
+ *  ein Verlust nach unten hängt, mit einer eigenen Referenzfläche
+ *  (`buildZeroPlaneLayer`, seither entfernt). Aufgabe 18 hat das erstmals im
+ *  Browser geprüft (Kennzahl Gewinn, Screenshot, `pitch: 50`): keiner der 41
+ *  Verlustsäulen war zu erkennen — eine pixelgenaue Farbsuche über den
+ *  ganzen Screenshot fand nicht ein einziges Pixel in `LOSS_COLOR`. Grund:
+ *  die Nulllinie hebt sich um den BETRAG des tiefsten Verlusts über die
+ *  Platte, bei einem grossen Ausreisser (die Nationalbank trägt hier den
+ *  grössten Ausschlag) landet sie damit selbst nahe der Höhendecke
+ *  (`MAX_BAR_HEIGHT_M`) — jede von dort hängende Verlustsäule verschwindet
+ *  optisch zwischen den hohen Gewinnsäulen, statt sichtbar «unten» zu hängen.
+ *
+ *  Zweite, im Auftrag ausdrücklich vorgesehene Wahl, jetzt aktiv: die Höhe
+ *  folgt dem BETRAG der Kennzahl (`companyElevations` unten, über
+ *  `Math.abs`), das Vorzeichen trägt ausschliesslich `LOSS_COLOR`
+ *  (`buildCompanyLayer`, `getFillColor`) — ein Verlust steht so hoch wie ein
+ *  gleich grosser Gewinn, aber in der eigenen Verlustfarbe. Eine erhöhte
+ *  Nulllinie braucht es damit nicht mehr; die Funktion bleibt als benannte,
+ *  von `buildLabelLayer` mitgenutzte Basis stehen, liefert aber für jede
+ *  Kennzahl dieselbe Antwort. */
+export function zeroPlaneHeight(): number {
+  return CANTON_ELEVATION_M
 }
 
-/** Sichtbare Referenzfläche auf der Nulllinie — ohne sie schwebt eine
- *  hängende Verlustsäule im leeren Raum, ohne erkennbaren Bezugspunkt, ab
- *  wann «unten» beginnt. Gefüllt und halbtransparent statt wie
- *  `buildCantonBorderLayer` nur ein Rand: das Auge braucht hier eine Fläche,
- *  keine Linie, um «das ist der Nullpunkt» zu lesen. Auf `height` gehoben
- *  wie die Kantonsgrenzen (`withBaseElevation`), sonst läge sie bei z=0, in
- *  der Kantonsplatte. */
-export function buildZeroPlaneLayer(
-  cantonsGeo: BoundaryFeatureCollection,
-  height: number,
-): GeoJsonLayer<BoundaryProperties> {
-  const lifted: FeatureCollection<Geometry, BoundaryProperties> = {
-    type: 'FeatureCollection',
-    features: cantonsGeo.features.flatMap((f) =>
-      f.geometry ? [{ ...f, geometry: withBaseElevation(f.geometry, height) }] : [],
-    ),
-  }
-  return new GeoJsonLayer<BoundaryProperties>({
-    id: 'firmen-nulllinie',
-    data: lifted,
-    filled: true,
-    stroked: false,
-    extruded: false,
-    pickable: false,
-    getFillColor: [27, 39, 51, 28],
-  })
-}
-
-/** Höhendecke der Firmenkarte — eigene Konstante statt eines Literals, weil
- *  `zeroPlaneHeight()` (unten) dieselbe Decke unabhängig von
- *  `buildCompanyLayer` braucht: die Nulllinie muss mit derselben `maxHeight`
- *  rechnen wie die Säulen, sonst weicht ihre Höhe von der tatsächlichen
- *  Säulenbasis ab. Ansicht «Beschäftigte» hat mit `MAX_BAR_HEIGHT_M`
+/** Höhendecke der Firmenkarte — eigene Konstante statt eines Literals, damit
+ *  `companyElevations` (`buildCompanyLayer`, `buildLabelLayer`) überall
+ *  dieselbe Decke verwendet. Ansicht «Beschäftigte» hat mit `MAX_BAR_HEIGHT_M`
  *  (`layers/many.ts`, 3000) eine eigene, niedrigere Decke — beide Ansichten
  *  teilen den Namen nicht, weil sie unterschiedliche Werte brauchen. */
 export const MAX_BAR_HEIGHT_M = 12000
 
+/** Höhe je Firma, in Metern — immer positiv, auch bei einem Verlust (siehe
+ *  `zeroPlaneHeight` oben: der Betrag trägt die Höhe, `LOSS_COLOR` trägt das
+ *  Vorzeichen). `computeElevations` statt `computeSignedElevations`, über den
+ *  BETRAG der Kennzahl (`Math.abs`) — für Umsatz/Mitarbeitende (nie negativ)
+ *  ändert das nichts, für Gewinn ist es der Kern der Aufgabe-18-Korrektur. */
 export function companyElevations(
   companies: Company[],
   metric: Metric,
@@ -194,8 +174,10 @@ export function companyElevations(
   maxHeight: number,
   mode: ScaleMode,
 ): Float32Array {
-  const values = new Float32Array(companies.map((c) => metricValue(c, metric) ?? 0))
-  const heights = computeSignedElevations(values, vmax, maxHeight, mode)
+  const magnitudes = new Float32Array(
+    companies.map((c) => Math.abs(metricValue(c, metric) ?? 0)),
+  )
+  const heights = computeElevations(magnitudes, vmax, maxHeight, mode)
 
   for (let i = 0; i < heights.length; i++) {
     const value = metricValue(companies[i]!, metric)
@@ -205,10 +187,7 @@ export function companyElevations(
       heights[i] = MIN_VISIBLE_BAR_M
       continue
     }
-    const magnitude = Math.abs(heights[i]!)
-    if (magnitude < MIN_REAL_BAR_M) {
-      heights[i] = (heights[i]! < 0 ? -1 : 1) * MIN_REAL_BAR_M
-    }
+    if (heights[i]! < MIN_REAL_BAR_M) heights[i] = MIN_REAL_BAR_M
   }
   return heights
 }
@@ -228,7 +207,7 @@ export function buildCompanyLayer(options: {
 }): ColumnLayer<Company> {
   const { result, metric, mode, onClick, onHover } = options
   const heights = companyElevations(result.visible, metric, result.vmax, MAX_BAR_HEIGHT_M, mode)
-  const zeroPlane = zeroPlaneHeight(heights)
+  const zeroPlane = zeroPlaneHeight()
 
   return new ColumnLayer<Company>({
     id: 'firmen',
@@ -279,9 +258,9 @@ export function buildCompanyLayer(options: {
     // Säulen (seit Phase 3, national) — der Mehraufwand bleibt irrelevant.
     material: MAP_MATERIAL,
     pickable: true,
-    // Basis auf der Nulllinie statt auf Höhe 0 (Change 8): bei der Kennzahl
-    // «Gewinn» hängt eine Verlustsäule von hier aus nach unten, statt unter
-    // der Kantonsplatte zu verschwinden (siehe `zeroPlaneHeight` unten).
+    // Basis auf der Plattenoberkante (`zeroPlaneHeight`, siehe dort) — jede
+    // Säule steht, keine hängt mehr; Betrag trägt die Höhe, `LOSS_COLOR`
+    // (unten) trägt das Vorzeichen (Aufgabe 18, Browser-Fund).
     getPosition: (c) => [c.lon, c.lat, zeroPlane],
     getElevation: (_c, { index }) => heights[index]!,
     getFillColor: (c) => {
@@ -299,13 +278,12 @@ export function buildCompanyLayer(options: {
 }
 
 /** Eine dunkle, halbtransparente Scheibe unter jeder Säule, auf
- *  Plattenhöhe (`CANTON_ELEVATION_M`) — nicht auf der Nulllinie: der Schatten
- *  markiert den Ort am Boden, nicht den Ansatzpunkt der Säule. In der
- *  Gewinn-Ansicht liegt die Säule deshalb höher als ihr Schatten, das ist so
- *  gewollt. Auf einer so hellen Kantonsplatte steht eine dünne Säule sonst
- *  ohne Kontakt zum Boden — der Schatten verankert sie an ihrem Ort, statt
- *  sie schweben zu lassen. Trägt keine eigene Aussage und ist nicht
- *  anklickbar; die Säule darüber nimmt den Klick. */
+ *  Plattenhöhe (`CANTON_ELEVATION_M`) — derselben Höhe, auf der auch die
+ *  Säule selbst ansetzt (`zeroPlaneHeight`, seit Aufgabe 18 immer die
+ *  Plattenoberkante, siehe dort). Auf einer so hellen Kantonsplatte steht
+ *  eine dünne Säule sonst ohne Kontakt zum Boden — der Schatten verankert sie
+ *  an ihrem Ort, statt sie schweben zu lassen. Trägt keine eigene Aussage und
+ *  ist nicht anklickbar; die Säule darüber nimmt den Klick. */
 export function buildCompanyShadowLayer(result: SelectionResult): ScatterplotLayer<Company> {
   return new ScatterplotLayer<Company>({
     id: 'firmen-schatten',

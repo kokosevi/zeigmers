@@ -2,6 +2,7 @@ import type { FeatureCollection, Geometry } from 'geojson'
 import { describe, expect, it } from 'vitest'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level, LevelMeta } from '../data/loader'
+import { applySelection } from '../domain/selection'
 import { buildCantonBorderLayer } from './cantons'
 import type { Company, CompanyData } from './visible'
 import {
@@ -155,11 +156,20 @@ function beschaeftigteInput(
   }
 }
 
+// Task 18: `buildViewLayers` filtert nicht mehr selbst (siehe Kommentar bei
+// `ViewLayersInput`, `result`) — diese Fixtur reicht deshalb ein fertiges
+// `SelectionResult` durch, wie es sonst `karte/firmen.ts`s `render()` aus
+// `applySelection` baut. `COMPANIES.companies` ist in dieser Suite leer, die
+// konkreten Mengen der Auswahl (`branches`/`orgForms`) sind deshalb ohne
+// Wirkung auf das Ergebnis.
 function firmenInput() {
+  const selection = { metric: 'umsatz' as const, branches: new Set<number>(), orgForms: new Set<string>() }
   return {
     ...BASIS,
     view: 'sichtbare' as const,
     companies: COMPANIES,
+    result: applySelection(COMPANIES.companies, selection),
+    metric: selection.metric,
     onShowCompanyPanel: () => {},
   }
 }

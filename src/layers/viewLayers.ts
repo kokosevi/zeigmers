@@ -4,14 +4,14 @@ import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level } from '../data/loader'
 import type { PresentGroups } from '../domain/legendGroups'
 import { formatMetric, metricValue, type Metric } from '../domain/metric'
-import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX } from '../domain/noga.generated'
+import { NOGA_GROUPS } from '../domain/noga.generated'
 import type { ScaleMode } from '../domain/scale'
-import { applySelection, type Selection } from '../domain/selection'
+import type { SelectionResult } from '../domain/selection'
 import type { NoticeLevel } from '../ui/notices'
 import { formatNumber } from '../ui/format'
 import { hideHoverLabel, showHoverLabel } from '../ui/hoverLabel'
 import { municipalityName } from '../ui/panel'
-import { buildCantonBorderLayer, buildCantonsLayer, CANTON_ELEVATION_M } from './cantons'
+import { buildCantonBorderLayer, buildCantonsLayer } from './cantons'
 import { buildLakesLayer } from './lakes'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
 import { buildLabelLayer, topByMetric, TOP_LABEL_COUNT } from './labels'
@@ -19,7 +19,6 @@ import {
   buildCompanyLayer,
   buildCompanyShadowLayer,
   buildUnresearchedCompanyLayer,
-  buildZeroPlaneLayer,
   companyElevations,
   MAX_BAR_HEIGHT_M,
   zeroPlaneHeight,
@@ -127,6 +126,18 @@ export type ViewLayersInput =
   | (ViewLayersBasis & {
       view: 'sichtbare'
       companies: CompanyData
+      /** Gefilterte und bewertete Auswahl (`applySelection`, `domain/selection.ts`)
+       *  — Task 18 verdrahtet Kennzahl und Filter über `karte/firmen.ts`s
+       *  `render()`; diese Funktion filtert selbst nicht mehr (kein zweiter
+       *  Ort, siehe dort). `companies` bleibt daneben nötig für
+       *  `buildUnresearchedCompanyLayer` unten, der immer alle platzierten,
+       *  aber unrecherchierten Marker zeigt — ungefiltert, weil sie gar nicht
+       *  Teil von `applySelection`s `visible` sind (siehe dort, `researched`-
+       *  Bedingung). */
+      result: SelectionResult
+      /** Die an der Steuerung aktive Kennzahl — bestimmt Säulenhöhe, Hover-
+       *  Zweitzeile und Beschriftung der grössten Gesellschaften. */
+      metric: Metric
       onShowCompanyPanel: (company: Company) => void
     })
   | (ViewLayersBasis & {
@@ -157,39 +168,24 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   const lakesLayer = lakes ? buildLakesLayer(lakes) : null
 
   // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
-  // auf einen einzelnen, vorher geladenen Kanton) — drei bis vier Layer:
-  // Bodenschatten (`buildCompanyShadowLayer`, verankert die Säule am Boden)
-  // und Säulen für die recherchierten Firmen (`buildCompanyLayer`, Inhalt),
-  // flache neutrale Marker für alle übrigen kotierten Titel
-  // (`buildUnresearchedCompanyLayer`, Kontext), dazu die Nulllinie
-  // (`buildZeroPlaneLayer`), sobald sie über der Kantonsplatte liegt (siehe
-  // `layers/visible.ts`), und zuoberst die Namen der zwölf grössten
-  // Gesellschaften nach der aktiven Kennzahl (`buildLabelLayer`,
-  // `layers/labels.ts`).
+  // auf einen einzelnen, vorher geladenen Kanton) — vier Layer: Bodenschatten
+  // (`buildCompanyShadowLayer`, verankert die Säule am Boden) und Säulen für
+  // die recherchierten Firmen (`buildCompanyLayer`, Inhalt), flache neutrale
+  // Marker für alle übrigen kotierten Titel (`buildUnresearchedCompanyLayer`,
+  // Kontext), und zuoberst die Namen der zwölf grössten Gesellschaften nach
+  // der aktiven Kennzahl (`buildLabelLayer`, `layers/labels.ts`). Keine
+  // eigene Nulllinie mehr (Aufgabe 18, siehe `layers/visible.ts`,
+  // `zeroPlaneHeight`): Säulen stehen bei jeder Kennzahl auf der
+  // Plattenoberkante, ein Verlust trägt sein Vorzeichen über die Farbe.
   if (input.view === 'sichtbare') {
-    const { companies, onShowCompanyPanel } = input
+    const { companies, result, metric, onShowCompanyPanel } = input
 
-    // Platzhalter-Auswahl: Kennzahl- und Filterzustand landen erst in einer
-    // späteren Aufgabe in `karte/firmen.ts` (siehe Implementierungsplan).
-    // Bis dahin bleibt die Auswahl das, was diese Ansicht vor der Umstellung
-    // ohnehin zeigte — alle Branchen, alle Organisationsformen, Kennzahl
-    // Umsatz —, nur über denselben `applySelection()`-Pfad wie die künftige
-    // Filter-UI, statt einen zweiten, parallelen Weg zu öffnen.
-    const selection: Selection = {
-      metric: 'umsatz',
-      branches: new Set([...NOGA_GROUPS.map((_, index) => index), NOGA_UNKNOWN_INDEX]),
-      orgForms: new Set(companies.stats.orgForms),
-    }
-    const result = applySelection(companies.companies, selection)
-    const heights = companyElevations(
-      result.visible,
-      selection.metric,
-      result.vmax,
-      MAX_BAR_HEIGHT_M,
-      mode,
-    )
-    const zeroPlane = zeroPlaneHeight(heights)
-    const topCompanies = topByMetric(result, selection.metric, TOP_LABEL_COUNT)
+    // Seit Aufgabe 18 eine Konstante (immer die Plattenoberkante, siehe
+    // `layers/visible.ts`) — trotzdem über die Funktion bezogen statt als
+    // Literal dupliziert, damit ein künftiger Wechsel der Basis nur an einer
+    // Stelle geändert werden muss.
+    const zeroPlane = zeroPlaneHeight()
+    const topCompanies = topByMetric(result, metric, TOP_LABEL_COUNT)
     // Nur der Name — für die unrecherchierten Marker (`buildUnresearchedCompanyLayer`
     // unten) gibt es nichts Zweites zu sagen: weder Kennzahl noch Branche sind
     // für sie belegt.
@@ -210,25 +206,19 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     // ohne DOM prüfbar, siehe `companyHoverLines` in `viewLayers.test.ts`.
     const onHoverResearchedCompany = (company: Company | null, x: number, y: number) => {
       if (!company) return hideHoverLabel()
-      showHoverLabel(companyHoverLines(company, selection.metric), x, y)
+      showHoverLabel(companyHoverLines(company, metric), x, y)
     }
 
     return [
       cantonsLayer,
       ...(lakesLayer ? [lakesLayer] : []),
       cantonBorderLayer,
-      // Nur einreihen, wenn sie tatsächlich über der Plattenoberkante liegt
-      // — bei einer Kennzahl ohne Verluste fiele sie sonst exakt mit
-      // `cantonsLayer`s Oberseite zusammen und würde mit ihr flackern
-      // (Z-Fighting zweier koplanarer Flächen), ohne einen sichtbaren
-      // Nutzen zu bieten.
-      ...(zeroPlane > CANTON_ELEVATION_M ? [buildZeroPlaneLayer(cantonsGeo, zeroPlane)] : []),
       // Vor der Säule eingereiht, sonst zeichnet deck.gl den Schatten über
       // die Säule statt darunter.
       buildCompanyShadowLayer(result),
       buildCompanyLayer({
         result,
-        metric: selection.metric,
+        metric: metric,
         mode,
         onClick: onShowCompanyPanel,
         onHover: onHoverResearchedCompany,
@@ -248,8 +238,8 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
       // `getPosition` sie braucht (Zugriff über den deck.gl-Datenindex).
       buildLabelLayer(
         topCompanies,
-        selection.metric,
-        companyElevations(topCompanies, selection.metric, result.vmax, MAX_BAR_HEIGHT_M, mode),
+        metric,
+        companyElevations(topCompanies, metric, result.vmax, MAX_BAR_HEIGHT_M, mode),
         zeroPlane,
       ),
     ]

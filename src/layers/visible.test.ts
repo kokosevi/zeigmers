@@ -280,19 +280,24 @@ describe('Sichtbarkeitsschwelle der Säulen', () => {
   })
 })
 
+// Aufgabe 18, Browser-Fund: die erste Wahl (eine bei Verlusten angehobene
+// Nulllinie, von der eine Verlustsäule nach unten hängt) liess sich im
+// Screenshot nicht nachweisen — keine der 41 Verlustsäulen (Kennzahl Gewinn)
+// zeigte ein einziges Pixel in `LOSS_COLOR`, weil die angehobene Nulllinie
+// bei einem grossen Ausreisser (Nationalbank) selbst nahe der Höhendecke
+// landete und jede davon hängende Säule zwischen den hohen Gewinnsäulen
+// verschwand. `zeroPlaneHeight` liefert seither immer die Plattenoberkante,
+// unabhängig von den Höhen — siehe `layers/visible.ts` für die vollständige
+// Begründung und die zweite, jetzt aktive Wahl (Betrag als Höhe,
+// Verlustfarbe als Vorzeichen).
 describe('Nulllinie', () => {
-  it('liegt über der Kantonsplatte, auch beim tiefsten Ausschlag', () => {
-    const heights = new Float32Array([1000, -1900, 500])
-    expect(zeroPlaneHeight(heights)).toBe(CANTON_ELEVATION_M + 1900 + 200)
-  })
-
-  it('bleibt auf Plattenhöhe, wenn nichts negativ ist', () => {
-    expect(zeroPlaneHeight(new Float32Array([1000, 500]))).toBe(CANTON_ELEVATION_M)
+  it('ist immer die Plattenoberkante, unabhängig von der Kennzahl', () => {
+    expect(zeroPlaneHeight()).toBe(CANTON_ELEVATION_M)
   })
 })
 
 describe('buildCompanyLayer mit Kennzahl', () => {
-  it('zeichnet Verluste nach unten', () => {
+  it('zeichnet einen Verlust mit derselben (positiven) Höhe wie einen gleich grossen Gewinn', () => {
     const gewinner = company({ name: 'Plus', profitChf: 1000 })
     const verlierer = company({ name: 'Minus', profitChf: -1000 })
     const layer = buildCompanyLayer({
@@ -302,7 +307,10 @@ describe('buildCompanyLayer mit Kennzahl', () => {
     const elevation = (c: Company, i: number) =>
       (layer.props.getElevation as Function)(c, { index: i })
     expect(elevation(gewinner, 0)).toBeGreaterThan(0)
-    expect(elevation(verlierer, 1)).toBeLessThan(0)
+    // Betrag entscheidet, nicht Vorzeichen (siehe Kommentar oben) — bei
+    // gleichem Betrag (hier je 1000) steht ein Verlust exakt so hoch wie der
+    // Gewinn, nicht darunter oder gar negativ.
+    expect(elevation(verlierer, 1)).toBe(elevation(gewinner, 0))
   })
 
   it('färbt Verluste in einem eigenen Ton, nicht in der Branchenfarbe', () => {
@@ -325,13 +333,13 @@ describe('buildCompanyLayer mit Kennzahl', () => {
     expect(h).toBe(MIN_VISIBLE_BAR_M)
   })
 
-  it('hebt in der Gewinn-Ansicht alle Säulen auf die Nulllinie', () => {
+  it('steht in der Gewinn-Ansicht auf derselben Plattenoberkante wie jede andere Kennzahl', () => {
     const verlierer = company({ profitChf: -1000 })
     const layer = buildCompanyLayer({
       result: applySelection([verlierer], selectionFor('gewinn')),
       metric: 'gewinn', mode: 'linear', onClick: () => {}, onHover: () => {},
     })
     const [, , z] = (layer.props.getPosition as Function)(verlierer)
-    expect(z).toBeGreaterThan(CANTON_ELEVATION_M)
+    expect(z).toBe(CANTON_ELEVATION_M)
   })
 })

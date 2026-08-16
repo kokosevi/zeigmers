@@ -77,10 +77,11 @@ describe('buildLabelLayer', () => {
 
   it('setzt die Beschriftung auf die Säulenspitze — Nulllinie plus Höhe, nicht nur die Höhe', () => {
     // Seit dem Umbau der Säulen (`buildCompanyLayer`) sitzt die Spitze auf
-    // `zeroPlane + heights[i]`, nicht auf `heights[i]` allein. In der
-    // Gewinn-Ansicht liegt `zeroPlane` über der Kantonsplatte (Verluste
-    // hängen von dort nach unten) — ohne den Summanden schwebte der Name
-    // unter seiner Säule.
+    // `zeroPlane + heights[i]`, nicht auf `heights[i]` allein — hier mit
+    // einem willkürlichen `zeroPlane` (4200) geprüft, unabhängig davon, was
+    // `zeroPlaneHeight()` in der echten App liefert (seit Aufgabe 18 immer
+    // die Plattenoberkante, siehe `layers/visible.ts`). Ohne den Summanden
+    // schwebte der Name unter seiner Säule.
     const c = company({ lon: 8.5, lat: 47.1 })
     const heights = new Float32Array([1500])
     const zeroPlane = 4200
