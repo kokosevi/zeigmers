@@ -3,7 +3,7 @@ import type { FeatureCollection, Geometry } from 'geojson'
 import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level } from '../data/loader'
 import type { PresentGroups } from '../domain/legendGroups'
-import { formatMetric, metricValue } from '../domain/metric'
+import { formatMetric, metricValue, type Metric } from '../domain/metric'
 import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX } from '../domain/noga.generated'
 import type { ScaleMode } from '../domain/scale'
 import { applySelection, type Selection } from '../domain/selection'
@@ -75,6 +75,28 @@ export function kantonRowInfo(
   const entries = kantone.meta.kantone
   if (!gemeindeIdx || !entries) return undefined
   return entries[gemeindeIdx[index] ?? -1]
+}
+
+/** Die beiden Zeilen des Hover-Labels für eine recherchierte Firmensäule
+ *  (`buildCompanyLayer`, Ansicht «Börsennotierte Firmen»): Name, dann Wert
+ *  der AKTIVEN Kennzahl (nicht fest `'umsatz'`, siehe `metric`-Parameter)
+ *  und Branche. Eigene, exportierte Funktion statt eines Einzeilers in der
+ *  Hover-Closure — hier fällt die fachliche Entscheidung (welche Kennzahl,
+ *  welcher Fallback-Text bei fehlendem Wert), die deshalb ohne DOM prüfbar
+ *  sein muss (`viewLayers.test.ts`).
+ *
+ *  Fehlt der Wert (`metricValue` liefert `null` — dieselbe Firma bekommt
+ *  dann die Platzhaltersäule, siehe `companyElevations` in `layers/visible.ts`),
+ *  sagt die zweite Zeile das explizit statt einer Lücke oder eines
+ *  «undefined»: ein Label, das nur den Namen zeigt, wäre nicht ehrlicher,
+ *  nur unauffälliger, und liesse offen, ob der Wert vergessen ging oder
+ *  tatsächlich nicht bekannt ist. */
+export function companyHoverLines(company: Company, metric: Metric): [string, string] {
+  const value = metricValue(company, metric)
+  const valueText =
+    value === null ? 'Keine Zahl für diese Kennzahl' : formatMetric(value, metric)
+  const branch = NOGA_GROUPS[company.nogaGroupIndex]?.label ?? 'unbekannt'
+  return [company.name, `${valueText} · ${branch}`]
 }
 
 /** In beiden Ansichten gebraucht: die Basiskarte und die Höhenskala.
@@ -182,14 +204,13 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
     // Firma bekommt dann die Platzhaltersäule, siehe `companyElevations`), sagt
     // die Zeile das explizit: ein leerer Platz oder ein "undefined" wäre nicht
     // ehrlicher, nur unauffälliger, und liesse offen, ob der Wert vergessen
-    // oder tatsächlich nicht bekannt ist.
+    // oder tatsächlich nicht bekannt ist. Als eigene, exportierte Funktion statt
+    // eines Closure-Einzeilers, weil hier die eigentliche fachliche Entscheidung
+    // fällt (welcher Wert, welche Kennzahl, welcher Fallback-Text) — die gehört
+    // ohne DOM prüfbar, siehe `companyHoverLines` in `viewLayers.test.ts`.
     const onHoverResearchedCompany = (company: Company | null, x: number, y: number) => {
       if (!company) return hideHoverLabel()
-      const value = metricValue(company, selection.metric)
-      const valueText =
-        value === null ? 'Keine Zahl für diese Kennzahl' : formatMetric(value, selection.metric)
-      const branch = NOGA_GROUPS[company.nogaGroupIndex]?.label ?? 'unbekannt'
-      showHoverLabel([company.name, `${valueText} · ${branch}`], x, y)
+      showHoverLabel(companyHoverLines(company, selection.metric), x, y)
     }
 
     return [
