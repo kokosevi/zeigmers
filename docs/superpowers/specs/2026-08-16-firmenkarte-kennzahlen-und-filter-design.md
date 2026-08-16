@@ -226,6 +226,12 @@ Namen dieser Branche. Überlappung löst `CollisionFilterExtension` aus
 `@deck.gl/extensions` — eine neue Abhängigkeit, gleiche Versionsfamilie wie
 die bereits vorhandenen deck.gl-Pakete.
 
+> **Nachtrag, 17. August 2026:** Die Beschriftungen sind auf Wunsch des
+> Auftraggebers wieder entfernt worden (`src/layers/labels.ts` samt Test,
+> die Einreihung in `src/layers/viewLayers.ts`, die Abhängigkeit
+> `@deck.gl/extensions`). Dieser Abschnitt beschreibt weiterhin den
+> damaligen Entwurf, nicht den heutigen Stand der App.
+
 ## 4 — Basiskarte: Seen, Kontrast, Rahmung
 
 **Seen** (`src/layers/lakes.ts`, Artefakt `public/data/lakes.geojson`): eine

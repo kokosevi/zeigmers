@@ -14,14 +14,10 @@ import { municipalityName } from '../ui/panel'
 import { buildCantonBorderLayer, buildCantonsLayer } from './cantons'
 import { buildLakesLayer } from './lakes'
 import { buildMunicipalityBorderLayer, buildMunicipalityLayer } from './many'
-import { buildLabelLayer, topByMetric, TOP_LABEL_COUNT } from './labels'
 import {
   buildCompanyLayer,
   buildCompanyShadowLayer,
   buildUnresearchedCompanyLayer,
-  companyElevations,
-  MAX_BAR_HEIGHT_M,
-  zeroPlaneHeight,
   type Company,
   type CompanyData,
 } from './visible'
@@ -135,8 +131,8 @@ export type ViewLayersInput =
        *  Teil von `applySelection`s `visible` sind (siehe dort, `researched`-
        *  Bedingung). */
       result: SelectionResult
-      /** Die an der Steuerung aktive Kennzahl — bestimmt Säulenhöhe, Hover-
-       *  Zweitzeile und Beschriftung der grössten Gesellschaften. */
+      /** Die an der Steuerung aktive Kennzahl — bestimmt Säulenhöhe und
+       *  Hover-Zweitzeile. */
       metric: Metric
       onShowCompanyPanel: (company: Company) => void
     })
@@ -168,24 +164,17 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
   const lakesLayer = lakes ? buildLakesLayer(lakes) : null
 
   // Ansicht «Börsennotierte Firmen»: seit Phase 3 national (kein Bezug mehr
-  // auf einen einzelnen, vorher geladenen Kanton) — vier Layer: Bodenschatten
+  // auf einen einzelnen, vorher geladenen Kanton) — drei Layer: Bodenschatten
   // (`buildCompanyShadowLayer`, verankert die Säule am Boden) und Säulen für
   // die recherchierten Firmen (`buildCompanyLayer`, Inhalt), flache neutrale
   // Marker für alle übrigen kotierten Titel (`buildUnresearchedCompanyLayer`,
-  // Kontext), und zuoberst die Namen der zwölf grössten Gesellschaften nach
-  // der aktiven Kennzahl (`buildLabelLayer`, `layers/labels.ts`). Keine
-  // eigene Nulllinie mehr (Aufgabe 18, siehe `layers/visible.ts`,
-  // `zeroPlaneHeight`): Säulen stehen bei jeder Kennzahl auf der
-  // Plattenoberkante, ein Verlust trägt sein Vorzeichen über die Farbe.
+  // Kontext). Keine eigene Nulllinie mehr (Aufgabe 18, siehe
+  // `layers/visible.ts`, `zeroPlaneHeight`): Säulen stehen bei jeder Kennzahl
+  // auf der Plattenoberkante, ein Verlust trägt sein Vorzeichen über die
+  // Farbe.
   if (input.view === 'sichtbare') {
     const { companies, result, metric, onShowCompanyPanel } = input
 
-    // Seit Aufgabe 18 eine Konstante (immer die Plattenoberkante, siehe
-    // `layers/visible.ts`) — trotzdem über die Funktion bezogen statt als
-    // Literal dupliziert, damit ein künftiger Wechsel der Basis nur an einer
-    // Stelle geändert werden muss.
-    const zeroPlane = zeroPlaneHeight()
-    const topCompanies = topByMetric(result, metric, TOP_LABEL_COUNT)
     // Nur der Name — für die unrecherchierten Marker (`buildUnresearchedCompanyLayer`
     // unten) gibt es nichts Zweites zu sagen: weder Kennzahl noch Branche sind
     // für sie belegt.
@@ -224,24 +213,6 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
         onHover: onHoverResearchedCompany,
       }),
       buildUnresearchedCompanyLayer(companies, onShowCompanyPanel, onHoverCompany),
-      // Zuoberst eingereiht (letztes Element): deck.gl zeichnet spätere
-      // Layer über frühere. Die Namen der grössten Gesellschaften sollen von
-      // keiner Säule und keinem Marker verdeckt werden, egal wie die anderen
-      // Layer sich überlagern.
-      //
-      // `topCompanies` trägt eigene Höhen statt aus `heights` (oben, über
-      // `result.visible`) herausgegriffen zu werden: `companyElevations` ist
-      // je Firma unabhängig von den übrigen Firmen im Array (nur `vmax`,
-      // `mode`, `maxHeight` sind geteilt) — mit denselben drei Werten liefert
-      // sie für dieselbe Firma exakt dieselbe Höhe wie oben, nur bereits in
-      // der Reihenfolge von `topCompanies`, wie `buildLabelLayer`s
-      // `getPosition` sie braucht (Zugriff über den deck.gl-Datenindex).
-      buildLabelLayer(
-        topCompanies,
-        metric,
-        companyElevations(topCompanies, metric, result.vmax, MAX_BAR_HEIGHT_M, mode),
-        zeroPlane,
-      ),
     ]
   }
 

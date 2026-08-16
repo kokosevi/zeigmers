@@ -148,18 +148,17 @@ export const LOSS_COLOR: readonly [number, number, number] = [176, 76, 76]
  *  `Math.abs`), das Vorzeichen trägt ausschliesslich `LOSS_COLOR`
  *  (`buildCompanyLayer`, `getFillColor`) — ein Verlust steht so hoch wie ein
  *  gleich grosser Gewinn, aber in der eigenen Verlustfarbe. Eine erhöhte
- *  Nulllinie braucht es damit nicht mehr; die Funktion bleibt als benannte,
- *  von `buildLabelLayer` mitgenutzte Basis stehen, liefert aber für jede
- *  Kennzahl dieselbe Antwort. */
+ *  Nulllinie braucht es damit nicht mehr; die Funktion bleibt als benannte
+ *  Basis stehen, liefert aber für jede Kennzahl dieselbe Antwort. */
 export function zeroPlaneHeight(): number {
   return CANTON_ELEVATION_M
 }
 
 /** Höhendecke der Firmenkarte — eigene Konstante statt eines Literals, damit
- *  `companyElevations` (`buildCompanyLayer`, `buildLabelLayer`) überall
- *  dieselbe Decke verwendet. Ansicht «Beschäftigte» hat mit `MAX_BAR_HEIGHT_M`
- *  (`layers/many.ts`, 3000) eine eigene, niedrigere Decke — beide Ansichten
- *  teilen den Namen nicht, weil sie unterschiedliche Werte brauchen. */
+ *  `companyElevations` (`buildCompanyLayer`) dieselbe Decke verwendet.
+ *  Ansicht «Beschäftigte» hat mit `MAX_BAR_HEIGHT_M` (`layers/many.ts`, 3000)
+ *  eine eigene, niedrigere Decke — beide Ansichten teilen den Namen nicht,
+ *  weil sie unterschiedliche Werte brauchen. */
 export const MAX_BAR_HEIGHT_M = 12000
 
 /** Höhe je Firma, in Metern — immer positiv, auch bei einem Verlust (siehe
