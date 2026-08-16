@@ -110,11 +110,55 @@ export const INITIAL_VIEW = {
 // Boxen sind also ähnlich raumgreifend, #legende bleibt die etwas grössere
 // und damit bestimmende. Aufgabe 18 prüft am Screenshot, ob dieser
 // grosszügige Wert übertrieben wirkt oder tatsächlich gebraucht wird.
-const FRAME_PADDING: PaddingOptions = {
+//
+// Dieser Rohwert bleibt unverändert stehen — er sagt, woher die Zahlen
+// kommen. Er wird aber NICHT direkt an `fitBounds`/`cameraForBounds`
+// weitergereicht, siehe `cappedPadding` unten: das Modell hinter dieser
+// Herleitung (Padding = volle Höhe/Breite der Chrome-Box) geht davon aus,
+// die Chrome schneide die Karte am Rand ab wie ein echter Rahmen. Das
+// stimmt nicht — #legende/#hinweis/#panel/#steuerung/#kennzahlen liegen mit
+// `z-index` ÜBER dem Kartencanvas (siehe `#ui`/`#map` in `style.css`), nicht
+// daneben; sie sind zudem halbtransparent (`--oberflaeche`,
+// `rgba(255,255,255,.84)`). Es genügt, dass die Landesfläche nicht
+// vollständig hinter einer Box verschwindet — nicht, dass die gerahmte
+// Fläche jede Chrome-Box vollständig meidet. Ungekappt würde eine
+// 15-zeilige Legende (528px unten) auf einem 1000px hohen Fenster der Karte
+// zusammen mit den oberen 140px nur noch ein Drittel der Höhe lassen — das
+// Gegenteil dessen, wofür diese Aufgabe existiert (Schweiz füllt das Bild,
+// nicht 45 % davon).
+const DERIVED_FRAME_PADDING: PaddingOptions = {
   top: 140,
   bottom: 528,
   left: 320,
   right: 368,
+}
+
+// Obergrenze je Seite: höchstens ein Viertel der zugehörigen Fenstergrösse
+// (Breite für links/rechts, Höhe für oben/unten) — der kleinere von
+// hergeleitetem und begrenztem Wert gilt. Damit bleibt der Karte in jeder
+// Fenstergrösse mindestens die Hälfte in jeder Richtung (zwei Seiten à
+// höchstens 25 % lassen mindestens 50 % übrig), unabhängig davon, wie lang
+// die Legende gerade ist. Diese Kappung ist kein Zurückrudern von der
+// Herleitung oben, sondern die Korrektur ihrer falschen Modellannahme (siehe
+// dort) — die Herleitung bleibt die Grundlage und greift unverändert dort,
+// wo sie unter dieser Grenze liegt (z. B. `left`/`right`/`top` bei den
+// meisten Fenstergrössen).
+const MAX_PADDING_FRACTION = 0.25
+
+/** Wendet `MAX_PADDING_FRACTION` auf `DERIVED_FRAME_PADDING` an, bezogen auf
+ *  die tatsächliche Grösse des Kartencontainers — muss deshalb zur Laufzeit
+ *  in `frameBounds` berechnet werden, nicht als Modulkonstante, weil sich
+ *  die Fenstergrösse zwischen Aufrufen ändern kann (Resize, andere Seite). */
+function cappedPadding(map: maplibregl.Map): PaddingOptions {
+  const { clientWidth, clientHeight } = map.getContainer()
+  const maxHorizontal = clientWidth * MAX_PADDING_FRACTION
+  const maxVertical = clientHeight * MAX_PADDING_FRACTION
+  return {
+    top: Math.min(DERIVED_FRAME_PADDING.top, maxVertical),
+    bottom: Math.min(DERIVED_FRAME_PADDING.bottom, maxVertical),
+    left: Math.min(DERIVED_FRAME_PADDING.left, maxHorizontal),
+    right: Math.min(DERIVED_FRAME_PADDING.right, maxHorizontal),
+  }
 }
 
 // Zusätzlicher Zoom, nach der aus `FRAME_PADDING` hergeleiteten Kamera
@@ -158,11 +202,13 @@ export interface MapHandle {
   /** Bewegt die Kamera so, dass `bounds` (Lng/Lat, siehe `domain/bounds.ts`)
    *  im Bild liegt, bei fester `pitch`/`bearing` aus `INITIAL_VIEW` — die
    *  Herleitung „von der Geometrie, nicht von 26 Handpositionen" (Auftrag).
-   *  Padding je Seite aus `FRAME_PADDING`, zusätzlich um `PITCH_FILL_BOOST`
-   *  ausgeglichen (siehe dort — `pitch` selbst bleibt in der Bounds-Rechnung
-   *  unberücksichtigt). `instant: true` (Erstladung der Schweiz-Übersicht)
-   *  und ein aktives `prefers-reduced-motion` überspringen die Animation
-   *  (`duration: 0`); sonst wird über `FRAME_DURATION_MS` sanft geschwenkt. */
+   *  Padding je Seite aus `DERIVED_FRAME_PADDING`, gekappt auf höchstens ein
+   *  Viertel der jeweiligen Fenstergrösse (`cappedPadding`), zusätzlich um
+   *  `PITCH_FILL_BOOST` ausgeglichen (siehe dort — `pitch` selbst bleibt in
+   *  der Bounds-Rechnung unberücksichtigt). `instant: true` (Erstladung der
+   *  Schweiz-Übersicht) und ein aktives `prefers-reduced-motion` überspringen
+   *  die Animation (`duration: 0`); sonst wird über `FRAME_DURATION_MS`
+   *  sanft geschwenkt. */
   frameBounds(bounds: LngLatBounds, options?: { instant?: boolean }): void
 }
 
@@ -205,6 +251,7 @@ export function createMap(container: HTMLElement): MapHandle {
     setLayers: (layers) => overlay.setProps({ layers }),
     frameBounds: (bounds, options) => {
       const instant = options?.instant === true || prefersReducedMotion()
+      const padding = cappedPadding(map)
       // `cameraForBounds` statt `fitBounds` direkt: dieselbe Zentrum/Zoom-
       // Herleitung aus den Bounds (siehe `PITCH_FILL_BOOST`-Kommentar oben),
       // aber als eigener Zwischenschritt, damit der Ausgleichswert auf den
@@ -212,7 +259,7 @@ export function createMap(container: HTMLElement): MapHandle {
       // Animation dorthin geschwenkt wird — kein zweiter, sichtbar
       // nachruckender Kameraschritt.
       const camera = map.cameraForBounds(bounds, {
-        padding: FRAME_PADDING,
+        padding,
         bearing: INITIAL_VIEW.bearing,
       })
       // `cameraForBounds` liefert laut eigener Dokumentation `undefined`,
@@ -226,7 +273,7 @@ export function createMap(container: HTMLElement): MapHandle {
         zoom: (camera.zoom ?? map.getZoom()) + PITCH_FILL_BOOST,
         pitch: INITIAL_VIEW.pitch,
         bearing: INITIAL_VIEW.bearing,
-        padding: FRAME_PADDING,
+        padding,
         duration: instant ? 0 : FRAME_DURATION_MS,
       })
     },
