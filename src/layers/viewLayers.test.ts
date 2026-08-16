@@ -4,7 +4,7 @@ import type { BoundaryFeatureCollection } from '../data/boundaries'
 import type { Level, LevelMeta } from '../data/loader'
 import { buildCantonBorderLayer } from './cantons'
 import type { CompanyData } from './visible'
-import { buildViewLayers, type CantonEntry } from './viewLayers'
+import { buildViewLayers, KANTONE_BARS_LAYER_ID, type CantonEntry } from './viewLayers'
 
 // Regressionstest für genau den Bug, den ein Nutzer im Browser fand: die
 // Schweiz-Stufe von Ansicht «Beschäftigte» und die Kantonsflächen-Basiskarte
@@ -175,13 +175,24 @@ function idsOf(layers: readonly unknown[]): string[] {
 }
 
 describe('buildViewLayers', () => {
+  // Review-Fund (2026-08-16): lief vorher mit `lakes: null` (aus `BASIS`) —
+  // der neue `'seen'`-Layer kam in dieser Prüfung nie vor, eine künftige
+  // id-Kollision mit ihm wäre hier unbemerkt geblieben, obwohl genau dieser
+  // Test (siehe Kommentar oben) dafür da ist. Jetzt mit geladenen Seen in
+  // allen drei Kombinationen, plus der expliziten Prüfung, dass `'seen'`
+  // tatsächlich in der Liste steht — sonst wäre „eindeutig" auch bei einem
+  // versehentlich wieder verschwundenen Seenlayer trivial erfüllt.
   it.each([
-    ['Beschäftigte · Schweiz', beschaeftigteInput()],
-    ['Beschäftigte · Kanton', beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() })],
-    ['Börsennotierte Firmen', firmenInput()],
+    ['Beschäftigte · Schweiz', { ...beschaeftigteInput(), lakes: LAKES_GEO }],
+    [
+      'Beschäftigte · Kanton',
+      { ...beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() }), lakes: LAKES_GEO },
+    ],
+    ['Börsennotierte Firmen', { ...firmenInput(), lakes: LAKES_GEO }],
   ] as const)('assigns unique deck.gl layer ids — %s', (_label, input) => {
     const ids = idsOf(buildViewLayers(input))
     expect(new Set(ids).size).toBe(ids.length)
+    expect(ids).toContain('seen')
   })
 
   it('falls back to the Switzerland level when level is "kanton" but no canton is loaded', () => {
@@ -198,10 +209,31 @@ describe('buildViewLayers', () => {
     expect(idsOf(buildViewLayers(input)).length).toBeGreaterThan(0)
   })
 
-  it('reiht die Seen zwischen Kantonsfläche und Säulen ein', () => {
+  it('reiht die Seen in Ansicht Firmen zwischen Kantonsfläche und Säulen ein', () => {
     const ids = idsOf(buildViewLayers({ ...firmenInput(), lakes: LAKES_GEO }))
     expect(ids.indexOf('seen')).toBeGreaterThan(ids.indexOf('kantone'))
     expect(ids.indexOf('seen')).toBeLessThan(ids.indexOf('firmen'))
+  })
+
+  // Review-Fund (2026-08-16): die Einreihung war nur für Ansicht «Firmen»
+  // bewiesen, obwohl derselbe Seenlayer in allen drei Zweigen von
+  // `buildViewLayers` eingereiht wird (Schweiz- UND Kantonsstufe von
+  // «Beschäftigte») — laut Code-Inspektion korrekt, aber unbewiesen.
+  it('reiht die Seen in Ansicht Beschäftigte · Schweiz zwischen Kantonsfläche und Kantonsbalken ein', () => {
+    const ids = idsOf(buildViewLayers({ ...beschaeftigteInput(), lakes: LAKES_GEO }))
+    expect(ids.indexOf('seen')).toBeGreaterThan(ids.indexOf('kantone'))
+    expect(ids.indexOf('seen')).toBeLessThan(ids.indexOf(KANTONE_BARS_LAYER_ID))
+  })
+
+  it('reiht die Seen in Ansicht Beschäftigte · Kanton zwischen Kantonsfläche und Gemeindebalken ein', () => {
+    const ids = idsOf(
+      buildViewLayers({
+        ...beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() }),
+        lakes: LAKES_GEO,
+      }),
+    )
+    expect(ids.indexOf('seen')).toBeGreaterThan(ids.indexOf('kantone'))
+    expect(ids.indexOf('seen')).toBeLessThan(ids.indexOf('gemeinde'))
   })
 
   it('zeichnet ohne Seen weiter, wenn das Artefakt fehlt', () => {

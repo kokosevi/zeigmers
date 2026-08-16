@@ -159,6 +159,22 @@ describe('loadLakes', () => {
       new Response(JSON.stringify(fc), { status: 200 })) as typeof fetch
     await expect(loadLakes()).resolves.toEqual(fc)
   })
+
+  // Review-Fund (2026-08-16): gültiges JSON mit falscher Struktur ist truthy
+  // — ein blosses `as FeatureCollection` hätte das ungeprüft durchgereicht,
+  // `buildLakesLayer`s `data.features.flatMap(...)` (`layers/lakes.ts`) wäre
+  // dann mit einem `TypeError` abgestürzt, ungefangen bis in `showError`.
+  // Beide Fälle müssen deshalb genau wie ein HTTP-Fehler zu `null` führen.
+  it('liefert null, wenn das JSON gültig ist, aber kein features-Array trägt', async () => {
+    globalThis.fetch = (async () =>
+      new Response(JSON.stringify({ type: 'FeatureCollection' }), { status: 200 })) as typeof fetch
+    await expect(loadLakes()).resolves.toBeNull()
+  })
+
+  it('liefert null, wenn das JSON ein Array statt eines Objekts ist', async () => {
+    globalThis.fetch = (async () => new Response(JSON.stringify([]), { status: 200 })) as typeof fetch
+    await expect(loadLakes()).resolves.toBeNull()
+  })
 })
 
 describe('joinCantonGeometry', () => {
