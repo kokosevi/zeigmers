@@ -44,6 +44,7 @@ CSV_COLUMNS = (
     "uid", "name", "six_symbol", "isin", "lei",
     "street", "zip", "city", "lon", "lat", "geocode_query", "seat_basis",
     "noga_group",
+    "org_form",
     "consolidation_basis",
     "revenue", "revenue_currency", "revenue_type", "revenue_unit",
     "profit", "profit_currency", "profit_unit",
@@ -98,6 +99,15 @@ REVENUE_TYPES = {"net_sales", "operating_income"}
 # that's exactly the situation where two figures might silently disagree on what they're
 # both measuring.
 CONSOLIDATION_BASES = {"total_group", "continuing_operations"}
+
+# Die Rechtsform-Dimension der Karte. Heute trägt jede Zeile denselben Wert —
+# die Quelle ist die SIX-Titelliste, und die kennt nur Kotierte. Das Feld
+# existiert trotzdem schon: die Karte filtert danach, und eine später
+# ergänzte Genossenschaft (Migros, Coop) oder eine grosse nicht kotierte
+# Firma (Bertschi AG) soll eine Zeile mehr sein, kein Sonderfall im Ladepfad.
+# Geschlossenes Set wie REVENUE_TYPES — ein Tippfehler wäre sonst eine
+# lautlose vierte Organisationsform, die als eigener Knopf erschiene.
+ORG_FORMS = {"boersenkotiert"}
 
 Fetcher = Callable[[str], bytes]
 
@@ -296,6 +306,18 @@ def validate(rows: list[dict], table: NogaTable | None = None) -> None:
             problems.append(
                 f"{label}: consolidation_basis {basis!r} unbekannt, "
                 f"erlaubt: {sorted(CONSOLIDATION_BASES)}"
+            )
+
+        # Ausserhalb jeder researched-Bedingung, anders als noga_group & Co.:
+        # die Rechtsform ist keine Rechercheleistung, sondern steht schon
+        # fest, sobald die Zeile entsteht (siehe Kommentar bei ORG_FORMS) —
+        # auch eine researched=no-Zeile muss sie tragen.
+        org_form = row.get("org_form", "").strip()
+        if not org_form:
+            problems.append(f"{label}: org_form fehlt — erlaubt: {sorted(ORG_FORMS)}")
+        elif org_form not in ORG_FORMS:
+            problems.append(
+                f"{label}: org_form={org_form!r} unbekannt — erlaubt: {sorted(ORG_FORMS)}"
             )
 
         # `founding_year` stammt entweder aus eigenen Unternehmensunterlagen oder aus dem
@@ -580,6 +602,7 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
                 "lon": float(row["lon"]),
                 "lat": float(row["lat"]),
                 "nogaGroupIndex": index[group] if group in index else config.NOGA_UNKNOWN_INDEX,
+                "orgForm": row.get("org_form") or None,
                 "revenue": float(revenue) * unit if revenue else None,
                 "revenueChf": revenue_chf,
                 "currency": row.get("revenue_currency") or None,
@@ -638,6 +661,10 @@ def build_artifact(rows: list[dict], table: NogaTable, six_meta: dict | None = N
             "fxRates": fx_used,
             "fxMissing": fx_missing,
             "researched": researched_count,
+            # Nicht hartkodiert wie ORG_FORMS: das sind die tatsächlich im
+            # Artefakt vorkommenden Werte, nicht das erlaubte Set — die
+            # Karte baut ihre Filterknöpfe daraus, nicht aus dem Schema.
+            "orgForms": sorted({e["orgForm"] for e in entries if e["orgForm"]}),
             "totalListed": six_meta.get("totalListed", len(rows)),
             "sixRetrievedDate": six_meta.get("retrievedAt"),
         },
@@ -1397,6 +1424,7 @@ def sync_national_csv(
                     "street": place["street"], "zip": place["zip"],
                     "city": place["city"], "seat_basis": place["basis"],
                     "geocode_query": f"{place['street']}, {place['zip']} {place['city']}",
+                    "org_form": "boersenkotiert",
                 })
                 new_rows.append(row)
                 report["fromGleif"].append({
@@ -1439,6 +1467,7 @@ def sync_national_csv(
         row["six_symbol"] = primary["sixSymbol"]
         row["isin"] = primary["isin"]
         row["researched"] = "no"
+        row["org_form"] = "boersenkotiert"
 
         if outcome["status"] == "matched":
             m = outcome["match"]

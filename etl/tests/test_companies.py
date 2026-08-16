@@ -30,6 +30,7 @@ def _row(**overrides):
             "fiscal_year": "2024",
             "report_url": "https://example.test/gb2024.pdf",
             "researched": "yes",
+            "org_form": "boersenkotiert",
         }
     )
     row.update(overrides)
@@ -260,6 +261,13 @@ def test_build_artifact_marks_missing_profit_as_none():
     assert entry["foundingYear"] is None
 
 
+def test_build_artifact_traegt_org_form_und_sammelt_die_vorkommenden():
+    table = noga.load_table()
+    artifact = companies.build_artifact([_row(org_form="boersenkotiert")], table)
+    assert artifact["companies"][0]["orgForm"] == "boersenkotiert"
+    assert artifact["stats"]["orgForms"] == ["boersenkotiert"]
+
+
 def test_load_csv_roundtrip(tmp_path):
     path = tmp_path / "c.csv"
     with path.open("w", newline="", encoding="utf-8") as handle:
@@ -288,6 +296,11 @@ def _unresearched_row(**overrides):
         "city": "Zürich", "lon": "8.54", "lat": "47.37",
         "geocode_query": "Teststrasse 1 8000 Zürich",
         "researched": "no",
+        # org_form ist auch fuer unrecherchierte Zeilen Pflicht (siehe
+        # test_org_form_gilt_auch_fuer_unrecherchierte_zeilen) — ohne diesen
+        # Eintrag wuerden alle Tests, die _unresearched_row() nutzen, an
+        # validate() scheitern, nicht an der Eigenschaft, die sie pruefen.
+        "org_form": "boersenkotiert",
     })
     row.update(overrides)
     return row
@@ -353,6 +366,29 @@ def test_validate_rejects_missing_isin():
 def test_validate_rejects_duplicate_isin():
     with pytest.raises(ValueError, match="isin .* doppelt"):
         companies.validate([_row(), _row(uid="CHE-999", name="Andere AG")])
+
+
+def test_validate_verlangt_org_form():
+    with pytest.raises(ValueError, match="org_form"):
+        companies.validate([_row(org_form="")])
+
+
+def test_validate_lehnt_unbekannte_org_form_ab():
+    with pytest.raises(ValueError, match="org_form"):
+        companies.validate([_row(org_form="genossenschaft_vielleicht")])
+
+
+def test_org_form_gilt_auch_fuer_unrecherchierte_zeilen():
+    """Anders als revenue/profit ist die Organisationsform keine
+    Rechercheleistung — sie steht schon fest, wenn die Zeile entsteht."""
+    row = {c: "" for c in companies.CSV_COLUMNS}
+    # isin ist unabhaengig von org_form Pflicht (validate() prueft sie fuer
+    # jede Zeile) — hier gesetzt, damit der Test tatsaechlich org_form
+    # prueft und nicht an einem unbeteiligten Feld scheitert.
+    row.update({"uid": "CHE-100.000.009", "name": "Noch Nichts AG",
+                "isin": "CH0000000009",
+                "researched": "no", "org_form": "boersenkotiert"})
+    companies.validate([row])
 
 
 def test_build_artifact_marks_researched_flag_per_entry():
