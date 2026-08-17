@@ -1,16 +1,25 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { VIEW_PATH } from './ui/nav'
 
-// Die Landing nennt Kennzahlen ("201 von 224 …"), lädt aber bewusst keine
-// Daten — sie soll nicht 320 KB companies.json holen, um zwei Zahlen zu
-// zeigen. Hartkodierte Zahlen in einer Seite, die neben lebenden Artefakten
-// liegt, veralten still: die Seite zeigt dann weiter eine Zahl, die niemand
-// mehr nachrechnet. Dieser Test ist der Ersatz für den fehlenden Fetch — er
-// vergleicht, was im HTML steht, mit dem, was in den Artefakten steht, und
-// lässt `npm test` (und damit den Netlify-Build) fehlschlagen, sobald beide
-// auseinanderlaufen.
+// Die Landing nennt Kennzahlen, lädt aber bewusst keine Daten — sie soll nicht
+// 320 KB companies.json holen, um zwei Zahlen zu zeigen, und bleibt damit die
+// einzige Seite ohne JavaScript. Hartkodierte Zahlen in einer Seite, die neben
+// lebenden Artefakten liegt, veralten still: die Seite zeigt dann weiter eine
+// Zahl, die niemand mehr nachrechnet. Dieser Test ist der Ersatz für den
+// fehlenden Fetch — er vergleicht, was im HTML steht, mit dem, was in den
+// Artefakten steht, und lässt `npm test` (und damit den Netlify-Build)
+// fehlschlagen, sobald beide auseinanderlaufen.
+//
+// Redesign (17. August 2026, Handoff 3a): Die Landing zeigt nur noch Wortmarke
+// und zwei Kacheln. Damit sind drei früher hier geprüfte Sätze von der Seite
+// verschwunden — die Abdeckungsangabe («201 Gesellschaften von 224 kotierten
+// SIX-Titeln»), «alle recherchiert» und «alle 26 Kantone». Sie sind nicht
+// verloren: die Abdeckungsangabe steht im Fuss der Leiste auf `/firmen/`
+// (`ui/notices.ts`), geprüft von `ui/notices.test.ts`. Was auf der Landing
+// bleibt, sind die zwei Zahlen der Kacheln und das Datenjahr — und die werden
+// unten weiter gegen die Artefakte gehalten.
 
 // `process.cwd()` statt `__dirname`: package.json trägt `"type": "module"`,
 // in einem ESM-Modul gibt es kein `__dirname`. Vitest läuft vom Projektwurzel-
@@ -22,9 +31,7 @@ function json<T>(name: string): T {
   return JSON.parse(readFileSync(resolve(ROOT, 'public/data', name), 'utf8')) as T
 }
 
-const companies = json<{
-  stats: { count: number; totalListed: number; researched: number }
-}>('companies.json')
+const companies = json<{ stats: { count: number } }>('companies.json')
 
 const kantone = json<{
   count: number
@@ -37,37 +44,54 @@ const kantone = json<{
 const de = new Intl.NumberFormat('de-CH', { maximumFractionDigits: 0 })
 
 describe('Landing-Kennzahlen', () => {
-  it('nennt die Firmenzahlen genau so, wie companies.json sie ausweist', () => {
-    // `count` zählt Gesellschaften (Namen-/PS-Aktien und zweite Handelslinien
-    // derselben Firma zusammengefasst), `totalListed` zählt kotierte Titel —
-    // beide Einheiten müssen im Text stehen, sonst gibt der Satz Gesellschaften
-    // als Titel aus (Abschluss-Review, Fund 4).
-    const { count, totalListed } = companies.stats
-    expect(HTML).toContain(`${count} Gesellschaften von ${totalListed} kotierten SIX-Titeln`)
+  it('nennt als Firmenzahl genau die Zahl der Gesellschaften aus companies.json', () => {
+    // Die Kachel zeigt `stats.count` (Gesellschaften — Namen-/PS-Aktien und
+    // zweite Handelslinien derselben Firma zusammengefasst), nicht
+    // `totalListed` (kotierte Titel). Ohne diese Prüfung könnte die Kachel
+    // eines Tages Titel als Gesellschaften ausgeben.
+    expect(HTML).toContain(`<span class="zahl">${companies.stats.count}</span>`)
   })
 
-  it('behauptet nur dann "alle recherchiert", wenn auch alle recherchiert sind', () => {
-    expect(companies.stats.researched).toBe(companies.stats.count)
-    expect(HTML).toContain('alle recherchiert')
+  it('nennt die Beschäftigtenzahl genau so, wie ch_kantone.json sie ausweist', () => {
+    expect(HTML).toContain(de.format(kantone.stats.sum))
   })
 
-  it('nennt die Beschäftigtenzahl und das Jahr genau so, wie ch_kantone.json sie ausweist', () => {
-    expect(HTML).toContain(`${de.format(kantone.stats.sum)} Beschäftigte`)
+  it('nennt das Datenjahr der Beschäftigten-Kachel aus dem Artefakt', () => {
     expect(HTML).toContain(`BFS STATENT ${kantone.year}`)
-  })
-
-  it('nennt die tatsächliche Zahl der Kantone', () => {
-    expect(kantone.count).toBe(26)
-    expect(HTML).toContain(`alle ${kantone.count} Kantone`)
   })
 
   it('verlinkt beide Kartenseiten mit denselben Pfaden wie ui/nav.ts', () => {
     // Import statt Literal (Abschluss-Review, Fund 8): `index.html` ist
     // bewusst ohne JavaScript gebaut und kann `VIEW_PATH` nie selbst
     // importieren — dieser Test übernimmt die Drift-Prüfung stellvertretend,
-    // damit `createNav` (`ui/nav.ts`) und die hier verlinkten Pfade nicht
+    // damit die Kartenseiten und die hier verlinkten Pfade nicht
     // auseinanderlaufen können.
     expect(HTML).toContain(`href="${VIEW_PATH.sichtbare}"`)
     expect(HTML).toContain(`href="${VIEW_PATH.beschaeftigte}"`)
+  })
+
+  it('bleibt die einzige Seite ohne JavaScript', () => {
+    // Der ganze Sinn der Landing: kein deck.gl, kein MapLibre (zusammen
+    // 1.52 MB), um zwei Kacheln zu zeigen. Ein versehentlich eingefügtes
+    // `<script type="module" src="/src/…">` — etwa beim Kopieren aus einer
+    // Kartenseite — würde das lautlos zunichte machen, weil die Seite danach
+    // trotzdem normal aussieht.
+    expect(HTML).not.toMatch(/<script/i)
+  })
+
+  it('verweist auf vier Kachelgrafiken, die tatsächlich existieren', () => {
+    // Die vier SVG entstehen aus den Artefakten (`tools/build_landing_svg.mjs`)
+    // und liegen in `public/grafik/`. Fehlt eine, zeigt die Kachel eine leere
+    // Fläche — im Browser sofort sichtbar, im Test bisher nicht.
+    const dateien = [
+      'firmen-ink.svg',
+      'firmen-paper.svg',
+      'kantone-ink.svg',
+      'kantone-paper.svg',
+    ]
+    for (const datei of dateien) {
+      expect(existsSync(resolve(ROOT, 'public/grafik', datei)), datei).toBe(true)
+      expect(HTML).toContain(`/grafik/${datei}`)
+    }
   })
 })

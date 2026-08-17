@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build:grafik": "node tools/build_landing_svg.mjs",
+    "prebuild": "npm run build:grafik",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",

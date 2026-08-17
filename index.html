@@ -4,9 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>zeigmers — Die Schweizer Wirtschaft als 3D-Karte</title>
+    <!-- Favicon in der neuen Palette (`--papier` statt `--grund`, `--tinte`
+         statt der alten Tinte): drei Säulen, dieselbe Idee wie bisher, nur
+         mit den Tokens des Redesigns. Radius bleibt hier — ein Favicon wird
+         von Betriebssystemen ohnehin beschnitten, die Radius-0-Regel des
+         Entwurfs gilt für Flächen in der Seite. -->
     <link
       rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23E8EDF2'/%3E%3Crect x='6' y='18' width='5' height='8' fill='%231B2733'/%3E%3Crect x='13.5' y='9' width='5' height='17' fill='%231B2733'/%3E%3Crect x='21' y='14' width='5' height='12' fill='%231B2733'/%3E%3C/svg%3E"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F7F8F9'/%3E%3Crect x='6' y='18' width='5' height='8' fill='%2314202B'/%3E%3Crect x='13.5' y='9' width='5' height='17' fill='%2314202B'/%3E%3Crect x='21' y='14' width='5' height='12' fill='%2314202B'/%3E%3C/svg%3E"
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="de_CH" />
@@ -20,49 +25,73 @@
       property="og:description"
       content="Zwei Ansichten derselben Fläche: die sichtbaren börsennotierten Firmen, und die Arbeit, die tatsächlich stattfindet."
     />
+    <!-- Die Schriften liegen selbst gehostet unter `public/fonts/` (siehe
+         `src/landing.css`, `@font-face`). Die Referenzfassung des Handoffs lud
+         sie von Google Fonts — das hätte auf einer Seite, die sonst keinen
+         einzigen Laufzeit-Request an einen fremden Dienst macht (siehe
+         `src/map.ts`, `BLANK_STYLE`), einen Fremdzugriff eingeführt, den es
+         hier nie gab. `preload` für die zwei tatsächlich benutzten Dateien:
+         beide sitzen im ersten sichtbaren Text, ohne Vorladen blitzt der
+         Fallback-Stack auf. -->
+    <link
+      rel="preload"
+      href="/fonts/space-grotesk-latin-var.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-mono-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="/src/landing.css" />
   </head>
   <body>
     <main>
       <header>
         <h1>zeigmers</h1>
-        <p class="unterzeile">
-          Die Schweizer Wirtschaft als 3D-Karte — zwei Ansichten derselben Fläche,
-          nebeneinander gehalten, damit der Unterschied sichtbar wird.
-        </p>
+        <span class="ort">Schweiz · 3D</span>
       </header>
 
-      <nav class="karten" aria-label="Karten">
-        <a class="karte" href="/firmen/">
-          <h2>Börsennotierte Firmen</h2>
-          <p>
-            Wo die Schweizer Börse sitzt: jede Säule eine Gesellschaft, ihre Höhe
-            der Jahresumsatz.
-          </p>
-          <p class="kennzahl">
-            201 Gesellschaften von 224 kotierten SIX-Titeln · alle recherchiert
-          </p>
+      <!-- Die zwei Zahlen (201, 5'876'865) und das Datenjahr stehen hier
+           hartkodiert, weil diese Seite bewusst kein JavaScript lädt und
+           deshalb keine Artefakte lesen kann. `src/landing.test.ts` vergleicht
+           sie gegen `public/data/*.json` und lässt `npm test` — und damit den
+           Netlify-Build — fehlschlagen, sobald beide auseinanderlaufen.
+           Die Grafiken tragen bewusst KEINE `width`/`height`-Attribute: ihr
+           Seitenverhältnis steht in der `viewBox`, die
+           `tools/build_landing_svg.mjs` aus der tatsächlichen Kantonsgeometrie
+           rechnet (heute 1003×494). Ein hartkodiertes Zahlenpaar hier wäre
+           genau die Art stiller Drift, die der Test oben für die Zahlen
+           verhindert — nur ohne Wächter. -->
+      <nav class="kacheln" aria-label="Karten">
+        <a class="kachel" href="/firmen/">
+          <div class="kopf"><span>01</span><span>SIX Swiss Exchange</span></div>
+          <div class="grafik grafik-firmen">
+            <img src="/grafik/firmen-ink.svg" alt="" />
+            <img class="invers" src="/grafik/firmen-paper.svg" alt="" />
+          </div>
+          <div class="fuss fuss-breit">
+            <h2>Börsennotierte Firmen</h2>
+            <span class="zahl">201</span>
+          </div>
         </a>
 
-        <a class="karte" href="/beschaeftigte/">
-          <h2>Beschäftigte</h2>
-          <p>
-            Wo tatsächlich gearbeitet wird: alle 26 Kantone, nach einem Klick
-            jede einzelne Gemeinde.
-          </p>
-          <p class="kennzahl">5'876'865 Beschäftigte · BFS STATENT 2023</p>
+        <a class="kachel" href="/beschaeftigte/">
+          <div class="kopf"><span>02</span><span>BFS STATENT 2023</span></div>
+          <div class="grafik grafik-kantone">
+            <img src="/grafik/kantone-ink.svg" alt="" />
+            <img class="invers" src="/grafik/kantone-paper.svg" alt="" />
+          </div>
+          <div class="fuss">
+            <h2>Beschäftigte</h2>
+            <span class="zahl zahl-klein">5'876'865</span>
+          </div>
         </a>
       </nav>
-
-      <footer>
-        <p>
-          Quellen: BFS STATENT, SIX Swiss Exchange, swisstopo, Zefix.
-        </p>
-        <p>
-          Technischer Machbarkeitsnachweis, keine amtliche Statistik — die Zahlen
-          sind korrekt im Rahmen dessen, was die Quellen hergeben.
-        </p>
-      </footer>
     </main>
   </body>
 </html>
