@@ -15,11 +15,12 @@ export interface KennzahlenOptions {
    *  Gesellschaften ausgewählt» statt nur «X Gesellschaften» — sonst liesse
    *  sich aus ihr allein nicht ablesen, dass gerade nicht alle
    *  Gesellschaften mitgezählt werden. Das Wort «ausgewählt» ist dabei kein
-   *  Zierrat: die Legende (`ui/legend.ts`, `scopeLabel`) zeigt auf derselben
-   *  Seite bereits ein anderes «X von Y» über Gesellschaften (Karten-
-   *  abdeckung ggü. kotierten SIX-Titeln, z. B. «201 Gesellschaften von 224
-   *  kotierten SIX-Titeln») — ohne benannten Bezug wären zwei verschiedene
-   *  «X von Y»-Aussagen gleichzeitig auf dem Bildschirm leicht zu
+   *  Zierrat: die Landing (`index.html`) nennt bereits ein anderes «X von
+   *  Y» über Gesellschaften (Kartenabdeckung ggü. kotierten SIX-Titeln, z. B.
+   *  «201 Gesellschaften von 224 kotierten SIX-Titeln» — bis zum Kahlschlag
+   *  vom 2026-08-17 stand dieselbe Angabe zusätzlich in der Legende dieser
+   *  Seite, `ui/legend.ts`, `scopeLabel`, seither nicht mehr) — ohne
+   *  benannten Bezug wären zwei verschiedene «X von Y»-Aussagen leicht zu
    *  verwechseln. */
   totalCompanies: number
   /** Beschäftigte der Schweiz insgesamt, für den Vergleich bei der Kennzahl

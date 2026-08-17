@@ -112,24 +112,22 @@ a:focus-visible, button:focus-visible {
   border-radius: .5rem; padding: .25rem;
   box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
 }
-/* Der Heim-Link steht über den beiden Gruppen, nicht in einer — er ist weder
-   eine Ansicht noch eine Skala, sondern der Weg aus der Karte heraus. */
+/* Der Heim-Link steht über den Gruppen, nicht in einer — er ist keine Auswahl
+   innerhalb der Seite, sondern der Weg aus der Karte heraus. Seit der
+   Ansichts-Umschalter (2026-08-17) entfallen ist, ist er der einzige Weg von
+   einer Karte zur anderen (über die Landing, `/`). */
 #steuerung .marke {
   color: var(--tinte); text-decoration: none;
   font-size: .9375rem; font-weight: 600; letter-spacing: -.01em;
   padding: 0 .25rem;
 }
 
-/* Ansichten sind seit der Aufteilung in zwei Seiten Links, die Höhenskala
-   sind weiterhin Buttons (siehe `ui/nav.ts`) — gleiche Optik, verschiedene
-   Elemente, deshalb beide Selektoren. */
-#steuerung button, #steuerung a.ansicht {
+#steuerung button {
   border: none; background: transparent; color: var(--tinte-leise);
   padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
-  cursor: pointer; font-family: inherit; text-decoration: none;
-  white-space: nowrap;
+  cursor: pointer; font-family: inherit; white-space: nowrap;
 }
-#steuerung button.aktiv, #steuerung a.ansicht.aktiv {
+#steuerung button.aktiv {
   background: var(--tinte); color: var(--grund);
 }
 
@@ -161,24 +159,44 @@ a:focus-visible, button:focus-visible {
 }
 #zurueck-gruppe[hidden] { display: none; }
 
-/* Pflichthinweis: muss ohne Interaktion sichtbar sein, deshalb kein
-   hidden/Toggle-Mechanismus wie bei #panel. Redesign-Vorgabe (Change 1):
-   ein ruhiger, kleiner Block statt eines dominanten braunen Banners —
-   dafür jetzt in der unteren rechten Ecke statt bodenmittig, mit klar
-   geringerem Kontrast als Legende/Panel. Trägt seit Change 2/3 auch die
-   Quellenzeile und den Währungshinweis, die zuvor in der Legende standen
-   (siehe `ui/notices.ts`) — „die Legende trägt, was man zum Lesen braucht,
-   die Eckbox, was man zum Vertrauen braucht“. */
+/* Pflichthinweis: bis zum 17. August 2026 musste die Box ohne Interaktion
+   sichtbar sein, deshalb kein hidden/Toggle-Mechanismus wie bei #panel. Der
+   Auftraggeber wollte an diesem Datum stattdessen eine zuklappbare Box (siehe
+   `ui/notices.ts` für die vollständige Begründung) — eingeklappt (Start-
+   zustand) zeigt die Ecke nur den runden Info-Umschalter `.hinweis-
+   umschalter`, ausgeklappt zusätzlich `.hinweis-inhalt` mit dem vollen Text.
+   Redesign-Vorgabe (Change 1): ein ruhiger, kleiner Block statt eines
+   dominanten braunen Banners — dafür jetzt in der unteren rechten Ecke statt
+   bodenmittig, mit klar geringerem Kontrast als Legende/Panel. Trägt seit
+   Change 2/3 auch die Quellenzeile und den Währungshinweis, die zuvor in der
+   Legende standen (siehe `ui/notices.ts`) — „die Legende trägt, was man zum
+   Lesen braucht, die Eckbox, was man zum Vertrauen braucht“. */
 #hinweis {
   position: absolute; right: 1rem; bottom: 1rem;
   max-width: min(16rem, calc(100vw - 2rem));
+  display: flex; flex-direction: column; align-items: flex-end; gap: .4rem;
+}
+.hinweis-umschalter {
+  align-self: flex-end; flex: none;
+  width: 1.375rem; height: 1.375rem; padding: 0;
+  border-radius: 50%; border: 1px solid var(--oberflaeche-rand);
+  background: var(--oberflaeche); color: var(--tinte-leise);
+  display: flex; align-items: center; justify-content: center;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 700;
+  font-size: .75rem; line-height: 1; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
+}
+.hinweis-umschalter:hover { color: var(--tinte); }
+.hinweis-inhalt {
+  width: 100%;
   padding: .55rem .7rem; border-radius: .375rem;
   background: rgba(232, 237, 242, .8); border: 1px solid var(--oberflaeche-rand);
   color: var(--tinte-leise);
   font-size: .625rem; line-height: 1.4; text-align: left;
 }
-#hinweis p { margin: 0 0 .35rem; }
-#hinweis p:last-child { margin-bottom: 0; }
+.hinweis-inhalt[hidden] { display: none; }
+.hinweis-inhalt p { margin: 0 0 .35rem; }
+.hinweis-inhalt p:last-child { margin-bottom: 0; }
 .hinweis-haupt { color: var(--tinte); }
 .hinweis-quelle { font-size: .5625rem; opacity: .85; }
 
@@ -210,7 +228,8 @@ a:focus-visible, button:focus-visible {
    `ui/legend.ts` für die Begründung — die Regeln wurden mitentfernt statt
    als tote CSS liegen zu bleiben. */
 
-/* Task 13: aus der Farbliste wird ein Bedienelement. «Alle Branchen» steht
+/* Task 13: aus der Farbliste wird ein Bedienelement. «Alle» (bis zum
+   Kahlschlag vom 2026-08-17: «Alle Branchen», siehe `ui/legend.ts`) steht
    über der Liste, deshalb eigene Zeile statt `.legende-branchen`-Kind. Look
    an `#steuerung button` angelehnt (dieselbe Stimme: unauffällig, bis auf
    Klick/Zustand), aber kleiner — die Legende bleibt die leiseste Ecke der
@@ -224,15 +243,16 @@ a:focus-visible, button:focus-visible {
 }
 .legende-alle:hover { color: var(--tinte); }
 
-/* Eine Branchenzeile ist jetzt zwei Schaltflächen nebeneinander: der
-   Umschalter (Farbtupfer, Label, Anzahl, Anteil/Saldo) und «nur diese».
-   `.legende-branchen li` bleibt für die unveränderten Zeilen (Rand-
-   markierung, unrecherchierte Marker, Mindesthöhen-Hinweis) die reine
+/* `.legende-branchen li` bleibt für die reinen Farbtupfer-Zeilen (Ansicht
+   «Beschäftigte», «nicht eindeutig bestimmbar», Verlustfarbe) die
    Text+Punkt-Zeile von vorher — `.legende-branche-zeile` überschreibt hier
-   gezielt `align-items`/`justify-content`, statt eine zweite Zeilenart mit
-   eigenem Grundlayout zu duplizieren. */
+   gezielt `justify-content`, für den Umschalter der Branchenzeilen (Task 13).
+   Kahlschlag (2026-08-17, siehe `ui/legend.ts`): eine Branchenzeile ist
+   seither wieder EIN einzelner Umschalter statt zweier Schaltflächen
+   nebeneinander — `.legende-nur` («nur diese») ist mit dem zweiten Knopf
+   ersatzlos entfallen. */
 .legende-branchen li.legende-branche-zeile {
-  justify-content: space-between; gap: .35rem;
+  justify-content: flex-start; gap: .35rem;
 }
 .legende-branche {
   display: flex; align-items: center; gap: .4rem; flex: 1; min-width: 0;
@@ -245,21 +265,6 @@ a:focus-visible, button:focus-visible {
    Textfarbe fällt auf die generische Fussnotenfarbe zurück. */
 .legende-branche[aria-pressed='false'] { opacity: .5; }
 .legende-branche[aria-pressed='false'] .legende-punkt { opacity: .6; }
-.legende-nur {
-  flex: none; border: none; background: transparent; color: var(--tinte-leise);
-  font-size: .625rem; text-transform: none; letter-spacing: normal;
-  padding: 0; cursor: pointer; font-family: inherit; text-decoration: underline;
-  text-underline-offset: .15em;
-}
-.legende-nur:hover { color: var(--tinte); }
-
-/* Bezugs-, Verlust- und Leerauswahl-Zeile (Task 13) — Fliesstext, keine
-   Liste: anders als die Branchenfarben sind das ganze Sätze, keine
-   Aufzählung gleichartiger Einträge. */
-.legende-bezug {
-  font-size: .6875rem; color: var(--tinte-leise); margin-top: .35rem;
-}
-.legende-bezug:first-of-type { margin-top: 0; }
 
 #panel {
   position: absolute; right: 1rem; top: 6.5rem;
@@ -317,13 +322,11 @@ a:focus-visible, button:focus-visible {
    der recherchierten Firma und die zweite Zeile (Kennzahl · Branche)
    ineinander statt untereinander zu stehen. Die zweite Zeile ist
    Nebeninformation, nicht der Name selbst — kleiner und in `--tinte-leise`,
-   demselben Ton, in dem die App sonst Nebensächliches setzt (z.B.
-   `.legende-nur`). Grossbuchstaben bleiben (geerbt von `#hover-label`) auch
-   für Zahlen und Branchennamen: die Legende zeigt Prozent- und
-   Frankenbeträge («80 %», Beträge in `.legende-bezug`) bereits durchgehend
-   versal und bleibt dabei lesbar — dieselbe Stimme für die zweite
-   Hover-Zeile wahrt die Konsistenz, statt für eine Zeile eine Ausnahme zu
-   öffnen. */
+   demselben Ton, in dem die App sonst Nebensächliches setzt (z.B. die
+   Fussnoten in `.hinweis-quelle`). Grossbuchstaben bleiben (geerbt von
+   `#hover-label`) auch für Zahlen und Branchennamen: dieselbe Stimme für die
+   zweite Hover-Zeile wahrt die Konsistenz, statt für eine Zeile eine
+   Ausnahme zu öffnen. */
 #hover-label > span { display: block; white-space: nowrap; }
 #hover-label > span:nth-child(2) { font-size: .625rem; color: var(--tinte-leise); margin-top: .15rem; }
 

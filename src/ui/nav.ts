@@ -71,11 +71,6 @@ export const VIEW_PATH: Record<ViewName, string> = {
   beschaeftigte: '/beschaeftigte/',
 }
 
-const VIEW_LABEL: Record<ViewName, string> = {
-  sichtbare: 'Börsennotierte Firmen',
-  beschaeftigte: 'Beschäftigte',
-}
-
 const MODES: readonly ScaleMode[] = ['logarithmisch', 'linear']
 
 /** Übersetzt den internen Organisationsform-Schlüssel (aus `companies.json`,
@@ -104,14 +99,10 @@ export interface NavOptions {
   onModeChange: (mode: ScaleMode) => void
 }
 
-/** Baut die Steuerung oben links. Bis zu vier Gruppen mit unterschiedlicher
+/** Baut die Steuerung oben links. Bis zu drei Gruppen mit unterschiedlicher
  *  Natur, deshalb unterschiedliche Semantik trotz teils gleicher Optik:
  *
- *  - Die Ansichten sind seit der Aufteilung in zwei Seiten **Navigation** —
- *    `<a>` in einem `<nav>`, die aktuelle Seite mit `aria-current="page"`.
- *    Ein `role="radiogroup"` wäre hier falsch: es verspricht eine Auswahl
- *    innerhalb der Seite, es ist aber ein Seitenwechsel.
- *  - Die Höhenskala bleibt eine echte Auswahl innerhalb der Seite und
+ *  - Die Höhenskala ist eine echte Auswahl innerhalb der Seite und
  *    behält `role="radiogroup"` und `aria-checked`.
  *  - Die Kennzahl ist wie die Höhenskala eine Auswahl von genau **einer**
  *    Option (die Säule trägt immer nur eine Grösse gleichzeitig) — deshalb
@@ -137,27 +128,19 @@ export function createNav(options: NavOptions): HTMLElement {
   const root = document.createElement('div')
   root.id = 'steuerung'
 
+  // Auftrag (2026-08-17): der Ansichts-Umschalter («Börsennotierte Firmen» /
+  // «Beschäftigte») ist entfallen — auf beiden Kartenseiten war er der
+  // einzige Ort, an dem die zwei Kennzahlgruppen der Firmenseite
+  // (Organisationsform, Kennzahl) UND ein reiner Seitenwechsel nebeneinander
+  // standen, obwohl Ersteres eine Auswahl innerhalb der Seite ist und
+  // Letzteres keine. Der Heimlink (`marke` oben) bleibt: er ist damit der
+  // einzige Weg von einer Karte zur anderen, über die Landing (`/`), die
+  // beide Pfade (`VIEW_PATH`) nennt.
   const marke = document.createElement('a')
   marke.className = 'marke'
   marke.href = '/'
   marke.textContent = 'zeigmers'
   root.appendChild(marke)
-
-  const ansichten = document.createElement('nav')
-  ansichten.className = 'gruppe'
-  ansichten.setAttribute('aria-label', 'Ansicht')
-  for (const name of ['sichtbare', 'beschaeftigte'] as const) {
-    const link = document.createElement('a')
-    link.className = 'ansicht'
-    link.href = VIEW_PATH[name]
-    link.textContent = VIEW_LABEL[name]
-    if (name === view) {
-      link.classList.add('aktiv')
-      link.setAttribute('aria-current', 'page')
-    }
-    ansichten.appendChild(link)
-  }
-  root.appendChild(ansichten)
 
   const skala = document.createElement('div')
   skala.className = 'gruppe'

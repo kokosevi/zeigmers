@@ -1,4 +1,4 @@
-import type { Metric } from '../domain/metric'
+import { formatMetric, type Metric } from '../domain/metric'
 import type { ViewName } from './nav'
 
 /** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
@@ -7,13 +7,26 @@ import type { ViewName } from './nav'
  *  `karte/beschaeftigte.ts`). */
 export type NoticeLevel = 'schweiz' | 'kanton'
 
-/** Pflichthinweis je Ansicht — muss ohne Interaktion sichtbar bleiben (siehe
- *  `style.css`, `#hinweis`); das ist eine Spezifikationsvorgabe, kein
- *  Stilentscheid. Redesign (2026-08-14, Change 1): der Text ist gestrafft,
- *  damit er in eine kleine, ruhige Eckbox passt statt in ein dominantes
- *  Banner — die «< 4 → 4»-Rundung und der Flächenverzerrungs-Hinweis (Höhe
- *  vs. Grundfläche) bleiben dabei erhalten. Vorheriger, längerer Wortlaut:
- *  siehe Git-Historie bzw. Redesign-Report (`.superpowers/redesign-report.md`),
+/** Pflichthinweis je Ansicht.
+ *
+ *  Bis zum 17. August 2026 galt hier wörtlich: die Box muss ohne Interaktion
+ *  sichtbar bleiben — eine Spezifikationsvorgabe, kein Stilentscheid, deshalb
+ *  hatte `#hinweis` bis dahin keinen Umschalter, anders als `#panel` (siehe
+ *  `style.css`). An diesem Datum wollte der Auftraggeber stattdessen eine
+ *  zuklappbare Box: im Ausgangszustand eingeklappt, sichtbar nur ein kleiner
+ *  runder Info-Umschalter («i»), ein Klick blendet den Text ein, ein
+ *  weiterer wieder aus (siehe `renderNotices` unten). Das hebt die frühere
+ *  Vorgabe nicht auf, sie verschiebt sie: der Inhalt bleibt auf jeder Ansicht
+ *  erreichbar, nur eben einen Klick entfernt statt ständig im Bild —
+ *  „erreichbar" statt „permanent sichtbar" ist die neue Lesart von
+ *  „ohne Interaktion sichtbar bleiben" für einen Pflichthinweis mit
+ *  Lizenz-/Quellenangaben (siehe `FOOTER` unten).
+ *
+ *  Redesign (2026-08-14, Change 1): der Text ist gestrafft, damit er in eine
+ *  kleine, ruhige Eckbox passt statt in ein dominantes Banner — die
+ *  «< 4 → 4»-Rundung und der Flächenverzerrungs-Hinweis (Höhe vs.
+ *  Grundfläche) bleiben dabei erhalten. Vorheriger, längerer Wortlaut: siehe
+ *  Git-Historie bzw. Redesign-Report (`.superpowers/redesign-report.md`),
  *  Abschnitt „Pflichthinweis vorher/nachher".
  *
  *  Phase 2 (2026-08-14, nationale Navigation): der Satz nannte bis dahin eine
@@ -207,13 +220,15 @@ const SCALE_NOTE =
 //
 // Fix-Runde (2026-08-15, Abschluss-Review Fund 1): der Wortlaut nannte bisher
 // „acht Unternehmen" — mit der Nationalisierung (Phase 3) sind es 201
-// recherchierte, und die Zahl steht bereits, aus `companies.json` berechnet,
-// in der Legende direkt daneben (`karte/firmen.ts`, `coverageLabel`); eine
-// zweite, hier hartkodierte Zahl würde bei jedem künftigen Recherche-Lauf neu
-// veralten können, ohne dass etwas rot würde. Der Satz nennt deshalb keine
-// Zahl mehr. „Ansicht A:" ist ebenfalls entfallen — das Label ist seit der
-// Aufteilung in drei benannte Seiten (`/`, `/firmen/`, `/beschaeftigte/`) tot,
-// es gibt kein A/B mehr in der Oberfläche.
+// recherchierte, und dieselbe aus `companies.json` berechnete Zahl steht
+// bereits auf der Landing (`index.html`, von `src/landing.test.ts` geprüft,
+// siehe auch `ui/legend.ts` für den früheren, seit 2026-08-17 entfallenen
+// zweiten Auftrittsort in der Legende); eine zweite, hier hartkodierte Zahl
+// würde bei jedem künftigen Recherche-Lauf neu veralten können, ohne dass
+// etwas rot würde. Der Satz nennt deshalb keine Zahl mehr. „Ansicht A:" ist
+// ebenfalls entfallen — das Label ist seit der Aufteilung in drei benannte
+// Seiten (`/`, `/firmen/`, `/beschaeftigte/`) tot, es gibt kein A/B mehr in
+// der Oberfläche.
 //
 // Kleinigkeit (2026-08-16, Abschluss-Review): der Satz nannte «Umsatz,
 // Mitarbeitende und Geschäftsjahr» — seit Task 18 (Kennzahl-Verdrahtung)
@@ -274,6 +289,67 @@ const POPULATION_YEAR_NOTE =
   'Die Kennzahl «Beschäftigte je Einwohner» im Klick-Panel vergleicht zwei ' +
   'Jahrgänge: Bevölkerung 31.12.2024, Beschäftigte 2023.'
 
+// Vier Zeilen, umgezogen aus `ui/legend.ts` (Auftrag, 2026-08-17 — siehe dort
+// den Kommentar bei `LegendOptions` für die vollständige Begründung des
+// Kahlschlags, aus dem sie stammen). Leitsatz seit Redesign Change 2/3: „die
+// Legende trägt, was man zum Lesen braucht, die Eckbox, was man zum
+// Vertrauen braucht" — alle vier tragen eine Aussage, ohne die die Karte
+// etwas behauptet, das sie nicht einlöst, und gehören deshalb hierher statt
+// ersatzlos zu verschwinden. Nur in Ansicht «Börsennotierte Firmen» gelesen
+// (`renderNotices` unten) — dieselbe Bedingung wie bei `FOOTER_COMPANIES`.
+
+/** Anteil einer Höchst-Säule-Bezugszeile: die Höhenskala passt sich der
+ *  aktuellen Auswahl an (Branchen-/Organisationsformfilter), nicht einem
+ *  festen Maximum über allen Firmen — ohne diese Angabe sieht eine Höhe wie
+ *  ein absoluter Massstab aus, der sie nicht ist. `top.value` ist bereits der
+ *  echte, vorzeichenbehaftete Wert der höchsten Säule der Auswahl (bei
+ *  Kennzahl Gewinn kann das ein Verlust sein, `formatMetric` schreibt dann
+ *  «Verlust …» davor) — die Aufrufstelle (`karte/firmen.ts`) liest ihn aus
+ *  `SelectionResult.top` über `metricValue`, dieselbe Herleitung, die vorher
+ *  in `ui/legend.ts` stand. */
+export interface TopReference {
+  name: string
+  value: number
+}
+
+function topReferenceNote(metric: Metric, top: TopReference): string {
+  return `Höchste Säule: ${top.name}, ${formatMetric(top.value, metric)}`
+}
+
+/** Mindesthöhen-Hinweis: Säulen unterhalb einer Sichtbarkeitsschwelle stehen
+ *  auf einer Mindesthöhe, damit sie überhaupt sichtbar bleiben — darunter
+ *  bildet die Höhe die Kennzahl nicht mehr ab, nur noch, DASS es die Firma
+ *  gibt. `MIN_VISIBLE_BAR_M`/`MIN_REAL_BAR_M` (`layers/visible.ts`,
+ *  `companyElevations`) floort alle drei Kennzahlen gleich, deshalb ein
+ *  `Record<Metric, string>` wie `HAUPT_SICHTBARE` oben. */
+const FLOOR_NOTE: Record<Metric, string> = {
+  umsatz:
+    'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — unterhalb davon ' +
+    'zeigt die Höhe nicht mehr den Umsatz. Genaue Zahl im Panel.',
+  mitarbeitende:
+    'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — unterhalb davon ' +
+    'zeigt die Höhe nicht mehr die Mitarbeitendenzahl. Genaue Zahl im Panel.',
+  gewinn:
+    'Kleinste Säulen: auf einer Mindesthöhe, damit sie sichtbar bleiben — unterhalb davon ' +
+    'zeigt die Höhe nicht mehr den Reingewinn. Genaue Zahl im Panel.',
+}
+
+/** Randmarkierung: Banken weisen Geschäftsertrag statt Nettoumsatz aus, ihre
+ *  Balken tragen deshalb einen sichtbaren Rand (`OUTLINE_COLOR`,
+ *  `layers/visible.ts`) — ohne diesen Satz liesse sich aus der Karte allein
+ *  nicht ablesen, dass der Rand etwas bedeutet, geschweige denn, was. */
+const OUTLINE_NOTE =
+  'Balken mit Rand: andere Kennzahl als Nettoumsatz (z. B. Geschäftsertrag einer Bank) — ' +
+  'Höhe nicht direkt mit den unmarkierten Balken vergleichbar.'
+
+/** Marker für unrecherchierte Titel: ein an der SIX kotierter Titel ohne
+ *  eigene Recherche erscheint als flacher Punkt ohne Branchenfarbe
+ *  (`buildUnresearchedCompanyLayer`, `layers/visible.ts`) — ohne diesen Satz
+ *  liesse sich aus der Karte allein nicht unterscheiden, ob ein grauer Punkt
+ *  «nicht eindeutig bestimmbar» oder «gar nicht recherchiert» bedeutet. */
+const UNRESEARCHED_NOTE =
+  'Kleiner Punkt: an der SIX kotiert, aber noch nicht recherchiert — Sitz bekannt, keine Höhenaussage.'
+
 function paragraph(text: string, className: string): HTMLParagraphElement {
   const p = document.createElement('p')
   p.className = className
@@ -281,11 +357,45 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
   return p
 }
 
+/** Auf-/zugeklappt: `aria-label` und Sichtbarkeit des Inhalts folgen `expanded`
+ *  — eine einzige Stelle, die beides synchron hält, statt sie an zwei Stellen
+ *  (Aufbau, Klick-Handler) getrennt zu pflegen. */
+function syncToggle(toggle: HTMLButtonElement, inhalt: HTMLElement, expanded: boolean): void {
+  toggle.setAttribute('aria-expanded', String(expanded))
+  toggle.setAttribute(
+    'aria-label',
+    expanded ? 'Pflichthinweise zu dieser Karte ausblenden' : 'Pflichthinweise zu dieser Karte anzeigen',
+  )
+  inhalt.hidden = !expanded
+}
+
+/** Der runde Info-Umschalter («i») — ein `<button>`, kein `<div>` mit
+ *  Klick-Handler: nur ein `<button>` ist ohne weiteres Zutun per Tastatur
+ *  erreichbar (Tab-Reihenfolge, Enter/Leertaste lösen den Klick aus) und
+ *  bekommt den bestehenden Fokusring (`button:focus-visible`, `style.css`)
+ *  automatisch. Der Kreis selbst ist reines CSS (`.hinweis-umschalter` in
+ *  `style.css`, `border-radius: 50%`), kein Icon-Font und kein Bild — diese
+ *  Seite lädt keine fremden Ressourcen (siehe `map.ts`, `BLANK_STYLE`). */
+function createToggle(): HTMLButtonElement {
+  const toggle = document.createElement('button')
+  toggle.type = 'button'
+  toggle.className = 'hinweis-umschalter'
+  toggle.textContent = 'i'
+  return toggle
+}
+
 /** Baut die Eckbox aus mehreren Absätzen statt eines einzelnen `textContent`
  *  (bis 2026-08-13 genügte ein String, weil hier nur der Pflichthinweis
  *  stand) — seit Change 2/3 trägt dieselbe Box zusätzlich die aus der
  *  Legende verschobene Quellen- und Währungszeile, mit eigener, leiserer
- *  Textstufe (`.hinweis-quelle` in style.css).
+ *  Textstufe (`.hinweis-quelle` in style.css). Seit dem 17. August 2026 ist
+ *  die Box zusätzlich zuklappbar (siehe Kommentar oben bei `NoticeLevel`) —
+ *  Auf-/Zugeklappt-Zustand sitzt als Attribut auf `box` selbst, nicht auf
+ *  einem Kindelement: `box.replaceChildren()` unten leert nur die Kinder,
+ *  `box`s eigene Attribute überleben das. Ein Klick auf den Umschalter
+ *  übersteht deshalb jeden erneuten `renderNotices()`-Aufruf (Filter-/
+ *  Kennzahlwechsel etc.), ohne dass der Zustand irgendwo separat vorgehalten
+ *  werden müsste. Startzustand ohne gesetztes Attribut: eingeklappt.
  *
  *  `level` (Phase 2): nur bei `view === 'beschaeftigte'` gelesen — welche der
  *  zwei Stufen den passenden Rundungs-/Flächenhinweis braucht (siehe
@@ -297,9 +407,10 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
  *  `metric` (Abschluss-Review, 2026-08-16, Finding C1, dieselbe Begründung
  *  wie `level`): nur bei `view === 'sichtbare'` gelesen — wählt die
  *  zutreffende Zeile aus `HAUPT_SICHTBARE` und, zusammen mit `metricInChf`,
- *  aus `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK` (siehe dort). Bei
- *  `view === 'beschaeftigte'` bedeutungslos, aber ebenfalls Pflichtparameter
- *  statt optional — aus demselben Grund wie bei `level`.
+ *  aus `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK` (siehe dort), und formt
+ *  seit dem 17. August 2026 zusätzlich `topReference` zur Bezugszeile (siehe
+ *  dort). Bei `view === 'beschaeftigte'` bedeutungslos, aber ebenfalls
+ *  Pflichtparameter statt optional — aus demselben Grund wie bei `level`.
  *
  *  `metricInChf` (Re-Review 2026-08-15, erweitert 2026-08-16 um Finding I6):
  *  nur bei `view === 'sichtbare'` gelesen — bei Kennzahl Umsatz
@@ -307,43 +418,79 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
  *  `stats.profitInChf` (die Aufrufstelle, `karte/firmen.ts`, wählt das
  *  passende Flag aus, siehe dort). Bei Kennzahl Mitarbeitende oder
  *  `view === 'beschaeftigte'` bedeutungslos, aber ebenfalls Pflichtparameter
- *  statt optional — aus demselben Grund wie bei `level`. */
+ *  statt optional — aus demselben Grund wie bei `level`.
+ *
+ *  `topReference` (Auftrag, 2026-08-17, aus `ui/legend.ts` umgezogen): nur
+ *  bei `view === 'sichtbare'` gelesen, und dort nur, wenn die aktuelle
+ *  Auswahl überhaupt eine Firma mit Wert enthält (`SelectionResult.top`,
+ *  `null` bei leerer Auswahl) — die Aufrufstelle reicht `null` durch, wenn
+ *  `result.top` selbst `null` ist. Bei `view === 'beschaeftigte'`
+ *  bedeutungslos, aber ebenfalls Pflichtparameter statt optional (`null` als
+ *  neutraler Platzhalter, dieselbe Konvention wie `metric`/`metricInChf` bei
+ *  dieser Ansicht in `karte/beschaeftigte.ts`) — aus demselben Grund wie bei
+ *  `level`. */
 export function renderNotices(
   view: ViewName,
   level: NoticeLevel,
   metric: Metric,
   metricInChf: boolean,
+  topReference: TopReference | null,
 ): void {
-  let box = document.getElementById('hinweis')
-  if (!box) {
-    box = document.createElement('div')
-    box.id = 'hinweis'
-    document.getElementById('ui')?.appendChild(box)
+  let boxOrNull = document.getElementById('hinweis')
+  if (!boxOrNull) {
+    boxOrNull = document.createElement('div')
+    boxOrNull.id = 'hinweis'
+    document.getElementById('ui')?.appendChild(boxOrNull)
   }
+  const box = boxOrNull
+  const expanded = box.dataset.expanded === 'true'
   box.replaceChildren()
+  box.dataset.expanded = String(expanded)
+
+  const inhalt = document.createElement('div')
+  inhalt.className = 'hinweis-inhalt'
+
+  const toggle = createToggle()
+  toggle.addEventListener('click', () => {
+    const next = box.dataset.expanded !== 'true'
+    box.dataset.expanded = String(next)
+    syncToggle(toggle, inhalt, next)
+  })
+  syncToggle(toggle, inhalt, expanded)
+  box.append(toggle, inhalt)
+
   const haupt = view === 'sichtbare' ? HAUPT_SICHTBARE[metric] : HAUPT_BESCHAEFTIGTE[level]
-  box.appendChild(paragraph(haupt, 'hinweis-haupt'))
+  inhalt.appendChild(paragraph(haupt, 'hinweis-haupt'))
   if (view === 'sichtbare') {
     const note = currencyNote(metric, metricInChf)
-    if (note) box.appendChild(paragraph(note, 'hinweis-haupt'))
+    if (note) inhalt.appendChild(paragraph(note, 'hinweis-haupt'))
+    // Vier aus `ui/legend.ts` umgezogene Zeilen (siehe Kommentar dort bei
+    // `LegendOptions`) — alle vier nur in dieser Ansicht, dieselbe Bedingung
+    // wie zuvor in der Legende.
+    if (topReference) {
+      inhalt.appendChild(paragraph(topReferenceNote(metric, topReference), 'hinweis-quelle'))
+    }
+    inhalt.appendChild(paragraph(FLOOR_NOTE[metric], 'hinweis-quelle'))
+    inhalt.appendChild(paragraph(OUTLINE_NOTE, 'hinweis-quelle'))
+    inhalt.appendChild(paragraph(UNRESEARCHED_NOTE, 'hinweis-quelle'))
   }
-  box.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
+  inhalt.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Seenlayer zeichnet auf beiden Karten
   // (`layers/viewLayers.ts`), die Quelle gehört deshalb neben `FOOTER`, nicht
   // hinter eine `view`-Prüfung (siehe Korrektur-Kommentar an `FOOTER_LAKES`
   // oben).
-  box.appendChild(paragraph(FOOTER_LAKES, 'hinweis-quelle'))
+  inhalt.appendChild(paragraph(FOOTER_LAKES, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Skalenschalter (und damit die Formel, um
   // die es hier geht) ist in beiden Ansichten sichtbar und bedienbar, nicht
   // nur in Ansicht B.
-  box.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
-  if (view === 'sichtbare') box.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
+  inhalt.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
+  if (view === 'sichtbare') inhalt.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
   // Nur auf der Kantonsstufe: die «Beschäftigte je Einwohner»-Zeile, die
   // dieser Hinweis erklärt, steht ausschliesslich im Gemeinde-Klick-Panel
   // (`ui/panel.ts`) — auf der Schweiz-Stufe öffnet ein Klick keinen Panel
   // (er betritt den Kanton, siehe `karte/beschaeftigte.ts`), die Zeile
   // erscheint dort nie.
   if (view === 'beschaeftigte' && level === 'kanton') {
-    box.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
+    inhalt.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
   }
 }
