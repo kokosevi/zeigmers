@@ -109,8 +109,9 @@ export interface CompanyData {
     orgForms: string[]
     /** Anzahl Zeilen mit `researched=yes` — der Zähler in der
      *  Abdeckungsangabe (Beispiel: „201 Gesellschaften von 224 kotierten
-     *  SIX-Titeln auf der Karte gezeigt, davon 201 recherchiert", siehe
-     *  `karte/firmen.ts`, `coverageLabel`). */
+     *  SIX-Titeln auf der Karte gezeigt, davon 201 recherchiert", seit
+     *  2026-08-17 in der Eckbox, siehe `ui/notices.ts`, `Coverage`/
+     *  `coverageNote`, verdrahtet in `karte/firmen.ts`). */
     researched: number
     /** Nenner derselben Angabe: live von SIX abgefragte Gesamtzahl kotierter
      *  Titel (`companies.fetch_six_titles()`), nicht die Zeilenzahl der CSV —

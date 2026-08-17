@@ -10,7 +10,7 @@ export const DAMPENING_EXPONENT = 0.4
 /** Höhen in Metern. `'logarithmisch'` (Exponent `DAMPENING_EXPONENT`) ist der
  *  Standard für Ansicht «Beschäftigte» (Re-Review 2026-08-15: hiess hier
  *  fälschlich «Ansicht A» — das ist «Börsennotierte Firmen», nicht
- *  «Beschäftigte», siehe `ui/nav.ts`, `VIEW_LABEL`), sonst bestünde die Karte
+ *  «Beschäftigte», siehe `ui/nav.ts`, `ViewName`), sonst bestünde die Karte
  *  aus einem Turm und einer Ebene — siehe `ui/nav.ts`, `DEFAULT_MODE`.
  *
  *  Namensstand (Redesign Change 5, 2026-08-14): Button und Legende sagen

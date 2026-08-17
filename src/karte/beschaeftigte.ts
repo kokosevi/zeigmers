@@ -153,11 +153,12 @@ export async function startBeschaeftigte(): Promise<void> {
     })
     // Diese Seite lädt `companies.json` nicht (siehe `karte/basis.ts`,
     // `createBasis`-Dokumentation) und hat deshalb weder eine Kennzahl noch
-    // `stats.revenueInChf`/`stats.profitInChf` zur Hand — unbeachtlich,
-    // `renderNotices` liest beide Parameter nur bei `view === 'sichtbare'`
-    // (siehe dort). `'umsatz'`/`true` sind hier neutrale Platzhalter, kein
+    // `stats.revenueInChf`/`stats.profitInChf` noch eine höchste Säule noch
+    // eine Abdeckungsangabe zur Hand — unbeachtlich, `renderNotices` liest
+    // alle vier Parameter nur bei `view === 'sichtbare'` (siehe dort).
+    // `'umsatz'`/`true`/`null`/`null` sind hier neutrale Platzhalter, kein
     // Fakt über diese Ansicht.
-    renderNotices('beschaeftigte', level, 'umsatz', true)
+    renderNotices('beschaeftigte', level, 'umsatz', true, null, null)
     renderBackControl(level === 'kanton', exitToSwitzerland)
   }
 

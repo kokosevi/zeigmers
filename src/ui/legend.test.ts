@@ -14,9 +14,9 @@ beforeEach(() => {
 })
 
 // Dieselbe minimale Firmen-Fabrik wie `domain/selection.test.ts` — auch hier
-// entstehen `SelectionResult`/`branchTotals` aus echten Firmen über
-// `applySelection`, statt Summen und Anzahlen von Hand in die Testfixtur zu
-// schreiben (Zahlen werden hergeleitet, nie hartkodiert).
+// entstehen `SelectionResult` aus echten Firmen über `applySelection`, statt
+// Werte von Hand in die Testfixtur zu schreiben (Zahlen werden hergeleitet,
+// nie hartkodiert).
 function company(overrides: Partial<Company> = {}): Company {
   return {
     uid: null, name: 'X AG', sixSymbol: null, lon: 8, lat: 47, nogaGroupIndex: 1,
@@ -55,45 +55,102 @@ function options(
   }
 }
 
-describe('renderLegend als Filter', () => {
-  it('zeigt bei Umsatz den Anteil je Branche', () => {
-    // Gruppe 1: 250 + 150 = 400. Gruppe 2: 100. Gesamtsumme 500 — Gruppe 1
-    // trägt 400/500 = 80 % bei.
+/** Alle Zeilen (`<li>`) innerhalb von `#legende` als Text — hilft, gezielt
+ *  nach einem Eintrag mit exakt diesem Wortlaut zu suchen (z. B. der
+ *  Verlust-Swatch), statt einen Teilstring irgendwo in der ganzen Box zu
+ *  matchen. */
+function zeilenTexte(): string[] {
+  return [...document.querySelectorAll('#legende li')].map((li) => li.textContent ?? '')
+}
+
+describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
+  // Ansicht «Börsennotierte Firmen» zeigt seither nur noch Farbtupfer und
+  // Branchenname je Zeile — weder Anzahl noch Anteil/Saldo. Vier der
+  // ehemals erklärenden Sätze sind in die Eckbox umgezogen (siehe
+  // `notices.test.ts`), der Rest ist ersatzlos entfallen.
+  it('zeigt in einer Branchenzeile nur Farbtupfer und Namen, keine Zahl', () => {
+    const companies = [company({ nogaGroupIndex: 1, revenueChf: 250 })]
+    renderLegend(options(companies, 'umsatz'))
+    const zeile = document.querySelector('[data-branch="1"]')!
+    // Der Branchenname selbst steht fest (`NOGA_GROUPS`, Index 1) — die Zeile
+    // darf daneben keine Ziffer und kein Prozentzeichen tragen.
+    expect(zeile.textContent).not.toMatch(/\d/)
+    expect(zeile.textContent).not.toContain('%')
+  })
+
+  it('zeigt keine «nur diese»-Schaltfläche mehr', () => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, 'umsatz'))
+    expect(document.querySelector('[data-only]')).toBeNull()
+  })
+
+  it('nennt den Weg zurück zur vollen Auswahl nur noch mit einem Wort', () => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, 'umsatz'))
+    expect(document.querySelector('[data-all-branches]')!.textContent).toBe('Alle')
+  })
+
+  it('zeigt keine Titelzeile mit Abdeckungsangabe mehr', () => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, 'umsatz', { scopeLabel: '201 Gesellschaften von 224 kotierten SIX-Titeln' }))
+    expect(document.querySelector('.legende-titel')).toBeNull()
+    expect(document.getElementById('legende')!.textContent).not.toContain('kotierten SIX-Titeln')
+  })
+
+  it('nennt keine erklärenden Sätze mehr (Randmarkierung, unrecherchiert, Mindesthöhe, Branchenzahl)', () => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, 'umsatz'))
+    const text = document.getElementById('legende')!.textContent!
+    expect(text).not.toContain('Balken mit Rand')
+    expect(text).not.toContain('noch nicht recherchiert')
+    expect(text).not.toContain('Mindesthöhe')
+    expect(text).not.toContain('Branchenzahl')
+  })
+
+  it('nennt keine Bezugszeile «Höchste Säule» mehr', () => {
     const companies = [
-      company({ nogaGroupIndex: 1, revenueChf: 250 }),
-      company({ nogaGroupIndex: 1, revenueChf: 150 }),
-      company({ nogaGroupIndex: 2, revenueChf: 100 }),
+      company({ nogaGroupIndex: 1, name: 'Nestlé', revenueChf: 89_500_000_000 }),
+      company({ nogaGroupIndex: 1, name: 'Kleinfirma AG', revenueChf: 1_000_000 }),
     ]
     renderLegend(options(companies, 'umsatz'))
-    expect(document.querySelector('[data-branch="1"]')!.textContent).toContain('80 %')
+    expect(document.getElementById('legende')!.textContent).not.toContain('Höchste Säule')
   })
 
-  it('zeigt bei Gewinn den Saldo statt eines Anteils', () => {
-    // Ein Anteil an einer Summe, in die 41 negative Beträge eingehen, wäre
-    // eine Zahl ohne Bedeutung — deshalb der Saldo, nicht ein Prozentwert.
-    const companies = [company({ nogaGroupIndex: 1, profitChf: -75_000_000 })]
-    renderLegend(options(companies, 'gewinn'))
-    const text = document.querySelector('[data-branch="1"]')!.textContent!
-    expect(text).toContain('Verlust')
-    expect(text).not.toContain('%')
+  // Auftraggeber-Korrektur (2026-08-17): der Leerauswahl-Hinweis war zunächst
+  // mit den übrigen erklärenden Sätzen entfernt worden — zu Unrecht, er ist
+  // kein erklärender Satz, sondern die Antwort auf einen Zustand, den die
+  // Karte sonst unerklärt liesse (leere Karte: kaputt oder selbst gefiltert?).
+  it('sagt es, wenn alle Branchen abgewählt sind', () => {
+    const companies = [company({ nogaGroupIndex: 1 })]
+    renderLegend(options(companies, 'umsatz', { selectedBranches: new Set() }))
+    expect(document.getElementById('legende')!.textContent).toContain('Keine Branche ausgewählt')
   })
 
-  it('zeigt bei gemischten Vorzeichen den Saldo, nicht die Summe der Beträge', () => {
-    // Regressionsschutz für eine offene Testlücke aus Task 7: `branchTotals`
-    // summiert vorzeichenrichtig (+300 Mio., -100 Mio. = 200 Mio.), nicht die
-    // Summe der Beträge (400 Mio.) — ein Rückfall auf Letzteres blieb bisher
-    // unentdeckt, weil kein Test eine Branche mit Gewinn- UND Verlustfirmen
-    // durch die Legende schickte.
+  it('zeigt den Leerauswahl-Hinweis nicht, solange mindestens eine Branche gewählt ist', () => {
     const companies = [
-      company({ nogaGroupIndex: 1, profitChf: 300_000_000 }),
-      company({ nogaGroupIndex: 1, profitChf: -100_000_000 }),
+      company({ nogaGroupIndex: 1 }),
+      company({ nogaGroupIndex: 2 }),
     ]
-    renderLegend(options(companies, 'gewinn'))
-    const text = document.querySelector('[data-branch="1"]')!.textContent!
-    expect(text).toContain('200 Mio.')
-    expect(text).not.toContain('400 Mio.')
+    renderLegend(options(companies, 'umsatz', { selectedBranches: new Set([1]) }))
+    expect(document.getElementById('legende')!.textContent).not.toContain('Keine Branche ausgewählt')
   })
 
+  it('zeigt bei Ansicht «Beschäftigte» weiterhin die Titelzeile mit Jahr und Einheit', () => {
+    renderLegend({
+      view: 'beschaeftigte',
+      year: 2023,
+      presentGroups: presentGroupsFromIndices([1, 2]),
+      scopeLabel: 'Kanton Aargau',
+    })
+    const titel = document.querySelector('.legende-titel')
+    expect(titel).not.toBeNull()
+    expect(titel!.textContent).toContain('Beschäftigte')
+    expect(titel!.textContent).toContain('Kanton Aargau')
+    expect(titel!.textContent).toContain('Datenjahr 2023')
+  })
+})
+
+describe('renderLegend als Filter', () => {
   it('meldet den Klick auf eine Branche', () => {
     const getoggelt: number[] = []
     const companies = [
@@ -103,17 +160,6 @@ describe('renderLegend als Filter', () => {
     renderLegend(options(companies, 'umsatz', { onToggleBranch: (i) => getoggelt.push(i) }))
     document.querySelector<HTMLButtonElement>('[data-branch="1"]')!.click()
     expect(getoggelt).toEqual([1])
-  })
-
-  it('meldet den Klick auf «nur diese»', () => {
-    const nurDiese: number[] = []
-    const companies = [
-      company({ nogaGroupIndex: 1 }),
-      company({ nogaGroupIndex: 2 }),
-    ]
-    renderLegend(options(companies, 'umsatz', { onOnlyBranch: (i) => nurDiese.push(i) }))
-    document.querySelector<HTMLButtonElement>('[data-only="2"]')!.click()
-    expect(nurDiese).toEqual([2])
   })
 
   it('meldet den Klick auf «alle»', () => {
@@ -134,19 +180,12 @@ describe('renderLegend als Filter', () => {
     expect(document.querySelector('[data-branch="2"]')!.getAttribute('aria-pressed')).toBe('true')
   })
 
-  it('sagt es, wenn alle Branchen abgewählt sind', () => {
-    const companies = [company({ nogaGroupIndex: 1 })]
-    renderLegend(options(companies, 'umsatz', { selectedBranches: new Set() }))
-    expect(document.getElementById('legende')!.textContent)
-      .toContain('Keine Branche ausgewählt')
-  })
-
   it('bildet für die Branchenschaltflächen eine benannte ARIA-Gruppe', () => {
     // Ohne `role="group"` gibt der Container seinen `aria-label` nicht aus
     // (dasselbe Muster, das Task 12 für die Organisationsform in `ui/nav.ts`
     // schon einmal geschlossen hat) — eine Screenreader-Nutzerin hörte sonst
-    // nur "Button, gedrückt, Industrie und Energie, 3, 45 %", ohne jeden
-    // Hinweis, dass die Zeilen eine zusammengehörige Gruppe bilden.
+    // nur "Button, gedrückt, Industrie und Energie", ohne jeden Hinweis,
+    // dass die Zeilen eine zusammengehörige Gruppe bilden.
     const companies = [
       company({ nogaGroupIndex: 1 }),
       company({ nogaGroupIndex: 2 }),
@@ -157,49 +196,20 @@ describe('renderLegend als Filter', () => {
     expect(gruppe?.contains(document.querySelector('[data-branch="1"]'))).toBe(true)
     expect(gruppe?.contains(document.querySelector('[data-branch="2"]'))).toBe(true)
   })
-
-  it('nennt, worauf sich die Höhe gerade bezieht', () => {
-    // Auswahlabhängiges vmax ohne Bezugszeile behauptete einen absoluten
-    // Massstab, den die Karte nicht hat.
-    const companies = [
-      company({ nogaGroupIndex: 1, name: 'Nestlé', revenueChf: 89_500_000_000 }),
-      company({ nogaGroupIndex: 1, name: 'Kleinfirma AG', revenueChf: 1_000_000 }),
-    ]
-    renderLegend(options(companies, 'umsatz'))
-    expect(document.getElementById('legende')!.textContent).toContain('Höchste Säule')
-    expect(document.getElementById('legende')!.textContent).toContain('Nestlé')
-  })
-
-  // Finding I8: `result.vmax` ist der vorzeichenlose BETRAG (siehe
-  // `applySelection`, `Math.abs`) — bei einer Verlustfirma an der Spitze
-  // stand hier bisher ein positiver Betrag ohne das Wort «Verlust».
-  it('nennt bei einem Verlust an der Spitze das Wort «Verlust», nicht den blossen Betrag', () => {
-    const companies = [
-      company({ nogaGroupIndex: 1, name: 'Grösster Verlust AG', profitChf: -900_000_000 }),
-      company({ nogaGroupIndex: 1, name: 'Kleiner Gewinn AG', profitChf: 10_000_000 }),
-    ]
-    renderLegend(options(companies, 'gewinn'))
-    const text = document.getElementById('legende')!.textContent!
-    expect(text).toContain('Höchste Säule')
-    expect(text).toContain('Grösster Verlust AG')
-    expect(text).toMatch(/Höchste Säule:[^]*Verlust/)
-  })
 })
 
-describe('renderLegend — Verlustfarbe (Finding C2)', () => {
-  it('zeigt in der Gewinn-Ansicht einen Swatch für die Verlustfarbe', () => {
+describe('renderLegend — Verlustfarbe (Finding C2, seit 2026-08-17 auf ein Wort gekürzt)', () => {
+  it('zeigt in der Gewinn-Ansicht einen Swatch mit dem Wort «Verlust»', () => {
     const companies = [company({ nogaGroupIndex: 1, profitChf: -1 })]
     renderLegend(options(companies, 'gewinn'))
-    const text = document.getElementById('legende')!.textContent!
-    expect(text).toContain('Verlust')
-    expect(text).toMatch(/Diese Farbe/)
+    expect(zeilenTexte()).toContain('Verlust')
   })
 
   it('zeigt den Verlust-Swatch nicht bei Umsatz oder Mitarbeitende', () => {
     for (const metric of ['umsatz', 'mitarbeitende'] as const) {
       const companies = [company({ nogaGroupIndex: 1 })]
       renderLegend(options(companies, metric))
-      expect(document.getElementById('legende')!.textContent).not.toMatch(/Diese Farbe/)
+      expect(zeilenTexte()).not.toContain('Verlust')
     }
   })
 
@@ -210,26 +220,6 @@ describe('renderLegend — Verlustfarbe (Finding C2)', () => {
   it('zeigt den Verlust-Swatch nicht, wenn die Auswahl keine Verlustfirma enthält', () => {
     const companies = [company({ nogaGroupIndex: 1, profitChf: 10_000_000 })]
     renderLegend(options(companies, 'gewinn'))
-    expect(document.getElementById('legende')!.textContent).not.toMatch(/Diese Farbe/)
-  })
-})
-
-describe('renderLegend — Mindesthöhen-Hinweis folgt der Kennzahl (Finding I1)', () => {
-  it.each([
-    ['umsatz' as const, 'nicht mehr den Umsatz'],
-    ['mitarbeitende' as const, 'nicht mehr die Mitarbeitendenzahl'],
-    ['gewinn' as const, 'nicht mehr den Reingewinn'],
-  ])('nennt bei Kennzahl %s die richtige Grösse', (metric, expected) => {
-    const companies = [company({ nogaGroupIndex: 1 })]
-    renderLegend(options(companies, metric))
-    expect(document.getElementById('legende')!.textContent).toContain(expected)
-  })
-})
-
-describe('renderLegend — Branchenzahl-Hinweis (Finding I4)', () => {
-  it('sagt, dass die Branchenzahl nur Gesellschaften mit Wert zählt', () => {
-    const companies = [company({ nogaGroupIndex: 1 })]
-    renderLegend(options(companies, 'umsatz'))
-    expect(document.getElementById('legende')!.textContent).toContain('Branchenzahl')
+    expect(zeilenTexte()).not.toContain('Verlust')
   })
 })

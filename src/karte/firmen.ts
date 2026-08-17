@@ -5,12 +5,11 @@ import type { ScaleMode } from '../domain/scale'
 import { applySelection, type Selection } from '../domain/selection'
 import { buildViewLayers } from '../layers/viewLayers'
 import { loadCompanies, type Company } from '../layers/visible'
-import { formatGermanDate } from '../ui/format'
 import { hideHoverLabel } from '../ui/hoverLabel'
 import { renderKennzahlen } from '../ui/kennzahlen'
 import { renderLegend } from '../ui/legend'
 import { DEFAULT_MODE, type NavOptions } from '../ui/nav'
-import { renderNotices } from '../ui/notices'
+import { renderNotices, type Coverage, type TopReference } from '../ui/notices'
 import { hidePanel, showCompanyPanel, type CompanyContext } from '../ui/panel'
 import { createBasis, mountNav } from './basis'
 
@@ -41,29 +40,20 @@ export async function startFirmen(): Promise<void> {
       .map((c) => (c.placeholder ? NOGA_UNKNOWN_INDEX : c.nogaGroupIndex)),
   )
 
-  // Die Abdeckungsangabe der Karte selbst — zwei Zahlen, nicht nur eine.
-  // "201 recherchiert" allein wäre unvollständig: wer die Marker zählt, sieht
-  // `stats.count` (platziert, inkl. der unrecherchierten Marker), nicht 224 —
-  // ein SIX-Titel ohne eindeutigen Zefix-Sitz erscheint gar nicht auf der
-  // Karte (siehe `companies.build_artifact`). Beide Zahlen stehen deshalb
-  // nebeneinander. Aus den Artefaktdaten zur Laufzeit berechnet, nicht
-  // hartkodiert — ein künftiger Sync-/Recherche-Lauf zieht beide Zahlen
-  // automatisch nach.
-  //
-  // Abschluss-Review, Fund 4 (2026-08-15): `stats.count`/`stats.researched`
-  // zählen Gesellschaften (Namen-/PS-Aktien und zweite Handelslinien
-  // derselben Firma zusammengefasst, `companies.group_six_titles()`),
-  // `stats.totalListed` zählt kotierte Titel — zwei verschiedene Grössen mit
-  // demselben Nenner 224 in einen Satz zu setzen ("… von 224 kotierten
-  // Titeln") hätte 201 Gesellschaften als Titel ausgegeben. Der Satz nennt
-  // deshalb beide Einheiten.
-  const coverageLabel =
-    `${companies.stats.count} Gesellschaften von ${companies.stats.totalListed} ` +
-    `kotierten SIX-Titeln auf der Karte gezeigt, davon ${companies.stats.researched} ` +
-    'recherchiert' +
-    (companies.stats.sixRetrievedDate
-      ? ` · SIX-Stand ${formatGermanDate(companies.stats.sixRetrievedDate)}`
-      : '')
+  // Abdeckungsangabe der Karte selbst — bis zum Kahlschlag vom 2026-08-17
+  // stand sie in der Legenden-Titelzeile, seither in der Eckbox (Auftraggeber-
+  // Korrektur, selbes Datum, siehe `ui/notices.ts`, `Coverage`): ohne sie
+  // liesse sich aus der Karte selbst nicht ablesen, dass ein Teil der
+  // kotierten Titel gar nicht erscheint (23 von 224 ohne eindeutigen
+  // Zefix-Sitz). Unverändert direkt aus `companies.stats` übernommen, keine
+  // eigene Berechnung nötig — `coverageNote()` in `ui/notices.ts` formt den
+  // Satz daraus, inklusive SIX-Abrufstand.
+  const coverage: Coverage = {
+    count: companies.stats.count,
+    totalListed: companies.stats.totalListed,
+    researched: companies.stats.researched,
+    sixRetrievedDate: companies.stats.sixRetrievedDate,
+  }
 
   // Beschäftigte der Schweiz insgesamt — der Vergleich, für den es die
   // Kennzahl «Mitarbeitende» gibt (siehe `ui/kennzahlen.ts`). Aus den 26
@@ -170,7 +160,6 @@ export async function startFirmen(): Promise<void> {
       view: 'sichtbare',
       year,
       presentGroups,
-      scopeLabel: coverageLabel,
       metric: selection.metric,
       result,
       selectedBranches: selection.branches,
@@ -179,10 +168,6 @@ export async function startFirmen(): Promise<void> {
         if (branches.has(index)) branches.delete(index)
         else branches.add(index)
         selection = { ...selection, branches }
-        render()
-      },
-      onOnlyBranch: (index) => {
-        selection = { ...selection, branches: new Set([index]) }
         render()
       },
       onAllBranches: () => {
@@ -215,7 +200,19 @@ export async function startFirmen(): Promise<void> {
     // Produktivpfad gelesen (Finding I6).
     const metricInChf =
       selection.metric === 'gewinn' ? companies.stats.profitInChf : companies.stats.revenueInChf
-    renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf)
+
+    // Auftrag (2026-08-17): die Bezugszeile «Höchste Säule» ist aus der
+    // Legende in die Eckbox umgezogen (siehe `ui/notices.ts`, `TopReference`)
+    // — dieselbe Herleitung, die vorher in `ui/legend.ts` stand:
+    // `result.top` ist `null` bei leerer Auswahl, `metricValue` liest den
+    // echten, vorzeichenbehafteten Wert (bei Gewinn ggf. ein Verlust),
+    // `result.vmax` bleibt der reine Typsicherheits-Fallback (kann laut
+    // `applySelection` nicht eintreten, `result.top` wird nur bei einem
+    // echten Wert gesetzt).
+    const topReference: TopReference | null = result.top
+      ? { name: result.top.name, value: metricValue(result.top, selection.metric) ?? result.vmax }
+      : null
+    renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf, topReference, coverage)
   }
 
   const navOptions: NavOptions = {
