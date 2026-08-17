@@ -409,8 +409,27 @@ export function buildUnresearchedCompanyLayer(
  *  echten Ladefehler (Netzwerk, HTTP-Status, kaputtes JSON) unterscheiden und
  *  eine zutreffende statt der generischen «Daten konnten nicht geladen
  *  werden»-Meldung zeigen kann. Die Daten SIND geladen — sie sind nur älter
- *  als der Code, der sie liest (siehe `parseCompanyData` unten). */
-export class StaleCompanyDataError extends Error {}
+ *  als der Code, der sie liest (siehe `parseCompanyData` unten).
+ *
+ *  `message` ist bewusst knapp und richtet sich an die Besucherin, nicht an
+ *  eine Entwicklerin: Re-Review (2026-08-17) — die erste Fassung hatte die
+ *  Feldliste und den Verweis auf `netlify.toml` direkt in `message`
+ *  geschrieben, lesbar in `showError`s Fehlerbox. Wer die Karte besucht,
+ *  kann weder in `netlify.toml` nachsehen noch mit `companies[].profitChf`
+ *  etwas anfangen — das war Diagnose, keine Auskunft. Die Feldliste bleibt
+ *  trotzdem auffindbar, nur nicht mehr auf der Fehlerbox: `missingFields`
+ *  unten trägt sie als Instanz-Detail (Tests greifen darauf zu, ohne die
+ *  sichtbare Meldung zu parsen), und `parseCompanyData` schreibt sie
+ *  zusätzlich per `console.error` in die Entwicklerkonsole, bevor sie
+ *  wirft. */
+export class StaleCompanyDataError extends Error {
+  constructor(
+    message: string,
+    readonly missingFields: readonly string[],
+  ) {
+    super(message)
+  }
+}
 
 /** Prüft, ob geparstes JSON die Form trägt, die dieser Code-Stand von
  *  `companies.json` erwartet, und liefert es als `CompanyData` — oder wirft
@@ -442,7 +461,8 @@ export class StaleCompanyDataError extends Error {}
  *  Feld hier kein Dauerzustand wie z. B. `LevelStats.population` (`data/
  *  loader.ts`, absichtlich optional für ältere Artefakte/Fixtures, die es nie
  *  bekommen) — es behebt sich von selbst, sobald der Cache abläuft oder die
- *  Seite neu geladen wird, und genau das sagt die Meldung.
+ *  Seite neu geladen wird, und genau das sagt die sichtbare Meldung — knapp,
+ *  ohne die Feldliste (siehe `StaleCompanyDataError` oben).
  *
  *  Geprüft werden alle vier Felder desselben Umbaus (Organisationsform- und
  *  Reingewinn-Umbau), nicht nur `stats.orgForms`, das zufällig zuerst
@@ -465,11 +485,17 @@ export function parseCompanyData(json: unknown): CompanyData {
   if (firstCompany && !('profitChf' in firstCompany)) missing.push('companies[].profitChf')
 
   if (missing.length > 0) {
+    // Diagnose für die Entwicklerkonsole — Feldliste und Cache-Verweis,
+    // beides für eine Besucherin unbrauchbar (siehe `StaleCompanyDataError`
+    // oben), deshalb hier statt in der Fehlerbox.
+    console.error(
+      `companies.json fehlen Felder, die dieser Code-Stand erwartet ` +
+        `(${missing.join(', ')}) — vermutlich noch aus dem Cache-Fenster ` +
+        `von /data/* (siehe netlify.toml).`,
+    )
     throw new StaleCompanyDataError(
-      `companies.json stammt aus einer älteren Version dieser Anwendung ` +
-        `(es fehlen: ${missing.join(', ')}) — vermutlich noch aus dem ` +
-        `Cache-Fenster von /data/* (siehe netlify.toml). Ein Neuladen der ` +
-        `Seite behebt das meistens.`,
+      'Die geladenen Daten sind älter als diese Version der Anwendung — ein Neuladen der Seite behebt das.',
+      missing,
     )
   }
   return data as CompanyData

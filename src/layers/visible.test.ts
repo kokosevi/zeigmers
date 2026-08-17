@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { applySelection } from '../domain/selection'
 import type { Metric } from '../domain/metric'
 import { CANTON_ELEVATION_M } from './cantons'
@@ -388,33 +388,62 @@ describe('parseCompanyData', () => {
     }
     const stale = { companies: [staleCompany], stats: staleStats }
 
+    // `console.error` trägt die Diagnose (siehe `parseCompanyData`) — in
+    // diesem Test bewusst stummgeschaltet, sonst würde jeder Testlauf die
+    // erwartete Konsolenausgabe als Rauschen mitloggen.
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+
     expect(() => parseCompanyData(stale)).toThrow(StaleCompanyDataError)
 
-    // Alle vier Felder desselben Umbaus stehen in der Meldung, nicht nur
-    // `stats.orgForms`, das im Produktionsvorfall zufällig zuerst geknallt
-    // hat (`profitChf`/`orgForm` je Zeile, `stats.profitInChf` blieben sonst
-    // unbewacht, bis die Gewinn-Kennzahl oder ein zweiter Organisationsform-
-    // Wert sie das nächste Mal auslöst).
-    let message = ''
+    let error: StaleCompanyDataError | undefined
     try {
       parseCompanyData(stale)
-    } catch (error) {
-      message = (error as Error).message
+    } catch (caught) {
+      error = caught as StaleCompanyDataError
     }
-    expect(message).toContain('stats.orgForms')
-    expect(message).toContain('stats.profitInChf')
-    expect(message).toContain('companies[].orgForm')
-    expect(message).toContain('companies[].profitChf')
-    // Die Meldung nennt die tatsächliche Ursache und einen Ausweg, nicht nur
-    // «geht nicht» — derselbe Massstab wie jede andere Fehlermeldung dieser
-    // App (siehe `ui/error.ts`, `showError`-Aufrufer).
-    expect(message).toContain('Neuladen')
+
+    // Die sichtbare Meldung richtet sich an die Besucherin: knapp, ohne
+    // Feldnamen oder Dateiverweis (Re-Review 2026-08-17 — die erste Fassung
+    // hatte genau das in der Fehlerbox stehen, unbrauchbar für alle ohne
+    // Zugriff auf den Code).
+    expect(error?.message).toBe(
+      'Die geladenen Daten sind älter als diese Version der Anwendung — ein Neuladen der Seite behebt das.',
+    )
+    expect(error?.message).not.toContain('orgForm')
+    expect(error?.message).not.toContain('netlify.toml')
+
+    // Alle vier Felder desselben Umbaus bleiben auffindbar — nicht nur
+    // `stats.orgForms`, das im Produktionsvorfall zufällig zuerst geknallt
+    // hat —, nur eben als Diagnose statt als sichtbarer Text: einmal
+    // programmatisch an der Fehlerinstanz (`missingFields`, unten geprüft)
+    // und einmal in der Entwicklerkonsole (`console.error`, hier geprüft).
+    expect(error?.missingFields).toEqual([
+      'stats.orgForms', 'stats.profitInChf', 'companies[].orgForm', 'companies[].profitChf',
+    ])
+    expect(consoleError).toHaveBeenCalledTimes(2) // je ein Aufruf pro obigem parseCompanyData()
+    const logged = String(consoleError.mock.calls[0]?.[0])
+    expect(logged).toContain('stats.orgForms')
+    expect(logged).toContain('stats.profitInChf')
+    expect(logged).toContain('companies[].orgForm')
+    expect(logged).toContain('companies[].profitChf')
+    expect(logged).toContain('netlify.toml')
+
+    consoleError.mockRestore()
   })
 
-  it('nennt nur das tatsächlich fehlende Feld, wenn ausschliesslich stats.profitInChf fehlt', () => {
+  it('nennt in missingFields nur das tatsächlich fehlende Feld, wenn ausschliesslich stats.profitInChf fehlt', () => {
     const { profitInChf: _profitInChf, ...statsOhneProfitInChf } = currentStats
     const data = { companies: [company()], stats: statsOhneProfitInChf }
-    expect(() => parseCompanyData(data)).toThrow(/stats\.profitInChf/)
-    expect(() => parseCompanyData(data)).not.toThrow(/stats\.orgForms/)
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+
+    let error: StaleCompanyDataError | undefined
+    try {
+      parseCompanyData(data)
+    } catch (caught) {
+      error = caught as StaleCompanyDataError
+    }
+    expect(error?.missingFields).toEqual(['stats.profitInChf'])
+
+    consoleError.mockRestore()
   })
 })
