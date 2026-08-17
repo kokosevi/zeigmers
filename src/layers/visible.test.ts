@@ -12,6 +12,8 @@ import {
   LOSS_COLOR,
   MIN_REAL_BAR_M,
   MIN_VISIBLE_BAR_M,
+  parseCompanyData,
+  StaleCompanyDataError,
   UNRESEARCHED_MARKER_COLOR,
   zeroPlaneHeight,
   type Company,
@@ -341,5 +343,78 @@ describe('buildCompanyLayer mit Kennzahl', () => {
     })
     const [, , z] = (layer.props.getPosition as Function)(verlierer)
     expect(z).toBe(CANTON_ELEVATION_M)
+  })
+})
+
+describe('parseCompanyData', () => {
+  const currentStats: CompanyData['stats'] = {
+    count: 1, withRevenue: 1, max: 1e9, revenueInChf: true, profitInChf: true,
+    orgForms: ['boersenkotiert'], researched: 1, totalListed: 1, sixRetrievedDate: null,
+  }
+
+  it('lässt ein Artefakt mit allen vier Feldern des Organisationsform-/Reingewinn-Umbaus unverändert durch', () => {
+    const data = { companies: [company()], stats: currentStats }
+    expect(parseCompanyData(data)).toBe(data)
+  })
+
+  // Der Fehler, live beobachtet (siehe `netlify.toml`-Kommentar bei
+  // `/data/*`): `netlify.toml` lieferte das HTML sofort im neuen Deploy-
+  // Stand aus, `/data/*` dagegen bis zu eine Stunde lang aus dem Cache. Ein
+  // wiederkehrender Besuch bekam so den NEUEN Code gegen ein ALTES
+  // `companies.json` — dessen Schema kennt `stats.orgForms` noch nicht,
+  // `ui/nav.ts`s `createNav` rief darauf `available.map(...)` auf, und die
+  // Seite zeigte «Daten konnten nicht geladen werden: TypeError: Cannot
+  // read properties of undefined (reading 'map')», obwohl die Daten sehr
+  // wohl geladen waren. Dieses Fixture bildet genau das Schema von VOR dem
+  // Umbau nach (kein `orgForm`/`profitChf` je Zeile, kein
+  // `stats.orgForms`/`stats.profitInChf`) und schickt es durch denselben
+  // Ladepfad wie ein echter Fetch (`loadCompanies`) — der Absturz gehört
+  // hier bewacht, nicht erst dort, wo er zufällig zuerst auffällt.
+  it('wirft StaleCompanyDataError statt eines TypeError, wenn ein Artefakt aus der Zeit vor dem Umbau kommt', () => {
+    const staleCompany = {
+      uid: 'CHE-1', name: 'Test AG', sixSymbol: null, lon: 8, lat: 47.4,
+      nogaGroupIndex: 1,
+      revenue: 1e9, revenueChf: null, currency: 'CHF', revenueType: 'net_sales',
+      profit: null, profitCurrency: null, consolidationBasis: null,
+      coreProducts: null, productsUrl: null, foundingYear: null,
+      employees: null, fiscalYear: 2024, reportUrl: null, note: null,
+      placeholder: false, researched: true, city: 'Aarau', positionAdjusted: null,
+      // `orgForm`/`profitChf` fehlen absichtlich — Schema von vor dem Umbau.
+    }
+    const staleStats = {
+      count: 1, withRevenue: 1, max: 1e9, revenueInChf: true,
+      researched: 1, totalListed: 1, sixRetrievedDate: null,
+      // `orgForms`/`profitInChf` fehlen absichtlich — Schema von vor dem Umbau.
+    }
+    const stale = { companies: [staleCompany], stats: staleStats }
+
+    expect(() => parseCompanyData(stale)).toThrow(StaleCompanyDataError)
+
+    // Alle vier Felder desselben Umbaus stehen in der Meldung, nicht nur
+    // `stats.orgForms`, das im Produktionsvorfall zufällig zuerst geknallt
+    // hat (`profitChf`/`orgForm` je Zeile, `stats.profitInChf` blieben sonst
+    // unbewacht, bis die Gewinn-Kennzahl oder ein zweiter Organisationsform-
+    // Wert sie das nächste Mal auslöst).
+    let message = ''
+    try {
+      parseCompanyData(stale)
+    } catch (error) {
+      message = (error as Error).message
+    }
+    expect(message).toContain('stats.orgForms')
+    expect(message).toContain('stats.profitInChf')
+    expect(message).toContain('companies[].orgForm')
+    expect(message).toContain('companies[].profitChf')
+    // Die Meldung nennt die tatsächliche Ursache und einen Ausweg, nicht nur
+    // «geht nicht» — derselbe Massstab wie jede andere Fehlermeldung dieser
+    // App (siehe `ui/error.ts`, `showError`-Aufrufer).
+    expect(message).toContain('Neuladen')
+  })
+
+  it('nennt nur das tatsächlich fehlende Feld, wenn ausschliesslich stats.profitInChf fehlt', () => {
+    const { profitInChf: _profitInChf, ...statsOhneProfitInChf } = currentStats
+    const data = { companies: [company()], stats: statsOhneProfitInChf }
+    expect(() => parseCompanyData(data)).toThrow(/stats\.profitInChf/)
+    expect(() => parseCompanyData(data)).not.toThrow(/stats\.orgForms/)
   })
 })

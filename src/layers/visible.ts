@@ -404,8 +404,79 @@ export function buildUnresearchedCompanyLayer(
   })
 }
 
+/** Eigene Fehlerklasse statt eines generischen `Error`, damit der
+ *  Seiteneinstieg (`src/firmen.ts`) einen veralteten Artefaktstand von einem
+ *  echten Ladefehler (Netzwerk, HTTP-Status, kaputtes JSON) unterscheiden und
+ *  eine zutreffende statt der generischen «Daten konnten nicht geladen
+ *  werden»-Meldung zeigen kann. Die Daten SIND geladen — sie sind nur älter
+ *  als der Code, der sie liest (siehe `parseCompanyData` unten). */
+export class StaleCompanyDataError extends Error {}
+
+/** Prüft, ob geparstes JSON die Form trägt, die dieser Code-Stand von
+ *  `companies.json` erwartet, und liefert es als `CompanyData` — oder wirft
+ *  `StaleCompanyDataError`, statt ein Objekt mit fehlenden Feldern
+ *  durchzureichen.
+ *
+ *  Anlass: `netlify.toml` lieferte `/data/*` bis zu einer Stunde lang aus dem
+ *  Cache aus, während das HTML sofort auf den neuen Deploy wechselte (siehe
+ *  dort, seit diesem Fix behoben, aber ein CDN-Edge kann eine bereits
+ *  zwischengespeicherte Antwort trotzdem noch kurz ausliefern). Ein
+ *  wiederkehrender Besuch bekam so den NEUEN Code gegen ein ALTES Artefakt:
+ *  `stats.orgForms` fehlte, `createNav` (`ui/nav.ts`) rief darauf
+ *  `available.map(...)` auf, und `undefined.map` warf einen TypeError, den
+ *  der Seiteneinstieg als «Daten konnten nicht geladen werden» meldete — eine
+ *  Ursache, die nicht stimmte: die Daten waren geladen, nur älter als der
+ *  Code.
+ *
+ *  Entscheid, welchen der beiden im Auftrag vorgesehenen Wege dieses Projekt
+ *  geht (tolerant weglassen vs. zutreffend melden): **zutreffend melden**.
+ *  Die README dieses Projekts wiederholt an jeder Datenungenauigkeit
+ *  denselben Grundsatz («offengelegt statt verschwiegen», etwa bei der
+ *  Gemeindeflächen-Verzerrung oder der STATENT-Rundung) und verzichtet
+ *  mehrfach ausdrücklich auf eine bequemere, aber ungenauere Alternative,
+ *  wenn diese eine Zahl vorgetäuscht hätte, die niemand belegen kann (siehe
+ *  „Warum Ansicht B jetzt Gemeindeflächen zeigt", kein Kartogramm). Ein
+ *  stillschweigend weggelassener Umschalter wäre genau diese Art
+ *  Vortäuschung: die Karte sähe vollständig aus, obwohl das Artefakt hinter
+ *  ihr nicht der Stand ist, den der Code meint. Zusätzlich ist ein fehlendes
+ *  Feld hier kein Dauerzustand wie z. B. `LevelStats.population` (`data/
+ *  loader.ts`, absichtlich optional für ältere Artefakte/Fixtures, die es nie
+ *  bekommen) — es behebt sich von selbst, sobald der Cache abläuft oder die
+ *  Seite neu geladen wird, und genau das sagt die Meldung.
+ *
+ *  Geprüft werden alle vier Felder desselben Umbaus (Organisationsform- und
+ *  Reingewinn-Umbau), nicht nur `stats.orgForms`, das zufällig zuerst
+ *  geknallt hat: `stats.profitInChf` (`karte/firmen.ts` liest es für die
+ *  Gewinn-Kennzahl), sowie `orgForm`/`profitChf` je Zeile. Ein einzelner
+ *  Blick auf die erste Firma genügt für die beiden zeilenweisen Felder —
+ *  das Fehlen ist eine Eigenschaft des Artefakt-SCHEMAS (vor oder nach dem
+ *  Umbau), nicht einer einzelnen Zeile, jede Zeile eines Artefakts teilt
+ *  dasselbe Schema. */
+export function parseCompanyData(json: unknown): CompanyData {
+  const data = json as Partial<CompanyData> | null | undefined
+  const stats = data?.stats as Partial<CompanyData['stats']> | undefined
+  const firstCompany = data?.companies?.[0] as Partial<Company> | undefined
+
+  const missing: string[] = []
+  if (!Array.isArray(data?.companies)) missing.push('companies')
+  if (!stats || !Array.isArray(stats.orgForms)) missing.push('stats.orgForms')
+  if (!stats || typeof stats.profitInChf !== 'boolean') missing.push('stats.profitInChf')
+  if (firstCompany && !('orgForm' in firstCompany)) missing.push('companies[].orgForm')
+  if (firstCompany && !('profitChf' in firstCompany)) missing.push('companies[].profitChf')
+
+  if (missing.length > 0) {
+    throw new StaleCompanyDataError(
+      `companies.json stammt aus einer älteren Version dieser Anwendung ` +
+        `(es fehlen: ${missing.join(', ')}) — vermutlich noch aus dem ` +
+        `Cache-Fenster von /data/* (siehe netlify.toml). Ein Neuladen der ` +
+        `Seite behebt das meistens.`,
+    )
+  }
+  return data as CompanyData
+}
+
 export async function loadCompanies(base = '/data'): Promise<CompanyData> {
   const response = await fetch(`${base}/companies.json`)
   if (!response.ok) throw new Error(`companies.json: HTTP ${response.status}`)
-  return (await response.json()) as CompanyData
+  return parseCompanyData(await response.json())
 }

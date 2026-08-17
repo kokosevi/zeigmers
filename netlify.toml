@@ -18,7 +18,47 @@
 [[headers]]
   for = "/data/*"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
+    # War `public, max-age=3600`: die Artefakte unter `/data/*` ändern sich
+    # nur bei einem `npm run build:data`-Lauf und einem anschliessenden
+    # Commit (siehe README, „Warum das ETL nicht auf Netlify läuft") — eine
+    # Stunde ungeprüfter Browser-Cache sollte dafür ein günstiger Kompromiss
+    # sein, weniger Requests gegen ein Artefakt, das sich fast nie ändert.
+    #
+    # War in dieser Form nicht tragbar: Netlify liefert das HTML jeder Seite
+    # ohne eigenen Header-Eintrag mit `max-age=0, must-revalidate` aus (siehe
+    # `index.html`, `firmen/index.html`, `beschaeftigte/index.html` — keiner
+    # davon hat einen eigenen `[[headers]]`-Block, das ist Netlifys
+    # Voreinstellung für HTML). Ein wiederkehrender Besuch bekam dadurch
+    # sofort das NEUE JavaScript eines frischen Deploys, aber bis zu eine
+    # Stunde lang das ALTE `companies.json` — HTML und Daten liefen bis zu
+    # einer Stunde lang auseinander, nicht nur beim Deploy dieses konkreten
+    # Fixes. Live beobachtet: das alte Artefakt kannte `stats.orgForms` noch
+    # nicht, `ui/nav.ts`s `createNav` rief darauf `available.map(...)` auf,
+    # und die Firmenseite stürzte mit einem TypeError ab, den der
+    # Seiteneinstieg als «Daten konnten nicht geladen werden» meldete —
+    # obwohl die Daten geladen waren, nur älter als der Code, der sie las
+    # (siehe `src/layers/visible.ts`, `parseCompanyData`/
+    # `StaleCompanyDataError`, das dieses eine Symptom jetzt eigenständig
+    # abfängt). Dieses Zeitfenster ist die eigentliche Ursache, nicht nur
+    # dieses eine Symptom — jede künftige Änderung an `companies.json` (oder
+    # den Kanton-/Gemeinde-Artefakten) war bis zu eine Stunde lang lesbar
+    # inkonsistent mit dem bereits live geschalteten Code, unabhängig davon,
+    # ob ein einzelnes fehlendes Feld gerade abstürzt oder nur still eine
+    # veraltete Zahl zeigt.
+    #
+    # Jetzt `max-age=0, must-revalidate` — derselbe Wert wie beim HTML, aus
+    # demselben Grund: Code und Daten sollen nie mehr auseinanderlaufen
+    # können, also cachet keiner der beiden länger als der andere. Das
+    # erzwingt keinen vollen Re-Download je Besuch: Netlifys CDN versieht
+    # ausgelieferte Dateien mit einem `ETag`, der Browser schickt ihn bei
+    # jedem erneuten Aufruf als bedingte Anfrage (`If-None-Match`) mit, und
+    # eine unveränderte Datei kommt mit `304 Not Modified` und ohne Rumpf
+    # zurück. Der Preis ist also eine bedingte Anfrage je Datei und Besuch
+    # (Header-Runde ohne Nutzlast) statt keiner Anfrage innerhalb der
+    # Stunde — real, aber klein gegen das behobene Risiko: eine Karte, die an
+    # einem eigenen, bis zu eine Stunde alten Datenstand scheitert oder ihn
+    # unbemerkt zeigt.
+    Cache-Control = "public, max-age=0, must-revalidate"
 
 [[headers]]
   for = "/data/*.bin"
