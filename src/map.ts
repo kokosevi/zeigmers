@@ -306,6 +306,56 @@ export function createMap(container: HTMLElement): MapHandle {
   })
   map.addControl(overlay)
 
+  // Drehen und Neigen mit Shift + linker Maustaste (Auftrag, 17. August 2026).
+  //
+  // MapLibre kann das von Haus aus nur über die RECHTE Maustaste oder
+  // Ctrl + links (`DragRotateHandler`); Shift + links ist dort standardmässig
+  // der Auswahlrahmen zum Zoomen (`boxZoom`). Auf einem Trackpad ohne rechte
+  // Taste ist die Karte damit praktisch nicht drehbar — genau die Lücke, die
+  // dieser Handler schliesst. `boxZoom` wird deshalb abgeschaltet: beide auf
+  // derselben Geste hiessen, dass beim Drehen ein Zoomrahmen mitgezeichnet
+  // wird.
+  //
+  // Eigener Handler statt Umkonfiguration, weil MapLibre die auslösende Taste
+  // von `dragRotate` nicht als Option anbietet — es gibt keinen Schalter, der
+  // Shift zusätzlich zulässt. Die zwei Faktoren unten (0.35 Grad Drehung je
+  // Pixel waagrecht, 0.35 Grad Neigung je Pixel senkrecht) sind dieselbe
+  // Grössenordnung, die MapLibres eigener Handler verwendet; `maxPitch` (75,
+  // siehe unten) und 0 als Untergrenze klemmen die Neigung auf denselben
+  // Bereich, den die Karte auch sonst zulässt.
+  map.boxZoom.disable()
+  let drehStart: { x: number; y: number; bearing: number; pitch: number } | null = null
+
+  map.getCanvas().addEventListener('mousedown', (event) => {
+    if (!event.shiftKey || event.button !== 0) return
+    // Verhindert, dass MapLibres eigenes Ziehen (Verschieben) gleichzeitig
+    // anläuft — sonst wandert die Karte, während sie sich dreht.
+    event.preventDefault()
+    drehStart = {
+      x: event.clientX,
+      y: event.clientY,
+      bearing: map.getBearing(),
+      pitch: map.getPitch(),
+    }
+    map.dragPan.disable()
+  })
+
+  // Am `window`, nicht am Canvas: wer beim Drehen aus der Karte hinausfährt,
+  // soll die Drehung nicht mitten in der Bewegung verlieren.
+  window.addEventListener('mousemove', (event) => {
+    if (!drehStart) return
+    const dx = event.clientX - drehStart.x
+    const dy = event.clientY - drehStart.y
+    map.setBearing(drehStart.bearing - dx * 0.35)
+    map.setPitch(Math.min(75, Math.max(0, drehStart.pitch - dy * 0.35)))
+  })
+
+  window.addEventListener('mouseup', () => {
+    if (!drehStart) return
+    drehStart = null
+    map.dragPan.enable()
+  })
+
   // MapLibres `NavigationControl` ist mit dem Redesign (17. August 2026)
   // entfallen — ersetzt durch drei eigene Knöpfe (`ui/zoom.ts`) auf den
   // Durchreichen unten. Der Entwurf verlangt eine Spalte aus 32×32-Zellen mit
