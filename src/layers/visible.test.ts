@@ -6,6 +6,7 @@ import {
   buildCompanyLayer,
   buildCompanyShadowLayer,
   buildUnresearchedCompanyLayer,
+  COMPANY_HOVER_COLOR,
   companyElevations,
   COMPANY_RADIUS_MAX_PX,
   COMPANY_RADIUS_MIN_PX,
@@ -111,6 +112,45 @@ describe('buildCompanyLayer researched filter', () => {
       metric: 'umsatz', mode: 'logarithmisch', onClick: () => {}, onHover: () => {},
     })
     expect((layer.props.data as Company[]).map((c) => c.uid)).toEqual(['A'])
+  })
+})
+
+describe('sichtbarer Hover (Auftrag 2026-08-17)', () => {
+  // Die Textmarke neben dem Zeiger allein liess offen, welche der 201 Säulen
+  // gemeint ist — bei 3 bis 14 Bildpunkten Breite steht die Nachbarin dicht
+  // daneben. Die Einfärbung der getroffenen Säule beantwortet das auf der
+  // Karte selbst. Geprüft wird hier, dass die Zusage am Layer hängt; dass
+  // deck.gl daraus wirklich eine dunkle Säule macht, wurde im Browser
+  // nachgemessen (nur die hervorgehobene Säule ändert Pixel).
+  const layerFor = () =>
+    buildCompanyLayer({
+      result: applySelection([company({ uid: 'A', researched: true })], selectionFor('umsatz')),
+      metric: 'umsatz', mode: 'logarithmisch', onClick: () => {}, onHover: () => {},
+    })
+
+  it('hebt die Säule unter dem Zeiger hervor', () => {
+    expect(layerFor().props.autoHighlight).toBe(true)
+    expect(layerFor().props.highlightColor).toEqual(COMPANY_HOVER_COLOR)
+  })
+
+  it('nimmt dafür Tinte, nicht eine Aufhellung', () => {
+    // Auf der hellen Kantonsplatte (`--karte-platte`) würde eine Aufhellung
+    // die Säule verschwinden lassen statt sie zu zeigen — der umgekehrte Fall
+    // zu den grossen Kantonsflächen, die mit Weiss auf 70 arbeiten
+    // (`layers/many.ts`, `HOVER_HIGHLIGHT_COLOR`).
+    const [r, g, b, a] = COMPANY_HOVER_COLOR
+    expect(Math.max(r, g, b)).toBeLessThan(60)
+    expect(a).toBeGreaterThan(200)
+  })
+
+  it('gilt auch für die Marker der unrecherchierten Titel', () => {
+    const d: CompanyData = {
+      companies: [company({ uid: 'B', researched: false, revenue: null, revenueType: null })],
+      stats: { count: 1, withRevenue: 0, max: 0, revenueInChf: false, profitInChf: false, orgForms: ['boersenkotiert'], researched: 0, totalListed: 1, sixRetrievedDate: null },
+    }
+    const layer = buildUnresearchedCompanyLayer(d, () => {}, () => {})
+    expect(layer.props.autoHighlight).toBe(true)
+    expect(layer.props.highlightColor).toEqual(COMPANY_HOVER_COLOR)
   })
 })
 

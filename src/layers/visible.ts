@@ -159,8 +159,34 @@ export function zeroPlaneHeight(): number {
  *  `companyElevations` (`buildCompanyLayer`) dieselbe Decke verwendet.
  *  Ansicht «Beschäftigte» hat mit `MAX_BAR_HEIGHT_M` (`layers/many.ts`, 3000)
  *  eine eigene, niedrigere Decke — beide Ansichten teilen den Namen nicht,
- *  weil sie unterschiedliche Werte brauchen. */
-export const MAX_BAR_HEIGHT_M = 12000
+ *  weil sie unterschiedliche Werte brauchen.
+ *
+ *  48'000 statt der ursprünglichen 12'000 m (Auftrag vom 17. August 2026: die
+ *  Säulen im Entwurf gefallen besser, «einiges höher»). Der Ausgangspunkt der
+ *  Grössenordnung ist gemessen, nicht geschätzt: die Landing-Grafik des
+ *  Entwurfs (`tools/build_landing_svg.mjs`) zeichnet dieselben 201 Firmen
+ *  flach von der Seite und gibt der höchsten Säule `MAXH = 132` Einheiten bei
+ *  `S = 322.3` Einheiten je Breitengrad — rund 0.41° oder 45 km, das Vierfache
+ *  der 12'000 m, die die Karte bisher aufbot.
+ *
+ *  Die konkrete Stufe ist eine Wahl, keine Ableitung: verglichen wurden
+ *  12'000 / 24'000 / 36'000 / 48'000 im Browser (Fenster 1400×900), keine
+ *  davon läuft aus dem Bild, und aus den vier Bildern wurde 48'000 gewählt —
+ *  die Stufe, die der 45-km-Messung am nächsten kommt. Der Preis, sichtbar im
+ *  Vergleich und bewusst in Kauf genommen: in der Ballung um Zürich und Zug
+ *  verdecken die vorderen Säulen ihre Nachbarn stärker als auf den niedrigeren
+ *  Stufen.
+ *
+ *  Das Verhältnis der Säulen zueinander ändert die Decke nicht:
+ *  `computeElevations` skaliert alle Höhen mit demselben Faktor, die Dämpfung
+ *  `(v/vmax)**0.4` bleibt unangetastet.
+ *
+ *  Ein Nebeneffekt, der nicht nachgeführt werden muss: die Zeile unter dem
+ *  Höhen-Umschalter («Gedämpft, sonst wären N von 187 Säulen gleich flach»)
+ *  rechnet zur Laufzeit mit genau dieser Konstante (`karte/firmen.ts`,
+ *  `heightNote`) — mit einer höheren Decke erreichen mehr Säulen die
+ *  Mindesthöhe aus eigener Kraft, und die Zahl sinkt von selbst mit. */
+export const MAX_BAR_HEIGHT_M = 48000
 
 /** Höhe je Firma, in Metern — immer positiv, auch bei einem Verlust (siehe
  *  `zeroPlaneHeight` oben: der Betrag trägt die Höhe, `LOSS_COLOR` trägt das
@@ -192,6 +218,13 @@ export function companyElevations(
   }
   return heights
 }
+
+/** Farbe der Säule unter dem Zeiger — Tinte (`--tinte`, `#14202B`) auf 215 von
+ *  255, siehe die Begründung bei `autoHighlight` in `buildCompanyLayer`.
+ *  Derselbe Ton, den die Leiste für Text und Rahmen verwendet; die Karte
+ *  bekommt damit keine zwölfte Farbe, nur die schon vorhandene an einer neuen
+ *  Stelle. */
+export const COMPANY_HOVER_COLOR: [number, number, number, number] = [20, 32, 43, 215]
 
 // Sichtbarkeitsschranken der Säule in Bildpunkten, unabhängig vom Zoom —
 // dasselbe Muster wie `UNRESEARCHED_MARKER_MIN_PX`/`_MAX_PX` unten, hier für
@@ -259,6 +292,24 @@ export function buildCompanyLayer(options: {
     // Säulen (seit Phase 3, national) — der Mehraufwand bleibt irrelevant.
     material: MAP_MATERIAL,
     pickable: true,
+    // Sichtbarer Hover (Auftrag vom 17. August 2026). Bis hierher sagte nur
+    // die Textmarke neben dem Zeiger (`ui/hoverLabel.ts`), welche Firma
+    // getroffen ist — auf der Karte selbst änderte sich nichts, und bei einer
+    // 3 bis 14 Bildpunkte schmalen Säule blieb offen, ob die Marke die
+    // gemeinte oder die daneben stehende Säule benennt.
+    //
+    // `autoHighlight` blendet deck.gl intern über die getroffene Säule, ohne
+    // Daten oder Layer neu zu bauen — dieselbe Mechanik, die die Kantons- und
+    // Gemeindeflächen schon nutzen (`layers/many.ts`,
+    // `HOVER_HIGHLIGHT_COLOR`). Dort genügt ein leises Weiss auf 70 von 255,
+    // weil eine Kantonsfläche gross ist; hier braucht es das Gegenteil:
+    // Tinte, fast deckend. Auf der hellen Kantonsplatte ist Dunkel der
+    // einzige Ton, der eine dünne Säule aus 200 anderen heraushebt — eine
+    // Aufhellung liesse sie mit der Platte verschmelzen. Die Branchenfarbe
+    // bleibt mit 40 von 255 als Rest erkennbar, und die Textmarke nennt die
+    // Branche ohnehin im Klartext.
+    autoHighlight: true,
+    highlightColor: COMPANY_HOVER_COLOR,
     // Basis auf der Plattenoberkante (`zeroPlaneHeight`, siehe dort) — jede
     // Säule steht, keine hängt mehr; Betrag trägt die Höhe, `LOSS_COLOR`
     // (unten) trägt das Vorzeichen (Aufgabe 18, Browser-Fund).
@@ -376,6 +427,13 @@ export function buildUnresearchedCompanyLayer(
     id: 'firmen-unerforscht',
     data: markers,
     pickable: true,
+    // Derselbe Hover wie bei den Säulen (siehe `buildCompanyLayer`) — ein
+    // anklickbarer Punkt, der beim Berühren nichts tut, wäre der unstetigere
+    // Fall: die Textmarke erscheint, die Karte bleibt stumm. Heute zeichnet
+    // dieser Layer keinen einzigen Marker (siehe oben); die Zusage greift,
+    // sobald ein SIX-Sync unrecherchierte Titel hinzufügt.
+    autoHighlight: true,
+    highlightColor: COMPANY_HOVER_COLOR,
     stroked: false,
     // Auf der OBERSEITE der Kantonsplatte, nicht auf Höhe null. Die Platte
     // ist auf `CANTON_ELEVATION_M` extrudiert; ein flacher Marker bei z=0

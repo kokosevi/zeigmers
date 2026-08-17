@@ -73,6 +73,22 @@ html, body {
 #ui { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 #ui > * { pointer-events: auto; }
 
+/* Kreuz statt Hand über der Karte (Auftrag vom 17. August 2026).
+   maplibre-gl.css setzt `.maplibregl-canvas-container.maplibregl-interactive {
+   cursor: grab }` — die offene Hand. Sie sagt richtig, dass man die Karte
+   ziehen kann, taugt aber nicht zum Zielen: ihr Hotspot liegt unsichtbar in
+   der Handmitte, und eine Firmensäule ist 3 bis 14 Bildpunkte breit
+   (`COMPANY_RADIUS_MIN_PX`/`_MAX_PX`, `layers/visible.ts`). Das Kreuz hat
+   seinen Treffpunkt sichtbar im Schnittpunkt; zusammen mit der Einfärbung der
+   getroffenen Säule (`COMPANY_HOVER_COLOR`) ist damit vor dem Klick klar, was
+   der Klick trifft.
+   Ziehen behält seinen eigenen Zeiger: `grabbing` bleibt die geschlossene
+   Hand, weil sie dort nichts anzielt, sondern eine gehaltene Fläche zeigt.
+   Über `#map` adressiert, damit die Regel unabhängig von der Ladereihenfolge
+   der beiden Stylesheets gewinnt (höhere Spezifität, nicht bloss später). */
+#map .maplibregl-canvas-container.maplibregl-interactive { cursor: crosshair; }
+#map .maplibregl-canvas-container.maplibregl-interactive:active { cursor: grabbing; }
+
 /* Sichtbarer Tastaturfokus auf allem Interaktiven. Die Schaltflächen der
    Leiste haben `border: none; background: transparent`, was den nativen
    Fokusring in manchen Browsern kaum sichtbar macht. */
