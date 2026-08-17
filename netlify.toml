@@ -1,4 +1,10 @@
 [build]
+  # Seit dem 17. August 2026 liegt die Website in `homepage/` — das Repo trägt
+  # daneben weitere Unterlagen (`Video/`, `Links/`), die nie deployt werden.
+  # `base` lässt Befehl und `publish`-Pfad in diesem Unterordner laufen;
+  # diese Datei bleibt an der Repo-Wurzel, weil Netlify sie dort sucht,
+  # solange kein Base-Verzeichnis in der UI gesetzt ist.
+  base = "homepage"
   # `npm test` läuft vor dem eigentlichen Build, nicht nur daneben in CI:
   # src/landing.test.ts prüft die auf der Landing hartkodierten Kennzahlen
   # gegen public/data/*.json und soll den Deploy stoppen, sobald beide

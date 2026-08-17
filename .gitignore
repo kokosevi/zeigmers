@@ -1,5 +1,9 @@
-data/raw/
-data/interim/
+# Die Website liegt seit dem 17. August 2026 in `homepage/` (siehe
+# netlify.toml, `base`). Muster ohne inneren Schrägstrich (node_modules/,
+# dist/, …) gelten in jeder Tiefe und brauchten für den Umzug keine Anpassung;
+# die zwei data-Pfade sind verankert und tragen den Ordner deshalb explizit.
+homepage/data/raw/
+homepage/data/interim/
 node_modules/
 dist/
 .venv/
@@ -10,3 +14,8 @@ __pycache__/
 
 # Local Netlify folder
 .netlify
+
+# Unterlagen neben der Website: nicht Teil des Deployments, und Videodateien
+# gehören nicht in ein Git-Repo (Grösse). `Links/` bleibt bewusst versioniert
+# — dort liegt bereits committetes Material (Links/Karte.avif).
+Video/
