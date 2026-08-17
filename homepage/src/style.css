@@ -198,9 +198,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
 .leiste-segment button.aktiv { background: var(--tinte); color: var(--papier); }
 
 /* Die Zeile unter dem Höhen-Umschalter: warum «gedämpft» der Startwert ist.
-   Sie ersetzt die Massstabskarte, die auf `/firmen/` entfallen ist — auf
-   `/beschaeftigte/` steht der Massstab weiterhin auf der Karte
-   (`#massstab`, siehe unten). */
+   Sie ersetzt die Massstabskarte, die auf `/firmen/` entfallen ist; seit dem
+   17. August 2026 hat auch `/beschaeftigte/` keinen Massstab mehr (Auftrag —
+   das Modul `ui/massstab.ts` ist gelöscht, die Git-Historie hat es). */
 .leiste-notiz {
   margin: 7px 0 0;
   font-size: .6875rem; line-height: 1.45; color: var(--tinte-leise);
@@ -363,27 +363,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
 .rang-kopf { display: flex; }
 .rang-zeile:hover .rang-name { text-decoration: underline; }
 
-/* ---------- Massstab (`/beschaeftigte/`) ----------
-   Bleibt nur auf dieser Seite: dort trägt die Höhe eine Grösse, für die es
-   kein Gefühl gibt (Beschäftigte je Kanton, 108-fache Unterschiede). Auf
-   `/firmen/` ist der Massstab entfallen, seine Aussage steht jetzt als Zeile
-   unter dem Höhen-Umschalter (`.leiste-notiz`). */
-#massstab {
-  position: absolute; left: 308px; bottom: 22px;
-  background: var(--papier); border: 1.5px solid var(--tinte);
-  padding: 12px 16px 11px;
-  font-size: .6875rem; line-height: 1.45;
-}
-.massstab-titel {
-  margin: 0 0 6px; font-family: var(--mono); font-size: .65625rem;
-  letter-spacing: .16em; text-transform: uppercase; color: var(--tinte-leise);
-}
-.massstab-stufen { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 6px; }
-.massstab-stufe { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-.massstab-saeule { width: 7px; background: var(--tinte-tief); }
-.massstab-wert { font-family: var(--mono); font-size: .625rem; color: var(--tinte-leise); }
-.massstab-notiz { margin: 0; color: var(--tinte-leise); }
-
 /* ---------- Panel ---------- */
 #panel {
   position: absolute; right: 20px; top: 20px; width: 296px;
@@ -499,8 +478,4 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
     max-height: 40vh;
   }
   #zoom { top: 12px; bottom: auto; right: 12px; }
-  /* Auf dieser Breite steht der Massstab entweder über der Leiste oder unter
-     dem Panel — beides verdeckt Karte. Seine Aussage steht ohnehin doppelt:
-     die Zeile unter dem Höhen-Umschalter nennt denselben Befund. */
-  #massstab { display: none; }
 }

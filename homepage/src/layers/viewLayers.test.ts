@@ -280,6 +280,50 @@ function company(overrides: Partial<Company> = {}): Company {
 // `'umsatz'` statt der aktiven Kennzahl fiele hier auf, weil die erste
 // Zusicherung dann `formatMetric(revenueChf, 'umsatz')` statt der
 // Mitarbeitendenzahl erwartete.
+describe('Kanton-zu-Kanton-Klick (Auftrag 2026-08-17)', () => {
+  // Innerhalb eines Kantons soll ein Klick auf einen ANDEREN Kanton direkt
+  // dorthin wechseln — ohne Umweg über «Schweiz». Die Platte meldet `bfs_nr`
+  // (`layers/cantons.ts`), der Kantonszweig übersetzt sie in den Zeilenindex,
+  // den `onEnterCanton` auch von der Schweiz-Stufe her bekommt: eine
+  // Übersetzung, kein zweiter Navigationspfad.
+  type Platte = { props: { pickable?: boolean; onClick?: (info: unknown) => void } }
+  function platte(input: Parameters<typeof buildViewLayers>[0]): Platte {
+    const layer = (buildViewLayers(input) as { id: string }[]).find((l) => l?.id === 'kantone')
+    return layer as unknown as Platte
+  }
+  const klick = (bfsNr: number) => ({ object: { properties: { bfs_nr: bfsNr } } })
+
+  it('macht die Platte nur auf der Kantonsstufe anklickbar', () => {
+    expect(platte(beschaeftigteInput()).props.pickable).toBe(false)
+    expect(
+      platte(beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() })).props.pickable,
+    ).toBe(true)
+  })
+
+  it('meldet den Klick auf einen anderen Kanton als Zeilenindex der Kantonsstufe', () => {
+    const gewaehlt: number[] = []
+    const layer = platte({
+      ...beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() }),
+      onEnterCanton: (index) => gewaehlt.push(index),
+    })
+    layer.props.onClick!(klick(1)) // Zürich, bfs_nr 1 → Zeile 0
+    expect(gewaehlt).toEqual([0])
+  })
+
+  it('ignoriert den Klick auf den aktiven Kanton', () => {
+    // Seine Fläche ist von den Gemeinden überdeckt; trifft der Klick doch die
+    // Platte (Seefläche, Randpixel), wäre «denselben Kanton erneut betreten»
+    // keine Navigation, nur ein Neuaufbau.
+    const gewaehlt: number[] = []
+    const layer = platte({
+      ...beschaeftigteInput({ level: 'kanton', activeCanton: cantonEntry() }),
+      onEnterCanton: (index) => gewaehlt.push(index),
+    })
+    layer.props.onClick!(klick(19)) // Aargau ist der aktive Kanton
+    expect(gewaehlt).toEqual([])
+  })
+})
+
 describe('companyHoverLines', () => {
   it('zeigt den Wert der aktiven Kennzahl, nicht fest den Umsatz', () => {
     const c = company({ name: 'Beispiel AG', employees: 42, revenueChf: 999_000_000 })

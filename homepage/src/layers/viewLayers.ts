@@ -220,8 +220,44 @@ export function buildViewLayers(input: ViewLayersInput): LayersList {
 
   if (level === 'kanton' && activeCanton) {
     const entry = activeCanton
+
+    // Zeile der Kantonsstufe je bfs_nr — die Platte meldet Klicks als
+    // `bfs_nr` (`layers/cantons.ts`, `onPick`), `onEnterCanton` erwartet
+    // aber den Zeilenindex der Kantonsstufe, wie ihn auch die Schweiz-Stufe
+    // unten übergibt: eine Übersetzung, nicht zwei Navigationspfade.
+    const zeileJeBfs = new Map<number, number>()
+    for (let i = 0; i < kantone.arrays.values.length; i++) {
+      const info = kantonRowInfo(kantone, i)
+      if (info) zeileJeBfs.set(info.bfsNr, i)
+    }
+
+    // Eigene Platte statt der geteilten `cantonsLayer` von oben: nur auf
+    // dieser Stufe ist sie anklickbar (Auftrag vom 17. August 2026 — aus
+    // einem Kanton direkt in den nächsten, ohne Umweg über «Schweiz»). Der
+    // aktive Kanton ist ausgenommen: seine Fläche ist von den Gemeinden
+    // überdeckt, die den Klick nehmen; trifft der Klick doch die Platte
+    // (Seefläche, Randpixel), wäre «denselben Kanton erneut betreten» keine
+    // Navigation, nur ein Neuaufbau.
+    const klickbarePlatte = buildCantonsLayer({
+      data: cantonsGeo,
+      activeBfsNr,
+      onPick: (bfsNr) => {
+        if (bfsNr === entry.bfsNr) return
+        const zeile = zeileJeBfs.get(bfsNr)
+        if (zeile !== undefined) input.onEnterCanton(zeile)
+      },
+      onHover: (bfsNr, x, y) => {
+        if (bfsNr === null || bfsNr === entry.bfsNr) return hideHoverLabel()
+        const zeile = zeileJeBfs.get(bfsNr)
+        const info = zeile !== undefined ? kantonRowInfo(kantone, zeile) : undefined
+        if (zeile === undefined || !info) return hideHoverLabel()
+        const value = kantone.arrays.values[zeile] ?? 0
+        showHoverLabel(`${info.name} · ${formatNumber(value)} Beschäftigte`, x, y)
+      },
+    })
+
     return [
-      cantonsLayer,
+      klickbarePlatte,
       ...(lakesLayer ? [lakesLayer] : []),
       cantonBorderLayer,
       buildMunicipalityLayer('gemeinde', {

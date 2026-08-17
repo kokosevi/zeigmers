@@ -62,10 +62,24 @@ export interface CantonsLayerOptions {
    *  Inhalt (die Balken darüber, siehe `layers/many.ts`), nicht Hintergrund
    *  mit einem hervorgehobenen Ausnahme-Kanton. */
   activeBfsNr: number | null
+  /** Macht die Platte anklickbar (Auftrag vom 17. August 2026): auf der
+   *  Kantonsstufe von `/beschaeftigte/` wechselt ein Klick auf einen ANDEREN
+   *  Kanton direkt dorthin, ohne den Umweg über «Schweiz». Meldet die
+   *  `bfs_nr` der getroffenen Fläche; wer sie in eine Zeile der Kantonsstufe
+   *  übersetzt (und den aktiven Kanton aussortiert), ist der Aufrufer
+   *  (`layers/viewLayers.ts`) — diese Schicht kennt nur Geometrie. Ohne
+   *  `onPick` bleibt die Platte, was sie immer war: nicht anklickbar. */
+  onPick?: (bfsNr: number) => void
+  /** Hover zur Klickbarkeit oben — `null` beim Verlassen. Nur zusammen mit
+   *  `onPick` sinnvoll: eine Fläche, die auf Berührung reagiert, aber auf
+   *  Klick nichts tut, wäre ein leeres Versprechen. */
+  onHover?: (bfsNr: number | null, x: number, y: number) => void
 }
 
 /** Selbstgezeichnete Basiskarte: alle 26 Kantone, jetzt mit einer flachen,
- *  gemeinsamen Extrusion (siehe `CANTON_ELEVATION_M`), nicht anklickbar.
+ *  gemeinsamen Extrusion (siehe `CANTON_ELEVATION_M`); anklickbar nur, wenn
+ *  `onPick` gesetzt ist (Kantonsstufe von `/beschaeftigte/`, siehe
+ *  `CantonsLayerOptions`).
  *  Ersetzt die früher zur Laufzeit von swisstopo geladenen Vektorkacheln —
  *  siehe README/Spec Abschnitt 9 und 10. Rein wie jeder Layer-Modul-Export
  *  hier: kein MapLibre, kein DOM.
@@ -82,6 +96,8 @@ export interface CantonsLayerOptions {
 export function buildCantonsLayer({
   data,
   activeBfsNr,
+  onPick,
+  onHover,
 }: CantonsLayerOptions): GeoJsonLayer<BoundaryProperties> {
   return new GeoJsonLayer<BoundaryProperties>({
     id: 'kantone',
@@ -91,10 +107,28 @@ export function buildCantonsLayer({
     extruded: true,
     material: MAP_MATERIAL,
     getElevation: CANTON_ELEVATION_M,
-    pickable: false,
+    pickable: Boolean(onPick),
+    // Dieselbe leise Aufhellung wie auf den Gemeindeflächen (`layers/many.ts`,
+    // `HOVER_HIGHLIGHT_COLOR`) — die Platte ist gross, das Weiss reicht; die
+    // dunkle Säulen-Hervorhebung (`layers/visible.ts`) wäre hier ein
+    // flächiger schwarzer Kanton.
+    autoHighlight: Boolean(onPick),
+    highlightColor: [255, 255, 255, 70],
     getFillColor: (f: Feature<Geometry, BoundaryProperties>) =>
       f.properties.bfs_nr === activeBfsNr ? AARGAU_FILL : LAND_FILL,
     updateTriggers: { getFillColor: [activeBfsNr] },
+    onClick: onPick
+      ? (info) => {
+          const bfsNr = info.object?.properties.bfs_nr
+          if (typeof bfsNr === 'number') onPick(bfsNr)
+        }
+      : undefined,
+    onHover: onHover
+      ? (info) => {
+          const bfsNr = info.object?.properties.bfs_nr
+          onHover(typeof bfsNr === 'number' ? bfsNr : null, info.x, info.y)
+        }
+      : undefined,
   })
 }
 

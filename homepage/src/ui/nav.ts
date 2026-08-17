@@ -105,9 +105,10 @@ export interface HeightNote {
 export interface NavOptions {
   view: ViewName
   metrics?: { available: readonly Metric[]; onChange: (metric: Metric) => void }
-  /** Fehlt sie, erscheint die Zeile unter dem Höhen-Umschalter nicht — auf
-   *  `/beschaeftigte/` steht die Aussage über die Höhenverteilung weiterhin
-   *  auf der Karte (`#massstab`), nicht in der Leiste. */
+  /** Fehlt sie, erscheint die Zeile unter dem Höhen-Umschalter nicht —
+   *  `/beschaeftigte/` übergibt keine (und hat seit dem 17. August 2026 auch
+   *  keinen Massstab auf der Karte mehr; das Modul `ui/massstab.ts` ist
+   *  gelöscht, die Git-Historie hat es). */
   heightNote?: HeightNote
   onModeChange: (mode: ScaleMode) => void
 }

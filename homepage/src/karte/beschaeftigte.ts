@@ -1,6 +1,5 @@
 import { joinMunicipalityGeometry, loadMunicipalityBoundaries } from '../data/boundaries'
 import { loadLevel } from '../data/loader'
-import { boundsOfGeometries } from '../domain/bounds'
 import { presentGroupsFromIndices } from '../domain/legendGroups'
 import type { ScaleMode } from '../domain/scale'
 import { buildMunicipalityBorderLayer } from '../layers/many'
@@ -10,7 +9,6 @@ import { showError } from '../ui/error'
 import { hideHoverLabel } from '../ui/hoverLabel'
 import { renderLegend } from '../ui/legend'
 import { renderNotices, type NoticeLevel } from '../ui/notices'
-import { renderMassstab } from '../ui/massstab'
 import { configureCanton, hidePanel, showMunicipalityPanel } from '../ui/panel'
 import { renderRangliste } from '../ui/rangliste'
 import { renderSuche } from '../ui/suche'
@@ -198,11 +196,6 @@ export async function startBeschaeftigte(): Promise<void> {
         eintraege: eintraege.map((e) => ({ id: e.id, name: e.name, wert: e.nutzlast })),
         onPick: (index) => showMunicipalityPanel(gemeinde, index),
       })
-      renderMassstab({
-        werte: [...gemeinde.arrays.values],
-        kleinster: schwaechster(eintraege),
-        groesster: staerkster(eintraege),
-      })
     } else {
       const eintraege = [...kantone.arrays.values].map((wert, index) => {
         const info = kantonRowInfo(kantone, index)
@@ -227,37 +220,31 @@ export async function startBeschaeftigte(): Promise<void> {
           enterCanton(index).catch(reportNavigationError('Kanton konnte nicht geladen werden'))
         },
       })
-      renderMassstab({
-        werte: [...kantone.arrays.values],
-        kleinster: schwaechster(eintraege),
-        groesster: staerkster(eintraege),
-      })
     }
   }
 
-  /** Name des kleinsten bzw. grössten Eintrags — für den Satz im Massstab.
-   *  Beide ignorieren Nullwerte: eine Gemeinde ohne Beschäftigte ist kein
-   *  sinnvoller Endpunkt eines Verhältnisses. */
-  function schwaechster(eintraege: readonly { name: string; wert: number }[]): string {
-    const mit = eintraege.filter((e) => e.wert > 0)
-    return mit.reduce((a, b) => (b.wert < a.wert ? b : a), mit[0] ?? { name: '–', wert: 0 }).name
-  }
-  function staerkster(eintraege: readonly { name: string; wert: number }[]): string {
-    return eintraege.reduce((a, b) => (b.wert > a.wert ? b : a), eintraege[0] ?? { name: '–', wert: 0 })
-      .name
-  }
-
-  /** Betritt den Kanton der angeklickten Zeile der Schweiz-Stufe: schwenkt die
-   *  Kamera sofort auf dessen bereits geladenen Umriss (kein Warten auf den
-   *  Datenfetch), lädt parallel die beiden kantonsspezifischen Dateien und
-   *  rendert erst danach um. Wirft weiter, statt den Fehler selbst zu
-   *  schlucken — der Aufrufer hängt `reportNavigationError` an. */
+  /** Betritt den Kanton der angeklickten Zeile: lädt die beiden kantons-
+   *  spezifischen Dateien und rendert danach um. Wirft weiter, statt den
+   *  Fehler selbst zu schlucken — der Aufrufer hängt `reportNavigationError`
+   *  an.
+   *
+   *  Bewusst OHNE Kamerabewegung (Auftrag vom 17. August 2026: der Flug beim
+   *  Klick — je nach Ausgangslage ein sichtbares Herauszoomen — ist
+   *  entfernt): der Klick wechselt nur den Inhalt (Kantonssäulen → Gemeinden
+   *  des betretenen Kantons), die Kamera bleibt, wo die Betrachterin sie
+   *  hingestellt hat. Wer näher heran will, hat Zoomknöpfe und Scrollrad.
+   *  Der Rückweg (`exitToSwitzerland`) rahmt weiterhin die Schweiz: «Schweiz»
+   *  im Breadcrumb bzw. Escape heisst «zur Übersicht», und eine Übersicht,
+   *  die den Zoomstand der Gemeindeansicht erbt, wäre keine.
+   *
+   *  Funktioniert von beiden Stufen aus: auch innerhalb eines Kantons wechselt
+   *  ein Klick auf einen anderen Kanton direkt dorthin (siehe
+   *  `layers/viewLayers.ts`, Kantonszweig) — `navToken` überholt dabei einen
+   *  noch ladenden früheren Wechsel. */
   async function enterCanton(index: number) {
     const info = kantonRowInfo(kantone, index)
-    const geometry = cantonGeometries[index]
-    if (!info || !geometry) return
+    if (!info) return
     const token = ++navToken
-    handle.frameBounds(boundsOfGeometries([geometry]))
     const entry = await loadCantonEntry(info.bfsNr, info.code, info.name)
     if (token !== navToken) return // durch eine spätere Navigation überholt
     activeCanton = entry
