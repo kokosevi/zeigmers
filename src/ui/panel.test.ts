@@ -4,6 +4,7 @@ import type { Company } from '../layers/visible'
 import {
   aggregateCellContent,
   companyContent,
+  kuerze,
   configureCanton,
   type CompanyContext,
   type PanelContent,
@@ -554,9 +555,12 @@ describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => 
     expect(content.layout?.unterzeile).toBe('Zug · Geschäftsjahr 2025')
   })
 
-  it('macht die Umsatzzeile zur Hauptzahl, mit ihrem eigenen Nenner-Label', () => {
+  it('macht die Umsatzzeile zur Hauptzahl, mit kurzem Label', () => {
+    // Kurz im Steckbrief, vollständig in `fields` (dort «Jahresumsatz
+    // (Nettoumsatz)», geprüft von den Tests oben) — der Entwurf schreibt hier
+    // nur «Jahresumsatz».
     const content = companyContent(company({ revenue: 89_490_000_000 }), ctx())
-    expect(content.layout?.haupt?.label).toBe('Jahresumsatz (Nettoumsatz)')
+    expect(content.layout?.haupt?.label).toBe('Jahresumsatz')
     expect(content.layout?.haupt?.value).toContain('89.49 Mrd.')
   })
 
@@ -577,8 +581,18 @@ describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => 
       company({ revenue: 100_000_000, revenueChf: 100_000_000 }),
       ctx({ rank: 1, rankTotal: 187, revenueTotal: 1_000_000_000 }),
     )
-    expect(content.layout?.anteil?.text).toContain('Rang 1 von 187 nach Jahresumsatz')
+    // Bei der Kennzahl Umsatz ohne «nach Jahresumsatz»: die Hauptzahl direkt
+    // darüber trägt dasselbe Wort.
+    expect(content.layout?.anteil?.text).toContain('Rang 1 von 187 ·')
+    expect(content.layout?.anteil?.text).not.toContain('nach Jahresumsatz')
     expect(content.layout?.anteil?.text).toContain('des Gesamtumsatzes aller kotierten Gesellschaften')
+  })
+
+  it('nennt den Bezug, wo er nicht ohnehin darübersteht', () => {
+    // Bei Mitarbeitenden und Gewinn bleibt die Hauptzahl der Umsatz — ohne
+    // Bezug wäre nicht erkennbar, wonach der Rang zählt.
+    const content = companyContent(company({ employees: 500 }), ctx({ metric: 'mitarbeitende' }))
+    expect(content.layout?.anteil?.text).toContain('nach Mitarbeitende')
   })
 
   it('gibt dem Balken den Anteil als Bruch, nicht als Text', () => {
@@ -598,21 +612,26 @@ describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => 
     expect(content.layout?.anteil?.text).toContain('Rang 5')
   })
 
-  it('legt Reingewinn und Mitarbeitende ins Raster', () => {
-    const content = companyContent(company({ profit: 9_030_000_000, employees: 271_000 }), ctx())
-    const labels = content.layout?.raster?.map((f) => f.label) ?? []
-    expect(labels).toContain('Reingewinn (auf die Aktionäre entfallend)')
-    expect(labels).toContain('Mitarbeitende')
-  })
-
-  it('nimmt jeden abgeleiteten Wert ins Raster, den fields kennt', () => {
-    // Marge und Umsatz je Mitarbeitenden sind die zwei gerechneten Grössen —
-    // ohne diesen Test verschwänden sie beim Umbau lautlos aus der Ansicht.
+  it('legt genau zwei Zellen ins Raster: Reingewinn und Mitarbeitende', () => {
+    // Der Entwurf zeigt zwei — Marge und «Umsatz je Mitarbeitenden» sind
+    // gerechnete Grössen und stehen weiterhin in `fields` (siehe den Test
+    // darunter), nur nicht mehr im Steckbrief.
     const content = companyContent(
       company({ revenue: 1000, revenueChf: 1000, profit: 250, employees: 10 }),
       ctx(),
     )
     const labels = content.layout?.raster?.map((f) => f.label) ?? []
+    expect(labels).toEqual(['Reingewinn', 'Mitarbeitende'])
+  })
+
+  it('behält Marge und Umsatz je Mitarbeitenden in fields, auch wenn der Steckbrief sie nicht zeigt', () => {
+    // Die Kürzung des Steckbriefs darf keine Zahl aus dem Datenmodell werfen —
+    // sonst liesse sie sich auch nicht zurückholen.
+    const content = companyContent(
+      company({ revenue: 1000, revenueChf: 1000, profit: 250, employees: 10 }),
+      ctx(),
+    )
+    const labels = content.fields.map((f) => f.label)
     expect(labels).toContain('Marge auf Nettoumsatz')
     expect(labels).toContain('Umsatz je Mitarbeitenden')
   })
@@ -639,5 +658,35 @@ describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => 
     // `renderContent` rendert dort unverändert die Liste von vorher.
     const content = aggregateCellContent(aggregateLevel({ level: 'kanton' }), 0)
     expect(content.layout).toBeUndefined()
+  })
+})
+
+describe('kuerze — Kerngeschäft im Steckbrief', () => {
+  it('lässt kurze Texte unangetastet', () => {
+    expect(kuerze('Pharmazeutische Wirkstoffe.')).toBe('Pharmazeutische Wirkstoffe.')
+  })
+
+  it('kürzt an der Wortgrenze, nicht mitten im Wort', () => {
+    const lang = 'Herstellung und Vertrieb von Nahrungsmitteln und Getränken in den Kategorien ' +
+      'Pulver- und Flüssiggetränke, Wasser, Milchprodukte und Speiseeis, Ernährungs- und ' +
+      'Gesundheitsprodukte, Fertiggerichte und Kochzutaten, Süsswaren sowie Heimtiernahrung.'
+    const kurz = kuerze(lang)
+    expect(kurz.length).toBeLessThan(lang.length)
+    expect(kurz.endsWith(' …')).toBe(true)
+    // Das letzte Wort vor der Auslassung ist vollständig.
+    const letztes = kurz.slice(0, -2).trim().split(' ').at(-1)!
+    expect(lang).toContain(letztes)
+  })
+
+  it('setzt keine Auslassung hinter einen vollständigen Satz', () => {
+    const knapp = 'a'.repeat(170)
+    expect(kuerze(knapp)).toBe(knapp)
+  })
+
+  it('lässt kein Satzzeichen vor der Auslassung stehen', () => {
+    // «… Speiseeis, …» las sich wie eine Aufzählung, die weitergeht — sie tut
+    // es, aber das Komma davor ist dann doppelt gesetzt.
+    const lang = `${'Wort '.repeat(40)}Ende, und weiter`
+    expect(kuerze(lang)).not.toMatch(/[,;:.] …$/)
   })
 })

@@ -232,6 +232,29 @@ export function aggregateCellContent(level: Level, index: number): PanelContent 
   }
 }
 
+
+/** Kürzt einen Fliesstext an einer Wortgrenze — für das Kerngeschäft im
+ *  Steckbrief.
+ *
+ *  Der Entwurf verlangt dort ausdrücklich „zwei bis drei Zeilen, nicht den
+ *  ganzen Datensatz setzen" (Handoff 1b, Punkt 5). Gemessen an den Daten ist
+ *  das nötig: `coreProducts` ist im Median 194 Zeichen lang, im längsten Fall
+ *  607 — bei 264 px Panelbreite sind das bis zu 14 Zeilen, die den Steckbrief
+ *  in eine Textwand verwandeln und Raster und Fuss aus dem Bild drücken.
+ *
+ *  Der vollständige Text ist damit nicht verloren: er steht unverändert in
+ *  `fields` (dort prüfen ihn die Tests), und die Primärquelle dazu verlinkt
+ *  der Fuss («Kerngeschäft belegen», bei 195 der 201 Gesellschaften
+ *  vorhanden). Abgeschnitten wird an der letzten Wortgrenze davor, nicht
+ *  mitten im Wort, und nur, wenn tatsächlich etwas wegfällt — sonst stünde
+ *  eine Auslassung hinter einem vollständigen Satz. */
+export function kuerze(text: string, maxZeichen = 170): string {
+  if (text.length <= maxZeichen) return text
+  const schnitt = text.slice(0, maxZeichen)
+  const grenze = schnitt.lastIndexOf(' ')
+  return `${schnitt.slice(0, grenze > 0 ? grenze : maxZeichen).replace(/[,;:.]$/, '')} …`
+}
+
 function nogaGroupLabel(nogaGroupIndex: number): string {
   return NOGA_GROUPS[nogaGroupIndex]?.label ?? 'unbekannt'
 }
@@ -468,6 +491,17 @@ export function companyContent(company: Company, context: CompanyContext): Panel
   const umsatzFeld = fields.find(
     (f) => f.label === 'Jahresumsatz (Nettoumsatz)' || f.label.startsWith('Geschäftsertrag'),
   )
+  // Kurzes Label im Steckbrief, volles in `fields`: der Entwurf schreibt
+  // «Jahresumsatz», nicht «Jahresumsatz (Nettoumsatz)» — die Klammer sagt dort
+  // nichts, was die Zeile darunter nicht ohnehin trägt. Bei einer Bank bleibt
+  // «Geschäftsertrag» stehen: DAS ist keine Verkürzung, sondern eine andere
+  // Kennzahl (nicht mit Nettoumsatz vergleichbar, siehe `REVENUE_TYPES` im ETL).
+  const hauptFeld = umsatzFeld
+    ? {
+        label: company.revenueType === 'operating_income' ? 'Geschäftsertrag' : 'Jahresumsatz',
+        value: umsatzFeld.value,
+      }
+    : undefined
 
   // Anteilsbalken: dieselbe Zahl wie die Zeile darunter, einmal als Länge.
   // Rang und Anteil stehen zusammen in einem Satz — beide beziehen sich auf
@@ -475,7 +509,13 @@ export function companyContent(company: Company, context: CompanyContext): Panel
   // getrennte Zeilen liessen das auseinanderfallen.
   const anteilTeile: string[] = []
   if (context.rank !== null) {
-    anteilTeile.push(`Rang ${context.rank} von ${context.rankTotal} nach ${metricLabel(context.metric)}`)
+    // «nach Jahresumsatz» entfällt bei der Kennzahl Umsatz: die Hauptzahl
+    // direkt darüber trägt dasselbe Wort, und der Entwurf schreibt hier nur
+    // «Rang 1 von 187». Bei Mitarbeitenden oder Gewinn bleibt die Angabe
+    // stehen — dort ist der Bezug nicht selbsterklärend, weil die Hauptzahl
+    // weiterhin der Umsatz ist.
+    const bezug = context.metric === 'umsatz' ? '' : ` nach ${metricLabel(context.metric)}`
+    anteilTeile.push(`Rang ${context.rank} von ${context.rankTotal}${bezug}`)
   }
   const anteilWert = feldWert('Anteil am Gesamtumsatz')
   if (anteilWert) {
@@ -497,17 +537,20 @@ export function companyContent(company: Company, context: CompanyContext): Panel
 
   // Raster: die übrigen Kennzahlen, je Zelle Label und Wert. Reihenfolge wie
   // im Entwurf (Reingewinn, Mitarbeitende), danach die abgeleiteten Grössen.
+  // Zwei Zellen, wie der Entwurf sie zeigt: Reingewinn und Mitarbeitende.
+  // Kurze Labels wie bei der Hauptzahl — «(auf die Aktionäre entfallend)»
+  // steht weiterhin in `fields`.
+  //
+  // Marge und «Umsatz je Mitarbeitenden» sind damit aus dem Steckbrief
+  // gefallen (Auftrag vom 17. August 2026: «einiges kürzer», wie der Entwurf
+  // ihn zeigt). Sie sind gerechnete Grössen, keine berichteten — beide lassen
+  // sich aus den vier Zahlen darüber wieder herleiten, und in `fields` stehen
+  // sie unverändert. Zurückholen wäre eine dritte Zeile im Raster.
   const raster: PanelField[] = []
-  for (const label of [
-    'Reingewinn (auf die Aktionäre entfallend)',
-    'Mitarbeitende',
-    'Marge auf Nettoumsatz',
-    'Marge auf Geschäftsertrag',
-    'Umsatz je Mitarbeitenden',
-  ]) {
-    const wert = feldWert(label)
-    if (wert !== undefined) raster.push({ label, value: wert })
-  }
+  const reingewinn = feldWert('Reingewinn (auf die Aktionäre entfallend)')
+  if (reingewinn !== undefined) raster.push({ label: 'Reingewinn', value: reingewinn })
+  const mitarbeitende = feldWert('Mitarbeitende')
+  if (mitarbeitende !== undefined) raster.push({ label: 'Mitarbeitende', value: mitarbeitende })
 
   return {
     title: company.name,
@@ -517,7 +560,7 @@ export function companyContent(company: Company, context: CompanyContext): Panel
     layout: {
       kennung: company.sixSymbol ?? undefined,
       unterzeile: unterTeile.length > 0 ? unterTeile.join(' · ') : undefined,
-      haupt: umsatzFeld,
+      haupt: hauptFeld,
       anteil,
       raster,
       branche: {
@@ -525,7 +568,7 @@ export function companyContent(company: Company, context: CompanyContext): Panel
           NOGA_GROUPS[company.nogaGroupIndex]?.color ?? NOGA_GROUPS[0]!.color,
         ),
         label: nogaGroupLabel(company.nogaGroupIndex),
-        text: company.coreProducts ?? undefined,
+        text: company.coreProducts ? kuerze(company.coreProducts) : undefined,
       },
       fussKennung: company.uid ?? undefined,
     },
