@@ -134,6 +134,14 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
   padding: 16px 18px 14px;
   border-bottom: 1.5px solid var(--tinte);
 }
+/* Pfeil und Wortmarke in einer Zeile — beide führen auf die Landing (siehe
+   `ui/nav.ts`, Kopf). `baseline` statt `center`, damit der Pfeil auf der
+   Schriftlinie der Marke sitzt und nicht optisch schwebt. */
+.leiste-kopfzeile { display: flex; align-items: baseline; gap: 10px; }
+.leiste-zurueck {
+  color: var(--tinte); text-decoration: none;
+  font-size: 1.0625rem; line-height: 1;
+}
 .leiste-marke {
   display: block;
   color: var(--tinte); text-decoration: none;
@@ -159,6 +167,11 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
   padding: 14px 18px;
   border-top: 1.5px solid var(--tinte);
 }
+/* /firmen/ füllt den Fuss seit dem 17. August 2026 nicht mehr (Auftrag: Summe
+   und alles darunter entfernt, siehe `karte/firmen.ts`). Das Skelett der
+   Leiste legt den Abschnitt trotzdem an (`ui/leiste.ts`) — ohne diese Regel
+   stünde dort ein leerer Streifen aus Rahmenlinie und Padding. */
+#leiste-fuss:empty { display: none; }
 
 .leiste-label {
   margin: 16px 0 7px;

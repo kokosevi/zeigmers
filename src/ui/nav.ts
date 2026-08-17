@@ -138,16 +138,29 @@ export function createNav(options: NavOptions): void {
   const { view, onModeChange } = options
   let mode: ScaleMode = DEFAULT_MODE[view]
 
-  // ---- Kopf: Wortmarke und Ansichtsname ----
+  // ---- Kopf: Pfeil zurück, Wortmarke und Ansichtsname ----
   const kopf = abschnitt('kopf')
+  // Der Pfeil (Auftrag vom 17. August 2026) macht den Rückweg sichtbar, den
+  // die Wortmarke schon trug — dass «zeigmers» ein Link auf die Landing ist,
+  // sieht man ihr nicht an. Beide führen auf `/`; der Pfeil ist ein eigenes
+  // Element mit eigenem `aria-label`, damit ein Screenreader «Zur Startseite»
+  // liest statt zweimal «zeigmers».
+  const zeile = document.createElement('div')
+  zeile.className = 'leiste-kopfzeile'
+  const zurueck = document.createElement('a')
+  zurueck.className = 'leiste-zurueck'
+  zurueck.href = '/'
+  zurueck.setAttribute('aria-label', 'Zur Startseite')
+  zurueck.textContent = '←'
   const marke = document.createElement('a')
   marke.className = 'leiste-marke'
   marke.href = '/'
   marke.textContent = 'zeigmers'
+  zeile.append(zurueck, marke)
   const ansicht = document.createElement('span')
   ansicht.className = 'leiste-ansicht'
   ansicht.textContent = ANSICHT_LABEL[view]
-  kopf.append(marke, ansicht)
+  kopf.append(zeile, ansicht)
 
   // ---- Gruppen: Kennzahl (optional) und Höhe ----
   const gruppen = abschnitt('gruppen')

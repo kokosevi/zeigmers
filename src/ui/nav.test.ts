@@ -40,6 +40,18 @@ describe('createNav', () => {
     expect(kopf.textContent).toContain('Börsennotierte Firmen')
   })
 
+  it('führt im Kopf einen Pfeil zurück auf die Landing', () => {
+    // Auftrag vom 17. August 2026: die Wortmarke war schon ein Link auf `/`,
+    // sah aber nicht danach aus — der Pfeil macht den Rückweg sichtbar. Ein
+    // eigenes `aria-label`, damit ein Screenreader nicht zweimal «zeigmers»
+    // liest. Über `createNav` steht er damit auf beiden Unterseiten.
+    createNav({ view: 'beschaeftigte', onModeChange: () => {} })
+    const zurueck = document.querySelector('.leiste-zurueck')
+    expect(zurueck?.getAttribute('href')).toBe('/')
+    expect(zurueck?.getAttribute('aria-label')).toBe('Zur Startseite')
+    expect(zurueck?.textContent).toBe('←')
+  })
+
   it('zeigt die Kennzahl-Gruppe nur, wo Kennzahlen angeboten werden', () => {
     createNav({ view: 'beschaeftigte', onModeChange: () => {} })
     expect(gruppen().querySelector('[aria-label="Kennzahl"]')).toBeNull()

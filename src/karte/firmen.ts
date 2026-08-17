@@ -12,10 +12,8 @@ import {
   type Company,
 } from '../layers/visible'
 import { hideHoverLabel } from '../ui/hoverLabel'
-import { renderKennzahlen } from '../ui/kennzahlen'
 import { renderLegend } from '../ui/legend'
 import { DEFAULT_MODE, type NavOptions } from '../ui/nav'
-import { renderNotices, type Coverage, type TopReference } from '../ui/notices'
 import { hidePanel, showCompanyPanel, type CompanyContext } from '../ui/panel'
 import { renderSuche } from '../ui/suche'
 import { renderZoom } from '../ui/zoom'
@@ -47,30 +45,6 @@ export async function startFirmen(): Promise<void> {
       .filter((c) => c.researched)
       .map((c) => (c.placeholder ? NOGA_UNKNOWN_INDEX : c.nogaGroupIndex)),
   )
-
-  // Abdeckungsangabe der Karte selbst — bis zum Kahlschlag vom 2026-08-17
-  // stand sie in der Legenden-Titelzeile, seither in der Eckbox (Auftraggeber-
-  // Korrektur, selbes Datum, siehe `ui/notices.ts`, `Coverage`): ohne sie
-  // liesse sich aus der Karte selbst nicht ablesen, dass ein Teil der
-  // kotierten Titel gar nicht erscheint (23 von 224 ohne eindeutigen
-  // Zefix-Sitz). Unverändert direkt aus `companies.stats` übernommen, keine
-  // eigene Berechnung nötig — `coverageNote()` in `ui/notices.ts` formt den
-  // Satz daraus, inklusive SIX-Abrufstand.
-  const coverage: Coverage = {
-    count: companies.stats.count,
-    totalListed: companies.stats.totalListed,
-    researched: companies.stats.researched,
-    sixRetrievedDate: companies.stats.sixRetrievedDate,
-  }
-
-  // Beschäftigte der Schweiz insgesamt — der Vergleich, für den es die
-  // Kennzahl «Mitarbeitende» gibt (siehe `ui/kennzahlen.ts`). Aus den 26
-  // Kantonswerten von `ch_kantone` summiert, das `createBasis()` ohnehin für
-  // die Schweiz-Rahmung lädt (siehe dort) — kein zweiter Ladeschritt, keine
-  // hartkodierte Zahl. Erwartete Grössenordnung 5'876'865 (STATENT-Stand des
-  // geladenen Artefakts).
-  let nationalEmployees = 0
-  for (const value of basis.kantone.arrays.values) nationalEmployees += value
 
   // Rang und Anteil am Gesamtumsatz im Klick-Panel gelten immer über ALLE
   // recherchierten Gesellschaften mit Wert in der aktiven Kennzahl, nie über
@@ -203,43 +177,16 @@ export async function startFirmen(): Promise<void> {
       },
     })
 
-    renderKennzahlen({
-      result,
-      metric: selection.metric,
-      totalCompanies: companies.stats.count,
-      nationalEmployees,
-    })
-
-    // Re-Review Fund 2 (2026-08-15): `renderNotices` liest `metricInChf` nur
-    // in dieser Ansicht — ob die Balkenhöhe die «in CHF umgerechnet»-Aussage
-    // tragen darf, entscheidet `companies.json`s `stats.revenueInChf`/
-    // `stats.profitInChf` zur Laufzeit, nicht ein hartkodierter Satz (siehe
-    // `ui/notices.ts`, `CURRENCY_NOTE_CHF`/`CURRENCY_NOTE_FALLBACK`).
-    //
-    // Fix-Runde (2026-08-16, Abschluss-Review C1/I6): `renderNotices` bekommt
-    // jetzt zusätzlich die aktive Kennzahl, damit Hinweistext und
-    // Währungszeile ihr folgen (bis dahin stand über einer Mitarbeitenden-
-    // oder Gewinn-Karte weiterhin ein Umsatz-Satz). Welches der beiden
-    // Vollständigkeits-Flags gilt, hängt an derselben Kennzahl: Umsatz und
-    // Gewinn haben je eine eigene Alles-oder-nichts-Umrechnungsregel
-    // (`companies.py`, `build_artifact`) — `stats.profitInChf` existiert im
-    // Artefakt schon länger, wurde aber bis zu diesem Fix von keinem
-    // Produktivpfad gelesen (Finding I6).
-    const metricInChf =
-      selection.metric === 'gewinn' ? companies.stats.profitInChf : companies.stats.revenueInChf
-
-    // Auftrag (2026-08-17): die Bezugszeile «Höchste Säule» ist aus der
-    // Legende in die Eckbox umgezogen (siehe `ui/notices.ts`, `TopReference`)
-    // — dieselbe Herleitung, die vorher in `ui/legend.ts` stand:
-    // `result.top` ist `null` bei leerer Auswahl, `metricValue` liest den
-    // echten, vorzeichenbehafteten Wert (bei Gewinn ggf. ein Verlust),
-    // `result.vmax` bleibt der reine Typsicherheits-Fallback (kann laut
-    // `applySelection` nicht eintreten, `result.top` wird nur bei einem
-    // echten Wert gesetzt).
-    const topReference: TopReference | null = result.top
-      ? { name: result.top.name, value: metricValue(result.top, selection.metric) ?? result.vmax }
-      : null
-    renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf, topReference, coverage)
+    // Kein Leistenfuss auf dieser Seite (Auftrag vom 17. August 2026: alles
+    // ab der Summe «762.14 Mrd. CHF» abwärts entfernen). Damit sind
+    // `renderKennzahlen` UND `renderNotices` hier entfallen — die Summe der
+    // Auswahl ebenso wie die Vorbehalte (Währungszeile, Abdeckung, «kein
+    // amtliches Statistikprodukt», Mindesthöhen- und Randmarkierungs-Sätze).
+    // Das ist bewusst benannt, nicht stillschweigend: diese Seite trägt ihre
+    // Vorbehalte damit nirgends mehr; auf `/beschaeftigte/` stehen ihre
+    // Pendants weiterhin im Fuss. Beide Module und ihre Tests bleiben
+    // bestehen; der leere Fuss-Abschnitt verschwindet per CSS
+    // (`#leiste-fuss:empty`, `style.css`).
   }
 
   // Die Zahl für die Zeile unter dem Höhen-Umschalter: wie viele Säulen bei
