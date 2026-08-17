@@ -70,13 +70,20 @@ describe('Landing-Kennzahlen', () => {
     expect(HTML).toContain(`href="${VIEW_PATH.beschaeftigte}"`)
   })
 
-  it('bleibt die einzige Seite ohne JavaScript', () => {
+  it('lädt ausser dem Umami-Tracker kein JavaScript', () => {
     // Der ganze Sinn der Landing: kein deck.gl, kein MapLibre (zusammen
     // 1.52 MB), um zwei Kacheln zu zeigen. Ein versehentlich eingefügtes
     // `<script type="module" src="/src/…">` — etwa beim Kopieren aus einer
     // Kartenseite — würde das lautlos zunichte machen, weil die Seite danach
     // trotzdem normal aussieht.
-    expect(HTML).not.toMatch(/<script/i)
+    //
+    // Einzige gewollte Ausnahme (17. August 2026): der Umami-Tracker, ~2 KB,
+    // `defer`, cookielos — er misst die Besuche und ist kein Anwendungs-Code.
+    // Der Test pinnt deshalb GENAU einen Script-Tag samt seiner Quelle statt
+    // pauschal null: ein zweiter Tag oder eine andere `src` schlägt weiter fehl.
+    const skripte = HTML.match(/<script\b[^>]*>/gi) ?? []
+    expect(skripte).toHaveLength(1)
+    expect(skripte[0]).toContain('src="https://cloud.umami.is/script.js"')
   })
 
   it('verweist auf vier Kachelgrafiken, die tatsächlich existieren', () => {

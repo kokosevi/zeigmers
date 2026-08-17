@@ -48,6 +48,17 @@
       crossorigin
     />
     <link rel="stylesheet" href="/src/landing.css" />
+    <!-- Umami-Tracking (cookielos): dieselbe Website-ID wie psychenow, weil
+         der Umami-Cloud-Hobby-Plan nur eine Website erlaubt — im Dashboard
+         trennt der Hostname-Filter die beiden Seiten. `data-domains` sorgt
+         dafür, dass lokale Entwicklung (localhost) nicht mitgezählt wird;
+         bei einer künftigen eigenen Domain muss sie hier ergänzt werden. -->
+    <script
+      defer
+      src="https://cloud.umami.is/script.js"
+      data-website-id="eda26e51-10e4-4def-878f-290cc4c8593d"
+      data-domains="zeigmers.netlify.app"
+    ></script>
   </head>
   <body>
     <main>
