@@ -10,33 +10,7 @@
    Fusszeile. Der Entwurf (Handoff 3a) streicht beides: Quellen und Vorbehalte
    stehen jetzt dort, wo die Zahlen auch gezeigt werden — im Fuss der Leiste
    auf den beiden Kartenseiten. */
-@font-face {
-  font-family: "Space Grotesk";
-  /* Eine Datei für 500 UND 700: Google Fonts liefert Space Grotesk als
-     variable Schrift, beide Gewichte zeigen auf dasselbe woff2. Zwei
-     `@font-face`-Blöcke mit identischem `src` würden dieselben 22 KB zweimal
-     deklarieren, ohne etwas zu gewinnen. */
-  font-weight: 500 700;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/space-grotesk-latin-var.woff2") format("woff2");
-  /* Latin-Subset: die Oberfläche ist durchgehend deutsch, die Firmennamen im
-     Datensatz bleiben innerhalb von Latin-1 (geprüft an `companies.json`:
-     24 Nicht-ASCII-Zeichen, alle in diesem Bereich). */
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
-    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
-    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "IBM Plex Mono";
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  src: url("/fonts/ibm-plex-mono-latin-400.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
-    U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
-    U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+@import "./fonts.css";
 
 :root {
   --papier: #F7F8F9;

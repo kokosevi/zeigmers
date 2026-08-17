@@ -1,5 +1,6 @@
-import { metricLabel, type Metric } from '../domain/metric'
+import { type Metric } from '../domain/metric'
 import type { ScaleMode } from '../domain/scale'
+import { abschnitt, label } from './leiste'
 
 // Interner Schlüssel folgt dem sichtbaren Namen: die Ansicht hiess bis zu
 // ihrer Umbenennung «Die Vielen» und der Schlüssel entsprechend `viele`. Ein
@@ -12,8 +13,8 @@ import type { ScaleMode } from '../domain/scale'
 // `beschaeftigte` (Einheit vs. Anzeigename) trägt `sichtbare` keine
 // Zahl/Einheit, die aus dem Tritt geraten könnte — er ist nur ein interner
 // Bezeichner für die Firmenansicht, und zieht sich durch `layers/visible.ts`,
-// `ui/legend.ts` (`UNIT_LABEL`), `ui/notices.ts` und die Tests. Ihn
-// mitzuziehen wäre für eine reine Label-Änderung unverhältnismässig.
+// `ui/legend.ts`, `ui/notices.ts` und die Tests. Ihn mitzuziehen wäre für eine
+// reine Label-Änderung unverhältnismässig.
 export type ViewName = 'sichtbare' | 'beschaeftigte'
 
 /** Je Ansicht ein eigener Default. Beide Ansichten sind extrem schief
@@ -21,41 +22,26 @@ export type ViewName = 'sichtbare' | 'beschaeftigte'
  *  `domain/scale.ts`) — seit Change 6 eine Potenzskala, nicht mehr die
  *  ursprüngliche echte Logarithmusskala.
  *
- *  Namensstand (Redesign Change 5, 2026-08-14): Schlüssel und Button-Label
- *  heissen wieder `'logarithmisch'` — der vertraute Name aus jeder anderen
- *  Kartenanwendung, an der Stelle, an der Nutzende navigieren. Das ist eine
- *  reine Umbenennung, keine Rückkehr zur echten `log10`-Skala: die Formel
- *  bleibt `(v/vmax)**0.4` (siehe `domain/scale.ts`). Die ehrliche Herkunft
- *  der Formel steht in der Eckbox (`ui/notices.ts`), nicht im Button.
+ *  Task 12 (2026-08-16): `sichtbare` wechselte von `'linear'` auf
+ *  `'logarithmisch'` — gemessen, nicht vermutet: bei linearer Skala sass die
+ *  überwiegende Mehrheit der Säulen auf der Mindesthöhe, die Karte öffnete mit
+ *  zwei sichtbaren Säulen und einem Feld gleich hoher Stummel. Derselbe
+ *  Befund, der Ansicht «Beschäftigte» schon immer den gedämpften Default gab.
+ *  Die aktuelle Zahl dazu steht nicht mehr hier als Kommentar, sondern
+ *  sichtbar in der Leiste (`heightNote` unten) — dort wird sie bei jedem Aufruf
+ *  aus den geladenen Artefakten gerechnet statt als Kommentar zu veralten.
  *
- *  Seit der Aufteilung in zwei Seiten (2026-08-15) gilt je Seite genau ein
- *  Eintrag; die zuletzt gewählte Skala überlebt einen Seitenwechsel nicht
- *  mehr, weil der Wechsel jetzt ein echter Seitenaufbau ist. Beide Ansichten
- *  starten damit immer in ihrem fachlich richtigen Default statt in dem, was
- *  zuletzt in der anderen Ansicht eingestellt war.
- *
- *  Task 12 (2026-08-16): `sichtbare` wechselt von `'linear'` auf
- *  `'logarithmisch'` — gemessen, nicht vermutet: bei linearer Skala sitzen
- *  153 der 188 Säulen auf der Mindesthöhe (dominiert vom Grössenunterschied
- *  zwischen den grössten Konzernen und dem Gros der übrigen kotierten
- *  Firmen), die Karte öffnete mit zwei sichtbaren Säulen und einem Feld
- *  gleich hoher Stummel. Derselbe Befund, der Ansicht «Beschäftigte» schon
- *  immer den gedämpften Default gab, gilt für «Börsennotierte Firmen» also
- *  ebenso — beide Ansichten stehen jetzt aus demselben Grund auf
- *  `'logarithmisch'`, keine ist mehr die Ausnahme.
- *
- *  Messstand der 188 (2026-08-16, vor Finding I7): `stats.withRevenue`
- *  zählte damals noch Molecular Partners AGs ausgewiesene Null als Umsatz
- *  mit. Die Fixwelle hat das auf 187 korrigiert (siehe `layers/visible.ts`).
- *  153/188 bleibt hier unverändert stehen, weil es die tatsächlich gemessene
- *  Zahl von damals ist — sie umzurechnen wäre eine erfundene Zahl, keine
- *  gemessene. */
+ *  Die Schlüssel heissen weiterhin `'logarithmisch'`/`'linear'`, weil
+ *  `domain/scale.ts` sie so führt; die Leiste zeigt seit dem Redesign
+ *  «gedämpft» statt «logarithmisch» (siehe `MODE_LABEL`) — das ist der
+ *  ehrlichere Name für eine Potenzfunktion mit Exponent 0.4, und die
+ *  tatsächliche Formel steht bei den Vorbehalten (`ui/notices.ts`). */
 export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
   sichtbare: 'logarithmisch',
   beschaeftigte: 'logarithmisch',
 }
 
-/** Die URL je Ansicht — an einer Stelle, damit `createNav` unten und die
+/** Die URL je Ansicht — an einer Stelle, damit die Kartenseiten und die
  *  Landing (`index.html`) nicht auseinanderlaufen können. Mit Schrägstrich am
  *  Ende: Netlify serviert `/firmen/` aus `dist/firmen/index.html` und leitet
  *  `/firmen` zusätzlich dorthin um; der direkte Pfad spart die Umleitung.
@@ -64,96 +50,172 @@ export const DEFAULT_MODE: Record<ViewName, ScaleMode> = {
  *  ohne eine Zeile JavaScript gebaut und kann diese Konstante deshalb nie
  *  importieren — das Auseinanderlaufen wird stattdessen dort verhindert, wo
  *  es sich prüfen lässt: `src/landing.test.ts` importiert `VIEW_PATH` und
- *  vergleicht es mit den in `index.html` verlinkten Pfaden, statt sie dort
- *  ein zweites Mal als Literal zu wiederholen. */
+ *  vergleicht es mit den in `index.html` verlinkten Pfaden. */
 export const VIEW_PATH: Record<ViewName, string> = {
   sichtbare: '/firmen/',
   beschaeftigte: '/beschaeftigte/',
 }
 
-const MODES: readonly ScaleMode[] = ['logarithmisch', 'linear']
-
-/** Übersetzt den internen Organisationsform-Schlüssel (aus `companies.json`,
- *  `stats.orgForms`) in die Anzeige. `Record<string, string>`, nicht
- *  `Record<OrgForm, string>`: welche Formen es gibt, kommt zur Laufzeit aus
- *  den Daten, nicht aus einer im Code aufgezählten Menge — ein unbekannter
- *  Schlüssel bräuchte sonst entweder einen Compile-Fehler (verträgt sich
- *  nicht mit datengetriebenen Werten) oder eine leere Schaltfläche. Aufrufer
- *  greifen deshalb mit `ORG_FORM_LABEL[key] ?? key` zu (siehe unten) — ein
- *  unbekannter Schlüssel zeigt sich als eigener, unübersetzter Text statt als
- *  Leerstelle. */
-export const ORG_FORM_LABEL: Record<string, string> = {
-  boersenkotiert: 'Börsenkotiert',
+/** Der Ansichtsname im Leistenkopf, unter der Wortmarke. Ersetzt den
+ *  Ansichts-Umschalter, der am 17. August 2026 entfallen ist: er sagte, welche
+ *  zwei Karten es gibt, aber nicht, auf welcher man steht. Diese Zeile sagt
+ *  das Zweite; das Erste sagt die Landing. */
+const ANSICHT_LABEL: Record<ViewName, string> = {
+  sichtbare: 'Börsennotierte Firmen',
+  beschaeftigte: 'Beschäftigte',
 }
 
-/** Optionen für `createNav`. `metrics`/`orgForms` sind optional und bewusst
- *  unabhängig voneinander: welche Seite welche Gruppe zeigt, entscheidet die
- *  Aufrufstelle (`karte/basis.ts`, `mountNav`) über das, was sie übergibt —
- *  nicht `createNav` über `view`. Die Beschäftigten-Seite übergibt heute
- *  keine der beiden Optionen, deshalb erscheinen dort weder Kennzahl- noch
- *  Organisationsform-Gruppe. */
+const MODES: readonly ScaleMode[] = ['logarithmisch', 'linear']
+
+/** «gedämpft» statt «logarithmisch» im Umschalter (Handoff 1b, Nadel 4).
+ *  `'logarithmisch'` war schon vorher der falsche Name für eine Potenzfunktion
+ *  mit Exponent 0.4 — er stand da, weil er aus anderen Kartenanwendungen
+ *  vertraut ist. «gedämpft» beschreibt, was tatsächlich passiert, und passt zu
+ *  der Zeile darunter, die den Grund nennt. Der Schlüssel bleibt unverändert,
+ *  `domain/scale.ts` ist nicht Teil dieses Umbaus. */
+const MODE_LABEL: Record<ScaleMode, string> = {
+  logarithmisch: 'gedämpft',
+  linear: 'linear',
+}
+
+/** «Personal» statt «Mitarbeitende» — nur hier, nur in dieser Zelle.
+ *  Der Entwurf setzt drei Zellen auf 264 px Leistenbreite; «Mitarbeitende»
+ *  bricht dort um. `metricLabel()` (`domain/metric.ts`) bleibt für Legende,
+ *  Panel, Hover und Summenzeile die Quelle des vollen Namens — dieses kurze
+ *  Label gilt ausschliesslich für den Umschalter, nicht für die Aussage über
+ *  die Daten. */
+const METRIC_SEGMENT_LABEL: Record<Metric, string> = {
+  umsatz: 'Umsatz',
+  mitarbeitende: 'Personal',
+  gewinn: 'Gewinn',
+}
+
+/** Die Zahlen für die Zeile unter dem Höhen-Umschalter. Sie kommen von der
+ *  Seite, nicht aus diesem Modul: wie viele Säulen bei linearer Skala auf der
+ *  Mindesthöhe sitzen, ist eine Aussage über die geladenen Daten und wird dort
+ *  gerechnet, wo die Daten liegen (`karte/firmen.ts`). Hier steht nur der
+ *  Satz, in dem sie erscheinen. */
+export interface HeightNote {
+  /** Säulen, deren Höhe bei linearer Skala auf die Mindesthöhe fällt. */
+  flach: number
+  /** Säulen mit einem Wert in der aktiven Kennzahl überhaupt. */
+  total: number
+}
+
 export interface NavOptions {
   view: ViewName
   metrics?: { available: readonly Metric[]; onChange: (metric: Metric) => void }
-  orgForms?: { available: readonly string[]; onChange: (forms: ReadonlySet<string>) => void }
+  /** Fehlt sie, erscheint die Zeile unter dem Höhen-Umschalter nicht — auf
+   *  `/beschaeftigte/` steht die Aussage über die Höhenverteilung weiterhin
+   *  auf der Karte (`#massstab`), nicht in der Leiste. */
+  heightNote?: HeightNote
   onModeChange: (mode: ScaleMode) => void
 }
 
-/** Baut die Steuerung oben links. Bis zu drei Gruppen mit unterschiedlicher
- *  Natur, deshalb unterschiedliche Semantik trotz teils gleicher Optik:
+/** Baut Kopf und Segment-Umschalter der Leiste.
  *
- *  - Die Höhenskala ist eine echte Auswahl innerhalb der Seite und
- *    behält `role="radiogroup"` und `aria-checked`.
- *  - Die Kennzahl ist wie die Höhenskala eine Auswahl von genau **einer**
- *    Option (die Säule trägt immer nur eine Grösse gleichzeitig) — deshalb
- *    dasselbe Muster: `role="radiogroup"`, `aria-checked` je Knopf.
- *  - Die Organisationsform ist dagegen eine **Mehrfachauswahl** (mehrere
- *    Formen können gleichzeitig sichtbar sein) — kein `radiogroup`, sondern
- *    `role="group"` mit unabhängigen Umschaltknöpfen (`aria-pressed` je
- *    Knopf). `role="group"` statt der impliziten `<div>`-Rolle `generic`,
- *    weil nur benannte Rollen ein `aria-label` zuverlässig tragen (siehe
- *    Begründung unten bei der Organisationsform-Gruppe). Sie erscheint auch
- *    mit nur einem Wert: der Knopf zeigt heute schon die Richtung, in der
- *    später weitere Organisationsformen dazukommen, auch wenn er mit einem
- *    einzigen Wert noch nichts filtert.
+ *  Zwei Gruppen, beide mit derselben Semantik: `role="radiogroup"` und
+ *  `aria-checked` je Zelle — Kennzahl und Höhe sind je eine Auswahl von genau
+ *  **einer** Option (die Säule trägt immer nur eine Grösse und eine Skala
+ *  gleichzeitig).
  *
- *  Ruft `onModeChange` — und, falls übergeben, `metrics.onChange` und
- *  `orgForms.onChange` — je einmal bei der Konstruktion auf: das übernimmt
- *  den ersten Render, ein zusätzlicher expliziter Aufruf beim Aufrufer wäre
- *  nur eine Wiederholung. */
-export function createNav(options: NavOptions): HTMLElement {
+ *  Was hier entfallen ist, und wohin es gegangen ist:
+ *  - Der **Ansichts-Umschalter** (17. August 2026): ersatzlos, der Weg von
+ *    einer Karte zur anderen läuft über die Wortmarke und die Landing. Der
+ *    Ansichtsname steht jetzt als Zeile im Kopf (`ANSICHT_LABEL`).
+ *  - Die **Organisationsform-Gruppe** (Redesign, Handoff 1b, Nadel 6): sie
+ *    hatte genau einen Wert (`boersenkotiert`) und filterte damit nichts. Der
+ *    Filterpfad selbst bleibt bestehen (`domain/selection.ts`,
+ *    `Selection.orgForms`, und `karte/firmen.ts` übergibt weiterhin alle
+ *    vorkommenden Formen) — nur die Schaltflächen verschwinden, bis ein
+ *    zweiter Wert existiert. `ORG_FORM_LABEL` ist damit vorläufig
+ *    gegenstandslos und mitentfernt; die Übersetzung `boersenkotiert` →
+ *    «Börsenkotiert» steht in der Git-Historie, wenn die Gruppe zurückkommt.
+ *
+ *  Ruft `onModeChange` — und, falls übergeben, `metrics.onChange` — je einmal
+ *  bei der Konstruktion auf: das übernimmt den ersten Render. */
+export function createNav(options: NavOptions): void {
   const { view, onModeChange } = options
   let mode: ScaleMode = DEFAULT_MODE[view]
 
-  const root = document.createElement('div')
-  root.id = 'steuerung'
-
-  // Auftrag (2026-08-17): der Ansichts-Umschalter («Börsennotierte Firmen» /
-  // «Beschäftigte») ist entfallen — auf beiden Kartenseiten war er der
-  // einzige Ort, an dem die zwei Kennzahlgruppen der Firmenseite
-  // (Organisationsform, Kennzahl) UND ein reiner Seitenwechsel nebeneinander
-  // standen, obwohl Ersteres eine Auswahl innerhalb der Seite ist und
-  // Letzteres keine. Der Heimlink (`marke` oben) bleibt: er ist damit der
-  // einzige Weg von einer Karte zur anderen, über die Landing (`/`), die
-  // beide Pfade (`VIEW_PATH`) nennt.
+  // ---- Kopf: Wortmarke und Ansichtsname ----
+  const kopf = abschnitt('kopf')
   const marke = document.createElement('a')
-  marke.className = 'marke'
+  marke.className = 'leiste-marke'
   marke.href = '/'
   marke.textContent = 'zeigmers'
-  root.appendChild(marke)
+  const ansicht = document.createElement('span')
+  ansicht.className = 'leiste-ansicht'
+  ansicht.textContent = ANSICHT_LABEL[view]
+  kopf.append(marke, ansicht)
+
+  // ---- Gruppen: Kennzahl (optional) und Höhe ----
+  const gruppen = abschnitt('gruppen')
+
+  if (options.metrics) {
+    const { available, onChange: onMetricChange } = options.metrics
+    let metric: Metric = available[0]!
+
+    const segment = document.createElement('div')
+    segment.className = 'leiste-segment'
+    segment.style.gridTemplateColumns = `repeat(${available.length}, 1fr)`
+    segment.setAttribute('role', 'radiogroup')
+    segment.setAttribute('aria-label', 'Kennzahl')
+    const metricButtons = available.map((name) => {
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.dataset.metric = name
+      button.setAttribute('role', 'radio')
+      button.textContent = METRIC_SEGMENT_LABEL[name]
+      segment.appendChild(button)
+      return button
+    })
+    gruppen.append(label('Kennzahl'), segment)
+
+    const syncMetric = () => {
+      for (const button of metricButtons) {
+        const active = button.dataset.metric === metric
+        button.classList.toggle('aktiv', active)
+        button.setAttribute('aria-checked', String(active))
+      }
+      onMetricChange(metric)
+    }
+
+    segment.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement).closest('button')
+      if (!button?.dataset.metric) return
+      metric = button.dataset.metric as Metric
+      syncMetric()
+    })
+
+    syncMetric()
+  }
 
   const skala = document.createElement('div')
-  skala.className = 'gruppe'
+  skala.className = 'leiste-segment'
+  skala.style.gridTemplateColumns = `repeat(${MODES.length}, 1fr)`
   skala.setAttribute('role', 'radiogroup')
-  skala.setAttribute('aria-label', 'Höhenskala')
+  skala.setAttribute('aria-label', 'Höhe')
   const buttons = MODES.map((name) => {
     const button = document.createElement('button')
+    button.type = 'button'
     button.dataset.mode = name
-    button.textContent = name
+    button.setAttribute('role', 'radio')
+    button.textContent = MODE_LABEL[name]
     skala.appendChild(button)
     return button
   })
-  root.appendChild(skala)
+  gruppen.append(label('Höhe'), skala)
+
+  // Die Zeile, die die Massstabskarte auf `/firmen/` ersetzt: warum «gedämpft»
+  // der Startwert ist, in einem Satz, mit Zahlen aus den geladenen Artefakten.
+  if (options.heightNote) {
+    const { flach, total } = options.heightNote
+    const notiz = document.createElement('p')
+    notiz.className = 'leiste-notiz'
+    notiz.textContent = `Gedämpft, sonst wären ${flach} von ${total} Säulen gleich flach.`
+    gruppen.appendChild(notiz)
+  }
 
   const sync = () => {
     for (const button of buttons) {
@@ -172,99 +234,4 @@ export function createNav(options: NavOptions): HTMLElement {
   })
 
   sync()
-
-  // Kennzahl: nur gerendert, wenn die Aufrufstelle Kennzahlen übergibt
-  // (heute nur die Firmenseite, siehe `karte/firmen.ts` — die
-  // Beschäftigten-Seite kennt keine Kennzahlwahl, ihre Säule ist immer die
-  // Kopfzahl). Gleiche Semantik wie die Höhenskala oben: genau eine Option
-  // aktiv, `role="radiogroup"` und `aria-checked`.
-  if (options.metrics) {
-    const { available, onChange: onMetricChange } = options.metrics
-    let metric: Metric = available[0]!
-
-    const kennzahl = document.createElement('div')
-    kennzahl.className = 'gruppe'
-    kennzahl.setAttribute('role', 'radiogroup')
-    kennzahl.setAttribute('aria-label', 'Kennzahl')
-    const metricButtons = available.map((name) => {
-      const button = document.createElement('button')
-      button.dataset.metric = name
-      button.textContent = metricLabel(name)
-      kennzahl.appendChild(button)
-      return button
-    })
-    root.appendChild(kennzahl)
-
-    const syncMetric = () => {
-      for (const button of metricButtons) {
-        const active = button.dataset.metric === metric
-        button.classList.toggle('aktiv', active)
-        button.setAttribute('aria-checked', String(active))
-      }
-      onMetricChange(metric)
-    }
-
-    kennzahl.addEventListener('click', (event) => {
-      const button = (event.target as HTMLElement).closest('button')
-      if (!button?.dataset.metric) return
-      metric = button.dataset.metric as Metric
-      syncMetric()
-    })
-
-    syncMetric()
-  }
-
-  // Organisationsform: wie die Kennzahl nur gerendert, wenn übergeben.
-  // Anders als Ansicht/Höhenskala/Kennzahl ist das hier eine Mehrfachauswahl
-  // (mehrere Formen gleichzeitig sichtbar) — deshalb kein `radiogroup`,
-  // sondern unabhängige Umschaltknöpfe mit `aria-pressed`. `role="group"`
-  // statt der impliziten `<div>`-Rolle `generic`: die ARIA-Spezifikation
-  // verbietet Autoren die Namensvergabe an `generic` — ein `aria-label` ohne
-  // passende Rolle würde von Screenreadern nicht zuverlässig vorgelesen, der
-  // Gruppenname («Organisationsform») ginge verloren und übrig bliebe nur
-  // «Börsenkotiert, Umschalter» ohne Kontext, wovon das eine Gruppe ist.
-  // `role="group"` ist die für eine Sammlung unabhängiger Umschalter
-  // passende Rolle und erlaubt die Namensvergabe. Startzustand: alle
-  // verfügbaren Formen ausgewählt, die Karte startet ungefiltert.
-  if (options.orgForms) {
-    const { available, onChange: onOrgFormChange } = options.orgForms
-    const selected = new Set<string>(available)
-
-    const organisationsform = document.createElement('div')
-    organisationsform.className = 'gruppe'
-    organisationsform.setAttribute('role', 'group')
-    organisationsform.setAttribute('aria-label', 'Organisationsform')
-    const orgFormButtons = available.map((form) => {
-      const button = document.createElement('button')
-      button.dataset.orgform = form
-      // Unbekannter Schlüssel fällt auf sich selbst zurück, statt eine leere
-      // Schaltfläche zu zeigen (siehe `ORG_FORM_LABEL` oben).
-      button.textContent = ORG_FORM_LABEL[form] ?? form
-      organisationsform.appendChild(button)
-      return button
-    })
-    root.appendChild(organisationsform)
-
-    const syncOrgForms = () => {
-      for (const button of orgFormButtons) {
-        const active = selected.has(button.dataset.orgform!)
-        button.classList.toggle('aktiv', active)
-        button.setAttribute('aria-pressed', String(active))
-      }
-      onOrgFormChange(new Set(selected))
-    }
-
-    organisationsform.addEventListener('click', (event) => {
-      const button = (event.target as HTMLElement).closest('button')
-      const form = button?.dataset.orgform
-      if (!form) return
-      if (selected.has(form)) selected.delete(form)
-      else selected.add(form)
-      syncOrgForms()
-    })
-
-    syncOrgForms()
-  }
-
-  return root
 }

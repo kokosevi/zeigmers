@@ -4,13 +4,21 @@ import { NOGA_GROUPS, NOGA_UNKNOWN_INDEX } from '../domain/noga.generated'
 import type { ScaleMode } from '../domain/scale'
 import { applySelection, type Selection } from '../domain/selection'
 import { buildViewLayers } from '../layers/viewLayers'
-import { loadCompanies, type Company } from '../layers/visible'
+import {
+  companyElevations,
+  loadCompanies,
+  MAX_BAR_HEIGHT_M,
+  MIN_REAL_BAR_M,
+  type Company,
+} from '../layers/visible'
 import { hideHoverLabel } from '../ui/hoverLabel'
 import { renderKennzahlen } from '../ui/kennzahlen'
 import { renderLegend } from '../ui/legend'
 import { DEFAULT_MODE, type NavOptions } from '../ui/nav'
 import { renderNotices, type Coverage, type TopReference } from '../ui/notices'
 import { hidePanel, showCompanyPanel, type CompanyContext } from '../ui/panel'
+import { renderSuche } from '../ui/suche'
+import { renderZoom } from '../ui/zoom'
 import { createBasis, mountNav } from './basis'
 
 /** Ansicht «Börsennotierte Firmen» — seit Phase 3 national: eine Stufe, kein
@@ -176,6 +184,25 @@ export async function startFirmen(): Promise<void> {
       },
     })
 
+    // Suche: navigiert zu einer Firma und öffnet ihr Panel. Sie steht in
+    // `render()`, weil ein Treffer denselben Panel-Kontext braucht wie ein
+    // Klick auf die Säule (`onShowCompanyPanel` oben, mit dem Rang dieser
+    // Kennzahl) — und weil `abschnitt('suche')` die Leiste bei jedem Durchlauf
+    // neu befüllt. Durchsucht werden alle recherchierten Gesellschaften, nicht
+    // nur die gefilterte Auswahl: wer einen Namen tippt, sucht die Firma, nicht
+    // den Filterzustand.
+    renderSuche<Company>({
+      platzhalter: 'Firma suchen',
+      kuerzel: '⌘K',
+      eintraege: companies.companies
+        .filter((c) => c.researched)
+        .map((c) => ({ id: c.uid ?? c.name, name: c.name, wert: c })),
+      onPick: (company) => {
+        basis.handle.flyTo([company.lon, company.lat], 11)
+        onShowCompanyPanel(company)
+      },
+    })
+
     renderKennzahlen({
       result,
       metric: selection.metric,
@@ -215,8 +242,37 @@ export async function startFirmen(): Promise<void> {
     renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf, topReference, coverage)
   }
 
+  // Die Zahl für die Zeile unter dem Höhen-Umschalter: wie viele Säulen bei
+  // LINEARER Skala auf der Mindesthöhe sitzen würden. Sie steht in der
+  // Oberfläche (`ui/nav.ts`, `HeightNote`) und muss deshalb gemessen sein,
+  // nicht geschätzt — gerechnet mit denselben Funktionen, die die Karte
+  // zeichnet (`companyElevations`, `MIN_REAL_BAR_M`, `MAX_BAR_HEIGHT_M` aus
+  // `layers/visible.ts`, nur gelesen), über die ungefilterte Menge aller
+  // recherchierten Gesellschaften mit Umsatzwert. Beim Start ist die Kennzahl
+  // «Umsatz»; die Zeile begründet den Startwert der Skala und wandert deshalb
+  // nicht mit einem späteren Kennzahlwechsel mit.
+  const heightNote = (() => {
+    const alle = applySelection(companies.companies, {
+      metric: 'umsatz',
+      branches: ALL_BRANCHES,
+      orgForms: ALL_ORG_FORMS,
+    })
+    if (alle.withValue.length === 0) return undefined
+    const hoehen = companyElevations(
+      alle.withValue,
+      'umsatz',
+      alle.vmax,
+      MAX_BAR_HEIGHT_M,
+      'linear',
+    )
+    let flach = 0
+    for (const h of hoehen) if (Math.abs(h) <= MIN_REAL_BAR_M) flach++
+    return { flach, total: alle.withValue.length }
+  })()
+
   const navOptions: NavOptions = {
     view: 'sichtbare',
+    heightNote,
     onModeChange: (newMode) => {
       mode = newMode
       render()
@@ -228,13 +284,23 @@ export async function startFirmen(): Promise<void> {
         render()
       },
     },
-    orgForms: {
-      available: companies.stats.orgForms,
-      onChange: (orgForms) => {
-        selection = { ...selection, orgForms }
-        render()
-      },
-    },
+    // Die Organisationsform-Gruppe ist mit dem Redesign entfallen (siehe
+    // `ui/nav.ts`): ein einziger Wert, der nichts filtert. Der Filterpfad
+    // bleibt bestehen — `selection.orgForms` trägt weiterhin alle im Datensatz
+    // vorkommenden Formen (siehe Startwert oben), damit `applySelection`
+    // unverändert eine Dimension mehr hat, sobald Genossenschaften oder nicht
+    // kotierte Firmen dazukommen. Nur die Schaltflächen fehlen bis dahin.
   }
   mountNav(navOptions)
+
+  // Zoom-Gruppe und Suche stehen aussen an der Leiste bzw. daneben und hängen
+  // an keinem Zustand der Auswahl — beide werden deshalb einmal verdrahtet,
+  // nicht bei jedem `render()`. Die Suche NAVIGIERT (Kamera + Panel), sie
+  // filtert nicht: der Filter bleibt allein Sache der Branchenzeilen, ein
+  // Pfad (siehe `domain/selection.ts`).
+  renderZoom({
+    onZoomIn: () => basis.handle.zoomIn(),
+    onZoomOut: () => basis.handle.zoomOut(),
+    onResetNorth: () => basis.handle.resetNorth(),
+  })
 }

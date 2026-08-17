@@ -57,7 +57,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('201 Gesellschaften')
     expect(text).toContain('aus 188 Angaben')
     // Die Summe selbst gehört dazu — ohne sie bliebe der Nenner ohne die
@@ -79,7 +79,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: 5_876_865,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain("5'876'865")
     expect(text).toContain('Vergleich')
   })
@@ -95,7 +95,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    expect(document.getElementById('kennzahlen')!.textContent).not.toContain('Vergleich')
+    expect(document.getElementById('leiste-fuss')!.textContent).not.toContain('Vergleich')
   })
 
   it('nennt bei Gewinn den Saldo und die Verlustfirmen', () => {
@@ -114,7 +114,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('41')
     expect(text).toContain('Verlust')
   })
@@ -131,7 +131,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    expect(document.getElementById('kennzahlen')!.textContent).toContain('Keine Gesellschaft ausgewählt')
+    expect(document.getElementById('leiste-fuss')!.textContent).toContain('Keine Gesellschaft ausgewählt')
   })
 
   it('nennt bei aktivem Filter die Auswahl, nicht die Kartenabdeckung', () => {
@@ -156,7 +156,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('1 von 2 Gesellschaften ausgewählt')
   })
 
@@ -175,7 +175,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('2 Gesellschaften')
     expect(text).not.toContain('ausgewählt')
     expect(text).not.toContain(' von ')
@@ -200,7 +200,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).not.toContain('0 CHF')
     expect(text).not.toContain('aus 0 Angaben')
     expect(text).toContain('keine')
@@ -219,7 +219,7 @@ describe('renderKennzahlen', () => {
 
       renderKennzahlen({ result, metric, totalCompanies: result.visible.length, nationalEmployees: 5_876_865 })
 
-      expect(document.getElementById('kennzahlen')!.textContent).not.toContain('Vergleich')
+      expect(document.getElementById('leiste-fuss')!.textContent).not.toContain('Vergleich')
     }
   })
 
@@ -239,7 +239,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('1 Gesellschaft')
     expect(text).not.toContain('1 Gesellschaften')
     expect(text).toContain('aus 1 Angabe')
@@ -264,7 +264,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     const summenIndex = text.indexOf('762.1 Mrd. CHF')
     const angabenIndex = text.indexOf('aus 6 Angaben')
     expect(summenIndex).toBeGreaterThan(-1)
@@ -285,7 +285,7 @@ describe('renderKennzahlen', () => {
       nationalEmployees: null,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     const saldoIndex = text.indexOf('Saldo')
     const angabenIndex = text.indexOf('aus 2 Angaben')
     expect(saldoIndex).toBeGreaterThan(-1)
@@ -311,7 +311,7 @@ describe('renderKennzahlen — Vergleichszeile (Finding I3)', () => {
       nationalEmployees: 5_876_865,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('ausgewählten')
     expect(text).not.toContain('999')
   })
@@ -327,7 +327,7 @@ describe('renderKennzahlen — Vergleichszeile (Finding I3)', () => {
       nationalEmployees: 5_876_865,
     })
 
-    const text = document.getElementById('kennzahlen')!.textContent!
+    const text = document.getElementById('leiste-fuss')!.textContent!
     expect(text).toContain('Obergrenze')
   })
 })

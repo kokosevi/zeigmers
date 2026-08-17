@@ -1,6 +1,7 @@
 import { formatMetric, metricLabel, type Metric } from '../domain/metric'
 import type { SelectionResult } from '../domain/selection'
 import { formatNumber } from './format'
+import { fussTeil } from './leiste'
 
 /** Eingaben der Kennzahlenzeile — reines Rendern, kein eigener Zustand
  *  (Muster wie `ui/legend.ts`): die Aufrufstelle hält Filter und Auswahl,
@@ -43,15 +44,19 @@ function zahlwort(count: number, einzahl: string, mehrzahl: string): string {
   return `${formatNumber(count)} ${count === 1 ? einzahl : mehrzahl}`
 }
 
+/** Zielfläche seit dem Redesign (17. August 2026): der Fuss der Leiste
+ *  (`ui/leiste.ts`) statt der eigenen Box `#kennzahlen` oben mittig.
+ *
+ *  Der Fuss trägt zwei Module: diese Summe und darunter die Vorbehalte
+ *  (`ui/notices.ts`). Deshalb leert diese Funktion den Abschnitt NICHT über
+ *  `abschnitt('fuss')` — das würde die Vorbehalte mitentfernen, je nachdem
+ *  welches Modul zuletzt gezeichnet hat. Stattdessen hat jedes der beiden
+ *  einen eigenen Container mit stabiler ID darin, den es selbst ausräumt. Die
+ *  Reihenfolge im Fuss ergibt sich damit aus der Einfügereihenfolge; beide
+ *  Aufrufe stehen in `render()` direkt beieinander (siehe `karte/firmen.ts`),
+ *  Summe zuerst. */
 function box(): HTMLElement {
-  let el = document.getElementById('kennzahlen')
-  if (!el) {
-    el = document.createElement('div')
-    el.id = 'kennzahlen'
-    document.getElementById('ui')?.appendChild(el)
-  }
-  el.replaceChildren()
-  return el
+  return fussTeil('leiste-summe', 'leiste-summe-teil')
 }
 
 /** Schmale Zeile am oberen Bildrand: zeigt ohne Klick, was die Karte gerade
@@ -64,7 +69,8 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
   const el = box()
 
   if (result.visible.length === 0) {
-    const leer = document.createElement('div')
+    const leer = document.createElement('p')
+    leer.className = 'leiste-bezug'
     leer.textContent = 'Keine Gesellschaft ausgewählt.'
     el.appendChild(leer)
     return
@@ -83,9 +89,12 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
         'Gesellschaften ausgewählt'
       : zahlwort(result.visible.length, 'Gesellschaft', 'Gesellschaften')
 
-  const teile = [anzahl]
+  // Die grosse Zahl im Fuss — `null`, solange es keine gemessene Summe gibt.
+  let summe: string | null = null
+  const teile: string[] = []
 
   if (result.withValue.length === 0) {
+    teile.push(anzahl)
     // Eine Auswahl kann sichtbar, aber vollständig wertlos sein — etwa eine
     // Branche voller Platzhalterfirmen bei Kennzahl Umsatz
     // (`domain/metric.ts`, `metricValue`: `placeholder` ergibt `null`).
@@ -113,13 +122,16 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
     // jetzt NACH der Summen-/Saldozeile, in beiden Zweigen unten.
     const angabenTeil = `aus ${zahlwort(result.withValue.length, 'Angabe', 'Angaben')}`
 
+    summe = formatMetric(result.sum, metric)
+
     if (metric === 'gewinn') {
       // Gewinn nennt den Saldo, nicht «die Summe» — in ihn gehen negative
       // Beträge ein (`metricAllowsNegative`), eine reine Summenangabe
       // verschwiege, dass darunter Verluste sind. Die Verlustzahl steht
       // zusätzlich für sich: ein positiver Saldo kann einzelne
       // Verlustfirmen trotzdem überdecken.
-      teile.push(`Saldo ${formatMetric(result.sum, metric)}`)
+      teile.push(`Saldo der Auswahl`)
+      teile.push(anzahl)
       teile.push(angabenTeil)
       if (result.losses > 0) {
         teile.push(
@@ -128,12 +140,30 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
         )
       }
     } else {
-      teile.push(`${metricLabel(metric)} ${formatMetric(result.sum, metric)}`)
+      teile.push(`${metricLabel(metric)} der Auswahl`)
+      teile.push(anzahl)
       teile.push(angabenTeil)
     }
   }
 
-  const zeile = document.createElement('div')
+  // Redesign (17. August 2026): die Summe ist jetzt die grosse Zahl im
+  // Leistenfuss, die Einordnung steht als leise Zeile darunter. Vorher stand
+  // beides in einer Zeile oben mittig, gleich gewichtet — die Summe ist aber
+  // die Aussage, der Rest ihr Nenner. Die Textbausteine selbst sind
+  // unverändert; sie verteilen sich nur auf zwei Zeilen statt einer.
+  //
+  // `summe` bleibt leer, wo es keine gemessene Zahl gibt (Auswahl ohne einen
+  // einzigen Wert, siehe oben) — dann trägt allein die Bezugszeile die
+  // Aussage, statt eine erfundene Null gross zu setzen.
+  if (summe !== null) {
+    const grosseZahl = document.createElement('p')
+    grosseZahl.className = 'leiste-summe'
+    grosseZahl.textContent = summe
+    el.appendChild(grosseZahl)
+  }
+
+  const zeile = document.createElement('p')
+  zeile.className = 'leiste-bezug'
   zeile.textContent = teile.join(' · ')
   el.appendChild(zeile)
 
@@ -165,7 +195,8 @@ export function renderKennzahlen(options: KennzahlenOptions): void {
   //    `ui/notices.ts`, Fund 1) — nur die qualitative Aussage, die auch das
   //    Panel trägt.
   if (metric === 'mitarbeitende' && nationalEmployees !== null && result.withValue.length > 0) {
-    const vergleich = document.createElement('div')
+    const vergleich = document.createElement('p')
+    vergleich.className = 'leiste-bezug'
     vergleich.textContent =
       `Vergleich: ${formatMetric(result.sum, metric)} Mitarbeitende der ausgewählten ` +
       `kotierten Gesellschaften weltweit gegenüber rund ${formatNumber(nationalEmployees)} ` +

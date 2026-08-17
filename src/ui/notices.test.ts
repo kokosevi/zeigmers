@@ -2,28 +2,21 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { renderNotices, type Coverage, type TopReference } from './notices'
 
-// Bis zum 17. August 2026 genügte hier ein minimaler DOM-Stub (drei Methoden:
-// `getElementById`, `createElement`, `appendChild`/`replaceChildren`) — echtes
-// jsdom war im Projekt nicht eingebunden gebraucht, weil `renderNotices`
-// nichts als Absätze anhängte. Seit die Box zuklappbar ist (Klick, `aria-
-// expanded`, `hidden`), reicht der Stub nicht mehr: dieser Test braucht ein
-// echtes `click()`, echte `classList`/`dataset`/`hidden`-Semantik — deshalb
-// jetzt `@vitest-environment jsdom`, wie `ui/nav.test.ts` und `ui/legend.
-// test.ts` es bereits vormachen.
+// jsdom statt des früheren Minimal-Stubs: dieser Test braucht echte
+// `querySelector`-Semantik über der Leiste (`ui/leiste.ts`), die
+// `renderNotices` seit dem Redesign vom 17. August 2026 als Träger benutzt.
+//
+// Zielfläche seit demselben Datum: der Fuss der Leiste statt der Eckbox
+// `#hinweis` unten rechts, und ohne ⓘ-Umschalter — die Vorbehalte stehen
+// offen. Die Tests zum Auf- und Zuklappen sind deshalb entfallen (das
+// Verhalten gibt es nicht mehr); alle Tests über die TEXTE sind geblieben,
+// denn genau die dürfen bei einem Umzug nicht verlorengehen.
 beforeEach(() => {
   document.body.innerHTML = '<div id="ui"></div>'
 })
 
-function box(): HTMLElement {
-  return document.getElementById('hinweis')!
-}
-
-function toggle(): HTMLButtonElement {
-  return box().querySelector('.hinweis-umschalter')!
-}
-
 function inhalt(): HTMLElement {
-  return box().querySelector('.hinweis-inhalt')!
+  return document.getElementById('leiste-vorbehalte')!
 }
 
 const KEINE_BEZUGSZEILE: TopReference | null = null
@@ -147,54 +140,5 @@ describe('renderNotices — Abdeckungsangabe (Auftraggeber-Korrektur 2026-08-17)
   it('zeigt keine Abdeckungsangabe ohne coverage', () => {
     renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, null)
     expect(inhalt().textContent).not.toContain('kotierten SIX-Titeln')
-  })
-})
-
-describe('renderNotices — Eckbox zuklappbar (Auftrag 2026-08-17)', () => {
-  it('ist im Ausgangszustand eingeklappt', () => {
-    renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    expect(inhalt().hidden).toBe(true)
-    expect(toggle().getAttribute('aria-expanded')).toBe('false')
-  })
-
-  it('ist ein <button>, per Tastatur erreichbar', () => {
-    renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    expect(toggle().tagName).toBe('BUTTON')
-    expect(toggle().type).toBe('button')
-  })
-
-  it('trägt eine sprechende aria-label, die den Zustand nennt', () => {
-    renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    expect(toggle().getAttribute('aria-label')).toMatch(/anzeigen/i)
-  })
-
-  it('blendet den Text nach einem Klick ein und setzt aria-expanded auf true', () => {
-    renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    toggle().click()
-    expect(inhalt().hidden).toBe(false)
-    expect(toggle().getAttribute('aria-expanded')).toBe('true')
-    expect(toggle().getAttribute('aria-label')).toMatch(/ausblenden/i)
-  })
-
-  it('blendet den Text nach einem zweiten Klick wieder aus', () => {
-    renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    toggle().click()
-    toggle().click()
-    expect(inhalt().hidden).toBe(true)
-    expect(toggle().getAttribute('aria-expanded')).toBe('false')
-  })
-
-  it('übersteht einen erneuten renderNotices()-Aufruf (Filter-/Kennzahlwechsel)', () => {
-    renderNotices('sichtbare', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    toggle().click()
-    expect(inhalt().hidden).toBe(false)
-
-    // Simuliert, was `karte/firmen.ts`s `render()` bei jedem Filter- oder
-    // Kennzahlwechsel tut: `renderNotices` erneut mit denselben oder anderen
-    // Werten aufrufen. Der Auf-/Zugeklappt-Zustand darf dabei nicht auf
-    // "eingeklappt" zurückspringen.
-    renderNotices('sichtbare', 'schweiz', 'gewinn', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
-    expect(inhalt().hidden).toBe(false)
-    expect(toggle().getAttribute('aria-expanded')).toBe('true')
   })
 })

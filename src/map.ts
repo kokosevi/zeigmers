@@ -257,6 +257,19 @@ export interface MapHandle {
    *  die Animation (`duration: 0`); sonst wird über `FRAME_DURATION_MS`
    *  sanft geschwenkt. */
   frameBounds(bounds: LngLatBounds, options?: { instant?: boolean }): void
+  /** Fliegt zu einem Punkt — der Weg, den ein Suchtreffer nimmt (siehe
+   *  `ui/suche.ts`: die Suche navigiert, sie filtert nicht). `pitch`/`bearing`
+   *  bleiben unangetastet, damit die Karte nach einem Treffer dieselbe
+   *  Blickrichtung behält wie vorher; nur Zentrum und Zoom ändern sich. */
+  flyTo(center: [number, number], zoom: number): void
+  /** Die drei Zoom-Bedienelemente (`ui/zoom.ts`). Sie liegen hier und nicht in
+   *  der Oberfläche, weil `map.ts` die einzige Stelle ist, die den
+   *  `maplibregl.Map`-Zustand kennt — `MapHandle` gibt bewusst nur schmale
+   *  Callbacks nach aussen, nie die Karteninstanz selbst (siehe Kommentar
+   *  oben). */
+  zoomIn(): void
+  zoomOut(): void
+  resetNorth(): void
 }
 
 export function createMap(container: HTMLElement): MapHandle {
@@ -292,10 +305,34 @@ export function createMap(container: HTMLElement): MapHandle {
     effects: [mapLightingEffect],
   })
   map.addControl(overlay)
-  map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'top-right')
+
+  // MapLibres `NavigationControl` ist mit dem Redesign (17. August 2026)
+  // entfallen — ersetzt durch drei eigene Knöpfe (`ui/zoom.ts`) auf den
+  // Durchreichen unten. Der Entwurf verlangt eine Spalte aus 32×32-Zellen mit
+  // 1.5 px Tinte aussen und 1 px `--linie` zwischen den Zellen, ohne Radien
+  // und Schatten. Das wäre am `NavigationControl` nur über fremde Selektoren
+  // (`.maplibregl-ctrl-group`, `.maplibregl-ctrl-zoom-in` …) zu erreichen
+  // gewesen, die dessen eigenes CSS mitbringt — inklusive Radien, Schatten und
+  // SVG-Symbolen, die alle einzeln zurückzunehmen wären, und die bei einem
+  // MapLibre-Update ohne Vorwarnung wieder anders heissen können. Eigene
+  // Knöpfe sind hier weniger Code als das Zurücknehmen des fremden, und sie
+  // erben die Tokens der Leiste automatisch. Der dritte Knopf ist «N»
+  // (Norden zurücksetzen) statt des Kompass-Rings des Originals: `bearing`
+  // ist mit `-15°` bewusst gesetzt (siehe `INITIAL_VIEW`), und «N» sagt, was
+  // der Knopf tut, ohne eine drehbare Nadel zu zeichnen.
 
   return {
     setLayers: (layers) => overlay.setProps({ layers }),
+    // Ein Suchtreffer bewegt Zentrum und Zoom, nicht die Blickrichtung: wer
+    // die Karte gedreht hat, soll sie nach einem Treffer nicht neu ausrichten
+    // müssen. `prefers-reduced-motion` überspringt die Animation, wie schon
+    // bei `frameBounds`.
+    flyTo: (center, zoom) => {
+      map.flyTo({ center, zoom, duration: prefersReducedMotion() ? 0 : FRAME_DURATION_MS })
+    },
+    zoomIn: () => map.zoomIn(),
+    zoomOut: () => map.zoomOut(),
+    resetNorth: () => map.resetNorth(),
     frameBounds: (bounds, options) => {
       const instant = options?.instant === true || prefersReducedMotion()
       const padding = cappedPadding(map)

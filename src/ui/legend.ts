@@ -4,6 +4,7 @@ import { NOGA_GROUPS, UNKNOWN_COLOR, type NogaGroup } from '../domain/noga.gener
 import type { SelectionResult } from '../domain/selection'
 import { litTopFaceColor } from '../layers/litColor'
 import { LOSS_COLOR } from '../layers/visible'
+import { abschnitt, label as leistenLabel } from './leiste'
 import type { ViewName } from './nav'
 
 // Abschluss-Review, Finding C2 → Auftrag (2026-08-17): seit der zweiten Wahl
@@ -133,21 +134,19 @@ export interface LegendOptions {
   onAllBranches?: () => void
 }
 
+/** Zielfläche seit dem Redesign (17. August 2026): der Listen-Abschnitt der
+ *  Leiste (`ui/leiste.ts`) statt einer eigenen Box `#legende` unten links.
+ *  Der Inhalt ist unverändert — Farbtupfer, Branchenname, an/aus —, nur der
+ *  Ort hat sich geändert: die Branchen stehen jetzt dort, wo auch gefiltert
+ *  wird, statt in der gegenüberliegenden Ecke der Karte. */
 function box(): HTMLElement {
-  let el = document.getElementById('legende')
-  if (!el) {
-    el = document.createElement('div')
-    el.id = 'legende'
-    document.getElementById('ui')?.appendChild(el)
-  }
-  el.replaceChildren()
-  return el
+  return abschnitt('liste')
 }
 
 function swatch(color: readonly [number, number, number], label: string): HTMLLIElement {
   const li = document.createElement('li')
   const dot = document.createElement('span')
-  dot.className = 'legende-punkt'
+  dot.className = 'leiste-punkt'
   dot.style.background = `rgb(${color[0]}, ${color[1]}, ${color[2]})`
   li.append(dot, document.createTextNode(label))
   return li
@@ -187,16 +186,16 @@ function branchRow(
   onToggleBranch: ((index: number) => void) | undefined,
 ): HTMLLIElement {
   const li = document.createElement('li')
-  li.className = 'legende-branche-zeile'
+  
 
   const toggle = document.createElement('button')
   toggle.type = 'button'
-  toggle.className = 'legende-branche'
+  toggle.className = 'leiste-branche'
   toggle.dataset.branch = String(index)
   toggle.setAttribute('aria-pressed', String(selected.has(index)))
 
   const dot = document.createElement('span')
-  dot.className = 'legende-punkt'
+  dot.className = 'leiste-punkt'
   const [r, g, b] = litTopFaceColor(group.color)
   dot.style.background = `rgb(${r}, ${g}, ${b})`
 
@@ -232,7 +231,7 @@ export function renderLegend(options: LegendOptions): void {
   // (siehe `LegendOptions`-Kommentar oben).
   if (view !== 'sichtbare') {
     const title = document.createElement('div')
-    title.className = 'legende-titel'
+    title.className = 'leiste-label'
     const scopePart = scopeLabel ? ` · ${scopeLabel}` : ''
     const unitLabel = metric !== undefined ? metricLabel(metric) : UNIT_LABEL[view]
     title.textContent = `${unitLabel}${scopePart} · Datenjahr ${year}`
@@ -247,7 +246,7 @@ export function renderLegend(options: LegendOptions): void {
   if (metric !== undefined && result !== undefined) {
     const alleButton = document.createElement('button')
     alleButton.type = 'button'
-    alleButton.className = 'legende-alle'
+    alleButton.className = 'leiste-aktion'
     alleButton.dataset.allBranches = ''
     // Ein Wort statt vormals «Alle Branchen» (Kahlschlag 2026-08-17, siehe
     // `LegendOptions.onAllBranches`) — der Knopf bleibt der einzige Weg
@@ -255,7 +254,11 @@ export function renderLegend(options: LegendOptions): void {
     // als das eine Wort.
     alleButton.textContent = 'Alle'
     alleButton.addEventListener('click', () => options.onAllBranches?.())
-    el.appendChild(alleButton)
+    // Redesign (17. August 2026): der Knopf steht rechts im Gruppenlabel
+    // «BRANCHEN» statt als eigene Zeile über der Liste — dieselbe Aktion, aber
+    // ohne der Leiste eine Zeile Höhe zu kosten (siehe `ui/leiste.ts`,
+    // `label`).
+    el.appendChild(leistenLabel('Branchen', alleButton))
   }
 
   // Startzustand ohne explizite `selectedBranches`: alle vorhandenen
@@ -283,7 +286,7 @@ export function renderLegend(options: LegendOptions): void {
   branchGroup.setAttribute('aria-label', 'Branchen')
 
   const branchen = document.createElement('ul')
-  branchen.className = 'legende-branchen'
+  branchen.className = 'leiste-liste'
   // Nur Gruppen, die in der aktuellen Ansicht tatsächlich eine Fläche/einen
   // Balken einfärben (Finding 2c) — nicht mehr alle elf gemessenen Gruppen
   // unabhängig davon, ob sie je vorkommen. Farbe kommt aus `litTopFaceColor`
@@ -310,7 +313,7 @@ export function renderLegend(options: LegendOptions): void {
   // der gefilterten Karte gar nicht vorkommt, Finding C2 spiegelverkehrt).
   if (view === 'sichtbare' && metric === 'gewinn' && result && result.losses > 0) {
     const hinweise = document.createElement('ul')
-    hinweise.className = 'legende-branchen'
+    hinweise.className = 'leiste-liste'
     hinweise.appendChild(lossSwatch())
     el.appendChild(hinweise)
   }
@@ -326,7 +329,7 @@ export function renderLegend(options: LegendOptions): void {
   // Legende kein Stück länger. So knapp wie möglich gehalten, wie verlangt.
   if (metric !== undefined && result !== undefined && selected.size === 0) {
     const leer = document.createElement('div')
-    leer.className = 'legende-leer'
+    leer.className = 'leiste-leer'
     leer.textContent = 'Keine Branche ausgewählt — Karte leer.'
     el.appendChild(leer)
   }

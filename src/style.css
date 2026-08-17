@@ -1,40 +1,51 @@
-/* Redesign-Tokens (Auftrag: „visueller Redesign“, 2026-08-14). Elf gemessene
-   Branchenfarben (`domain/noga.generated.ts`, farbenblind-sicher geprüft von
-   `etl/tests/test_palette.py`) bleiben unangetastet — die Wirkung kommt aus
-   Licht (siehe `layers/lighting.ts`, `layers/material.ts`) und aus dieser
-   knappen, kühlen Kartenpalette drumherum, nicht aus neuen Farbtönen. */
-:root {
-  --grund: #E8EDF2;
-  /* Aufgabe 17: eine dunklere Platte (`#C3CEDC`) wurde geprüft und wieder
-     verworfen, weil sie den WCAG-Kontrast aller elf Branchenfarben senkt
-     (sie liegen alle heller als `--land`) statt ihn zu erhöhen — vier davon
-     fielen dadurch unter den geforderten Wert 1.6. Details/Zahlen siehe
-     `layers/cantons.ts` (`LAND_FILL`, derselbe Wert, dort ausführlich
-     begründet) und der Bericht zu Aufgabe 17. */
-  --land: #CFD8E3;
-  --land-kante: #A8B6C6;
-  --aargau: #DDE5EE;
-  --tinte: #1B2733;
-  --tinte-leise: #5A6B7C;
+@import "./fonts.css";
 
-  /* Abgeleitete Oberflächenfarbe für Legende/Panel/Steuerung/Hinweis — helle,
-     halbtransparente Karten statt der früheren dunklen rgba(17,24,39)-Boxen,
-     damit die UI-Chrome zur selben pastellkühlen Karte gehört wie die Karte
-     selbst, statt sich als Dark-Mode-Fremdkörper darüberzulegen. */
-  --oberflaeche: rgba(255, 255, 255, .84);
-  --oberflaeche-rand: rgba(168, 182, 198, .55);
-  --schrift: "Helvetica Neue", Inter, system-ui, sans-serif;
+/* Redesign-Tokens (Handoff 1b/1c, 17. August 2026). Vorher standen hier die
+   Tokens des Redesigns vom 14. August: halbtransparente weisse Karten mit
+   Radien und Schatten, verteilt an fünf Rändern. Der Entwurf trennt Flächen
+   stattdessen über Linien — deshalb keine Radien, keine Schatten, und statt
+   sechs Boxen eine Leiste links plus Panel rechts plus Zoom-Gruppe.
+
+   Die elf Branchenfarben (`domain/noga.generated.ts`, farbenblind-sicher
+   geprüft von `etl/tests/test_palette.py`) und die Kartenpalette der Layer
+   bleiben unangetastet: `--karte-grund` und `--karte-platte` sind hier nur
+   Spiegel der Werte, die `layers/cantons.ts` und `map.ts` tatsächlich
+   zeichnen, damit die Oberfläche denselben Ton benutzt wie die Karte darunter. */
+:root {
+  --papier: #F7F8F9;
+  --tinte: #14202B;
+  /* Deckflächen der SVG-Grafiken und der bisherige Tinte-Wert der Karte —
+     bleibt als eigener Token, weil `layers/cantons.ts` ihn zeichnet und diese
+     Datei ihn nicht ändern darf. */
+  --tinte-tief: #1B2733;
+  /* JEDER Sekundär- und Fussnotentext. Der Entwurf hatte zwei hellere
+     Zwischentöne (`#93A1AE`, `#6A7A88`) und hat sie wieder entfernt: auf
+     `--papier` erreichen sie 2.5:1 bzw. 4.2:1, dieser Ton 5.6:1. Unter
+     `--tinte-leise` geht in dieser Oberfläche nichts, und unter 11 px keine
+     Schriftgrösse. */
+  --tinte-leise: #5A6B7C;
+  --linie: #D5DDE5;
+  --rand: #C6D0DA;
+  --karte-grund: #E8EDF2;
+  --karte-platte: #DCE3EB;
+  /* Anteilsbalken. `--akzent-firmen` ist NOGA «Industrie und Energie» aus der
+     geprüften Palette, nicht ein neuer Ton daneben. */
+  --akzent-firmen: #0072B2;
+  --akzent-arbeit: #004949;
+  --schrift: "Space Grotesk", "Helvetica Neue", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 * { box-sizing: border-box; }
 html, body {
   margin: 0; height: 100%;
   font-family: var(--schrift);
-  background: var(--grund);
+  background: var(--karte-grund);
   color: var(--tinte);
   /* Das ist eine Datenkarte: Zahlen müssen untereinander ausrichten, nicht
      nur innerhalb einer Zeile lesbar sein. */
   font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
 }
 /* Explizite Stapelreihenfolge (Regression-Fix): #map und #ui sind beide
    `position: absolute` ohne eigenen `z-index` — allein reicht das nicht,
@@ -62,321 +73,399 @@ html, body {
 #ui { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 #ui > * { pointer-events: auto; }
 
-/* Sichtbarer Tastaturfokus auf allen interaktiven Elementen — Buttons haben
-   unten `border: none; background: transparent`, was den nativen Fokusring
-   in manchen Browsern kaum sichtbar macht. */
-a:focus-visible, button:focus-visible {
+/* Sichtbarer Tastaturfokus auf allem Interaktiven. Die Schaltflächen der
+   Leiste haben `border: none; background: transparent`, was den nativen
+   Fokusring in manchen Browsern kaum sichtbar macht. */
+a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
   outline: 2px solid var(--tinte);
   outline-offset: 2px;
 }
 
-/* Kein neu hinzugefügtes Bewegungsdesign (Auftrag: „keine Animation über das
-   Hover-Feedback hinaus") — diese Regel ist eine Vorsichtsmassnahme, falls
-   ein Browser-Default (z. B. `:focus-visible`-Übergänge) doch etwas animiert. */
+/* Kein neu hinzugefügtes Bewegungsdesign (Entwurf: „nur Zustandswechsel bei
+   Hover/Fokus, ohne Transition") — diese Regel ist eine Vorsichtsmassnahme,
+   falls ein Browser-Default doch etwas animiert. */
 @media (prefers-reduced-motion: reduce) {
   * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
 }
 
 #fehler {
-  position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
-  max-width: min(40rem, calc(100vw - 2rem));
-  padding: .75rem 1rem; border-radius: .375rem;
+  position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+  max-width: min(40rem, calc(100vw - 40px));
+  padding: .75rem 1rem;
   background: #7f1d1d; color: #fff; font-size: .875rem; line-height: 1.4;
 }
 
-#steuerung {
-  position: absolute; top: 1rem; left: 1rem;
-  display: flex; flex-direction: column; gap: .5rem;
+/* ---------- Leiste ----------
+   Eine Spalte links statt sechs Flächen an fünf Rändern: bis zum 17. August
+   2026 lagen `#steuerung` (oben links), `#kennzahlen` (oben mittig),
+   `#legende` (unten links), `#hinweis` (unten rechts, hinter einem ⓘ),
+   `#panel` (rechts) und MapLibres `NavigationControl` (oben rechts) verteilt
+   auf der Karte. Der Inhalt ist derselbe geblieben, nur der Ort hat sich
+   geändert — welcher Text wohin gewandert ist, steht am jeweiligen Modul
+   (`ui/nav.ts`, `ui/legend.ts`, `ui/kennzahlen.ts`, `ui/notices.ts`).
+
+   Die freie Fläche rechts der Leiste ist gedachter Kartenraum, keine eigene
+   Box: die Leiste liegt über `#map` (siehe Stapelreihenfolge oben), die Karte
+   behält ihre volle Fläche. */
+#leiste {
+  position: absolute; left: 20px; top: 20px; bottom: 20px; width: 264px;
+  display: flex; flex-direction: column;
+  background: var(--papier); border: 1.5px solid var(--tinte);
+  font-size: .71875rem; line-height: 1.5;
 }
 
-/* Task 14: schmale Summenzeile, die ohne Klick zeigt, was die Karte gerade
-   summiert — bislang liess sich das nirgends ablesen, nur einzelne Säulen.
-   Oben mittig, damit sie weder `#steuerung` (oben links) noch MapLibres
-   `NavigationControl` (oben rechts, `map.ts`) überdeckt; `max-width` hält
-   sie auch bei langem Text (Gewinn-Zeile mit Saldo UND Verlustzahl) von
-   beiden Ecken fern. Dieselbe Oberflächenfarbe/Rundung wie Legende und
-   Panel (`--oberflaeche`), damit sie als Teil derselben Karte gelesen wird,
-   nicht als Fremdkörper obendrauf. */
-#kennzahlen {
-  position: absolute; top: 1rem; left: 50%; transform: translateX(-50%);
-  max-width: min(34rem, calc(100vw - 2rem));
-  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
-  color: var(--tinte);
-  border-radius: .5rem; padding: .5rem .875rem;
-  font-size: .8125rem; line-height: 1.4; text-align: center;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
+#leiste-kopf {
+  padding: 16px 18px 14px;
+  border-bottom: 1.5px solid var(--tinte);
 }
-#steuerung .gruppe {
-  display: flex; gap: .25rem;
-  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
-  border-radius: .5rem; padding: .25rem;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
-}
-/* Der Heim-Link steht über den Gruppen, nicht in einer — er ist keine Auswahl
-   innerhalb der Seite, sondern der Weg aus der Karte heraus. Seit der
-   Ansichts-Umschalter (2026-08-17) entfallen ist, ist er der einzige Weg von
-   einer Karte zur anderen (über die Landing, `/`). */
-#steuerung .marke {
+.leiste-marke {
+  display: block;
   color: var(--tinte); text-decoration: none;
-  font-size: .9375rem; font-weight: 600; letter-spacing: -.01em;
-  padding: 0 .25rem;
+  font-size: 1.1875rem; font-weight: 700; letter-spacing: -.04em; line-height: 1;
+}
+.leiste-ansicht {
+  display: block; margin-top: .375rem;
+  font-size: .8125rem; color: var(--tinte-leise);
 }
 
-#steuerung button {
+#leiste-suche { padding: 14px 18px 0; }
+
+/* Der scrollbare Teil: Kennzahl, Höhe, Branchen bzw. Rangliste. Kopf, Suche
+   und Fuss bleiben stehen — auf einem niedrigen Fenster soll zuerst die
+   Liste scrollen, nicht die Summe aus dem Bild wandern. */
+#leiste-mitte {
+  flex: 1; min-height: 0; overflow-y: auto;
+  padding: 0 18px 14px;
+}
+
+#leiste-fuss {
+  margin-top: auto;
+  padding: 14px 18px;
+  border-top: 1.5px solid var(--tinte);
+}
+
+.leiste-label {
+  margin: 16px 0 7px;
+  font-family: var(--mono); font-size: .65625rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--tinte-leise);
+}
+/* Label und Nebenaktion («alle», «alle 26») in einer Zeile. */
+.leiste-labelzeile {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+}
+
+/* Segment-Umschalter (Kennzahl, Höhe): ein Rahmen um die Gruppe, 1 px `--rand`
+   zwischen den Zellen. Kein Abstand, keine Radien — die Zellen teilen die
+   Linie, statt einzelne Knöpfe zu sein. */
+.leiste-segment {
+  display: grid; border: 1.5px solid var(--tinte);
+}
+.leiste-segment button {
+  border: none; background: transparent; color: var(--tinte);
+  padding: 7px 4px; font-family: inherit; font-size: .71875rem;
+  text-align: center; cursor: pointer;
+}
+.leiste-segment button + button { border-left: 1px solid var(--rand); }
+.leiste-segment button.aktiv { background: var(--tinte); color: var(--papier); }
+
+/* Die Zeile unter dem Höhen-Umschalter: warum «gedämpft» der Startwert ist.
+   Sie ersetzt die Massstabskarte, die auf `/firmen/` entfallen ist — auf
+   `/beschaeftigte/` steht der Massstab weiterhin auf der Karte
+   (`#massstab`, siehe unten). */
+.leiste-notiz {
+  margin: 7px 0 0;
+  font-size: .6875rem; line-height: 1.45; color: var(--tinte-leise);
+}
+
+/* Branchenzeilen: Farbe, Name, an/aus. Keine Zahlen — der Kahlschlag vom
+   17.08. bleibt bestehen, der Entwurf ändert nur die Position (siehe
+   `ui/legend.ts`). */
+.leiste-liste { list-style: none; margin: 0; padding: 0; }
+.leiste-branche {
+  display: flex; align-items: center; gap: .5rem; width: 100%;
+  border: none; background: transparent; color: var(--tinte);
+  padding: 4px 0; font: inherit; text-align: left; cursor: pointer;
+}
+.leiste-punkt {
+  width: 9px; height: 9px; border-radius: 50%; flex: none;
+  box-shadow: inset 0 0 0 1px rgba(20, 32, 43, .18);
+}
+/* Abgewählt: gedämpft statt ausgeblendet — die Farbe bleibt lesbar, sie
+   erklärt weiterhin, was gerade fehlt. */
+.leiste-branche[aria-pressed='false'] { opacity: .5; }
+
+.leiste-aktion {
   border: none; background: transparent; color: var(--tinte-leise);
-  padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
-  cursor: pointer; font-family: inherit; white-space: nowrap;
+  padding: 0; font-family: var(--mono); font-size: .65625rem;
+  letter-spacing: .16em; text-transform: uppercase; cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px;
 }
-#steuerung button.aktiv {
-  background: var(--tinte); color: var(--grund);
+.leiste-aktion:hover { color: var(--tinte); }
+
+/* Leerauswahl (`ui/legend.ts`): erscheint nur, wenn tatsächlich keine Branche
+   ausgewählt ist, macht die Leiste im Normalbetrieb also kein Stück länger. */
+.leiste-leer {
+  margin: 8px 0 0; font-size: .6875rem; color: var(--tinte-leise);
 }
 
-/* «Zurück zur Schweiz-Übersicht» (Phase 2, nationale Navigation) — nur
-   sichtbar auf der Kantonsstufe von Ansicht «Beschäftigte»
-   (`karte/beschaeftigte.ts`, `renderBackControl`). Eigenständiges Element
-   statt Teil von `#steuerung` (siehe `ui/backControl.ts` für die
-   Begründung); Position von Hand unter die Steuerung gesetzt, wie auch
-   `#panel`s `top: 6.5rem` unten kein hergeleiteter Wert ist, sondern auf die
-   tatsächliche Höhe von `#steuerung` abgestimmt. Seit der Aufteilung in drei
-   Seiten (2026-08-15) ist `#steuerung` durch die Markenzeile um rund 1.9rem
-   höher als zuvor — beide Offsets sind um denselben Betrag mitgewandert
-   (5.75rem → 7.75rem hier, 4.5rem → 6.5rem bei `#panel`); unverifiziert, ob
-   7.75rem bei drei gestapelten Zeilen (Marke, zwei `.gruppe`) exakt passt
-   (siehe Bericht). Duplication von `#steuerung .gruppe`/`button` ist hier
-   bewusst: derselbe Look, aber ohne die beiden Elemente im selben
-   DOM-Teilbaum zu verschmelzen. */
-#zurueck-gruppe {
-  position: absolute; top: 7.75rem; left: 1rem;
-  display: flex;
-  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
-  border-radius: .5rem; padding: .25rem;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .1);
+/* Fuss: Summe der Auswahl (`ui/kennzahlen.ts`) und darunter die Vorbehalte
+   (`ui/notices.ts`) — offen, nicht hinter einem ⓘ. */
+.leiste-summe {
+  margin: 0; font-family: var(--mono); font-size: 1.1875rem; letter-spacing: -.02em;
 }
-#zurueck-gruppe button {
-  border: none; background: transparent; color: var(--tinte-leise);
-  padding: .4rem .75rem; border-radius: .375rem; font-size: .8125rem;
-  cursor: pointer; font-family: inherit;
+.leiste-bezug {
+  margin: 4px 0 0; font-size: .6875rem; color: var(--tinte-leise);
 }
-#zurueck-gruppe[hidden] { display: none; }
+/* Die Vorbehalte sind elf Absätze, nicht der eine Dreiteiler des Entwurfs:
+   Quellen, Währung, Abdeckung, Bezugszeile, Mindesthöhe, Randmarkierung,
+   unrecherchierte Marker, Seenquelle, Skalenformel, Datenquelle der Firmen
+   (siehe `ui/notices.ts`). Der Entwurf zeigt sie im Mock als eine Zeile —
+   ausgeschrieben füllen sie die halbe Leiste und drückten beim ersten Versuch
+   Kennzahl, Höhe und Branchen aus dem Bild.
+   Gekürzt wird trotzdem keiner: jeder einzelne trägt eine Aussage, ohne die
+   die Karte etwas behauptet, das sie nicht einlöst. Stattdessen bekommt der
+   Block eine Höhengrenze und scrollt selbst — die Summe darüber bleibt dabei
+   immer sichtbar, und die Bedienelemente in der Mitte behalten ihren Platz.
+   `max-height` in `rem`, damit sie mit der Schriftgrösse mitwächst; 9rem sind
+   rund sieben Zeilen dieser Textstufe. */
+.leiste-vorbehalte {
+  margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--linie);
+  font-size: .6875rem; line-height: 1.45; color: var(--tinte-leise);
+  max-height: 9rem; overflow-y: auto;
+}
+.leiste-vorbehalte p { margin: 0 0 .25rem; }
+.leiste-vorbehalte p:last-child { margin-bottom: 0; }
+/* Der Haupthinweis der Ansicht steht in Tintenfarbe, die Quellen- und
+   Vorbehaltszeilen darunter leiser — dieselbe Abstufung wie vorher in der
+   Eckbox (`.hinweis-haupt` / `.hinweis-quelle`), nur ohne die dortige
+   Schriftgrösse von 10 px: unter 11 px geht in dieser Oberfläche nichts
+   (Kontrastregel des Entwurfs). */
+.leiste-vorbehalt-haupt { color: var(--tinte); }
+.leiste-vorbehalt { color: var(--tinte-leise); }
 
-/* Pflichthinweis: bis zum 17. August 2026 musste die Box ohne Interaktion
-   sichtbar sein, deshalb kein hidden/Toggle-Mechanismus wie bei #panel. Der
-   Auftraggeber wollte an diesem Datum stattdessen eine zuklappbare Box (siehe
-   `ui/notices.ts` für die vollständige Begründung) — eingeklappt (Start-
-   zustand) zeigt die Ecke nur den runden Info-Umschalter `.hinweis-
-   umschalter`, ausgeklappt zusätzlich `.hinweis-inhalt` mit dem vollen Text.
-   Redesign-Vorgabe (Change 1): ein ruhiger, kleiner Block statt eines
-   dominanten braunen Banners — dafür jetzt in der unteren rechten Ecke statt
-   bodenmittig, mit klar geringerem Kontrast als Legende/Panel. Trägt seit
-   Change 2/3 auch die Quellenzeile und den Währungshinweis, die zuvor in der
-   Legende standen (siehe `ui/notices.ts`) — „die Legende trägt, was man zum
-   Lesen braucht, die Eckbox, was man zum Vertrauen braucht“. */
-#hinweis {
-  position: absolute; right: 1rem; bottom: 1rem;
-  max-width: min(16rem, calc(100vw - 2rem));
-  display: flex; flex-direction: column; align-items: flex-end; gap: .4rem;
+/* ---------- Suche ---------- */
+.suche-feld {
+  display: flex; align-items: center; gap: 8px;
+  border: 1.5px solid var(--tinte); background: #fff; padding: 8px 10px;
 }
-.hinweis-umschalter {
-  align-self: flex-end; flex: none;
-  width: 1.375rem; height: 1.375rem; padding: 0;
-  border-radius: 50%; border: 1px solid var(--oberflaeche-rand);
-  background: var(--oberflaeche); color: var(--tinte-leise);
-  display: flex; align-items: center; justify-content: center;
-  font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-weight: 700;
-  font-size: .75rem; line-height: 1; cursor: pointer;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
+/* Der Kreis ist das Suchsymbol — ein Textzeichen wäre entweder eine Lupe aus
+   einem Icon-Paket (gibt es hier nicht) oder ein Buchstabe, der nach Text
+   aussieht. 9 px Kreis mit 1.5 px Rand, wie der Entwurf ihn zeichnet. */
+.suche-icon {
+  width: 9px; height: 9px; flex: none; border-radius: 50%;
+  border: 1.5px solid var(--tinte);
 }
-.hinweis-umschalter:hover { color: var(--tinte); }
-.hinweis-inhalt {
-  width: 100%;
-  padding: .55rem .7rem; border-radius: .375rem;
-  background: rgba(232, 237, 242, .8); border: 1px solid var(--oberflaeche-rand);
-  color: var(--tinte-leise);
-  font-size: .625rem; line-height: 1.4; text-align: left;
+.suche-feld input {
+  flex: 1; min-width: 0;
+  border: none; background: transparent; color: var(--tinte);
+  font-family: inherit; font-size: .78125rem; padding: 0;
 }
-.hinweis-inhalt[hidden] { display: none; }
-.hinweis-inhalt p { margin: 0 0 .35rem; }
-.hinweis-inhalt p:last-child { margin-bottom: 0; }
-.hinweis-haupt { color: var(--tinte); }
-.hinweis-quelle { font-size: .5625rem; opacity: .85; }
-
-#legende {
-  position: absolute; left: 1rem; bottom: 1rem;
-  max-width: 18rem; max-height: calc(100vh - 2rem); overflow-y: auto;
-  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
-  color: var(--tinte);
-  border-radius: .5rem; padding: .75rem .875rem;
-  font-size: .75rem; line-height: 1.4;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
-}
-.legende-titel {
-  font-weight: 600; font-size: .6875rem; margin-bottom: .5rem;
-  color: var(--tinte-leise); text-transform: uppercase; letter-spacing: .08em;
-}
-.legende-branchen { list-style: none; margin: 0 0 .55rem; padding: 0; display: grid; gap: .25rem; }
-.legende-branchen li {
-  display: flex; align-items: center; gap: .45rem;
-  font-size: .6875rem; text-transform: uppercase; letter-spacing: .02em;
-  color: var(--tinte-leise);
-}
-.legende-punkt {
-  width: .55rem; height: .55rem; border-radius: 50%; flex: none;
-  box-shadow: inset 0 0 0 1px rgba(27, 39, 51, .18);
-}
-/* .legende-skala und .legende-hinweis (Höhen-/Stützwerte- bzw. Mehrdeutig-
-   keits-Zeile) sind mit Redesign Change 3 (2026-08-14) entfallen, siehe
-   `ui/legend.ts` für die Begründung — die Regeln wurden mitentfernt statt
-   als tote CSS liegen zu bleiben. */
-
-/* Task 13: aus der Farbliste wird ein Bedienelement. «Alle» (bis zum
-   Kahlschlag vom 2026-08-17: «Alle Branchen», siehe `ui/legend.ts`) steht
-   über der Liste, deshalb eigene Zeile statt `.legende-branchen`-Kind. Look
-   an `#steuerung button` angelehnt (dieselbe Stimme: unauffällig, bis auf
-   Klick/Zustand), aber kleiner — die Legende bleibt die leiseste Ecke der
-   Karte, auch als Bedienelement. */
-.legende-alle {
-  display: block; margin: 0 0 .5rem; border: 1px solid var(--oberflaeche-rand);
-  background: transparent; color: var(--tinte-leise);
-  padding: .3rem .6rem; border-radius: .375rem;
-  font-size: .625rem; text-transform: uppercase; letter-spacing: .05em;
-  cursor: pointer; font-family: inherit; width: 100%; text-align: left;
-}
-.legende-alle:hover { color: var(--tinte); }
-
-/* `.legende-branchen li` bleibt für die reinen Farbtupfer-Zeilen (Ansicht
-   «Beschäftigte», «nicht eindeutig bestimmbar», Verlustfarbe) die
-   Text+Punkt-Zeile von vorher — `.legende-branche-zeile` überschreibt hier
-   gezielt `justify-content`, für den Umschalter der Branchenzeilen (Task 13).
-   Kahlschlag (2026-08-17, siehe `ui/legend.ts`): eine Branchenzeile ist
-   seither wieder EIN einzelner Umschalter statt zweier Schaltflächen
-   nebeneinander — `.legende-nur` («nur diese») ist mit dem zweiten Knopf
-   ersatzlos entfallen. */
-.legende-branchen li.legende-branche-zeile {
-  justify-content: flex-start; gap: .35rem;
-}
-.legende-branche {
-  display: flex; align-items: center; gap: .4rem; flex: 1; min-width: 0;
-  border: none; background: transparent; color: inherit;
-  padding: .15rem 0; font: inherit; text-transform: inherit;
-  letter-spacing: inherit; cursor: pointer; text-align: left;
-}
-/* Abgewähltes `aria-pressed="false"`: gedämpft statt ausgeblendet — die
-   Farbe bleibt lesbar (sie erklärt weiterhin, was fehlt), nur die
-   Textfarbe fällt auf die generische Fussnotenfarbe zurück. */
-.legende-branche[aria-pressed='false'] { opacity: .5; }
-.legende-branche[aria-pressed='false'] .legende-punkt { opacity: .6; }
-
-/* Leerauswahl-Zeile (`ui/legend.ts`, zurückgeholt 2026-08-17 nach dem
-   Kahlschlag) — Fliesstext wie vormals `.legende-bezug`, aber ein einzelner
-   knapper Satz statt mehrerer: erscheint nur, wenn tatsächlich keine Branche
-   ausgewählt ist, macht die Legende im Normalbetrieb also kein Stück länger. */
-.legende-leer {
-  font-size: .6875rem; color: var(--tinte-leise); margin-top: .35rem;
+.suche-feld input::placeholder { color: var(--tinte-leise); opacity: 1; }
+.suche-feld input:focus { outline: none; }
+/* Fokusring auf das Feld statt auf das `input` darin: der Rahmen ist die
+   sichtbare Grenze der Fläche, ein Ring innen am `input` läge daneben. */
+.suche-feld:focus-within { outline: 2px solid var(--tinte); outline-offset: 2px; }
+.suche-kuerzel {
+  flex: none; font-family: var(--mono); font-size: .6875rem; color: var(--tinte-leise);
 }
 
+/* Trefferliste: dieselbe Fläche wie das Feld, ohne Oberkante — sie hängt am
+   Feld, statt eine zweite Box zu sein. */
+.suche-treffer {
+  list-style: none; margin: 0; padding: 0;
+  border: 1.5px solid var(--tinte); border-top: none; background: #fff;
+  max-height: 13rem; overflow-y: auto;
+}
+.suche-treffer li {
+  padding: 5px 10px; font-size: .71875rem; cursor: pointer;
+}
+.suche-treffer li[aria-selected='true'], .suche-treffer li:hover {
+  background: var(--karte-platte);
+}
+.suche-leer {
+  margin: 0; padding: 5px 10px; font-size: .6875rem; color: var(--tinte-leise);
+  border: 1.5px solid var(--tinte); border-top: none; background: #fff;
+}
+
+/* ---------- Breadcrumb (`/beschaeftigte/`) ----------
+   Ersetzt `#zurueck-gruppe` / `ui/backControl.ts`: der Knopf sagte nur, dass
+   es zurückgeht, das Breadcrumb sagt zusätzlich, wo man steht. */
+.breadcrumb {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: .25rem;
+  margin-top: .375rem; font-size: .78125rem;
+}
+.breadcrumb-stufe {
+  border: none; background: transparent; padding: 0;
+  font: inherit; color: var(--tinte); cursor: pointer;
+  text-decoration: underline; text-decoration-color: #A8B6C6;
+  text-decoration-thickness: 1px;
+}
+/* Die aktive Stufe ist kein Ziel mehr — kein Unterstrich, kein Zeiger. */
+.breadcrumb-aktiv {
+  color: var(--tinte); text-decoration: none; cursor: default;
+}
+.breadcrumb-trenner { color: var(--tinte-leise); }
+
+/* ---------- Rangliste (`/beschaeftigte/`) ---------- */
+.rang-zeile {
+  display: block; width: 100%;
+  border: none; background: transparent; padding: 5px 0;
+  font: inherit; color: var(--tinte); text-align: left; cursor: pointer;
+}
+.rang-kopf {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+}
+.rang-name { font-size: .71875rem; }
+.rang-wert { font-family: var(--mono); font-size: .6875rem; color: var(--tinte-leise); }
+.rang-spur { margin-top: 3px; height: 4px; background: var(--karte-platte); }
+.rang-balken { height: 100%; background: var(--akzent-arbeit); opacity: .85; }
+.rang-zeile:hover .rang-name { text-decoration: underline; }
+
+/* ---------- Massstab (`/beschaeftigte/`) ----------
+   Bleibt nur auf dieser Seite: dort trägt die Höhe eine Grösse, für die es
+   kein Gefühl gibt (Beschäftigte je Kanton, 108-fache Unterschiede). Auf
+   `/firmen/` ist der Massstab entfallen, seine Aussage steht jetzt als Zeile
+   unter dem Höhen-Umschalter (`.leiste-notiz`). */
+#massstab {
+  position: absolute; left: 308px; bottom: 22px;
+  background: var(--papier); border: 1.5px solid var(--tinte);
+  padding: 12px 16px 11px;
+  font-size: .6875rem; line-height: 1.45;
+}
+.massstab-titel {
+  margin: 0 0 6px; font-family: var(--mono); font-size: .65625rem;
+  letter-spacing: .16em; text-transform: uppercase; color: var(--tinte-leise);
+}
+.massstab-stufen { display: flex; align-items: flex-end; gap: 10px; margin-bottom: 6px; }
+.massstab-stufe { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.massstab-saeule { width: 7px; background: var(--tinte-tief); }
+.massstab-wert { font-family: var(--mono); font-size: .625rem; color: var(--tinte-leise); }
+.massstab-notiz { margin: 0; color: var(--tinte-leise); }
+
+/* ---------- Panel ---------- */
 #panel {
-  position: absolute; right: 1rem; top: 6.5rem;
-  max-width: 21rem; max-height: calc(100vh - 8rem); overflow-y: auto;
-  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
-  color: var(--tinte);
-  border-radius: .5rem; padding: 1rem; font-size: .8125rem; line-height: 1.4;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .12);
+  position: absolute; right: 20px; top: 20px; width: 296px;
+  max-height: calc(100% - 40px); overflow-y: auto;
+  background: var(--papier); border: 1.5px solid var(--tinte);
+  color: var(--tinte); font-size: .71875rem; line-height: 1.5;
 }
-#panel h3 { margin: 0 0 .5rem; font-size: 1rem; }
-#panel p { margin: .3rem 0; }
-.panel-hinweis { color: var(--tinte-leise); font-style: italic; }
-/* Redesign Change 1 (2026-08-14): die Obergrenzen-Notiz ist ein Vorbehalt,
-   kein Fliesstext auf Augenhöhe mit den Kennzahlen — deutlich kleiner als
-   `.panel-hinweis` und mit eigenem Abstand nach oben, damit sie sichtbar von
-   der Branchenverteilung darüber absetzt, statt direkt anzuschliessen. */
-.panel-fussnote {
-  color: var(--tinte-leise); font-style: italic; font-size: .625rem;
-  margin-top: .6rem;
+#panel[hidden] { display: none; }
+.panel-kopf {
+  padding: 14px 16px 12px; border-bottom: 1.5px solid var(--tinte);
 }
-/* Redesign Change 3 (2026-08-15): vorher klein, grau, in Grossbuchstaben —
-   damit wirkte «Verteilung nach Branchengruppe» wie eine beiläufige
-   Bildunterschrift, nicht wie eine gleichrangige zweite Überschrift neben
-   dem obersten Feld-Label («Beschäftigte»). Jetzt exakt dieselbe Typografie
-   wie ein Feld-Label (`#panel p strong`: fett, Grundschriftgrösse, normale
-   Textfarbe) — das Panel liest sich dadurch als zwei benannte Abschnitte
-   («Beschäftigte», «Branche») statt als Titel und Bildunterschrift. */
-.panel-untertitel {
-  font-weight: 700; margin-top: .5rem; color: var(--tinte);
+.panel-titelzeile {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
 }
-#panel ul { margin: .2rem 0 .5rem; padding-left: 1.1rem; }
-#panel a { color: var(--tinte); }
-.panel-schliessen {
-  margin-top: .5rem; border: 1px solid var(--oberflaeche-rand); background: transparent;
-  color: var(--tinte); padding: .3rem .7rem; border-radius: .375rem; cursor: pointer;
-  font-size: .75rem; font-family: inherit;
+.panel-kopf h3 {
+  margin: 0; font-size: 1.0625rem; font-weight: 500; letter-spacing: -.02em;
 }
+.panel-kennung { font-family: var(--mono); font-size: .6875rem; color: var(--tinte-leise); }
+.panel-unterzeile { margin: 5px 0 0; color: var(--tinte-leise); }
 
-/* Hover-Beschriftung (Change 4): reine DOM-Aktualisierung bei jedem
-   `onHover`-Event, kein Layer-Rebuild — siehe `ui/hoverLabel.ts`. Folgt der
-   typografischen Stimme der Legende (klein, Großbuchstaben, Sperrung), damit
-   sie als Teil derselben Karte gelesen wird, nicht als generischer Tooltip. */
+.panel-koerper { padding: 13px 16px 14px; }
+
+.panel-hauptzeile {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+}
+.panel-hauptlabel { color: var(--tinte-leise); }
+.panel-hauptwert { font-family: var(--mono); font-size: 1.0625rem; }
+
+/* Anteilsbalken: dieselbe Zahl wie die Zeile darunter, einmal als Länge.
+   `CompanyContext` liefert Rang, Nenner und Gesamtsumme bereits — es kommt
+   kein neuer Datenweg hinzu, nur eine zweite Darstellung. */
+.panel-spur { margin-top: 9px; height: 6px; background: var(--karte-platte); }
+.panel-anteil { height: 100%; background: var(--akzent-firmen); }
+.panel-anteil-arbeit { background: var(--akzent-arbeit); }
+.panel-anteilzeile { margin: 6px 0 0; font-size: .6875rem; color: var(--tinte-leise); }
+
+.panel-raster {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px 10px;
+  margin-top: 14px;
+}
+.panel-feldlabel { display: block; font-size: .6875rem; color: var(--tinte-leise); }
+.panel-feldwert { display: block; font-family: var(--mono); font-size: .84375rem; margin-top: 2px; }
+
+.panel-abschnitt { margin-top: 14px; }
+.panel-branche { display: flex; align-items: center; gap: .5rem; }
+.panel-fliess { margin: 6px 0 0; }
+
+/* Vorbehalte im Panel (Obergrenzen-Notiz, Platzhalterhinweis, fehlende Werte)
+   — inhaltlich unverändert, weiterhin die leiseste Zeile der Fläche. */
+.panel-fussnote {
+  margin: 12px 0 0; font-size: .6875rem; line-height: 1.45;
+  color: var(--tinte-leise); font-style: italic;
+}
+.panel-liste { margin: 6px 0 0; padding-left: 1.1rem; }
+
+.panel-fuss {
+  display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
+  padding: 11px 16px; border-top: 1px solid var(--linie);
+}
+.panel-fuss a, .panel-aktion {
+  border: none; background: transparent; padding: 0;
+  font-family: var(--mono); font-size: .65625rem; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--tinte); cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px;
+}
+.panel-uid { font-family: var(--mono); font-size: .6875rem; color: var(--tinte-leise); }
+
+/* ---------- Zoom ----------
+   Eigene Knöpfe statt MapLibres `NavigationControl` (siehe `map.ts`): drei
+   Zellen in einer Spalte, aussen 1.5 px Tinte, zwischen den Zellen 1 px
+   `--linie`. */
+#zoom {
+  position: absolute; right: 20px; bottom: 22px;
+  display: flex; flex-direction: column;
+  background: var(--papier); border: 1.5px solid var(--tinte);
+}
+#zoom button {
+  width: 32px; height: 32px; padding: 0;
+  border: none; background: transparent; color: var(--tinte);
+  font-family: var(--mono); font-size: .875rem; line-height: 1; cursor: pointer;
+}
+#zoom button + button { border-top: 1px solid var(--linie); }
+#zoom button:hover { background: var(--karte-platte); }
+
+/* ---------- Hover-Beschriftung ----------
+   Reine DOM-Aktualisierung bei jedem `onHover`-Event, kein Layer-Rebuild —
+   siehe `ui/hoverLabel.ts`. Folgt der Stimme der Leiste (Mono, klein), damit
+   sie als Teil derselben Oberfläche gelesen wird, nicht als generischer
+   Tooltip. */
 #hover-label {
   position: fixed; z-index: 2; pointer-events: none;
   transform: translate(14px, 14px);
-  background: var(--oberflaeche); border: 1px solid var(--oberflaeche-rand);
+  background: var(--papier); border: 1.5px solid var(--tinte);
   color: var(--tinte); font-size: .6875rem;
-  text-transform: uppercase; letter-spacing: .05em;
-  padding: .25rem .5rem; border-radius: .25rem;
-  box-shadow: 0 1px 3px rgba(27, 39, 51, .15);
+  padding: .25rem .5rem;
 }
 #hover-label[hidden] { display: none; }
-/* Task 16: `white-space: nowrap` gilt je Zeile (`<span>`, siehe
-   `showHoverLabel`), nicht mehr für den ganzen Block — sonst liefe der Name
-   der recherchierten Firma und die zweite Zeile (Kennzahl · Branche)
-   ineinander statt untereinander zu stehen. Die zweite Zeile ist
-   Nebeninformation, nicht der Name selbst — kleiner und in `--tinte-leise`,
-   demselben Ton, in dem die App sonst Nebensächliches setzt (z.B. die
-   Fussnoten in `.hinweis-quelle`). Grossbuchstaben bleiben (geerbt von
-   `#hover-label`) auch für Zahlen und Branchennamen: dieselbe Stimme für die
-   zweite Hover-Zeile wahrt die Konsistenz, statt für eine Zeile eine
-   Ausnahme zu öffnen. */
+/* `white-space: nowrap` gilt je Zeile (`<span>`, siehe `showHoverLabel`),
+   nicht für den ganzen Block — sonst liefen Name und zweite Zeile (Kennzahl ·
+   Branche) ineinander statt untereinander zu stehen. Die zweite Zeile ist
+   Nebeninformation, nicht der Name selbst. */
 #hover-label > span { display: block; white-space: nowrap; }
-#hover-label > span:nth-child(2) { font-size: .625rem; color: var(--tinte-leise); margin-top: .15rem; }
+#hover-label > span:nth-child(2) {
+  font-family: var(--mono); font-size: .625rem; color: var(--tinte-leise); margin-top: .15rem;
+}
 
-/* Unter ~800px stehen #legende (unten links) und #hinweis (jetzt unten
-   rechts) sich nicht mehr im Weg wie zuvor (#hinweis war bodenmittig) —
-   auf sehr schmalen Viewports reicht die Breite trotzdem nicht für zwei
-   nebeneinanderliegende Eckboxen. Löst beide aus der Absolut-Positionierung
-   und stapelt sie im normalen Fluss am unteren Rand von #ui. #fehler,
-   #steuerung und #panel bleiben unberührt: weiterhin absolut positioniert.
-
-   #kennzahlen sitzt in der Standardansicht oben mittig, genau zwischen
-   #steuerung (oben links) und dem NavigationControl (oben rechts) — auf
-   einem schmalen Viewport wächst #steuerung selbst schon in die Breite
-   (Marke + zwei Gruppen, siehe `#steuerung .marke`) und lässt dort keinen
-   Platz mehr für eine dritte, mittig zentrierte Box, ohne eine der beiden
-   Ecken zu überdecken. #kennzahlen reiht sich deshalb hier bei #legende und
-   #hinweis in denselben Fluss ein: alle drei "man sieht sie ohne Klick,
-   aber sie brauchen keinen festen Platz oben" gehören auf schmalen
-   Bildschirmen zusammen an den unteren Rand, statt sich um die knappe
-   Kopfzeile zu streiten.
-
-   `order: -1` statt auf die DOM-Einfügereihenfolge zu vertrauen: welche der
-   drei Aufrufstellen (`renderKennzahlen`/`renderLegend`/`renderNotices`)
-   ihr Element zuerst an #ui hängt, entscheidet die Seite (`karte/firmen.
-   ts`), nicht dieses CSS — und deren Verdrahtung ist eigene Folgearbeit
-   (siehe Kommentar in `ui/kennzahlen.ts`). Die Summenzeile soll trotzdem
-   zuverlässig zuoberst in der von unten aufgebauten Spalte
-   (`justify-content: flex-end`) stehen, am nächsten am sichtbaren unteren
-   Rand: `order` legt das unabhängig von der Aufrufreihenfolge fest. */
+/* Unter 800 px trägt die Karte keine Spalte von 264 px mehr, ohne die Hälfte
+   der Fläche zu verdecken. Die Leiste wird deshalb zum Blatt am unteren Rand,
+   das Panel ebenso, und die Zoom-Gruppe rückt nach oben rechts — die Karte
+   behält in jedem Fall die volle Fläche. Vorher löste dieser Block
+   `#kennzahlen`, `#legende` und `#hinweis` einzeln aus der Absolut-
+   positionierung; mit der Leiste ist daraus ein Element geworden. */
 @media (max-width: 800px) {
-  #ui {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    gap: .5rem;
-    padding-bottom: 1rem;
+  #leiste {
+    left: 12px; right: 12px; bottom: 12px; top: auto; width: auto;
+    max-height: 60vh;
   }
-  #kennzahlen, #legende, #hinweis {
-    position: static;
-    left: auto; right: auto; bottom: auto; top: auto; transform: none;
-    max-width: calc(100vw - 2rem);
+  #panel {
+    left: 12px; right: 12px; top: 12px; width: auto;
+    max-height: 40vh;
   }
-  #kennzahlen { order: -1; }
+  #zoom { top: 12px; bottom: auto; right: 12px; }
+  /* Auf dieser Breite steht der Massstab entweder über der Leiste oder unter
+     dem Panel — beides verdeckt Karte. Seine Aussage steht ohnehin doppelt:
+     die Zeile unter dem Höhen-Umschalter nennt denselben Befund. */
+  #massstab { display: none; }
 }

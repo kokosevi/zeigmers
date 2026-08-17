@@ -91,5 +91,10 @@ export async function createBasis(): Promise<Basis> {
  *  `ui/nav.ts`, `NavOptions`). `createNav` ruft `onModeChange` schon bei der
  *  Konstruktion einmal auf — das übernimmt den ersten Render. */
 export function mountNav(options: NavOptions): void {
-  document.getElementById('ui')?.appendChild(createNav(options))
+  // Seit dem Redesign (17. August 2026) hängt `createNav` seine Elemente
+  // selbst in die Abschnitte der Leiste (`ui/leiste.ts`) statt ein fertiges
+  // `#steuerung` zurückzugeben, das hier an `#ui` gehängt wurde: Kopf und
+  // Gruppen sitzen in der Leiste an zwei verschiedenen Plätzen, ein einzelnes
+  // Rückgabe-Element könnte nur einen davon treffen.
+  createNav(options)
 }
