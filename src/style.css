@@ -266,6 +266,14 @@ a:focus-visible, button:focus-visible {
 .legende-branche[aria-pressed='false'] { opacity: .5; }
 .legende-branche[aria-pressed='false'] .legende-punkt { opacity: .6; }
 
+/* Leerauswahl-Zeile (`ui/legend.ts`, zurückgeholt 2026-08-17 nach dem
+   Kahlschlag) — Fliesstext wie vormals `.legende-bezug`, aber ein einzelner
+   knapper Satz statt mehrerer: erscheint nur, wenn tatsächlich keine Branche
+   ausgewählt ist, macht die Legende im Normalbetrieb also kein Stück länger. */
+.legende-leer {
+  font-size: .6875rem; color: var(--tinte-leise); margin-top: .35rem;
+}
+
 #panel {
   position: absolute; right: 1rem; top: 6.5rem;
   max-width: 21rem; max-height: calc(100vh - 8rem); overflow-y: auto;

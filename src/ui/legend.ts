@@ -51,19 +51,28 @@ const UNIT_LABEL: Record<ViewName, string> = {
  *  Auftrag (2026-08-17), grosser Kahlschlag in Ansicht «Börsennotierte
  *  Firmen»: die Legende zeigt dort nur noch Farbtupfer und Branchennamen —
  *  Anzahl/Anteil/Saldo je Branche, die «nur diese»-Griffe, die Titelzeile mit
- *  der Abdeckungsangabe und sämtliche erklärenden Sätze (Randmarkierung,
- *  unrecherchierte Marker, Mindesthöhe, Branchenzahl, die Bezugszeile
- *  «Höchste Säule: …», die Verlust-Auswahlzeile, der Leerauswahl-Hinweis)
- *  sind ersatzlos entfallen. Vier dieser Sätze tragen dabei eine Aussage,
- *  ohne die die Karte etwas behauptet, das sie nicht einlöst — sie sind
- *  deshalb NICHT verschwunden, sondern in die Eckbox gewandert
- *  (`ui/notices.ts`, `renderNotices`, Parameter `topReference`): die
- *  Bezugszeile «Höchste Säule», der Mindesthöhen-Hinweis, die Randmarkierung
- *  und der Marker für unrecherchierte Titel. Leitsatz seit Redesign Change
- *  2/3 (siehe dort): „die Legende trägt, was man zum Lesen braucht, die
- *  Eckbox, was man zum Vertrauen braucht" — dieser Kahlschlag zieht diese
- *  Trennung konsequent zu Ende, statt Vorbehalte in einer Ecke zu belassen,
- *  aus der sie inhaltlich in die andere gehören.
+ *  der Abdeckungsangabe und die vier erklärenden Sätze Randmarkierung,
+ *  unrecherchierte Marker, Mindesthöhe und Branchenzahl sind ersatzlos
+ *  entfallen. Fünf Sätze tragen dabei eine Aussage, ohne die die Karte etwas
+ *  behauptet, das sie nicht einlöst — sie sind deshalb NICHT verschwunden,
+ *  sondern in die Eckbox gewandert (`ui/notices.ts`, `renderNotices`): die
+ *  Bezugszeile «Höchste Säule» (Parameter `topReference`), der
+ *  Mindesthöhen-Hinweis, die Randmarkierung, der Marker für unrecherchierte
+ *  Titel und die Abdeckungsangabe («201 Gesellschaften von 224 kotierten
+ *  SIX-Titeln …», Parameter `coverage`). Leitsatz seit Redesign Change 2/3
+ *  (siehe dort): „die Legende trägt, was man zum Lesen braucht, die Eckbox,
+ *  was man zum Vertrauen braucht" — dieser Kahlschlag zieht diese Trennung
+ *  konsequent zu Ende, statt Vorbehalte in einer Ecke zu belassen, aus der
+ *  sie inhaltlich in die andere gehören.
+ *
+ *  Korrektur (selbes Datum): der Leerauswahl-Hinweis («Keine Branche
+ *  ausgewählt») war anfangs ebenfalls entfallen — zu Unrecht, wie der
+ *  Auftraggeber richtiggestellt hat. Er ist kein erklärender Satz wie die
+ *  fünf oben, sondern die Antwort auf einen Zustand, den die Karte sonst
+ *  unerklärt liesse (siehe `renderLegend` unten, `.legende-leer`), und bleibt
+ *  deshalb in der Legende, nicht in der Eckbox: er gehört zur AKTUELLEN
+ *  Auswahl, nicht zu einer Eigenschaft der Karte insgesamt, und die Eckbox
+ *  trägt bewusst nichts, was von der Branchenauswahl abhängt.
  *
  *  `onOnlyBranch` ist mit den «nur diese»-Griffen ebenfalls entfallen (siehe
  *  `NavOptions`-Pendant in `ui/nav.ts` für dasselbe Muster bei einer anderen
@@ -85,10 +94,12 @@ export interface LegendOptions {
    *  dem Kahlschlag vom 2026-08-17 gar keine Titelzeile mehr (siehe
    *  `LegendOptions`-Kommentar oben) und liest dieses Feld deshalb nicht
    *  mehr — die frühere, hier ausführlich beschriebene Abdeckungsangabe
-   *  («201 Gesellschaften von 224 kotierten SIX-Titeln …») ist ersatzlos
-   *  entfallen, nicht hierher verschoben; sie steht weiterhin auf der
-   *  Landing (`index.html`, von `src/landing.test.ts` gegen `companies.
-   *  json` geprüft). */
+   *  («201 Gesellschaften von 224 kotierten SIX-Titeln …») ist NICHT
+   *  ersatzlos entfallen, sondern in die Eckbox gewandert (`ui/notices.ts`,
+   *  `renderNotices`, Parameter `coverage`) — sie bleibt Teil der
+   *  Oberfläche, wie die Spec es für diese Zahl verlangt, nur nicht mehr
+   *  hier. Unabhängig davon weiterhin auf der Landing (`index.html`, von
+   *  `src/landing.test.ts` gegen `companies.json` geprüft). */
   scopeLabel?: string
   /** Task 13: aus der Farbliste wird ein Bedienelement, aber nur, wo eine
    *  Kennzahl UND ein Ergebnis vorliegen — heute nur die Firmenseite
@@ -204,11 +215,14 @@ function branchRow(
  *  zeichnet nur, was man ihr übergibt, und aktualisiert sich damit.
  *
  *  Kahlschlag (2026-08-17): in Ansicht «Börsennotierte Firmen» ist das jetzt
- *  ALLES, was diese Funktion zeichnet — keine Titelzeile, keine Zahlen, keine
- *  erklärenden Sätze mehr (siehe `LegendOptions`-Kommentar für die
- *  vollständige Liste des Entfallenen und wohin vier der Sätze gewandert
- *  sind). Die zwei Ausnahmen (Verlustfarbe, „Alle"-Knopf) stehen bei
- *  `LOSS_LEGEND_TEXT` bzw. `LegendOptions.onAllBranches` begründet. */
+ *  praktisch ALLES, was diese Funktion zeichnet — keine Titelzeile, keine
+ *  Zahlen je Branche, keine der fünf erklärenden Sätze mehr (siehe
+ *  `LegendOptions`-Kommentar für die vollständige Liste des Entfallenen und
+ *  wohin die fünf Sätze gewandert sind). Drei Ausnahmen bleiben: Verlustfarbe
+ *  und „Alle"-Knopf (`LOSS_LEGEND_TEXT` bzw. `LegendOptions.onAllBranches`)
+ *  sowie die Leerauswahl-Zeile (`.legende-leer` unten, siehe
+ *  `LegendOptions`-Kommentar für die Begründung, warum sie anders als die
+ *  fünf umgezogenen Sätze in der Legende bleibt). */
 export function renderLegend(options: LegendOptions): void {
   const { view, year, presentGroups, scopeLabel, metric, result, onToggleBranch } = options
   const el = box()
@@ -299,5 +313,21 @@ export function renderLegend(options: LegendOptions): void {
     hinweise.className = 'legende-branchen'
     hinweise.appendChild(lossSwatch())
     el.appendChild(hinweise)
+  }
+
+  // Leerauswahl-Zeile: zurückgeholt, nachdem der Kahlschlag vom 2026-08-17
+  // sie zunächst mit den übrigen erklärenden Sätzen entfernt hatte
+  // (Auftraggeber-Korrektur, selbes Datum) — das ist kein erklärender Satz
+  // wie die anderen, sondern die Antwort auf einen Zustand, den die Karte
+  // sonst unerklärt liesse: wer alle Branchen abwählt, sieht eine leere
+  // Karte und kann ohne diese Zeile nicht unterscheiden, ob sie kaputt ist
+  // oder ob er sie selbst leer gefiltert hat. Erscheint nur in genau diesem
+  // Fall — im Normalbetrieb (mindestens eine Branche gewählt) macht sie die
+  // Legende kein Stück länger. So knapp wie möglich gehalten, wie verlangt.
+  if (metric !== undefined && result !== undefined && selected.size === 0) {
+    const leer = document.createElement('div')
+    leer.className = 'legende-leer'
+    leer.textContent = 'Keine Branche ausgewählt — Karte leer.'
+    el.appendChild(leer)
   }
 }

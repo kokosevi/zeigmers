@@ -116,9 +116,22 @@ describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
     expect(document.getElementById('legende')!.textContent).not.toContain('Höchste Säule')
   })
 
-  it('sagt nicht mehr, wenn alle Branchen abgewählt sind', () => {
+  // Auftraggeber-Korrektur (2026-08-17): der Leerauswahl-Hinweis war zunächst
+  // mit den übrigen erklärenden Sätzen entfernt worden — zu Unrecht, er ist
+  // kein erklärender Satz, sondern die Antwort auf einen Zustand, den die
+  // Karte sonst unerklärt liesse (leere Karte: kaputt oder selbst gefiltert?).
+  it('sagt es, wenn alle Branchen abgewählt sind', () => {
     const companies = [company({ nogaGroupIndex: 1 })]
     renderLegend(options(companies, 'umsatz', { selectedBranches: new Set() }))
+    expect(document.getElementById('legende')!.textContent).toContain('Keine Branche ausgewählt')
+  })
+
+  it('zeigt den Leerauswahl-Hinweis nicht, solange mindestens eine Branche gewählt ist', () => {
+    const companies = [
+      company({ nogaGroupIndex: 1 }),
+      company({ nogaGroupIndex: 2 }),
+    ]
+    renderLegend(options(companies, 'umsatz', { selectedBranches: new Set([1]) }))
     expect(document.getElementById('legende')!.textContent).not.toContain('Keine Branche ausgewählt')
   })
 

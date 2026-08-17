@@ -1,4 +1,5 @@
 import { formatMetric, type Metric } from '../domain/metric'
+import { formatGermanDate } from './format'
 import type { ViewName } from './nav'
 
 /** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
@@ -221,14 +222,14 @@ const SCALE_NOTE =
 // Fix-Runde (2026-08-15, Abschluss-Review Fund 1): der Wortlaut nannte bisher
 // „acht Unternehmen" — mit der Nationalisierung (Phase 3) sind es 201
 // recherchierte, und dieselbe aus `companies.json` berechnete Zahl steht
-// bereits auf der Landing (`index.html`, von `src/landing.test.ts` geprüft,
-// siehe auch `ui/legend.ts` für den früheren, seit 2026-08-17 entfallenen
-// zweiten Auftrittsort in der Legende); eine zweite, hier hartkodierte Zahl
-// würde bei jedem künftigen Recherche-Lauf neu veralten können, ohne dass
-// etwas rot würde. Der Satz nennt deshalb keine Zahl mehr. „Ansicht A:" ist
-// ebenfalls entfallen — das Label ist seit der Aufteilung in drei benannte
-// Seiten (`/`, `/firmen/`, `/beschaeftigte/`) tot, es gibt kein A/B mehr in
-// der Oberfläche.
+// bereits auf der Landing (`index.html`, von `src/landing.test.ts` geprüft)
+// und, seit der Korrektur vom 2026-08-17, in derselben Box direkt darüber
+// (`coverageNote()` oben); eine zweite, hier hartkodierte Zahl würde bei
+// jedem künftigen Recherche-Lauf neu veralten können, ohne dass etwas rot
+// würde. Der Satz nennt deshalb keine Zahl mehr. „Ansicht A:" ist ebenfalls
+// entfallen — das Label ist seit der Aufteilung in drei benannte Seiten
+// (`/`, `/firmen/`, `/beschaeftigte/`) tot, es gibt kein A/B mehr in der
+// Oberfläche.
 //
 // Kleinigkeit (2026-08-16, Abschluss-Review): der Satz nannte «Umsatz,
 // Mitarbeitende und Geschäftsjahr» — seit Task 18 (Kennzahl-Verdrahtung)
@@ -289,14 +290,48 @@ const POPULATION_YEAR_NOTE =
   'Die Kennzahl «Beschäftigte je Einwohner» im Klick-Panel vergleicht zwei ' +
   'Jahrgänge: Bevölkerung 31.12.2024, Beschäftigte 2023.'
 
-// Vier Zeilen, umgezogen aus `ui/legend.ts` (Auftrag, 2026-08-17 — siehe dort
+// Fünf Zeilen, umgezogen aus `ui/legend.ts` (Auftrag, 2026-08-17 — siehe dort
 // den Kommentar bei `LegendOptions` für die vollständige Begründung des
 // Kahlschlags, aus dem sie stammen). Leitsatz seit Redesign Change 2/3: „die
 // Legende trägt, was man zum Lesen braucht, die Eckbox, was man zum
-// Vertrauen braucht" — alle vier tragen eine Aussage, ohne die die Karte
+// Vertrauen braucht" — alle fünf tragen eine Aussage, ohne die die Karte
 // etwas behauptet, das sie nicht einlöst, und gehören deshalb hierher statt
 // ersatzlos zu verschwinden. Nur in Ansicht «Börsennotierte Firmen» gelesen
 // (`renderNotices` unten) — dieselbe Bedingung wie bei `FOOTER_COMPANIES`.
+
+/** Abdeckungsangabe — ZWEI Zahlen, nicht nur eine: „201 recherchiert" allein
+ *  wäre unvollständig, wer die Marker auf der Karte zählt, sieht `count`
+ *  (platziert, inkl. der unrecherchierten Marker), nicht `totalListed` — ein
+ *  SIX-Titel ohne eindeutigen Zefix-Sitz erscheint gar nicht auf der Karte
+ *  (siehe `companies.build_artifact`). Ohne diese Zeile liesse sich aus der
+ *  Karte selbst nicht ablesen, dass ein Teil der kotierten Titel überhaupt
+ *  nicht erscheint — dieselbe Begründung, aus der die Zeile ursprünglich in
+ *  `ui/legend.ts`s Titelzeile stand (Korrektur 2026-08-17: die Titelzeile
+ *  selbst ist entfallen, siehe dort, diese Zahl NICHT mit ihr).
+ *
+ *  `count`/`totalListed`/`researched` zählen unterschiedliche Grössen
+ *  (Gesellschaften bzw. kotierte SIX-Titel, siehe `layers/visible.ts`,
+ *  `CompanyData.stats`) — beide Einheiten stehen deshalb im Satz, sonst gäbe
+ *  er Gesellschaften als Titel aus (Abschluss-Review, Fund 4).
+ *
+ *  `sixRetrievedDate` ist `null` nur in Tests/Fixtures ohne `six_meta` — dann
+ *  bleibt der SIX-Stand schlicht weg, statt ein erfundenes Datum zu zeigen. */
+export interface Coverage {
+  count: number
+  totalListed: number
+  researched: number
+  sixRetrievedDate: string | null
+}
+
+function coverageNote(coverage: Coverage): string {
+  const stand = coverage.sixRetrievedDate
+    ? ` · SIX-Stand ${formatGermanDate(coverage.sixRetrievedDate)}`
+    : ''
+  return (
+    `${coverage.count} Gesellschaften von ${coverage.totalListed} kotierten SIX-Titeln auf der ` +
+    `Karte gezeigt, davon ${coverage.researched} recherchiert${stand}`
+  )
+}
 
 /** Anteil einer Höchst-Säule-Bezugszeile: die Höhenskala passt sich der
  *  aktuellen Auswahl an (Branchen-/Organisationsformfilter), nicht einem
@@ -428,6 +463,16 @@ function createToggle(): HTMLButtonElement {
  *  bedeutungslos, aber ebenfalls Pflichtparameter statt optional (`null` als
  *  neutraler Platzhalter, dieselbe Konvention wie `metric`/`metricInChf` bei
  *  dieser Ansicht in `karte/beschaeftigte.ts`) — aus demselben Grund wie bei
+ *  `level`.
+ *
+ *  `coverage` (Korrektur, 2026-08-17, ebenfalls aus `ui/legend.ts`
+ *  umgezogen — anders als die vier anderen Zeilen war sie zunächst
+ *  fälschlich ganz entfernt worden, siehe `Coverage`-Kommentar oben): nur bei
+ *  `view === 'sichtbare'` gelesen, unabhängig von der aktuellen Auswahl (die
+ *  Zahlen gelten für die ganze Karte, nicht nur den gefilterten Teil) — die
+ *  Aufrufstelle (`karte/firmen.ts`) liest sie unverändert aus
+ *  `companies.stats`. Bei `view === 'beschaeftigte'` bedeutungslos, aber
+ *  ebenfalls Pflichtparameter statt optional — aus demselben Grund wie bei
  *  `level`. */
 export function renderNotices(
   view: ViewName,
@@ -435,6 +480,7 @@ export function renderNotices(
   metric: Metric,
   metricInChf: boolean,
   topReference: TopReference | null,
+  coverage: Coverage | null,
 ): void {
   let boxOrNull = document.getElementById('hinweis')
   if (!boxOrNull) {
@@ -464,9 +510,10 @@ export function renderNotices(
   if (view === 'sichtbare') {
     const note = currencyNote(metric, metricInChf)
     if (note) inhalt.appendChild(paragraph(note, 'hinweis-haupt'))
-    // Vier aus `ui/legend.ts` umgezogene Zeilen (siehe Kommentar dort bei
-    // `LegendOptions`) — alle vier nur in dieser Ansicht, dieselbe Bedingung
+    // Fünf aus `ui/legend.ts` umgezogene Zeilen (siehe Kommentar dort bei
+    // `LegendOptions`) — alle fünf nur in dieser Ansicht, dieselbe Bedingung
     // wie zuvor in der Legende.
+    if (coverage) inhalt.appendChild(paragraph(coverageNote(coverage), 'hinweis-quelle'))
     if (topReference) {
       inhalt.appendChild(paragraph(topReferenceNote(metric, topReference), 'hinweis-quelle'))
     }

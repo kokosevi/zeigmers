@@ -9,7 +9,7 @@ import { hideHoverLabel } from '../ui/hoverLabel'
 import { renderKennzahlen } from '../ui/kennzahlen'
 import { renderLegend } from '../ui/legend'
 import { DEFAULT_MODE, type NavOptions } from '../ui/nav'
-import { renderNotices, type TopReference } from '../ui/notices'
+import { renderNotices, type Coverage, type TopReference } from '../ui/notices'
 import { hidePanel, showCompanyPanel, type CompanyContext } from '../ui/panel'
 import { createBasis, mountNav } from './basis'
 
@@ -39,6 +39,21 @@ export async function startFirmen(): Promise<void> {
       .filter((c) => c.researched)
       .map((c) => (c.placeholder ? NOGA_UNKNOWN_INDEX : c.nogaGroupIndex)),
   )
+
+  // Abdeckungsangabe der Karte selbst — bis zum Kahlschlag vom 2026-08-17
+  // stand sie in der Legenden-Titelzeile, seither in der Eckbox (Auftraggeber-
+  // Korrektur, selbes Datum, siehe `ui/notices.ts`, `Coverage`): ohne sie
+  // liesse sich aus der Karte selbst nicht ablesen, dass ein Teil der
+  // kotierten Titel gar nicht erscheint (23 von 224 ohne eindeutigen
+  // Zefix-Sitz). Unverändert direkt aus `companies.stats` übernommen, keine
+  // eigene Berechnung nötig — `coverageNote()` in `ui/notices.ts` formt den
+  // Satz daraus, inklusive SIX-Abrufstand.
+  const coverage: Coverage = {
+    count: companies.stats.count,
+    totalListed: companies.stats.totalListed,
+    researched: companies.stats.researched,
+    sixRetrievedDate: companies.stats.sixRetrievedDate,
+  }
 
   // Beschäftigte der Schweiz insgesamt — der Vergleich, für den es die
   // Kennzahl «Mitarbeitende» gibt (siehe `ui/kennzahlen.ts`). Aus den 26
@@ -197,7 +212,7 @@ export async function startFirmen(): Promise<void> {
     const topReference: TopReference | null = result.top
       ? { name: result.top.name, value: metricValue(result.top, selection.metric) ?? result.vmax }
       : null
-    renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf, topReference)
+    renderNotices('sichtbare', 'schweiz', selection.metric, metricInChf, topReference, coverage)
   }
 
   const navOptions: NavOptions = {

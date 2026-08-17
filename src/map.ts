@@ -81,35 +81,48 @@ export const INITIAL_VIEW = {
 // breiter als #hinweis (16rem) und bestimmt die Seite. Randabstand 1rem +
 // Breite 21rem + 1rem Sicherheitsabstand = 23rem.
 //
-// unten (528px ≈ 1rem + 31rem + 1rem): #legende bestimmt die Seite,
-// vollständig aufgeschlüsselt für Ansicht «Börsennotierte Firmen» (Filter-
-// Modus, `ui/legend.ts`, `renderLegend`) — die dort dichteste Kombination:
-//   - `.legende-titel`: 1 Zeile × 13,2px (11px×1,2) + .5rem Marge = 21,2px
+// unten (320px ≈ 1rem + 18rem + 1rem): #legende bestimmt die Seite weiterhin
+// — aber neu hergeleitet, seit der Kahlschlag vom 2026-08-17 (`ui/legend.ts`)
+// Titelzeile, Zahlen je Branche, «nur diese»-Griffe und die drei
+// Hinweissätze aus Ansicht «Börsennotierte Firmen» entfernt hat. Die dort
+// jetzt dichteste Kombination (Kennzahl Gewinn, mindestens eine Verlustfirma
+// in der Auswahl):
 //   - `.legende-alle`-Knopf: 12px Zeile + 2×.3rem Padding + .5rem Marge = 29,6px
 //   - Branchenliste: bis zu 12 Zeilen (elf NOGA-Gruppen + „nicht eindeutig
-//     bestimmbar" bei `presentGroups.hasUnknown`) × 13,2px + 11×.25rem Gap
-//     + .55rem Listen-Marge = 211,2px
-//   - zweite Liste, nur hier (Randmarkierung/unrecherchierter Marker/
-//     Mindesthöhen-Hinweis, `outlineSwatch`/`unresearchedSwatch`/
-//     `floorNote` in `ui/legend.ts`): drei ganze Sätze, die bei 18rem
-//     Boxbreite umbrechen. Textbreite mit Punkt+Gap ≈ 18rem − 2×.875rem
-//     Padding − 2px Rand − .55rem Punkt − .45rem Gap ≈ 242px, ohne Punkt
-//     (Mindesthöhen-Hinweis, reiner Text-Li) ≈ 258px; bei ≈5,5px/Zeichen
-//     (Faustregel für proportionale 11px-Schrift) ≈44 bzw. ≈47 Zeichen/
-//     Zeile. Randmarkierungs-Text (145 Zeichen) → 4 Zeilen, Marker-Text
-//     (99 Zeichen) → 3 Zeilen, Mindesthöhen-Text (144 Zeichen) → 4 Zeilen,
-//     macht 11 Zeilen × 13,2px + 2×.25rem Gap + .55rem Listen-Marge = 162px
-//   - Bezugszeilen (bis zu zwei: „Höchste Säule" + Verlustzeile,
-//     `.legende-bezug`): angenommen 3 Zeilen × 13,2px + eine .35rem-Marge
-//     = 45,2px
-// Summe Innenhalt 469,2px + 2×.75rem Boxpadding + 2×1px Rand ≈ 495,2px
-// Boxhöhe (≈31rem) + 1rem Randabstand + 1rem Sicherheitsabstand ≈ 33rem.
-// #hinweis trägt in derselben Ansicht bis zu sechs Pflichttext-Absätze
-// (`ui/notices.ts`, `renderNotices`) und bleibt nach derselben Rechnung
-// (vier bis sechs Absätze statt fixer drei Zeilen) knapp darunter — beide
-// Boxen sind also ähnlich raumgreifend, #legende bleibt die etwas grössere
-// und damit bestimmende. Aufgabe 18 prüft am Screenshot, ob dieser
-// grosszügige Wert übertrieben wirkt oder tatsächlich gebraucht wird.
+//     bestimmbar" bei `presentGroups.hasUnknown`) × 13,2px (11px×1,2, dieselbe
+//     Zeilenhöhen-Faustregel wie in den drei anderen Seiten oben) + 11×.25rem
+//     Gap + .55rem Listen-Marge = 211,2px — Branchennamen sind jetzt einzelne
+//     Wörter/kurze Phrasen («Handel», „Verkehr und Logistik", längstes Label
+//     „Öffentlich, Bildung, Gesundheit" bei 32 Zeichen), keiner davon bricht
+//     bei 18rem Boxbreite um, anders als die vormaligen ganzen Sätze.
+//   - zweite Liste, nur mit Verlust in der Auswahl (`lossSwatch` in
+//     `ui/legend.ts`): eine einzelne Zeile «Verlust» × 13,2px + .55rem
+//     Listen-Marge = 22px. Alternative statt einer Verlustzeile: die
+//     Leerauswahl-Zeile «Keine Branche ausgewählt — …» (`.legende-leer`,
+//     13,2px + .35rem Marge ≈ 18,8px) — beide schliessen sich gegenseitig aus
+//     (eine leere Auswahl kann keine Verlustfirma enthalten), die grössere
+//     der beiden (22px) zählt als Worst Case.
+// Summe Innenhalt 29,6 + 211,2 + 22 = 262,8px + 2×.75rem Boxpadding + 2×1px
+// Rand ≈ 288,8px ≈ 18,05rem, aufgerundet auf volle 18rem (dieselbe
+// Rundungskonvention wie oben bei den anderen drei Seiten: auf den
+// nächstliegenden ganzen rem). + 1rem Randabstand + 1rem Sicherheitsabstand
+// = 20rem = 320px.
+//
+// #hinweis zählt hier NICHT mit, obwohl die Eckbox seit demselben Auftrag
+// selbst bis zu elf Absätze tragen kann (`ui/notices.ts`, `renderNotices`,
+// inklusive der fünf aus der Legende umgezogenen Zeilen) — Grund ist die
+// Zuklappbarkeit, die derselbe Auftrag ihr gegeben hat: die erste Rahmung
+// (`instant: true`, siehe `frameBounds` unten) läuft beim Seitenaufbau, bevor
+// irgendjemand den Info-Umschalter angeklickt haben kann, also im
+// EINGEKLAPPTEN Startzustand — dort ist `#hinweis` nur der runde Umschalter
+// selbst (`.hinweis-umschalter`, 1,375rem ≈ 22px), keine Textbox. Massgeblich
+// für die Rahmung ist der Zustand, in dem die Seite tatsächlich startet, nicht
+// der grösstmögliche erreichbare Zustand nach einer Nutzerinteraktion — genau
+// wie `top`/`left`/`right` oben ebenfalls den Startzustand ihrer jeweiligen
+// Box vermessen, nicht deren grösstmögliche spätere Ausdehnung. #legende
+// bleibt damit unverändert die für „unten" bestimmende Box, jetzt aber mit
+// deutlich grösserem Abstand zu #hinweis als vor diesem Auftrag (zuvor
+// „ähnlich raumgreifend").
 //
 // Dieser Rohwert bleibt unverändert stehen — er sagt, woher die Zahlen
 // kommen. Er wird aber NICHT direkt an `fitBounds`/`cameraForBounds`
@@ -121,14 +134,15 @@ export const INITIAL_VIEW = {
 // daneben; sie sind zudem halbtransparent (`--oberflaeche`,
 // `rgba(255,255,255,.84)`). Es genügt, dass die Landesfläche nicht
 // vollständig hinter einer Box verschwindet — nicht, dass die gerahmte
-// Fläche jede Chrome-Box vollständig meidet. Ungekappt würde eine
-// 15-zeilige Legende (528px unten) auf einem 1000px hohen Fenster der Karte
-// zusammen mit den oberen 140px nur noch ein Drittel der Höhe lassen — das
-// Gegenteil dessen, wofür diese Aufgabe existiert (Schweiz füllt das Bild,
-// nicht 45 % davon).
+// Fläche jede Chrome-Box vollständig meidet. Selbst bei den hier für
+// Screenshots verwendeten 1600×1000 Fenstern (siehe Aufgabe 18) greift die
+// Kappung bereits: 25 % von 1000px sind 250px, weniger als das hergeleitete
+// `bottom: 320` — `cappedPadding` reduziert ihn auf die vollen 250px, nicht
+// die hergeleiteten 320. Erst ab einer Fensterhöhe von mindestens 1280px
+// (25 % davon = 320px) greift der volle hergeleitete Wert ungekappt.
 const DERIVED_FRAME_PADDING: PaddingOptions = {
   top: 140,
-  bottom: 528,
+  bottom: 320,
   left: 320,
   right: 368,
 }
