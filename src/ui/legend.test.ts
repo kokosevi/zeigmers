@@ -60,7 +60,7 @@ function options(
  *  Verlust-Swatch), statt einen Teilstring irgendwo in der ganzen Box zu
  *  matchen. */
 function zeilenTexte(): string[] {
-  return [...document.querySelectorAll('#leiste-liste li')].map((li) => li.textContent ?? '')
+  return [...document.querySelectorAll('#leiste-branchen li')].map((li) => li.textContent ?? '')
 }
 
 describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
@@ -97,14 +97,14 @@ describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
     // Anwesenheit ist also kein Rückfall. Geprüft wird, was der Kahlschlag
     // tatsächlich meinte: die Abdeckungsangabe steht hier nicht mehr (sie ist
     // in die Vorbehalte des Leistenfusses gewandert, `ui/notices.ts`).
-    expect(document.getElementById('leiste-liste')!.textContent).not.toContain('kotierten SIX-Titeln')
-    expect(document.getElementById('leiste-liste')!.textContent).not.toContain('Datenjahr')
+    expect(document.getElementById('leiste-branchen')!.textContent).not.toContain('kotierten SIX-Titeln')
+    expect(document.getElementById('leiste-branchen')!.textContent).not.toContain('Datenjahr')
   })
 
   it('nennt keine erklärenden Sätze mehr (Randmarkierung, unrecherchiert, Mindesthöhe, Branchenzahl)', () => {
     const companies = [company({ nogaGroupIndex: 1 })]
     renderLegend(options(companies, 'umsatz'))
-    const text = document.getElementById('leiste-liste')!.textContent!
+    const text = document.getElementById('leiste-branchen')!.textContent!
     expect(text).not.toContain('Balken mit Rand')
     expect(text).not.toContain('noch nicht recherchiert')
     expect(text).not.toContain('Mindesthöhe')
@@ -117,7 +117,7 @@ describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
       company({ nogaGroupIndex: 1, name: 'Kleinfirma AG', revenueChf: 1_000_000 }),
     ]
     renderLegend(options(companies, 'umsatz'))
-    expect(document.getElementById('leiste-liste')!.textContent).not.toContain('Höchste Säule')
+    expect(document.getElementById('leiste-branchen')!.textContent).not.toContain('Höchste Säule')
   })
 
   // Auftraggeber-Korrektur (2026-08-17): der Leerauswahl-Hinweis war zunächst
@@ -127,7 +127,7 @@ describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
   it('sagt es, wenn alle Branchen abgewählt sind', () => {
     const companies = [company({ nogaGroupIndex: 1 })]
     renderLegend(options(companies, 'umsatz', { selectedBranches: new Set() }))
-    expect(document.getElementById('leiste-liste')!.textContent).toContain('Keine Branche ausgewählt')
+    expect(document.getElementById('leiste-branchen')!.textContent).toContain('Keine Branche ausgewählt')
   })
 
   it('zeigt den Leerauswahl-Hinweis nicht, solange mindestens eine Branche gewählt ist', () => {
@@ -136,7 +136,7 @@ describe('renderLegend — Kahlschlag (Auftrag 2026-08-17)', () => {
       company({ nogaGroupIndex: 2 }),
     ]
     renderLegend(options(companies, 'umsatz', { selectedBranches: new Set([1]) }))
-    expect(document.getElementById('leiste-liste')!.textContent).not.toContain('Keine Branche ausgewählt')
+    expect(document.getElementById('leiste-branchen')!.textContent).not.toContain('Keine Branche ausgewählt')
   })
 
   it('zeigt bei Ansicht «Beschäftigte» weiterhin die Titelzeile mit Jahr und Einheit', () => {

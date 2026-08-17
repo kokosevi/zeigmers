@@ -5,12 +5,17 @@ import { presentGroupsFromIndices } from '../domain/legendGroups'
 import type { ScaleMode } from '../domain/scale'
 import { buildMunicipalityBorderLayer } from '../layers/many'
 import { buildViewLayers, kantonRowInfo, type CantonEntry } from '../layers/viewLayers'
-import { renderBackControl } from '../ui/backControl'
+import { renderBreadcrumb } from '../ui/breadcrumb'
 import { showError } from '../ui/error'
 import { hideHoverLabel } from '../ui/hoverLabel'
 import { renderLegend } from '../ui/legend'
 import { renderNotices, type NoticeLevel } from '../ui/notices'
+import { renderMassstab } from '../ui/massstab'
 import { configureCanton, hidePanel, showMunicipalityPanel } from '../ui/panel'
+import { renderRangliste } from '../ui/rangliste'
+import { renderSuche } from '../ui/suche'
+import { renderZoom } from '../ui/zoom'
+import { municipalityName } from '../ui/panel'
 import { createBasis, mountNav } from './basis'
 
 /** Zeigt einen Fehler aus einer fehlgeschlagenen Kanton-Navigation über den
@@ -159,7 +164,87 @@ export async function startBeschaeftigte(): Promise<void> {
     // `'umsatz'`/`true`/`null`/`null` sind hier neutrale Platzhalter, kein
     // Fakt über diese Ansicht.
     renderNotices('beschaeftigte', level, 'umsatz', true, null, null)
-    renderBackControl(level === 'kanton', exitToSwitzerland)
+
+    // Breadcrumb statt Zurück-Knopf (Handoff 1c, Punkt 1): Auf der
+    // Schweiz-Stufe ist «Schweiz» die aktive Stufe und damit kein Ziel; in
+    // einem Kanton wird sie der Weg zurück, und der Kantonsname die aktive
+    // Stufe. Damit sagt der Kopf zusätzlich, wo man steht — das tat der Knopf
+    // nicht.
+    renderBreadcrumb(
+      level === 'kanton' && activeCanton
+        ? [{ name: 'Schweiz', onPick: exitToSwitzerland }, { name: activeCanton.name }]
+        : [{ name: 'Schweiz' }],
+    )
+
+    // Rangliste und Suche arbeiten auf derselben Menge wie die Karte: auf der
+    // Schweiz-Stufe die 26 Kantone, in einem Kanton dessen Gemeinden. Beide
+    // führen in dieselben Funktionen wie ein Klick auf die Fläche — es entsteht
+    // kein zweiter Navigationspfad (`enterCanton` bzw. `showMunicipalityPanel`).
+    if (level === 'kanton' && activeCanton) {
+      const gemeinde = activeCanton.gemeinde
+      const eintraege = [...gemeinde.arrays.values].map((wert, index) => ({
+        id: String(index),
+        name: municipalityName(gemeinde, index) ?? `Zeile ${index}`,
+        wert,
+        nutzlast: index,
+      }))
+      renderRangliste({
+        titel: activeCanton.name,
+        eintraege,
+        onPick: (index) => showMunicipalityPanel(gemeinde, index),
+      })
+      renderSuche({
+        platzhalter: 'Gemeinde suchen',
+        eintraege: eintraege.map((e) => ({ id: e.id, name: e.name, wert: e.nutzlast })),
+        onPick: (index) => showMunicipalityPanel(gemeinde, index),
+      })
+      renderMassstab({
+        werte: [...gemeinde.arrays.values],
+        kleinster: schwaechster(eintraege),
+        groesster: staerkster(eintraege),
+      })
+    } else {
+      const eintraege = [...kantone.arrays.values].map((wert, index) => {
+        const info = kantonRowInfo(kantone, index)
+        return {
+          id: info?.code ?? String(index),
+          name: info?.name ?? `Zeile ${index}`,
+          wert,
+          nutzlast: index,
+        }
+      })
+      renderRangliste({
+        titel: 'Rangliste',
+        eintraege,
+        onPick: (index) => {
+          enterCanton(index).catch(reportNavigationError('Kanton konnte nicht geladen werden'))
+        },
+      })
+      renderSuche({
+        platzhalter: 'Kanton oder Gemeinde',
+        eintraege: eintraege.map((e) => ({ id: e.id, name: e.name, wert: e.nutzlast })),
+        onPick: (index) => {
+          enterCanton(index).catch(reportNavigationError('Kanton konnte nicht geladen werden'))
+        },
+      })
+      renderMassstab({
+        werte: [...kantone.arrays.values],
+        kleinster: schwaechster(eintraege),
+        groesster: staerkster(eintraege),
+      })
+    }
+  }
+
+  /** Name des kleinsten bzw. grössten Eintrags — für den Satz im Massstab.
+   *  Beide ignorieren Nullwerte: eine Gemeinde ohne Beschäftigte ist kein
+   *  sinnvoller Endpunkt eines Verhältnisses. */
+  function schwaechster(eintraege: readonly { name: string; wert: number }[]): string {
+    const mit = eintraege.filter((e) => e.wert > 0)
+    return mit.reduce((a, b) => (b.wert < a.wert ? b : a), mit[0] ?? { name: '–', wert: 0 }).name
+  }
+  function staerkster(eintraege: readonly { name: string; wert: number }[]): string {
+    return eintraege.reduce((a, b) => (b.wert > a.wert ? b : a), eintraege[0] ?? { name: '–', wert: 0 })
+      .name
   }
 
   /** Betritt den Kanton der angeklickten Zeile der Schweiz-Stufe: schwenkt die
@@ -202,6 +287,14 @@ export async function startBeschaeftigte(): Promise<void> {
       mode = newMode
       render()
     },
+  })
+
+  // Zoom-Gruppe: dieselben drei Knöpfe wie auf der Firmenseite, einmal
+  // verdrahtet — sie hängen an keinem Zustand dieser Seite.
+  renderZoom({
+    onZoomIn: () => handle.zoomIn(),
+    onZoomOut: () => handle.zoomOut(),
+    onResetNorth: () => handle.resetNorth(),
   })
 
   // Auftrag: „Escape should do it too" — derselbe Weg zurück wie der

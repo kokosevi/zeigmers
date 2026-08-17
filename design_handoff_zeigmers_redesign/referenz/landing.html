@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>zeigmers — Die Schweizer Wirtschaft als 3D-Karte</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23F7F8F9'/%3E%3Crect x='6' y='18' width='5' height='8' fill='%2314202B'/%3E%3Crect x='13.5' y='9' width='5' height='17' fill='%2314202B'/%3E%3Crect x='21' y='14' width='5' height='12' fill='%2314202B'/%3E%3C/svg%3E"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="de_CH" />
+    <meta property="og:site_name" content="zeigmers" />
+    <meta
+      name="description"
+      content="Die Schweizer Wirtschaft als 3D-Karte: die an der SIX kotierten Gesellschaften nach Umsatz, und die Beschäftigten aller 26 Kantone nach Arbeitsort."
+    />
+    <meta property="og:title" content="zeigmers — Die Schweizer Wirtschaft als 3D-Karte" />
+    <meta
+      property="og:description"
+      content="Zwei Ansichten derselben Fläche: die sichtbaren börsennotierten Firmen, und die Arbeit, die tatsächlich stattfindet."
+    />
+    <!-- Für die Referenz von Google Fonts; in der Umsetzung selbst hosten
+         (siehe README, Abschnitt Schriften) — Space Grotesk 500/700,
+         IBM Plex Mono 400. -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="landing.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>zeigmers</h1>
+        <span class="ort">Schweiz · 3D</span>
+      </header>
+
+      <nav class="kacheln" aria-label="Karten">
+        <a class="kachel" href="/firmen/">
+          <div class="kopf"><span>01</span><span>SIX Swiss Exchange</span></div>
+          <div class="grafik grafik-firmen">
+            <img src="grafik/firmen-ink.svg" alt="" width="1007" height="493" />
+            <img class="invers" src="grafik/firmen-paper.svg" alt="" width="1007" height="493" />
+          </div>
+          <div class="fuss fuss-breit">
+            <h2>Börsennotierte Firmen</h2>
+            <span class="zahl">201</span>
+          </div>
+        </a>
+
+        <a class="kachel" href="/beschaeftigte/">
+          <div class="kopf"><span>02</span><span>BFS STATENT 2023</span></div>
+          <div class="grafik grafik-kantone">
+            <img src="grafik/kantone-ink.svg" alt="" width="1007" height="493" />
+            <img class="invers" src="grafik/kantone-paper.svg" alt="" width="1007" height="493" />
+          </div>
+          <div class="fuss">
+            <h2>Beschäftigte</h2>
+            <span class="zahl zahl-klein">5'876'865</span>
+          </div>
+        </a>
+      </nav>
+    </main>
+  </body>
+</html>

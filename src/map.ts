@@ -54,97 +54,41 @@ export const INITIAL_VIEW = {
   bearing: -15,
 }
 
-// Kamera-Padding für `frameBounds`, je Seite einzeln (Pixel) — hergeleitet
-// aus der tatsächlichen UI-Chrome in `style.css`, nicht mehr ein einzelner,
-// von Hand gewählter Wert für alle vier Seiten (siehe Bericht Aufgabe 17).
-// Zeilenhöhe, wo `style.css` kein eigenes `line-height` setzt: angenommener
-// Browser-Normalwert ≈ 1,2 × Schriftgrösse (gängige Faustregel für
-// serifenlose Systemschriften, exakter Wert erst im Browser messbar).
+// Padding je Seite für die Kamera-Rahmung, hergeleitet aus der tatsächlichen
+// Oberfläche — nicht von Hand gewählt.
 //
-// oben (140px = 1rem + 6,75rem + 1rem): #steuerung (Marke + zwei
-// `.gruppe`-Zeilen) wird nicht neu vermessen, sondern von `#zurueck-gruppe`s
-// eigenem `top: 7.75rem` übernommen (= 1rem Randabstand + 6,75rem Höhe von
-// #steuerung selbst) — dessen Kommentar in `style.css` bezeichnet diese
-// 7.75rem selbst als «unverifiziert»; dieselbe geerbte Unsicherheit gilt
-// deshalb auch für die 6,75rem hier, ungeglättet, bis Aufgabe 18 sie am
-// Screenshot prüft. #kennzahlen bleibt mit ein bis zwei Zeilen (Padding
-// 2×.5rem=1rem + Zeilenhöhe 2×1,4×.8125rem=2,275rem + 2×1px Rand ≈ 3,4rem
-// Boxhöhe) deutlich darunter — #steuerung bestimmt die Seite so oder so.
-// +1rem Sicherheitsabstand (derselbe Randabstand, den jede Box in diesem
-// Stylesheet vom Viewport-Rand hat) ergibt 1rem+6,75rem+1rem=8,75rem.
+// Diese Herleitung ist mit dem Redesign vom 17. August 2026 vollständig neu:
+// Vorher vermass sie sechs Boxen an fünf Rändern (`#steuerung`, `#kennzahlen`,
+// `#legende`, `#hinweis`, `#panel`, plus MapLibres `NavigationControl`), und
+// die untere Seite war mit 320px die grösste — die Legende trug damals zwölf
+// Branchenzeilen mit Zahlen. Es gibt jetzt drei Flächen mit festen Massen aus
+// dem Entwurf, was die Rechnung kurz macht:
 //
-// links (320px = 1rem + 18rem + 1rem): #legende (`max-width: 18rem`) ist
-// breiter als die Button-Reihen von #steuerung und bestimmt die Seite.
-// Randabstand 1rem + Breite 18rem + 1rem Sicherheitsabstand = 20rem.
+//   links  20px Randabstand + 264px Leiste + 20px Luft = 304px
+//   rechts 20px Randabstand + 296px Panel  + 20px Luft = 336px
+//   unten  22px Randabstand + 99px Zoom-Gruppe (3×32px + 2×1px Trennlinie
+//          + 2×1,5px Rahmen) + 20px Luft ≈ 141px; der Massstab auf
+//          `/beschaeftigte/` (links 308px, unten 22px) ist niedriger und
+//          liegt ohnehin hinter der Leisten-Spalte, er bestimmt nichts.
+//   oben   20px Randabstand + 20px Luft = 40px — rechts der Leiste steht dort
+//          seit dem Redesign nichts mehr (die Summenzeile oben mittig und das
+//          NavigationControl oben rechts sind beide entfallen).
 //
-// rechts (368px = 1rem + 21rem + 1rem): #panel (`max-width: 21rem`) ist
-// breiter als #hinweis (16rem) und bestimmt die Seite. Randabstand 1rem +
-// Breite 21rem + 1rem Sicherheitsabstand = 23rem.
+// Die Leiste spannt zwar die ganze Höhe (`top: 20px; bottom: 20px`), zählt
+// aber nur für `left`: sie deckt eine Spalte ab, keinen waagrechten Streifen.
 //
-// unten (320px ≈ 1rem + 18rem + 1rem): #legende bestimmt die Seite weiterhin
-// — aber neu hergeleitet, seit der Kahlschlag vom 2026-08-17 (`ui/legend.ts`)
-// Titelzeile, Zahlen je Branche, «nur diese»-Griffe und die drei
-// Hinweissätze aus Ansicht «Börsennotierte Firmen» entfernt hat. Die dort
-// jetzt dichteste Kombination (Kennzahl Gewinn, mindestens eine Verlustfirma
-// in der Auswahl):
-//   - `.legende-alle`-Knopf: 12px Zeile + 2×.3rem Padding + .5rem Marge = 29,6px
-//   - Branchenliste: bis zu 12 Zeilen (elf NOGA-Gruppen + „nicht eindeutig
-//     bestimmbar" bei `presentGroups.hasUnknown`) × 13,2px (11px×1,2, dieselbe
-//     Zeilenhöhen-Faustregel wie in den drei anderen Seiten oben) + 11×.25rem
-//     Gap + .55rem Listen-Marge = 211,2px — Branchennamen sind jetzt einzelne
-//     Wörter/kurze Phrasen («Handel», „Verkehr und Logistik", längstes Label
-//     „Öffentlich, Bildung, Gesundheit" bei 32 Zeichen), keiner davon bricht
-//     bei 18rem Boxbreite um, anders als die vormaligen ganzen Sätze.
-//   - zweite Liste, nur mit Verlust in der Auswahl (`lossSwatch` in
-//     `ui/legend.ts`): eine einzelne Zeile «Verlust» × 13,2px + .55rem
-//     Listen-Marge = 22px. Alternative statt einer Verlustzeile: die
-//     Leerauswahl-Zeile «Keine Branche ausgewählt — …» (`.legende-leer`,
-//     13,2px + .35rem Marge ≈ 18,8px) — beide schliessen sich gegenseitig aus
-//     (eine leere Auswahl kann keine Verlustfirma enthalten), die grössere
-//     der beiden (22px) zählt als Worst Case.
-// Summe Innenhalt 29,6 + 211,2 + 22 = 262,8px + 2×.75rem Boxpadding + 2×1px
-// Rand ≈ 288,8px ≈ 18,05rem, aufgerundet auf volle 18rem (dieselbe
-// Rundungskonvention wie oben bei den anderen drei Seiten: auf den
-// nächstliegenden ganzen rem). + 1rem Randabstand + 1rem Sicherheitsabstand
-// = 20rem = 320px.
-//
-// #hinweis zählt hier NICHT mit, obwohl die Eckbox seit demselben Auftrag
-// selbst bis zu elf Absätze tragen kann (`ui/notices.ts`, `renderNotices`,
-// inklusive der fünf aus der Legende umgezogenen Zeilen) — Grund ist die
-// Zuklappbarkeit, die derselbe Auftrag ihr gegeben hat: die erste Rahmung
-// (`instant: true`, siehe `frameBounds` unten) läuft beim Seitenaufbau, bevor
-// irgendjemand den Info-Umschalter angeklickt haben kann, also im
-// EINGEKLAPPTEN Startzustand — dort ist `#hinweis` nur der runde Umschalter
-// selbst (`.hinweis-umschalter`, 1,375rem ≈ 22px), keine Textbox. Massgeblich
-// für die Rahmung ist der Zustand, in dem die Seite tatsächlich startet, nicht
-// der grösstmögliche erreichbare Zustand nach einer Nutzerinteraktion — genau
-// wie `top`/`left`/`right` oben ebenfalls den Startzustand ihrer jeweiligen
-// Box vermessen, nicht deren grösstmögliche spätere Ausdehnung. #legende
-// bleibt damit unverändert die für „unten" bestimmende Box, jetzt aber mit
-// deutlich grösserem Abstand zu #hinweis als vor diesem Auftrag (zuvor
-// „ähnlich raumgreifend").
-//
-// Dieser Rohwert bleibt unverändert stehen — er sagt, woher die Zahlen
-// kommen. Er wird aber NICHT direkt an `fitBounds`/`cameraForBounds`
-// weitergereicht, siehe `cappedPadding` unten: das Modell hinter dieser
-// Herleitung (Padding = volle Höhe/Breite der Chrome-Box) geht davon aus,
-// die Chrome schneide die Karte am Rand ab wie ein echter Rahmen. Das
-// stimmt nicht — #legende/#hinweis/#panel/#steuerung/#kennzahlen liegen mit
-// `z-index` ÜBER dem Kartencanvas (siehe `#ui`/`#map` in `style.css`), nicht
-// daneben; sie sind zudem halbtransparent (`--oberflaeche`,
-// `rgba(255,255,255,.84)`). Es genügt, dass die Landesfläche nicht
-// vollständig hinter einer Box verschwindet — nicht, dass die gerahmte
-// Fläche jede Chrome-Box vollständig meidet. Selbst bei den hier für
-// Screenshots verwendeten 1600×1000 Fenstern (siehe Aufgabe 18) greift die
-// Kappung bereits: 25 % von 1000px sind 250px, weniger als das hergeleitete
-// `bottom: 320` — `cappedPadding` reduziert ihn auf die vollen 250px, nicht
-// die hergeleiteten 320. Erst ab einer Fensterhöhe von mindestens 1280px
-// (25 % davon = 320px) greift der volle hergeleitete Wert ungekappt.
+// Dieser Rohwert wird NICHT direkt weitergereicht, siehe `cappedPadding`
+// unten: das Modell hinter jeder solchen Herleitung (Padding = volle Breite der
+// Chrome) nimmt an, die Oberfläche schneide die Karte ab wie ein Rahmen. Das
+// stimmt nicht — Leiste, Panel und Zoom-Gruppe liegen mit `z-index` ÜBER dem
+// Kartencanvas (siehe `#ui`/`#map` in `style.css`), nicht daneben. Es genügt,
+// dass die Landesfläche nicht hinter einer Fläche verschwindet, nicht dass die
+// gerahmte Fläche jede von ihnen meidet.
 const DERIVED_FRAME_PADDING: PaddingOptions = {
-  top: 140,
-  bottom: 320,
-  left: 320,
-  right: 368,
+  top: 40,
+  bottom: 141,
+  left: 304,
+  right: 336,
 }
 
 // Obergrenze je Seite: höchstens ein Viertel der zugehörigen Fenstergrösse

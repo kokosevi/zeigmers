@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#E4E7EB; font-family:'Space Grotesk',"Helvetica Neue",system-ui,sans-serif; color:#14202B; -webkit-font-smoothing:antialiased; }
+  a { color:#14202B; }
+  a:hover { color:#0072B2; }
+</style>
+</helmet>
+
+<section style="display:flex; flex-direction:column; gap:40px; padding:72px 72px 40px;">
+  <div style="display:flex; align-items:baseline; gap:16px; border-bottom:2px solid #14202B; padding-bottom:14px;">
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase;">Runde 3</span>
+    <span style="font-size:20px; font-weight:500; letter-spacing:-.02em;">Landingpage, gebaut auf 2a</span>
+    <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5A6B7C;">beide Kacheln zeigen, was einen Klick später kommt</span>
+  </div>
+
+  <div id="3a" style="display:flex; flex-direction:column; gap:18px; width:1280px;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">3a</span>
+      <span style="font-size:15px; font-weight:500;">Landingpage — Säulenfeld und Kantonskarte</span>
+    </div>
+
+    <div style="width:1280px; height:820px; background:#F7F8F9; border:2px solid #14202B; display:flex; flex-direction:column;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; padding:34px 44px 26px; border-bottom:2px solid #14202B;">
+        <span style="font-size:30px; font-weight:700; letter-spacing:-.045em;">zeigmers</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Schweiz · 3D</span>
+      </div>
+
+      <div style="flex:1; display:grid; grid-template-columns:7fr 5fr; min-height:0;">
+        <a href="#1b" style="display:flex; flex-direction:column; padding:40px 44px 38px; border-right:2px solid #14202B; color:#14202B; text-decoration:none; background:#F7F8F9;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;">
+            <span>01</span><span>SIX Swiss Exchange</span>
+          </div>
+          <div style="position:relative; width:100%; aspect-ratio:2.5; margin-top:38px;">
+            <sc-for list="{{ iso }}" as="i" hint-placeholder-count="3">
+              <div style="{{ i.style }}"></div>
+            </sc-for>
+          </div>
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-top:auto;">
+            <span style="font-size:40px; font-weight:500; letter-spacing:-.035em; line-height:1;">Börsennotierte Firmen</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:56px; line-height:.82; letter-spacing:-.04em;">201</span>
+          </div>
+        </a>
+
+        <a href="#1c" style="display:flex; flex-direction:column; padding:40px 44px 38px; color:#14202B; text-decoration:none; background:#F7F8F9 url(kantone-ink.svg) no-repeat 22px 84px; background-size:500px auto;" style-hover="background-color:#14202B; background-image:url(kantone-paper.svg); color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;">
+            <span>02</span><span>BFS STATENT 2023</span>
+          </div>
+          <div style="height:245px; margin-top:38px;"></div>
+          <div style="display:flex; flex-direction:column; gap:14px; margin-top:auto;">
+            <span style="font-size:40px; font-weight:500; letter-spacing:-.035em; line-height:1;">Beschäftigte</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:36px; line-height:1; letter-spacing:-.035em;">5'876'865</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <p style="max-width:1040px; margin:0; font-size:14px; line-height:1.55; color:#3C4A57; text-wrap:pretty;">Beide Kacheln zeigen ihre eigene Unterseite im Kleinen: links die 201 Säulen an ihren echten Koordinaten aus flachem Blickwinkel, rechts die 26 Kantone aus derselben Geometrie wie die Karte selbst (<code style="font-family:'IBM Plex Mono',monospace; font-size:12.5px;">ch_kantone.geojson</code>, auf ~1'650 Punkte vereinfacht), erhoben nach Beschäftigtenzahl — Zürich, Bern, Vaud und Genève tragen sichtbar auf, Appenzell Innerrhoden bleibt flach. Zwei statische SVG, eines je Grundfarbe, zusammen 130 KB: keine Zeile deck.gl auf der Landing, wie bisher.</p>
+  </div>
+</section>
+
+<section style="display:flex; flex-direction:column; gap:40px; padding:32px 72px 40px;">
+  <div style="display:flex; align-items:baseline; gap:16px; border-bottom:2px solid #14202B; padding-bottom:14px;">
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase;">Runde 2</span>
+    <span style="font-size:20px; font-weight:500; letter-spacing:-.02em;">Kachelgrafik — drei Richtungen</span>
+    <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5A6B7C;">gleiche Kachel, gleicher Text, nur die Grafik wechselt</span>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:56px; align-items:flex-start;">
+
+    <div id="2a" style="display:flex; flex-direction:column; gap:16px; width:1040px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">2a</span>
+        <span style="font-size:15px; font-weight:500;">Flacher Blickwinkel — die Kachel ist ein Miniaturausschnitt der Karte</span>
+      </div>
+      <div style="width:1040px; border:2px solid #14202B; background:#F7F8F9; display:grid; grid-template-columns:7fr 5fr;">
+        <a href="#1b" style="display:flex; flex-direction:column; justify-content:space-between; padding:30px 34px 28px; border-right:2px solid #14202B; color:#14202B; text-decoration:none;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;"><span>01</span><span>SIX Swiss Exchange</span></div>
+          <div style="position:relative; width:100%; aspect-ratio:3.1; margin:18px 0;">
+            <sc-for list="{{ iso }}" as="i" hint-placeholder-count="3">
+              <div style="{{ i.style }}"></div>
+            </sc-for>
+          </div>
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;">
+            <span style="font-size:27px; font-weight:500; letter-spacing:-.03em; line-height:1;">Börsennotierte Firmen</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:38px; line-height:.82; letter-spacing:-.04em;">201</span>
+          </div>
+        </a>
+        <a href="#1c" style="display:flex; flex-direction:column; justify-content:space-between; padding:30px 34px 28px; color:#14202B; text-decoration:none;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;"><span>02</span><span>BFS STATENT 2023</span></div>
+          <div style="position:relative; width:100%; aspect-ratio:2.4; margin:18px 0;">
+            <sc-for list="{{ isoPillars }}" as="i" hint-placeholder-count="3">
+              <div style="{{ i.style }}"></div>
+            </sc-for>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <span style="font-size:27px; font-weight:500; letter-spacing:-.03em; line-height:1;">Beschäftigte</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:26px; line-height:1; letter-spacing:-.03em;">5'876'865</span>
+          </div>
+        </a>
+      </div>
+      <p style="max-width:900px; margin:0; font-size:13px; line-height:1.55; color:#3C4A57;">Links die 201 Säulen an ihren echten Koordinaten, aus flachem Blickwinkel — dieselbe Ansicht, die einen Klick später wartet. Rechts dasselbe Prinzip ohne Geografie: 26 Pfeiler in zwei Reihen, einer je Kanton, absteigend.</p>
+    </div>
+
+    <div id="2b" style="display:flex; flex-direction:column; gap:16px; width:1040px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">2b</span>
+        <span style="font-size:15px; font-weight:500;">Raster — jedes Quadrat ein Datensatz, Fläche ist die Grösse</span>
+      </div>
+      <div style="width:1040px; border:2px solid #14202B; background:#F7F8F9; display:grid; grid-template-columns:7fr 5fr;">
+        <a href="#1b" style="display:flex; flex-direction:column; justify-content:space-between; padding:30px 34px 28px; border-right:2px solid #14202B; color:#14202B; text-decoration:none;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;"><span>01</span><span>SIX Swiss Exchange</span></div>
+          <div style="display:grid; grid-template-columns:repeat(21,1fr); gap:3px; place-items:center; margin:22px 0;">
+            <sc-for list="{{ rasterFirmen }}" as="r" hint-placeholder-count="21">
+              <div style="{{ r.style }}"></div>
+            </sc-for>
+          </div>
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;">
+            <span style="font-size:27px; font-weight:500; letter-spacing:-.03em; line-height:1;">Börsennotierte Firmen</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:38px; line-height:.82; letter-spacing:-.04em;">201</span>
+          </div>
+        </a>
+        <a href="#1c" style="display:flex; flex-direction:column; justify-content:space-between; padding:30px 34px 28px; color:#14202B; text-decoration:none;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;"><span>02</span><span>BFS STATENT 2023</span></div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px; place-items:center; margin:22px 0;">
+            <sc-for list="{{ rasterKantone }}" as="r" hint-placeholder-count="7">
+              <div style="{{ r.style }}"></div>
+            </sc-for>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <span style="font-size:27px; font-weight:500; letter-spacing:-.03em; line-height:1;">Beschäftigte</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:26px; line-height:1; letter-spacing:-.03em;">5'876'865</span>
+          </div>
+        </a>
+      </div>
+      <p style="max-width:900px; margin:0; font-size:13px; line-height:1.55; color:#3C4A57;">201 Quadrate, absteigend nach Umsatz — die Konzentration an der Spitze ist die Grafik. Rechts 26 Quadrate, eines je Kanton. Keine Karte, kein Diagramm, ein Inventar.</p>
+    </div>
+
+    <div id="2c" style="display:flex; flex-direction:column; gap:16px; width:1040px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">2c</span>
+        <span style="font-size:15px; font-weight:500;">Typografisch — die Zahl ist die Grafik</span>
+      </div>
+      <div style="width:1040px; border:2px solid #14202B; background:#F7F8F9; display:grid; grid-template-columns:7fr 5fr;">
+        <a href="#1b" style="display:flex; flex-direction:column; justify-content:space-between; padding:30px 34px 28px; border-right:2px solid #14202B; color:#14202B; text-decoration:none; min-height:330px;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;"><span>01</span><span>SIX Swiss Exchange</span></div>
+          <div style="display:flex; align-items:flex-end; gap:16px; margin:12px 0 0;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:148px; line-height:.78; letter-spacing:-.06em;">201</span>
+            <span style="font-size:13px; line-height:1.4; padding-bottom:10px; opacity:.7;">Gesellschaften<br>an ihrem Sitz</span>
+          </div>
+          <div style="border-top:2px solid currentColor; padding-top:14px;">
+            <span style="font-size:27px; font-weight:500; letter-spacing:-.03em;">Börsennotierte Firmen</span>
+          </div>
+        </a>
+        <a href="#1c" style="display:flex; flex-direction:column; justify-content:space-between; padding:30px 34px 28px; color:#14202B; text-decoration:none;" style-hover="background:#14202B; color:#F7F8F9;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.65;"><span>02</span><span>BFS STATENT 2023</span></div>
+          <div style="display:flex; flex-direction:column; margin:12px 0 0;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:54px; line-height:.95; letter-spacing:-.05em;">5'876'865</span>
+            <span style="font-size:13px; line-height:1.4; margin-top:14px; opacity:.7;">Beschäftigte in 26 Kantonen</span>
+          </div>
+          <div style="border-top:2px solid currentColor; padding-top:14px;">
+            <span style="font-size:27px; font-weight:500; letter-spacing:-.03em;">Beschäftigte</span>
+          </div>
+        </a>
+      </div>
+      <p style="max-width:900px; margin:0; font-size:13px; line-height:1.55; color:#3C4A57;">Keine Grafik, sondern eine Zahl in der Grösse einer Grafik. Am schnellsten zu lesen und am leichtesten zu erweitern — dafür sieht man vor dem Klick nicht, dass dahinter eine Karte liegt.</p>
+    </div>
+
+  </div>
+</section>
+
+<section style="display:flex; flex-direction:column; gap:40px; padding:32px 72px 120px;">
+  <div style="display:flex; align-items:baseline; gap:16px; border-bottom:2px solid #14202B; padding-bottom:14px;">
+    <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase;">Runde 1</span>
+    <span style="font-size:20px; font-weight:500; letter-spacing:-.02em;">Landingpage neu, Kartenoberfläche neu</span>
+    <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5A6B7C;">Space Grotesk · IBM Plex Mono · Papier &amp; Tinte</span>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:72px; align-items:flex-start;">
+
+    <!-- ══ 1a Landing ══ -->
+    <div id="1a" style="display:flex; flex-direction:column; gap:18px; width:1280px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">1a</span>
+        <span style="font-size:15px; font-weight:500;">Landingpage — nur Kacheln</span>
+      </div>
+
+      <div style="width:1280px; height:820px; background:#F7F8F9; border:2px solid #14202B; display:flex; flex-direction:column;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; padding:34px 44px 26px; border-bottom:2px solid #14202B;">
+          <span style="font-size:30px; font-weight:700; letter-spacing:-.045em;">zeigmers</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Schweiz · 3D</span>
+        </div>
+
+        <div style="flex:1; display:grid; grid-template-columns:7fr 5fr; min-height:0;">
+          <a href="#1b" style="display:flex; flex-direction:column; justify-content:space-between; padding:40px 44px 38px; border-right:2px solid #14202B; color:#14202B; text-decoration:none; background:#F7F8F9;" style-hover="background:#14202B; color:#F7F8F9;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.6;">
+              <span>01</span><span>SIX Swiss Exchange</span>
+            </div>
+            <div style="position:relative; width:100%; aspect-ratio:1.24; margin:22px 0; color:inherit;">
+              <sc-for list="{{ dots }}" as="d" hint-placeholder-count="3">
+                <div style="{{ d.style }}"></div>
+              </sc-for>
+            </div>
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px;">
+              <span style="font-size:40px; font-weight:500; letter-spacing:-.035em; line-height:1;">Börsennotierte Firmen</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:56px; font-weight:400; line-height:.82; letter-spacing:-.04em;">201</span>
+            </div>
+          </a>
+
+          <a href="#1c" style="display:flex; flex-direction:column; justify-content:space-between; padding:40px 44px 38px; color:#14202B; text-decoration:none; background:#F7F8F9;" style-hover="background:#14202B; color:#F7F8F9;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; opacity:.6;">
+              <span>02</span><span>BFS STATENT 2023</span>
+            </div>
+            <div style="display:flex; align-items:flex-end; gap:3px; height:190px; margin:22px 0; color:inherit;">
+              <sc-for list="{{ bars }}" as="b" hint-placeholder-count="10">
+                <div style="{{ b.style }}"></div>
+              </sc-for>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <span style="font-size:40px; font-weight:500; letter-spacing:-.035em; line-height:1;">Beschäftigte</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:36px; font-weight:400; line-height:1; letter-spacing:-.035em;">5'876'865</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <p style="max-width:960px; margin:0; font-size:14px; line-height:1.55; color:#3C4A57; text-wrap:pretty;">Wortmarke, zwei Kacheln, sonst nichts. Jede Kachel trägt einen Titel, eine Zahl und eine Grafik, die aus den echten Daten gerechnet ist — links die 201 Gesellschaften an ihren tatsächlichen Koordinaten, rechts die 26 Kantone nach Beschäftigten. Beim Überfahren kippt die Kachel auf Tinte. Das Raster nimmt weitere Kacheln auf, ohne dass sich die Seite ändert: aus 7/5 wird bei drei Kacheln 5/4/3, ab vier eine zweite Reihe. Quellen und Vorbehalt stehen nur noch auf den Kartenseiten.</p>
+    </div>
+
+    <!-- ══ 1b Firmen ══ -->
+    <div id="1b" style="display:flex; flex-direction:column; gap:18px; width:1440px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">1b</span>
+        <span style="font-size:15px; font-weight:500;">/firmen/ — eine Leiste statt sechs Boxen</span>
+      </div>
+
+      <div style="position:relative; width:1440px; height:880px; border:2px solid #14202B; background:#E8EDF2; overflow:hidden;">
+        <div style="position:absolute; inset:0; background:radial-gradient(120% 90% at 50% 118%, #DCE3EB 0%, #E8EDF2 55%);"></div>
+        <div style="position:absolute; left:306px; right:344px; top:20px; bottom:20px; background:repeating-linear-gradient(135deg,#DFE6ED 0 12px,#E8EDF2 12px 24px); border:1px dashed #A8B6C6;">
+          <span style="position:absolute; left:16px; bottom:14px; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#5A6B7C; background:#E8EDF2; padding:6px 10px;">Kartenfläche unverändert — Kantone, Seen, Beleuchtung, Kamera (bestehender deck.gl-Layer)</span>
+          <div style="position:absolute; left:30px; right:54px; top:340px; height:296px;">
+          <div style="position:relative; width:100%; height:100%;">
+            <sc-for list="{{ bases }}" as="b" hint-placeholder-count="3">
+              <div style="{{ b.style }}"></div>
+            </sc-for>
+            <sc-for list="{{ columns }}" as="c" hint-placeholder-count="3">
+              <div style="{{ c.style }}"></div>
+            </sc-for>
+          </div>
+          </div>
+        </div>
+
+        <!-- Leiste -->
+        <div style="position:absolute; left:20px; top:20px; bottom:20px; width:264px; background:#F7F8F9; border:1.5px solid #14202B; display:flex; flex-direction:column;">
+          <div style="padding:16px 18px 14px; border-bottom:1.5px solid #14202B;">
+            <a href="#1a" style="font-size:19px; font-weight:700; letter-spacing:-.04em; text-decoration:none; color:#14202B;">zeigmers</a>
+            <div style="margin-top:2px; font-size:13px; color:#5A6B7C;">Börsennotierte Firmen</div>
+          </div>
+
+          <div style="padding:14px 18px 0;">
+            <div style="display:flex; align-items:center; gap:8px; border:1.5px solid #14202B; padding:8px 10px; background:#fff;">
+              <span style="width:9px; height:9px; border:1.5px solid #14202B; border-radius:50%; flex:none;"></span>
+              <span style="font-size:12.5px; color:#5A6B7C;">Firma suchen</span>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5A6B7C;">⌘K</span>
+            </div>
+          </div>
+
+          <div style="padding:18px 18px 0; display:flex; flex-direction:column; gap:7px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Kennzahl</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; border:1.5px solid #14202B;">
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; background:#14202B; color:#F7F8F9;">Umsatz</div>
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; border-left:1px solid #C6D0DA; color:#3C4A57;">Personal</div>
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; border-left:1px solid #C6D0DA; color:#3C4A57;">Gewinn</div>
+            </div>
+          </div>
+
+          <div style="padding:16px 18px 0; display:flex; flex-direction:column; gap:7px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Höhe</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr; border:1.5px solid #14202B;">
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; background:#14202B; color:#F7F8F9;">gedämpft</div>
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; border-left:1px solid #C6D0DA; color:#3C4A57;">linear</div>
+            </div>
+            <div style="font-size:11px; line-height:1.4; color:#5A6B7C;">Gedämpft, sonst wären 153 von 187 Säulen gleich flach.</div>
+          </div>
+
+          <div style="padding:16px 18px 0; display:flex; flex-direction:column; gap:8px; min-height:0; flex:1;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Branchen</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:#14202B; border-bottom:1px solid #14202B;">alle</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <sc-for list="{{ branches }}" as="b" hint-placeholder-count="8">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="{{ b.dot }}"></span>
+                  <span style="font-size:11.5px; color:#3C4A57; line-height:1.25;">{{ b.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-top:auto; padding:14px 18px; border-top:1.5px solid #14202B; display:flex; flex-direction:column; gap:6px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:19px; letter-spacing:-.02em;">762.1 Mrd. CHF</div>
+            <div style="font-size:11px; line-height:1.4; color:#5A6B7C;">Summe der Auswahl · aus 187 Angaben</div>
+            <div style="font-size:11px; line-height:1.45; color:#5A6B7C; border-top:1px solid #D5DDE5; padding-top:8px;">201 von 224 kotierten SIX-Titeln · Umsatz in CHF umgerechnet · kein amtliches Statistikprodukt</div>
+          </div>
+        </div>
+
+        <!-- Panel -->
+        <div style="position:absolute; right:20px; top:20px; width:296px; background:#F7F8F9; border:1.5px solid #14202B;">
+          <div style="padding:14px 16px 12px; border-bottom:1.5px solid #14202B;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+              <span style="font-size:17px; font-weight:500; letter-spacing:-.02em;">NESTLÉ S.A.</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5A6B7C;">NESN</span>
+            </div>
+            <div style="margin-top:3px; font-size:11.5px; color:#5A6B7C;">Vevey VD · gegründet 1866 · Geschäftsjahr 2025</div>
+          </div>
+          <div style="padding:14px 16px 0; display:flex; flex-direction:column; gap:11px;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;">
+              <span style="font-size:11.5px; color:#5A6B7C;">Jahresumsatz</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:17px;">89.49 Mrd.</span>
+            </div>
+            
+            <div style="font-size:11px; color:#5A6B7C;">Rang 1 von 187 · 11.7 % des Gesamtumsatzes aller kotierten Gesellschaften</div>
+          </div>
+          <div style="padding:14px 16px; display:grid; grid-template-columns:1fr 1fr; gap:12px 10px;">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <span style="font-size:11px; color:#5A6B7C;">Reingewinn</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:13.5px;">9.03 Mrd.</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <span style="font-size:11px; color:#5A6B7C;">Mitarbeitende</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:13.5px;">271'000</span>
+            </div>
+          </div>
+          <div style="padding:0 16px 14px; display:flex; flex-direction:column; gap:8px;">
+            <div style="display:flex; align-items:center; gap:7px;">
+              <span style="width:9px; height:9px; border-radius:50%; background:#0072B2; flex:none;"></span>
+              <span style="font-size:11.5px; color:#3C4A57;">Industrie und Energie</span>
+            </div>
+            <p style="margin:0; font-size:11.5px; line-height:1.5; color:#3C4A57;">Nahrungsmittel und Getränke, Ernährungs- und Gesundheitsprodukte, Heimtiernahrung.</p>
+          </div>
+          <div style="padding:11px 16px; border-top:1px solid #D5DDE5; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; border-bottom:1px solid #14202B;">Geschäftsbericht</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5A6B7C;">CHE-105.909.036</span>
+          </div>
+        </div>
+
+        <div style="position:absolute; right:20px; bottom:22px; display:flex; flex-direction:column; border:1.5px solid #14202B; background:#F7F8F9;">
+          <div style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:15px; border-bottom:1px solid #D5DDE5;">+</div>
+          <div style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:15px; border-bottom:1px solid #D5DDE5;">−</div>
+          <div style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:10px;">N</div>
+        </div>
+
+        <sc-if value="{{ zeigeMarken }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="position:absolute; left:274px; top:44px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">1</div>
+            <div style="position:absolute; left:274px; top:96px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">2</div>
+            <div style="position:absolute; left:274px; top:330px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">3</div>
+            <div style="position:absolute; left:274px; top:216px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">4</div>
+            <div style="position:absolute; right:328px; top:24px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">5</div>
+            <div style="position:absolute; left:274px; bottom:96px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">6</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 40px; max-width:1440px; font-size:13px; line-height:1.5; color:#3C4A57;">
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">1</span><span><strong style="font-weight:500;">Eine Leiste statt sechs Boxen.</strong> Steuerung, Legende und Summenzeile lagen an drei Rändern verteilt. Jetzt eine Spalte links, die Karte behält den Rest.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">2</span><span><strong style="font-weight:500;">Suche.</strong> Eine von 201 Säulen ist heute nur durch Zoomen zu finden. Name eintippen, die Kamera fliegt hin, die Säule bleibt markiert.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">3</span><span><strong style="font-weight:500;">Branchen bleiben ruhig.</strong> Farbe, Name, an/aus — ohne Zahlen, wie am 17.08. entschieden. Neu nur die Position: dort, wo auch gefiltert wird.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">4</span><span><strong style="font-weight:500;">Höhe erklärt sich selbst.</strong> «gedämpft/linear» statt «logarithmisch/linear», mit einer Zeile darunter, warum gedämpft der Startwert ist — kein zusätzlicher Massstab auf der Karte.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">5</span><span><strong style="font-weight:500;">Panel mit Hierarchie.</strong> Gleiche Inhalte wie heute, aber Umsatz gross, Anteil als Balken, Rest als Raster. Der Anteilsbalken ist neu.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">6</span><span><strong style="font-weight:500;">Vorbehalte offen.</strong> Abdeckung, Währung und Disclaimer stehen am Fuss der Leiste statt hinter einem ⓘ. Die Organisationsform-Gruppe entfällt — ein Wert, der nichts filtert.</span></div>
+      </div>
+    </div>
+
+    <!-- ══ 1c Beschäftigte ══ -->
+    <div id="1c" style="display:flex; flex-direction:column; gap:18px; width:1440px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:500; background:#14202B; color:#F7F8F9; padding:3px 8px; letter-spacing:.06em;">1c</span>
+        <span style="font-size:15px; font-weight:500;">/beschaeftigte/ — Pfad und Rangliste</span>
+      </div>
+
+      <div style="position:relative; width:1440px; height:880px; border:2px solid #14202B; background:#E8EDF2; overflow:hidden;">
+        <div style="position:absolute; left:300px; right:20px; top:20px; bottom:20px; background:repeating-linear-gradient(135deg,#DFE6ED 0 12px,#E8EDF2 12px 24px); border:1px dashed #A8B6C6; display:flex; align-items:center; justify-content:center;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.12em; text-transform:uppercase; color:#5A6B7C; background:#E8EDF2; padding:8px 14px;">Kartenfläche unverändert — extrudierte Kantone bzw. Gemeinden, bestehender deck.gl-Layer</span>
+        </div>
+
+        <div style="position:absolute; left:20px; top:20px; bottom:20px; width:264px; background:#F7F8F9; border:1.5px solid #14202B; display:flex; flex-direction:column;">
+          <div style="padding:16px 18px 14px; border-bottom:1.5px solid #14202B;">
+            <a href="#1a" style="font-size:19px; font-weight:700; letter-spacing:-.04em; text-decoration:none; color:#14202B;">zeigmers</a>
+            <div style="margin-top:4px; display:flex; align-items:center; gap:5px; font-size:12.5px; color:#5A6B7C;">
+              <span style="border-bottom:1px solid #A8B6C6;">Schweiz</span>
+              <span style="color:#5A6B7C;">›</span>
+              <span style="color:#14202B;">Zürich</span>
+            </div>
+          </div>
+
+          <div style="padding:14px 18px 0;">
+            <div style="display:flex; align-items:center; gap:8px; border:1.5px solid #14202B; padding:8px 10px; background:#fff;">
+              <span style="width:9px; height:9px; border:1.5px solid #14202B; border-radius:50%; flex:none;"></span>
+              <span style="font-size:12.5px; color:#5A6B7C;">Kanton oder Gemeinde</span>
+            </div>
+          </div>
+
+          <div style="padding:16px 18px 0; display:flex; flex-direction:column; gap:7px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Höhe</span>
+            <div style="display:grid; grid-template-columns:1fr 1fr; border:1.5px solid #14202B;">
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; background:#14202B; color:#F7F8F9;">gedämpft</div>
+              <div style="padding:7px 4px; text-align:center; font-size:11.5px; border-left:1px solid #C6D0DA; color:#3C4A57;">linear</div>
+            </div>
+          </div>
+
+          <div style="padding:16px 18px 0; display:flex; flex-direction:column; gap:9px; min-height:0;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:#5A6B7C;">Rangliste</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:#14202B; border-bottom:1px solid #14202B;">alle 26</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <sc-for list="{{ rangliste }}" as="k" hint-placeholder-count="9">
+                <div style="display:flex; flex-direction:column; gap:3px;">
+                  <div style="display:flex; align-items:baseline; justify-content:space-between; gap:8px;">
+                    <span style="font-size:11.5px; color:#3C4A57;">{{ k.name }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#14202B;">{{ k.value }}</span>
+                  </div>
+                  <div style="{{ k.bar }}"></div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="margin-top:auto; padding:14px 18px; border-top:1.5px solid #14202B; display:flex; flex-direction:column; gap:6px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:19px; letter-spacing:-.02em;">5'876'865</div>
+            <div style="font-size:11px; line-height:1.4; color:#5A6B7C;">Beschäftigte am Arbeitsort · 26 Kantone</div>
+            <div style="font-size:11px; line-height:1.45; color:#5A6B7C; border-top:1px solid #D5DDE5; padding-top:8px;">BFS STATENT 2023 · Obergrenze: kleine Betriebe werden auf 4 Beschäftigte aufgerundet</div>
+          </div>
+        </div>
+
+        
+
+        <div style="position:absolute; right:20px; top:20px; width:296px; background:#F7F8F9; border:1.5px solid #14202B;">
+          <div style="padding:14px 16px 12px; border-bottom:1.5px solid #14202B;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+              <span style="font-size:17px; font-weight:500; letter-spacing:-.02em;">Zürich</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5A6B7C;">ZH · 160 Gemeinden</span>
+            </div>
+          </div>
+          <div style="padding:14px 16px 0; display:flex; flex-direction:column; gap:11px;">
+            <div style="display:flex; align-items:baseline; justify-content:space-between;">
+              <span style="font-size:11.5px; color:#5A6B7C;">Beschäftigte</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:17px;">1'167'319</span>
+            </div>
+            
+            <div style="font-size:11px; color:#5A6B7C;">19.9 % aller Beschäftigten der Schweiz · Rang 1 von 26</div>
+          </div>
+          <div style="padding:14px 16px; display:grid; grid-template-columns:1fr 1fr; gap:12px 10px;">
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <span style="font-size:11px; color:#5A6B7C;">Einwohner</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:13.5px;">1'620'020</span>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <span style="font-size:11px; color:#5A6B7C;">je Einwohner</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:13.5px;">0.72</span>
+            </div>
+          </div>
+          <div style="padding:0 16px 14px; display:flex; flex-direction:column; gap:8px;">
+            <span style="font-size:11px; color:#5A6B7C;">Stärkste Branchen</span>
+            <sc-for list="{{ zhBranchen }}" as="b" hint-placeholder-count="3">
+              <div style="display:flex; align-items:center; gap:7px;">
+                <span style="{{ b.dot }}"></span>
+                <span style="font-size:11.5px; color:#3C4A57;">{{ b.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:11px 16px; border-top:1px solid #D5DDE5; display:flex; align-items:center; justify-content:space-between;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; border-bottom:1px solid #14202B;">Gemeinden zeigen</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5A6B7C;">↵</span>
+          </div>
+        </div>
+
+        <sc-if value="{{ zeigeMarken }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="position:absolute; left:274px; top:78px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">1</div>
+            <div style="position:absolute; left:274px; top:296px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">2</div>
+            <div style="position:absolute; right:328px; top:190px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">3</div>
+            <div style="position:absolute; right:328px; top:232px; width:22px; height:22px; border-radius:50%; background:#14202B; color:#F7F8F9; font-family:'IBM Plex Mono',monospace; font-size:11px; display:flex; align-items:center; justify-content:center;">4</div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px 40px; max-width:1440px; font-size:13px; line-height:1.5; color:#3C4A57;">
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">1</span><span><strong style="font-weight:500;">Pfad statt Zurück-Knopf.</strong> Schweiz › Zürich › Gemeinde zeigt jederzeit, auf welcher Stufe man steht, und lässt jede Stufe direkt anspringen.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">2</span><span><strong style="font-weight:500;">Rangliste in der Leiste.</strong> Echte Zahlen, sortiert, klickbar — die Karte wird lesbar, ohne dass man sie drehen muss. Hover hebt den Kanton hervor.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">3</span><span><strong style="font-weight:500;">Gleiches Panel wie bei den Firmen.</strong> Anteil als Balken, Rang, Einwohnerbezug. Zwei Seiten, eine Sprache.</span></div>
+        <div style="display:flex; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; color:#14202B;">4</span><span><strong style="font-weight:500;">Eintritt in den Kanton als Aktion,</strong> nicht als beiläufiger Klick auf die Fläche — sichtbar am Fuss des Panels.</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;zeigeMarken&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Darstellung&quot;}}">
+class Component extends DCLogic {
+  state = { pts: null }
+
+  componentDidMount() {
+    fetch('glyph.json')
+      .then((r) => r.json())
+      .then((d) => this.setState({ pts: d.companies }))
+      .catch(() => this.setState({ pts: [] }))
+  }
+
+  renderVals() {
+    const NOGA = [
+      ['Land- und Forstwirtschaft', '#009E73'],
+      ['Industrie und Energie', '#0072B2'],
+      ['Bau', '#E69F00'],
+      ['Handel', '#D55E00'],
+      ['Verkehr und Logistik', '#56B4E9'],
+      ['Gastgewerbe', '#CC79A7'],
+      ['Information und Kommunikation', '#F0E442'],
+      ['Finanz und Versicherung', '#004949'],
+      ['Unternehmensdienstleistungen', '#DDCC77'],
+      ['Öffentlich, Bildung, Gesundheit', '#490092'],
+      ['Übrige', '#000000'],
+    ]
+    const CANTONS = [
+      ['ZH', 'Zürich', 1167319], ['BE', 'Bern', 704018], ['VD', 'Vaud', 516416],
+      ['GE', 'Genève', 400499], ['AG', 'Aargau', 383203], ['SG', 'St. Gallen', 334907],
+      ['LU', 'Luzern', 285583], ['TI', 'Ticino', 262915], ['VS', 'Valais', 212062],
+      ['BS', 'Basel-Stadt', 196257], ['FR', 'Fribourg', 179771], ['BL', 'Basel-Landschaft', 166969],
+      ['SO', 'Solothurn', 161144], ['TG', 'Thurgau', 158604], ['GR', 'Graubünden', 149193],
+      ['ZG', 'Zug', 134078], ['NE', 'Neuchâtel', 119434], ['SZ', 'Schwyz', 97291],
+      ['JU', 'Jura', 56370], ['SH', 'Schaffhausen', 50781], ['AR', 'Appenzell A.Rh.', 31010],
+      ['NW', 'Nidwalden', 26866], ['OW', 'Obwalden', 25467], ['GL', 'Glarus', 24724],
+      ['UR', 'Uri', 21183], ['AI', 'Appenzell I.Rh.', 10801],
+    ]
+    const swiss = (n) => Math.round(n).toLocaleString('de-CH').replace(/[\u2019\u00a0\s]/g, "'")
+
+    const LON0 = 5.9, LON1 = 9.8, LAT0 = 45.7, LAT1 = 47.9
+    const project = (lon, lat) => [
+      ((lon - LON0) / (LON1 - LON0)) * 100,
+      ((LAT1 - lat) / (LAT1 - LAT0)) * 100,
+    ]
+    const pts = this.state.pts || []
+    const MAXR = 89490000000
+
+    const dots = pts.map(([lon, lat, r]) => {
+      const [x, y] = project(lon, lat)
+      const s = +(Math.pow((r || 0) / MAXR, 0.34) * 13 + 2.6).toFixed(1)
+      const o = (0.3 + Math.min(0.55, s / 18)).toFixed(2)
+      return {
+        style: `position:absolute;left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:${s}px;height:${s}px;margin:${(-s / 2).toFixed(1)}px 0 0 ${(-s / 2).toFixed(1)}px;border-radius:50%;background:currentColor;opacity:${o}`,
+      }
+    })
+
+    const bases = pts.map(([lon, lat]) => {
+      const [x, y] = project(lon, lat)
+      return {
+        style: `position:absolute;left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:9px;height:3.5px;margin:-1.75px 0 0 -4.5px;border-radius:50%;background:rgba(20,32,43,.24)`,
+      }
+    })
+
+    const columns = [...pts].sort((a, b) => b[1] - a[1]).map(([lon, lat, r, g]) => {
+      const [x, y] = project(lon, lat)
+      const h = Math.max(4, Math.pow((r || 0) / MAXR, 0.4) * 178)
+      const color = (NOGA[g] && NOGA[g][1]) || '#BFBFBF'
+      return {
+        style: `position:absolute;left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:3px;height:${h.toFixed(1)}px;transform:translate(-50%,-100%);background:${color};box-shadow:inset 0 2px 0 rgba(255,255,255,.5),0 0 0 .5px rgba(20,32,43,.22)`,
+      }
+    })
+
+    const present = pts.length
+      ? [...new Set(pts.map((p) => p[3]))].sort((a, b) => a - b)
+      : NOGA.map((_, i) => i)
+    const branches = present.map((i) => ({
+      label: (NOGA[i] && NOGA[i][0]) || 'nicht eindeutig bestimmbar',
+      dot: `width:9px;height:9px;border-radius:50%;flex:none;background:${(NOGA[i] && NOGA[i][1]) || '#BFBFBF'};box-shadow:inset 0 0 0 1px rgba(20,32,43,.18)`,
+    }))
+
+    const maxE = CANTONS[0][2]
+    const bars = [...CANTONS].sort((a, b) => b[2] - a[2]).map(([, , e]) => ({
+      style: `flex:1;background:currentColor;opacity:.72;height:${(Math.pow(e / maxE, 0.55) * 100).toFixed(1)}%`,
+    }))
+
+    const rangliste = CANTONS.slice(0, 9).map(([, name, e]) => ({
+      name,
+      value: swiss(e),
+      bar: `height:4px;background:#004949;opacity:.85;width:${(Math.pow(e / maxE, 0.5) * 100).toFixed(1)}%`,
+    }))
+
+    const rampVals = [
+      [1e9, '1 Mrd.'], [5e9, '5'], [20e9, '20'], [89.49e9, '89.5'],
+    ]
+    const ramp = rampVals.map(([v, label]) => ({
+      label,
+      bar: `width:9px;background:#14202B;opacity:.85;height:${(Math.pow(v / MAXR, 0.4) * 52 + 4).toFixed(1)}px`,
+    }))
+    const rampBVals = [
+      [25000, "25'000"], [150000, '150'], [500000, '500'], [1167319, "1'167"],
+    ]
+    const rampB = rampBVals.map(([v, label]) => ({
+      label,
+      bar: `width:9px;background:#14202B;opacity:.85;height:${(Math.pow(v / maxE, 0.4) * 52 + 4).toFixed(1)}px`,
+    }))
+
+    const isoNorm = (items, hmax, width, yFrom = 0) => {
+      if (!items.length) return []
+      const xs = items.map((i) => i.X), ys = items.map((i) => i.Y)
+      const x0 = Math.min(...xs), x1 = Math.max(...xs)
+      const y0 = Math.min(...ys), y1 = Math.max(...ys)
+      return items
+        .map((i) => ({
+          x: ((i.X - x0) / (x1 - x0 || 1)) * 100,
+          y: yFrom + ((i.Y - y0) / (y1 - y0 || 1)) * (100 - yFrom),
+          h: Math.max(3, i.h * hmax),
+          o: (0.32 + i.h * 0.5).toFixed(2),
+        }))
+        .sort((a, b) => a.y - b.y)
+        .map((i) => ({
+          style: `position:absolute;left:${i.x.toFixed(2)}%;top:${i.y.toFixed(2)}%;width:${width}px;height:${i.h.toFixed(1)}px;transform:translate(-50%,-100%);background:currentColor;opacity:${i.o}`,
+        }))
+    }
+
+    const iso = isoNorm(
+      pts.map(([lon, lat, r]) => ({
+        X: (lon - LON0) * 100,
+        Y: (LAT1 - lat) * 100 * 0.68,
+        h: Math.pow((r || 0) / MAXR, 0.4),
+      })),
+      96,
+      3.5,
+      54,
+    )
+
+    const sortedCantons = [...CANTONS].sort((a, b) => b[2] - a[2])
+    const isoPillars = isoNorm(
+      sortedCantons.map(([, , e], idx) => {
+        const row = idx < 13 ? 0 : 1
+        return {
+          X: (idx % 13) * 40 + row * 20,
+          Y: row * 30,
+          h: Math.pow(e / maxE, 0.5),
+        }
+      }),
+      58,
+      8,
+      56,
+    )
+
+    // Kantons-Kacheln, geografisch angeordnet (Tile-Kartogramm) — Höhe ist der
+    // echte STATENT-Wert, die Anordnung ist eine Näherung der Lage, keine Geometrie.
+    const TILEGRID = {
+      BS: [2, 0], BL: [3, 0], SH: [6, 0], TG: [8, 0],
+      JU: [1, 1], SO: [3, 1], AG: [4, 1], ZH: [6, 1], AR: [8, 1], SG: [9, 1],
+      NE: [1, 2], BE: [3, 2], LU: [5, 2], ZG: [6, 2], SZ: [7, 2], AI: [8, 2], GL: [9, 2],
+      VD: [1, 3], FR: [2, 3], OW: [5, 3], NW: [6, 3], UR: [7, 3], GR: [9, 3],
+      GE: [0, 4], VS: [3, 4], TI: [8, 4],
+    }
+    const kartenKantone = CANTONS.map(([code, name, e]) => {
+      const [col, row] = TILEGRID[code] || [0, 0]
+      const h = Math.max(2, Math.pow(e / maxE, 0.55) * 26)
+      const top = 5.5
+      const x = col * 9.6 + (row % 2) * 4.8
+      return {
+        code, name, row,
+        wrap: `position:absolute;left:${x.toFixed(2)}%;width:8.4%;top:${(34 + row * 15 - h - top).toFixed(2)}%;height:${(h + top).toFixed(2)}%;display:flex;flex-direction:column`,
+        top: `height:${top}%;background:currentColor;opacity:.8;flex:none`,
+        body: `flex:1;background:currentColor;opacity:.42`,
+      }
+    }).sort((a, b) => a.row - b.row)
+
+    const rasterFirmen = [...pts]
+      .sort((a, b) => (b[2] || 0) - (a[2] || 0))
+      .map(([, , r]) => {
+        const t = Math.pow((r || 0) / MAXR, 0.3)
+        const s = (3 + t * 15).toFixed(1)
+        return {
+          style: `width:${s}px;height:${s}px;background:currentColor;opacity:${(0.35 + t * 0.5).toFixed(2)}`,
+        }
+      })
+
+    const rasterKantone = sortedCantons.map(([, , e]) => {
+      const t = Math.pow(e / maxE, 0.45)
+      const s = (8 + t * 32).toFixed(1)
+      return {
+        style: `width:${s}px;height:${s}px;background:currentColor;opacity:${(0.35 + t * 0.5).toFixed(2)}`,
+      }
+    })
+
+    const zhBranchen = [7, 8, 9].map((i) => ({
+      label: NOGA[i][0],
+      dot: `width:9px;height:9px;border-radius:50%;flex:none;background:${NOGA[i][1]};box-shadow:inset 0 0 0 1px rgba(20,32,43,.18)`,
+    }))
+
+    return {
+      dots, bases, columns, branches, bars, rangliste, rampB, zhBranchen,
+      iso, isoPillars, rasterFirmen, rasterKantone, kartenKantone,
+      zeigeMarken: this.props.zeigeMarken ?? true,
+    }
+  }
+}
+
+</script>
+</body>
+</html>

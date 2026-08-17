@@ -81,32 +81,44 @@ export function abschnitt(name: AbschnittName): HTMLElement {
   return el
 }
 
-/** Ein eigener, geleerter Container im Fuss.
+/** Ein eigener, geleerter Container innerhalb eines Abschnitts.
  *
- *  Der Fuss trägt zwei Module: die Summe der Auswahl (`ui/kennzahlen.ts`) und
- *  darunter die Vorbehalte (`ui/notices.ts`). Beide zeichnen bei jedem
- *  `render()` neu, dürfen dabei aber nicht den ganzen Abschnitt leeren — sonst
- *  löscht das später zeichnende Modul das früher gezeichnete, und welches das
- *  ist, hinge an der Aufrufreihenfolge in `render()`. Jedes bekommt deshalb
- *  seinen eigenen Platz mit stabiler ID und räumt nur diesen aus.
+ *  Zwei Abschnitte tragen je zwei Module, und beide zeichnen bei jedem
+ *  `render()` neu — sie dürfen dabei aber nicht den ganzen Abschnitt leeren,
+ *  sonst löscht das später zeichnende das früher gezeichnete, und welches das
+ *  ist, hinge an der Aufrufreihenfolge:
  *
- *  Die Reihenfolge im Fuss ergibt sich aus der Einfügereihenfolge beim ersten
- *  Aufruf; in `render()` stehen die beiden Aufrufe direkt beieinander, Summe
- *  zuerst (siehe `karte/firmen.ts`). */
-export function fussTeil(id: string, className: string): HTMLElement {
-  const fuss = abschnittOhneLeeren('fuss')
+ *  - **Fuss:** die Summe der Auswahl (`ui/kennzahlen.ts`) und darunter die
+ *    Vorbehalte (`ui/notices.ts`).
+ *  - **Liste:** auf `/beschaeftigte/` die Branchenlegende (`ui/legend.ts` — der
+ *    Schlüssel zu den Farben, mit denen die Karte ihre Kantone einfärbt) und
+ *    die Rangliste (`ui/rangliste.ts`). Ohne getrennte Container stünden die
+ *    Kantonsfarben ohne Schlüssel da.
+ *
+ *  Jedes Modul bekommt deshalb seinen eigenen Platz mit stabiler ID und räumt
+ *  nur diesen aus. Die Reihenfolge ergibt sich aus der Einfügereihenfolge beim
+ *  ersten Aufruf; in `render()` stehen die Aufrufe direkt beieinander (siehe
+ *  `karte/firmen.ts`, `karte/beschaeftigte.ts`). */
+export function teil(name: AbschnittName, id: string, className = ''): HTMLElement {
+  const wurzel = abschnittOhneLeeren(name)
   let el = document.getElementById(id)
   if (!el) {
     el = document.createElement('div')
     el.id = id
-    el.className = className
-    fuss.appendChild(el)
+    if (className) el.className = className
+    wurzel.appendChild(el)
   }
   el.replaceChildren()
   return el
 }
 
-/** Wie `abschnitt`, aber ohne zu leeren — nur für `fussTeil` oben. */
+/** Kurzform für den Fuss — die zwei Module dort waren der erste Anlass für
+ *  `teil` (siehe oben). */
+export function fussTeil(id: string, className: string): HTMLElement {
+  return teil('fuss', id, className)
+}
+
+/** Wie `abschnitt`, aber ohne zu leeren — nur für `teil` oben. */
 function abschnittOhneLeeren(name: AbschnittName): HTMLElement {
   leiste()
   const el = document.getElementById(IDS[name])

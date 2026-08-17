@@ -4,7 +4,7 @@ import { NOGA_GROUPS, UNKNOWN_COLOR, type NogaGroup } from '../domain/noga.gener
 import type { SelectionResult } from '../domain/selection'
 import { litTopFaceColor } from '../layers/litColor'
 import { LOSS_COLOR } from '../layers/visible'
-import { abschnitt, label as leistenLabel } from './leiste'
+import { label as leistenLabel, teil } from './leiste'
 import type { ViewName } from './nav'
 
 // Abschluss-Review, Finding C2 → Auftrag (2026-08-17): seit der zweiten Wahl
@@ -140,7 +140,11 @@ export interface LegendOptions {
  *  Ort hat sich geändert: die Branchen stehen jetzt dort, wo auch gefiltert
  *  wird, statt in der gegenüberliegenden Ecke der Karte. */
 function box(): HTMLElement {
-  return abschnitt('liste')
+  // Eigener Container im Listen-Abschnitt, nicht der ganze Abschnitt: auf
+  // `/beschaeftigte/` steht darunter die Rangliste (`ui/rangliste.ts`) — wer
+  // den Abschnitt leerte, löschte die andere Liste, je nachdem welche zuletzt
+  // zeichnet (siehe `ui/leiste.ts`, `teil`).
+  return teil('liste', 'leiste-branchen')
 }
 
 function swatch(color: readonly [number, number, number], label: string): HTMLLIElement {
