@@ -73,6 +73,14 @@ html, body {
 #ui { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
 #ui > * { pointer-events: auto; }
 
+/* Kinomodus `?nackt=1` (siehe `src/kino.ts`): nur die Karte im Bild, keine
+   Bedienoberfläche. Eine Regel genügt, weil `#ui` bereits alles überlagernde
+   trägt — Leiste, Panel, Zoomgruppe, Hinweise. Ausgeblendet, nicht abgebaut:
+   die Oberfläche bleibt im DOM, damit der Kinomodus nichts an den
+   Aufbaupfaden ändert und eine Aufnahme dieselbe Seite zeigt wie ein Besuch,
+   nur ohne Bedienung. Ohne den Parameter existiert diese Klasse nicht. */
+body.kino-nackt #ui { display: none; }
+
 /* Kreuz statt Hand über der Karte (Auftrag vom 17. August 2026).
    maplibre-gl.css setzt `.maplibregl-canvas-container.maplibregl-interactive {
    cursor: grab }` — die offene Hand. Sie sagt richtig, dass man die Karte
@@ -266,20 +274,40 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
    immer sichtbar, und die Bedienelemente in der Mitte behalten ihren Platz.
    `max-height` in `rem`, damit sie mit der Schriftgrösse mitwächst; 9rem sind
    rund sieben Zeilen dieser Textstufe. */
-.leiste-vorbehalte {
-  margin: 8px 0 0; padding-top: 8px; border-top: 1px solid var(--linie);
-  font-size: .6875rem; line-height: 1.45; color: var(--tinte-leise);
-  max-height: 9rem; overflow-y: auto;
+/* ---------- Pflichthinweise (`/beschaeftigte/`) ----------
+   Zurück in der Ecke, hinter dem runden ⓘ (zweiter Auftrag vom 17. August
+   2026 — am Morgen desselben Tags standen sie noch offen im Leistenfuss,
+   siehe `ui/notices.ts` für die Umkehr samt Preis). Über der Zoom-Gruppe
+   verankert (deren 3 × 32 px + Rahmen ≈ 101 px), wächst beim Aufklappen nach
+   oben. Der Kreis ist die eine ausdrücklich gewünschte Rundung dieser
+   Oberfläche — alles andere behält Radius 0. */
+#hinweis {
+  position: absolute; right: 20px; bottom: 133px;
+  max-width: min(17rem, calc(100vw - 40px));
+  display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
 }
-.leiste-vorbehalte p { margin: 0 0 .25rem; }
-.leiste-vorbehalte p:last-child { margin-bottom: 0; }
-/* Der Haupthinweis der Ansicht steht in Tintenfarbe, die Quellen- und
-   Vorbehaltszeilen darunter leiser — dieselbe Abstufung wie vorher in der
-   Eckbox (`.hinweis-haupt` / `.hinweis-quelle`), nur ohne die dortige
-   Schriftgrösse von 10 px: unter 11 px geht in dieser Oberfläche nichts
-   (Kontrastregel des Entwurfs). */
-.leiste-vorbehalt-haupt { color: var(--tinte); }
-.leiste-vorbehalt { color: var(--tinte-leise); }
+.hinweis-umschalter {
+  flex: none; width: 28px; height: 28px; padding: 0;
+  border-radius: 50%; border: 1.5px solid var(--tinte);
+  background: var(--papier); color: var(--tinte);
+  display: flex; align-items: center; justify-content: center;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-style: italic; font-weight: 700; font-size: .875rem;
+  cursor: pointer;
+}
+.hinweis-inhalt {
+  width: 100%; padding: 10px 12px;
+  background: var(--papier); border: 1.5px solid var(--tinte);
+  font-size: .6875rem; line-height: 1.45; color: var(--tinte-leise);
+  text-align: left;
+  max-height: min(24rem, calc(100vh - 200px)); overflow-y: auto;
+}
+.hinweis-inhalt[hidden] { display: none; }
+.hinweis-inhalt p { margin: 0 0 .35rem; }
+.hinweis-inhalt p:last-child { margin-bottom: 0; }
+.hinweis-haupt { color: var(--tinte); }
+.hinweis-quelle { color: var(--tinte-leise); }
+
 
 /* ---------- Suche ---------- */
 .suche-feld {

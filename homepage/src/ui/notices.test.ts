@@ -2,21 +2,22 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { renderNotices, type Coverage, type TopReference } from './notices'
 
-// jsdom statt des früheren Minimal-Stubs: dieser Test braucht echte
-// `querySelector`-Semantik über der Leiste (`ui/leiste.ts`), die
-// `renderNotices` seit dem Redesign vom 17. August 2026 als Träger benutzt.
-//
-// Zielfläche seit demselben Datum: der Fuss der Leiste statt der Eckbox
-// `#hinweis` unten rechts, und ohne ⓘ-Umschalter — die Vorbehalte stehen
-// offen. Die Tests zum Auf- und Zuklappen sind deshalb entfallen (das
-// Verhalten gibt es nicht mehr); alle Tests über die TEXTE sind geblieben,
-// denn genau die dürfen bei einem Umzug nicht verlorengehen.
+// Zielfläche seit dem zweiten Auftrag vom 17. August 2026: wieder die Eckbox
+// `#hinweis` unten rechts, eingeklappt hinter dem runden ⓘ — am Morgen
+// desselben Tags stand der Text noch offen im Leistenfuss. Die Tests über die
+// TEXTE sind über beide Umzüge unverändert geblieben, denn genau die dürfen
+// dabei nicht verlorengehen; die Klapp-Tests unten sind aus der Git-Historie
+// zurückgekehrt.
 beforeEach(() => {
   document.body.innerHTML = '<div id="ui"></div>'
 })
 
 function inhalt(): HTMLElement {
-  return document.getElementById('leiste-vorbehalte')!
+  return document.querySelector<HTMLElement>('.hinweis-inhalt')!
+}
+
+function umschalter(): HTMLButtonElement {
+  return document.querySelector<HTMLButtonElement>('.hinweis-umschalter')!
 }
 
 const KEINE_BEZUGSZEILE: TopReference | null = null
@@ -71,6 +72,37 @@ describe('renderNotices', () => {
       .find((t) => t.includes('Reingewinne in der jeweiligen'))
     expect(waehrungszeile).toBeDefined()
     expect(waehrungszeile).not.toContain('CHF umgerechnet')
+  })
+})
+
+describe('renderNotices — eingeklappter ⓘ-Kreis (zweiter Auftrag 2026-08-17)', () => {
+  const zeichne = () =>
+    renderNotices('beschaeftigte', 'schweiz', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
+
+  it('startet eingeklappt: der Text ist da, aber verborgen', () => {
+    zeichne()
+    expect(inhalt().hidden).toBe(true)
+    expect(umschalter().getAttribute('aria-expanded')).toBe('false')
+    // Verborgen heisst nicht leer — der Text wartet hinter dem Kreis.
+    expect(inhalt().textContent).toContain('BFS')
+  })
+
+  it('klappt per Klick auf und wieder zu', () => {
+    zeichne()
+    umschalter().click()
+    expect(inhalt().hidden).toBe(false)
+    expect(umschalter().getAttribute('aria-expanded')).toBe('true')
+    umschalter().click()
+    expect(inhalt().hidden).toBe(true)
+  })
+
+  it('übersteht ein Neuzeichnen aufgeklappt', () => {
+    // `renderNotices` läuft bei jedem Stufen-/Skalenwechsel erneut — der
+    // Zustand sitzt deshalb auf `#hinweis` selbst, nicht auf einem Kind.
+    zeichne()
+    umschalter().click()
+    renderNotices('beschaeftigte', 'kanton', 'umsatz', true, KEINE_BEZUGSZEILE, KEINE_ABDECKUNG)
+    expect(inhalt().hidden).toBe(false)
   })
 })
 

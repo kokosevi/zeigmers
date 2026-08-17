@@ -38,7 +38,6 @@ export async function startBeschaeftigte(): Promise<void> {
     cantonsGeo,
     cantonGeometries,
     cantonBorderLayer,
-    nationalBounds,
     lakesGeo,
   } = basis
 
@@ -253,14 +252,22 @@ export async function startBeschaeftigte(): Promise<void> {
     render()
   }
 
-  /** Zurück zur Schweiz-Übersicht — Klick auf `renderBackControl`s Knopf oder
-   *  Escape. Kein Fetch nötig: die Schweiz-Stufe ist seit dem Start geladen. */
+  /** Zurück zur Schweiz-Übersicht — «Schweiz» im Breadcrumb oder Escape.
+   *  Kein Fetch nötig: die Schweiz-Stufe ist seit dem Start geladen.
+   *
+   *  Auch hier ohne Kamerabewegung (zweiter Auftrag vom 17. August 2026 —
+   *  zuerst fiel der Flug beim Betreten, dann dieser beim Verlassen): beide
+   *  Richtungen wechseln nur den Inhalt, die Kamera gehört durchgehend der
+   *  Betrachterin. Das nimmt die Begründung zurück, die beim Betreten-Fix
+   *  noch für diesen Flug sprach («eine Übersicht, die den Zoomstand der
+   *  Gemeindeansicht erbt, wäre keine») — der Auftraggeber hat sich das
+   *  Verhalten angesehen und dagegen entschieden; wer die Übersicht gerahmt
+   *  will, hat die Zoomknöpfe und `N`. */
   function exitToSwitzerland() {
     if (level !== 'kanton') return
     navToken++ // invalidiert einen noch laufenden enterCanton()
     level = 'schweiz'
     activeCanton = null
-    handle.frameBounds(nationalBounds)
     render()
   }
 

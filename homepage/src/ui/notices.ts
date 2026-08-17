@@ -1,7 +1,6 @@
 import { formatMetric, type Metric } from '../domain/metric'
 import { formatGermanDate } from './format'
 import type { ViewName } from './nav'
-import { fussTeil } from './leiste'
 
 /** Nur für Ansicht «Beschäftigte» relevant (Phase 2, nationale Navigation):
  *  welche der zwei Stufen gerade zu sehen ist. `'schweiz'` = 26 Kantonsbalken,
@@ -393,11 +392,30 @@ function paragraph(text: string, className: string): HTMLParagraphElement {
   return p
 }
 
-/* Die zwei Helfer `syncToggle` und `createToggle` (runder ⓘ-Umschalter, auf-/
-   zugeklappter Zustand) sind mit dem Redesign vom 17. August 2026 entfallen:
-   die Vorbehalte stehen jetzt offen im Leistenfuss, es gibt nichts mehr zu
-   klappen. Entfernt statt auskommentiert — dieses Projekt lässt keinen toten
-   Code liegen; wie der Umschalter aussah, steht in der Git-Historie. */
+/* Der runde ⓘ-Umschalter ist zurück (zweiter Auftrag vom 17. August 2026,
+   Abend): die Vorbehalte standen seit dem Redesign vom Morgen offen im
+   Leistenfuss; jetzt sollen sie hinter einem eingeklappten Info-Kreis unten
+   rechts liegen. Die zwei Helfer sind aus der Git-Historie zurückgeholt
+   (Stand 8eecc53), nur die Position ist neu — der Kreis sitzt über der
+   Zoom-Gruppe statt in der Ecke selbst, siehe `#hinweis` in `style.css`. */
+function syncToggle(toggle: HTMLButtonElement, inhalt: HTMLElement, expanded: boolean): void {
+  toggle.setAttribute('aria-expanded', String(expanded))
+  toggle.setAttribute(
+    'aria-label',
+    expanded
+      ? 'Pflichthinweise zu dieser Karte ausblenden'
+      : 'Pflichthinweise zu dieser Karte anzeigen',
+  )
+  inhalt.hidden = !expanded
+}
+
+function createToggle(): HTMLButtonElement {
+  const toggle = document.createElement('button')
+  toggle.type = 'button'
+  toggle.className = 'hinweis-umschalter'
+  toggle.textContent = 'i'
+  return toggle
+}
 
 /** Baut die Eckbox aus mehreren Absätzen statt eines einzelnen `textContent`
  *  (bis 2026-08-13 genügte ein String, weil hier nur der Pflichthinweis
@@ -462,53 +480,75 @@ export function renderNotices(
   topReference: TopReference | null,
   coverage: Coverage | null,
 ): void {
-  // Redesign (17. August 2026, Handoff 1b/1c): Die Vorbehalte stehen offen im
-  // Fuss der Leiste — leise, aber ohne Klick sichtbar. Damit ist der runde
-  // ⓘ-Umschalter entfallen, den der Auftraggeber am Vortag verlangt hatte:
-  // eingeklappt sagte die Ecke nichts, und eine Karte, die eine Obergrenze
-  // zeigt, sollte den Vorbehalt dazu nicht hinter eine Interaktion legen.
-  // Damit gilt wieder, was vor dem 17.08. galt («ohne Interaktion sichtbar»),
-  // nur an einem anderen Ort und in einer leiseren Stimme.
+  // Zweiter Auftrag vom 17. August 2026 (Abend): zurück in die Ecke, hinter
+  // den eingeklappten ⓘ-Kreis — der Leistenfuss trägt die Vorbehalte nicht
+  // mehr. Das kehrt die Morgen-Entscheidung («offen sichtbar, ohne Klick»)
+  // ausdrücklich um; der Preis ist benannt: eingeklappt sagt die Ecke nichts,
+  // die Obergrenzen-Aussage der Karte liegt hinter einer Interaktion.
   //
-  // Eigener Container im Fuss statt `abschnitt('fuss')`: der Fuss trägt zwei
-  // Module — die Summe (`ui/kennzahlen.ts`) und diese Vorbehalte. Würde eines
-  // von beiden den ganzen Abschnitt leeren, löschte es das andere, je nachdem
-  // welches zuletzt zeichnet.
-  const inhalt = fussTeil('leiste-vorbehalte', 'leiste-vorbehalte')
+  // Auf-/Zugeklappt sitzt als data-Attribut auf `box` selbst, nicht auf einem
+  // Kind: `box.replaceChildren()` unten leert nur die Kinder, `box`s eigene
+  // Attribute überleben — ein Klick übersteht so jeden erneuten
+  // `renderNotices()`-Aufruf (Stufenwechsel, Skalenwechsel). Startzustand
+  // ohne gesetztes Attribut: eingeklappt.
+  let boxOrNull = document.getElementById('hinweis')
+  if (!boxOrNull) {
+    boxOrNull = document.createElement('div')
+    boxOrNull.id = 'hinweis'
+    document.getElementById('ui')?.appendChild(boxOrNull)
+  }
+  const box = boxOrNull
+  const expanded = box.dataset.expanded === 'true'
+  box.replaceChildren()
+  box.dataset.expanded = String(expanded)
+
+  const inhalt = document.createElement('div')
+  inhalt.className = 'hinweis-inhalt'
+  const toggle = createToggle()
+  toggle.addEventListener('click', () => {
+    const next = box.dataset.expanded !== 'true'
+    box.dataset.expanded = String(next)
+    syncToggle(toggle, inhalt, next)
+  })
+  syncToggle(toggle, inhalt, expanded)
+  // Inhalt VOR dem Kreis: die Box ist an der Unterkante verankert und wächst
+  // beim Aufklappen nach oben — so bleibt der Kreis an seinem Platz, statt
+  // vom eigenen Inhalt weggeschoben zu werden.
+  box.append(inhalt, toggle)
 
   const haupt = view === 'sichtbare' ? HAUPT_SICHTBARE[metric] : HAUPT_BESCHAEFTIGTE[level]
-  inhalt.appendChild(paragraph(haupt, 'leiste-vorbehalt-haupt'))
+  inhalt.appendChild(paragraph(haupt, 'hinweis-haupt'))
   if (view === 'sichtbare') {
     const note = currencyNote(metric, metricInChf)
-    if (note) inhalt.appendChild(paragraph(note, 'leiste-vorbehalt-haupt'))
+    if (note) inhalt.appendChild(paragraph(note, 'hinweis-haupt'))
     // Fünf aus `ui/legend.ts` umgezogene Zeilen (siehe Kommentar dort bei
     // `LegendOptions`) — alle fünf nur in dieser Ansicht, dieselbe Bedingung
     // wie zuvor in der Legende.
-    if (coverage) inhalt.appendChild(paragraph(coverageNote(coverage), 'leiste-vorbehalt'))
+    if (coverage) inhalt.appendChild(paragraph(coverageNote(coverage), 'hinweis-quelle'))
     if (topReference) {
-      inhalt.appendChild(paragraph(topReferenceNote(metric, topReference), 'leiste-vorbehalt'))
+      inhalt.appendChild(paragraph(topReferenceNote(metric, topReference), 'hinweis-quelle'))
     }
-    inhalt.appendChild(paragraph(FLOOR_NOTE[metric], 'leiste-vorbehalt'))
-    inhalt.appendChild(paragraph(OUTLINE_NOTE, 'leiste-vorbehalt'))
-    inhalt.appendChild(paragraph(UNRESEARCHED_NOTE, 'leiste-vorbehalt'))
+    inhalt.appendChild(paragraph(FLOOR_NOTE[metric], 'hinweis-quelle'))
+    inhalt.appendChild(paragraph(OUTLINE_NOTE, 'hinweis-quelle'))
+    inhalt.appendChild(paragraph(UNRESEARCHED_NOTE, 'hinweis-quelle'))
   }
-  inhalt.appendChild(paragraph(FOOTER, 'leiste-vorbehalt'))
+  inhalt.appendChild(paragraph(FOOTER, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Seenlayer zeichnet auf beiden Karten
   // (`layers/viewLayers.ts`), die Quelle gehört deshalb neben `FOOTER`, nicht
   // hinter eine `view`-Prüfung (siehe Korrektur-Kommentar an `FOOTER_LAKES`
   // oben).
-  inhalt.appendChild(paragraph(FOOTER_LAKES, 'leiste-vorbehalt'))
+  inhalt.appendChild(paragraph(FOOTER_LAKES, 'hinweis-quelle'))
   // Unabhängig von der Ansicht: der Skalenschalter (und damit die Formel, um
   // die es hier geht) ist in beiden Ansichten sichtbar und bedienbar, nicht
   // nur in Ansicht B.
-  inhalt.appendChild(paragraph(SCALE_NOTE, 'leiste-vorbehalt'))
-  if (view === 'sichtbare') inhalt.appendChild(paragraph(FOOTER_COMPANIES, 'leiste-vorbehalt'))
+  inhalt.appendChild(paragraph(SCALE_NOTE, 'hinweis-quelle'))
+  if (view === 'sichtbare') inhalt.appendChild(paragraph(FOOTER_COMPANIES, 'hinweis-quelle'))
   // Nur auf der Kantonsstufe: die «Beschäftigte je Einwohner»-Zeile, die
   // dieser Hinweis erklärt, steht ausschliesslich im Gemeinde-Klick-Panel
   // (`ui/panel.ts`) — auf der Schweiz-Stufe öffnet ein Klick keinen Panel
   // (er betritt den Kanton, siehe `karte/beschaeftigte.ts`), die Zeile
   // erscheint dort nie.
   if (view === 'beschaeftigte' && level === 'kanton') {
-    inhalt.appendChild(paragraph(POPULATION_YEAR_NOTE, 'leiste-vorbehalt'))
+    inhalt.appendChild(paragraph(POPULATION_YEAR_NOTE, 'hinweis-quelle'))
   }
 }
