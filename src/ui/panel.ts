@@ -41,8 +41,8 @@ export interface PanelContent {
    *  unverändert, nur Gewicht und Position. */
   footnote?: string
   /** Anordnung für das Panel des Redesigns (Handoff 1b, Punkt 5): Kopf mit
-   *  Kennung, eine grosse Hauptzahl, ein Anteilsbalken, dann ein Raster, dann
-   *  Branche und Kerngeschäft, unten ein Fuss.
+   *  Kennung, eine grosse Hauptzahl, dann ein Raster, dann Branche und
+   *  Kerngeschäft, unten ein Fuss.
    *
    *  Bewusst ein **Zusatz** und kein Ersatz für `fields`: die Inhalte sind
    *  dieselben, nur anders angeordnet. `fields` bleibt die vollständige,
@@ -53,12 +53,24 @@ export interface PanelContent {
    *  von `aggregateCellContent`), rendert `renderContent` unverändert die
    *  flache Liste von vorher.
    *
-   *  Jeder Wert aus `fields` hat hier einen Platz — Sitz, Gründungsjahr und
-   *  Geschäftsjahr in `unterzeile`, das SIX-Symbol in `kennung`, Umsatz in
-   *  `haupt`, Rang und Anteil in `anteil.text`, Reingewinn, Mitarbeitende und
-   *  Marge im `raster`, Branche und Kerngeschäft in `branche`, die UID im
-   *  Fuss. Sonst verschwände ein Wert lautlos aus der Oberfläche, während der
-   *  Test ihn weiter in `fields` findet und grün bleibt. */
+   *  Wo welcher Wert steht: Sitz, Gründungsjahr und Geschäftsjahr in
+   *  `unterzeile`, das SIX-Symbol in `kennung`, Umsatz in `haupt`, Reingewinn
+   *  und Mitarbeitende im `raster`, Branche und Kerngeschäft in `branche`, der
+   *  Geschäftsbericht in `fussLink`.
+   *
+   *  Anfangs galt hier: **jeder** Wert aus `fields` hat einen Platz, sonst
+   *  verschwände er lautlos aus der Oberfläche, während der Test ihn weiter in
+   *  `fields` findet und grün bleibt. Seit dem 17. August 2026 gilt das nicht
+   *  mehr — vier Dinge sind auf Wunsch aus dem Steckbrief entfernt, und die
+   *  Regel ist deshalb nicht mehr «alles», sondern «lautlos nie»: Was nicht
+   *  gezeichnet wird, steht namentlich hier, nicht bloss in `fields`.
+   *
+   *  Nicht gezeichnet: Rang, Anteil am Gesamtumsatz, Marge, «Umsatz je
+   *  Mitarbeitenden», die UID, «Kerngeschäft belegen» und alle Fussnoten
+   *  (`notes`, `footnote`). Alle bleiben in `fields`, `links` bzw. `notes` und
+   *  sind von `panel.test.ts` weiter geprüft; welche Zeile aus welchem Grund
+   *  fehlt, steht bei `companyContent` und `renderLayout`. Was davon gezeichnet
+   *  wird, bewacht `panel.render.test.ts`. */
   layout?: PanelLayout
 }
 
@@ -70,18 +82,18 @@ export interface PanelLayout {
   unterzeile?: string
   /** Die grosse Zahl: Label links, Wert rechts. */
   haupt?: PanelField
-  /** Anteilsbalken plus die Zeile darunter. `fraction` ist bereits der Anteil
-   *  (0…1) — die Breite in Prozent macht das Rendern, nicht der Aufrufer.
-   *  `ton` wählt die Füllfarbe: `--akzent-firmen` bzw. `--akzent-arbeit`. */
-  anteil?: { fraction: number; text: string; ton: 'firmen' | 'arbeit' }
+  /** Der EINE Link im Fuss. Bewusst ein eigenes Feld und nicht «der erste
+   *  Eintrag aus `links`»: `links` bleibt die vollständige Liste im
+   *  Datenmodell (dort steht weiterhin auch «Kerngeschäft belegen», von den
+   *  Tests geprüft), und ein Renderer, der davon stillschweigend nur das erste
+   *  Element zeigte, liesse einen Eintrag lautlos verschwinden. Was im Fuss
+   *  steht, sagt dieses Feld ausdrücklich. */
+  fussLink?: PanelLink
   /** Zweispaltiges Raster aus je Label und Wert. */
   raster?: PanelField[]
   /** Branchenpunkt mit Namen, darunter optional das Kerngeschäft als
    *  Fliesstext. */
   branche?: { color: readonly [number, number, number]; label: string; text?: string }
-  /** Rechts im Fuss, leise — die UID. Der Link links im Fuss kommt aus
-   *  `links` (erster Eintrag), damit es nur eine Quelle für Links gibt. */
-  fussKennung?: string
 }
 
 /** Der Teil des Panelinhalts, den `companyContent` nicht selbst herleiten
@@ -503,37 +515,16 @@ export function companyContent(company: Company, context: CompanyContext): Panel
       }
     : undefined
 
-  // Anteilsbalken: dieselbe Zahl wie die Zeile darunter, einmal als Länge.
-  // Rang und Anteil stehen zusammen in einem Satz — beide beziehen sich auf
-  // dieselbe Grundgesamtheit (alle recherchierten Gesellschaften mit Wert),
-  // getrennte Zeilen liessen das auseinanderfallen.
-  const anteilTeile: string[] = []
-  if (context.rank !== null) {
-    // «nach Jahresumsatz» entfällt bei der Kennzahl Umsatz: die Hauptzahl
-    // direkt darüber trägt dasselbe Wort, und der Entwurf schreibt hier nur
-    // «Rang 1 von 187». Bei Mitarbeitenden oder Gewinn bleibt die Angabe
-    // stehen — dort ist der Bezug nicht selbsterklärend, weil die Hauptzahl
-    // weiterhin der Umsatz ist.
-    const bezug = context.metric === 'umsatz' ? '' : ` nach ${metricLabel(context.metric)}`
-    anteilTeile.push(`Rang ${context.rank} von ${context.rankTotal}${bezug}`)
-  }
-  const anteilWert = feldWert('Anteil am Gesamtumsatz')
-  if (anteilWert) {
-    anteilTeile.push(`${anteilWert} des Gesamtumsatzes aller kotierten Gesellschaften`)
-  }
-  const anteil =
-    anteilTeile.length > 0
-      ? {
-          // Der Balken zeigt den Umsatzanteil; ohne umgerechneten Umsatz bleibt
-          // er leer (Breite 0), die Zeile darunter trägt dann allein den Rang.
-          fraction:
-            company.revenueChf !== null && context.revenueTotal > 0
-              ? company.revenueChf / context.revenueTotal
-              : 0,
-          text: anteilTeile.join(' · '),
-          ton: 'firmen' as const,
-        }
-      : undefined
+  // Kein Anteilsbalken und keine Rangzeile mehr (Auftrag vom 17. August 2026:
+  // «entferne den Rang»). Der Balken ist mit der Zeile gegangen, nicht nur die
+  // Zeile: seine Länge war der Umsatzanteil, und ohne die Beschriftung darunter
+  // wäre nicht zu erkennen, wovon er ein Anteil ist.
+  //
+  // Rang («#1 von 187 nach Jahresumsatz») und Anteil am Gesamtumsatz stehen
+  // beide unverändert in `fields` und damit im Datenmodell des Panels; nur die
+  // Oberfläche der Firma zeigt sie nicht mehr. Beides ist ausserdem weiterhin
+  // ablesbar: die Karte ordnet die Säulen der Höhe nach, und die Summe der
+  // Auswahl steht im Leistenfuss.
 
   // Raster: die übrigen Kennzahlen, je Zelle Label und Wert. Reihenfolge wie
   // im Entwurf (Reingewinn, Mitarbeitende), danach die abgeleiteten Grössen.
@@ -561,7 +552,6 @@ export function companyContent(company: Company, context: CompanyContext): Panel
       kennung: company.sixSymbol ?? undefined,
       unterzeile: unterTeile.length > 0 ? unterTeile.join(' · ') : undefined,
       haupt: hauptFeld,
-      anteil,
       raster,
       branche: {
         color: litTopFaceColor(
@@ -570,7 +560,16 @@ export function companyContent(company: Company, context: CompanyContext): Panel
         label: nogaGroupLabel(company.nogaGroupIndex),
         text: company.coreProducts ? kuerze(company.coreProducts) : undefined,
       },
-      fussKennung: company.uid ?? undefined,
+      // Ein Link im Fuss, der Geschäftsbericht — die Primärquelle für jede Zahl
+      // darüber. «Kerngeschäft belegen» (`productsUrl`) und die UID
+      // (`company.uid`) sind aus der Oberfläche entfernt (Auftrag vom
+      // 17. August 2026). Beide bleiben im Datenmodell: der Link in `links`,
+      // die UID im Artefakt.
+      //
+      // Was das kostet: der Kerngeschäft-Satz über diesem Fuss stammt aus
+      // `productsUrl` und ist zusätzlich auf 170 Zeichen gekürzt — seine Quelle
+      // lässt sich aus dem Steckbrief nun nicht mehr aufrufen.
+      fussLink: links.find((l) => l.label === 'Geschäftsbericht öffnen'),
     },
   }
 }
@@ -639,24 +638,6 @@ function renderLayout(box: HTMLElement, content: PanelContent, layout: PanelLayo
     koerper.appendChild(zeile)
   }
 
-  if (layout.anteil) {
-    const spur = document.createElement('div')
-    spur.className = 'panel-spur'
-    const balken = document.createElement('div')
-    balken.className =
-      layout.anteil.ton === 'arbeit' ? 'panel-anteil panel-anteil-arbeit' : 'panel-anteil'
-    // Auf 0…100 % geklemmt: ein Anteil über 1 kann bei einer negativen
-    // Gesamtsumme entstehen (Kennzahl Gewinn, Saldo nahe null) — ein Balken,
-    // der aus seiner Spur läuft, behauptete dann mehr als 100 Prozent.
-    const prozent = Math.min(100, Math.max(0, layout.anteil.fraction * 100))
-    balken.style.width = `${prozent}%`
-    spur.appendChild(balken)
-    const zeile = document.createElement('p')
-    zeile.className = 'panel-anteilzeile'
-    zeile.textContent = layout.anteil.text
-    koerper.append(spur, zeile)
-  }
-
   if (layout.raster && layout.raster.length > 0) {
     const raster = document.createElement('div')
     raster.className = 'panel-raster'
@@ -713,43 +694,31 @@ function renderLayout(box: HTMLElement, content: PanelContent, layout: PanelLayo
     koerper.append(caption, list)
   }
 
-  for (const note of content.notes) {
-    const p = document.createElement('p')
-    p.className = 'panel-fussnote'
-    p.textContent = note
-    koerper.appendChild(p)
-  }
-  if (content.footnote) {
-    const p = document.createElement('p')
-    p.className = 'panel-fussnote'
-    p.textContent = content.footnote
-    koerper.appendChild(p)
-  }
+  // `notes` und `footnote` werden hier NICHT gezeichnet (Auftrag vom
+  // 17. August 2026: «entferne das ganze Kursiv geschriebene»). Sie bleiben im
+  // Datenmodell — `companyContent` baut sie unverändert weiter auf, die Tests
+  // prüfen jeden Satz, und die Kantonsansicht (`aggregateCellContent`, ohne
+  // `layout`) zeigt ihre Fussnote weiterhin.
+  //
+  // Der Preis, damit er nicht unbemerkt bleibt: Drei dieser Sätze erklärten,
+  // WARUM ein Wert fehlt («Umsatz nicht öffentlich verfügbar.» und die zwei
+  // Pendants für Reingewinn und Mitarbeitende). Ohne sie lässt der Steckbrief
+  // eine Zeile schlicht weg, wo bisher der Grund stand. Die allgemeinen
+  // Vorbehalte der Karte (Währung, Abdeckung, Mindesthöhe, Randmarkierung,
+  // unrecherchierte Marker) stehen unabhängig davon weiterhin offen im
+  // Leistenfuss (`ui/notices.ts`) — verloren sind nur die firmenspezifischen.
   box.appendChild(koerper)
 
-  // Fuss: der erste Link links, die Kennung rechts. Weitere Links (die
-  // Produktquelle) reihen sich daneben ein — sie sind dieselbe Art Verweis und
-  // brauchen keine zweite Zeile.
-  const links = content.links ?? []
-  if (links.length > 0 || layout.fussKennung) {
+  // Fuss: der Geschäftsbericht, sonst nichts (siehe `PanelLayout.fussLink`).
+  if (layout.fussLink) {
     const fuss = document.createElement('div')
     fuss.className = 'panel-fuss'
-    const linkGruppe = document.createElement('span')
-    for (const link of links) {
-      const a = document.createElement('a')
-      a.href = link.href
-      a.textContent = link.label
-      a.target = '_blank'
-      a.rel = 'noopener noreferrer'
-      linkGruppe.appendChild(a)
-    }
-    fuss.appendChild(linkGruppe)
-    if (layout.fussKennung) {
-      const kennung = document.createElement('span')
-      kennung.className = 'panel-uid'
-      kennung.textContent = layout.fussKennung
-      fuss.appendChild(kennung)
-    }
+    const a = document.createElement('a')
+    a.href = layout.fussLink.href
+    a.textContent = layout.fussLink.label
+    a.target = '_blank'
+    a.rel = 'noopener noreferrer'
+    fuss.appendChild(a)
     box.appendChild(fuss)
   }
 

@@ -383,14 +383,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
 .panel-hauptlabel { color: var(--tinte-leise); }
 .panel-hauptwert { font-family: var(--mono); font-size: 1.0625rem; }
 
-/* Anteilsbalken: dieselbe Zahl wie die Zeile darunter, einmal als Länge.
-   `CompanyContext` liefert Rang, Nenner und Gesamtsumme bereits — es kommt
-   kein neuer Datenweg hinzu, nur eine zweite Darstellung. */
-.panel-spur { margin-top: 9px; height: 6px; background: var(--karte-platte); }
-.panel-anteil { height: 100%; background: var(--akzent-firmen); }
-.panel-anteil-arbeit { background: var(--akzent-arbeit); }
-.panel-anteilzeile { margin: 6px 0 0; font-size: .6875rem; color: var(--tinte-leise); }
-
 .panel-raster {
   display: grid; grid-template-columns: 1fr 1fr; gap: 12px 10px;
   margin-top: 14px;
@@ -402,8 +394,10 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
 .panel-branche { display: flex; align-items: center; gap: .5rem; }
 .panel-fliess { margin: 6px 0 0; }
 
-/* Vorbehalte im Panel (Obergrenzen-Notiz, Platzhalterhinweis, fehlende Werte)
-   — inhaltlich unverändert, weiterhin die leiseste Zeile der Fläche. */
+/* Vorbehalte im Panel (Obergrenzen-Notiz, fehlende Werte) — die leiseste Zeile
+   der Fläche. Nur noch das Gemeinde-/Kantonspanel nutzt sie: der Steckbrief
+   einer Firma zeichnet seit dem 17. August 2026 keine Fussnoten mehr (siehe
+   `renderLayout`). */
 .panel-fussnote {
   margin: 12px 0 0; font-size: .6875rem; line-height: 1.45;
   color: var(--tinte-leise); font-style: italic;
@@ -414,19 +408,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
   display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
   padding: 11px 16px; border-top: 1px solid var(--linie);
 }
-/* Zwei Links im Fuss (Geschäftsbericht und Produktquelle) liefen als Inline-
-   Elemente ineinander — bei 264 px Fussbreite bricht der zweite mitten im Wort
-   um und liest sich als Fortsetzung des ersten. Jeder Link steht deshalb auf
-   seiner eigenen Zeile. */
-.panel-fuss a { display: block; }
-.panel-fuss a + a { margin-top: 4px; }
 .panel-fuss a, .panel-aktion {
   border: none; background: transparent; padding: 0;
   font-family: var(--mono); font-size: .65625rem; letter-spacing: .16em;
   text-transform: uppercase; color: var(--tinte); cursor: pointer;
   text-decoration: underline; text-decoration-thickness: 1px;
 }
-.panel-uid { font-family: var(--mono); font-size: .6875rem; color: var(--tinte-leise); }
 
 /* ---------- Zoom ----------
    Eigene Knöpfe statt MapLibres `NavigationControl` (siehe `map.ts`): drei

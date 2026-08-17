@@ -576,40 +576,21 @@ describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => 
     expect(content.layout?.haupt).toBeUndefined()
   })
 
-  it('trägt Rang und Anteil gemeinsam in der Zeile unter dem Balken', () => {
+  // Rangzeile, Anteilsbalken und UID sind aus `PanelLayout` verschwunden — dass
+  // sie nicht gezeichnet werden, garantiert seither der Typ, und was gezeichnet
+  // wird, prüft `panel.render.test.ts`. Hier bleibt zu prüfen, was das Modell
+  // trotzdem weiter trägt.
+  it('behält Rang und Anteil am Gesamtumsatz in fields', () => {
+    // Wie bei Marge und «Umsatz je Mitarbeitenden»: die Kürzung nimmt sie aus
+    // der Oberfläche, nicht aus dem Datenmodell — sonst wären sie nicht
+    // zurückholbar.
     const content = companyContent(
       company({ revenue: 100_000_000, revenueChf: 100_000_000 }),
       ctx({ rank: 1, rankTotal: 187, revenueTotal: 1_000_000_000 }),
     )
-    // Bei der Kennzahl Umsatz ohne «nach Jahresumsatz»: die Hauptzahl direkt
-    // darüber trägt dasselbe Wort.
-    expect(content.layout?.anteil?.text).toContain('Rang 1 von 187 ·')
-    expect(content.layout?.anteil?.text).not.toContain('nach Jahresumsatz')
-    expect(content.layout?.anteil?.text).toContain('des Gesamtumsatzes aller kotierten Gesellschaften')
-  })
-
-  it('nennt den Bezug, wo er nicht ohnehin darübersteht', () => {
-    // Bei Mitarbeitenden und Gewinn bleibt die Hauptzahl der Umsatz — ohne
-    // Bezug wäre nicht erkennbar, wonach der Rang zählt.
-    const content = companyContent(company({ employees: 500 }), ctx({ metric: 'mitarbeitende' }))
-    expect(content.layout?.anteil?.text).toContain('nach Mitarbeitende')
-  })
-
-  it('gibt dem Balken den Anteil als Bruch, nicht als Text', () => {
-    const content = companyContent(
-      company({ revenue: 100_000_000, revenueChf: 100_000_000 }),
-      ctx({ revenueTotal: 1_000_000_000 }),
-    )
-    expect(content.layout?.anteil?.fraction).toBeCloseTo(0.1)
-    expect(content.layout?.anteil?.ton).toBe('firmen')
-  })
-
-  it('setzt den Balken auf null, wo kein umgerechneter Umsatz vorliegt', () => {
-    // Der Rang steht dann trotzdem in der Zeile — nur die Länge fehlt, weil es
-    // keinen Anteil zu zeigen gibt.
-    const content = companyContent(company({ revenueChf: null }), ctx({ rank: 5 }))
-    expect(content.layout?.anteil?.fraction).toBe(0)
-    expect(content.layout?.anteil?.text).toContain('Rang 5')
+    const rang = content.fields.find((f) => f.label === 'Rang')
+    expect(rang?.value).toBe('#1 von 187 nach Jahresumsatz')
+    expect(content.fields.map((f) => f.label)).toContain('Anteil am Gesamtumsatz')
   })
 
   it('legt genau zwei Zellen ins Raster: Reingewinn und Mitarbeitende', () => {
@@ -648,9 +629,23 @@ describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => 
     expect(content.layout?.branche?.color).toHaveLength(3)
   })
 
-  it('setzt die UID in den Fuss', () => {
-    const content = companyContent(company({ uid: 'CHE-105.909.036' }), ctx())
-    expect(content.layout?.fussKennung).toBe('CHE-105.909.036')
+  it('führt im Fuss allein den Geschäftsbericht, nicht «Kerngeschäft belegen»', () => {
+    const content = companyContent(
+      company({ reportUrl: 'https://example.com/bericht.pdf', productsUrl: 'https://example.com/produkte' }),
+      ctx(),
+    )
+    expect(content.layout?.fussLink?.label).toBe('Geschäftsbericht öffnen')
+    // In `links` stehen weiterhin beide — der Fuss wählt ausdrücklich einen aus,
+    // statt stillschweigend nur den ersten Eintrag zu zeigen.
+    expect(content.links?.map((l) => l.label)).toEqual([
+      'Geschäftsbericht öffnen',
+      'Kerngeschäft belegen',
+    ])
+  })
+
+  it('lässt den Fuss weg, wo es keinen Geschäftsbericht gibt', () => {
+    const content = companyContent(company({ reportUrl: null, productsUrl: null }), ctx())
+    expect(content.layout?.fussLink).toBeUndefined()
   })
 
   it('lässt das Gemeindepanel bei der flachen Liste', () => {
