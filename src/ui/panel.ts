@@ -1,6 +1,7 @@
 import type { Level } from '../data/loader'
 import { metricLabel, type Metric } from '../domain/metric'
 import { NOGA_GROUPS } from '../domain/noga.generated'
+import { litTopFaceColor } from '../layers/litColor'
 import type { Company } from '../layers/visible'
 import { formatNumber, formatProfit, formatRatio, formatRevenue } from './format'
 
@@ -39,6 +40,48 @@ export interface PanelContent {
    *  in kleinerer Schrift (`.panel-fussnote`, siehe `style.css`) — Wortlaut
    *  unverändert, nur Gewicht und Position. */
   footnote?: string
+  /** Anordnung für das Panel des Redesigns (Handoff 1b, Punkt 5): Kopf mit
+   *  Kennung, eine grosse Hauptzahl, ein Anteilsbalken, dann ein Raster, dann
+   *  Branche und Kerngeschäft, unten ein Fuss.
+   *
+   *  Bewusst ein **Zusatz** und kein Ersatz für `fields`: die Inhalte sind
+   *  dieselben, nur anders angeordnet. `fields` bleibt die vollständige,
+   *  benannte Liste aller Werte — daran hängen die Zusicherungen in
+   *  `panel.test.ts` (45 Tests über Labels, Randfälle und fehlende Werte), und
+   *  sie ist das Datenmodell, das ohne DOM prüfbar ist. `layout` sagt nur, wo
+   *  welcher dieser Werte hingehört. Wo `layout` fehlt (Gemeinde-/Kantonspanel
+   *  von `aggregateCellContent`), rendert `renderContent` unverändert die
+   *  flache Liste von vorher.
+   *
+   *  Jeder Wert aus `fields` hat hier einen Platz — Sitz, Gründungsjahr und
+   *  Geschäftsjahr in `unterzeile`, das SIX-Symbol in `kennung`, Umsatz in
+   *  `haupt`, Rang und Anteil in `anteil.text`, Reingewinn, Mitarbeitende und
+   *  Marge im `raster`, Branche und Kerngeschäft in `branche`, die UID im
+   *  Fuss. Sonst verschwände ein Wert lautlos aus der Oberfläche, während der
+   *  Test ihn weiter in `fields` findet und grün bleibt. */
+  layout?: PanelLayout
+}
+
+export interface PanelLayout {
+  /** Rechts im Kopf, neben dem Namen — das SIX-Symbol bzw. auf der
+   *  Beschäftigten-Seite Kürzel und Gemeindezahl. */
+  kennung?: string
+  /** Eine Zeile unter dem Namen, Teile mit ` · ` verbunden. */
+  unterzeile?: string
+  /** Die grosse Zahl: Label links, Wert rechts. */
+  haupt?: PanelField
+  /** Anteilsbalken plus die Zeile darunter. `fraction` ist bereits der Anteil
+   *  (0…1) — die Breite in Prozent macht das Rendern, nicht der Aufrufer.
+   *  `ton` wählt die Füllfarbe: `--akzent-firmen` bzw. `--akzent-arbeit`. */
+  anteil?: { fraction: number; text: string; ton: 'firmen' | 'arbeit' }
+  /** Zweispaltiges Raster aus je Label und Wert. */
+  raster?: PanelField[]
+  /** Branchenpunkt mit Namen, darunter optional das Kerngeschäft als
+   *  Fliesstext. */
+  branche?: { color: readonly [number, number, number]; label: string; text?: string }
+  /** Rechts im Fuss, leise — die UID. Der Link links im Fuss kommt aus
+   *  `links` (erster Eintrag), damit es nur eine Quelle für Links gibt. */
+  fussKennung?: string
 }
 
 /** Der Teil des Panelinhalts, den `companyContent` nicht selbst herleiten
@@ -403,11 +446,89 @@ export function companyContent(company: Company, context: CompanyContext): Panel
   // nur in `companies.json`, nirgends im Panel.
   if (company.productsUrl) links.push({ label: 'Kerngeschäft belegen', href: company.productsUrl })
 
+  // ---- Anordnung für das Panel des Redesigns (Handoff 1b, Punkt 5) ----
+  // Nur Umschichtung: jeder Wert unten kommt aus denselben Feldern, die oben
+  // in `fields` stehen (siehe `PanelContent.layout` für die vollständige
+  // Zuordnung). `fields` bleibt daneben die benannte, ohne DOM prüfbare Liste.
+  const feldWert = (label: string): string | undefined =>
+    fields.find((f) => f.label === label)?.value
+
+  // Kopf-Unterzeile: die drei Angaben, die zur Identität gehören, nicht zu den
+  // Kennzahlen — Sitz, Gründungsjahr, Geschäftsjahr. Fehlt eine, entfällt sie,
+  // statt eine Lücke im Trenner zu hinterlassen.
+  const unterTeile: string[] = []
+  if (company.city) unterTeile.push(company.city)
+  if (company.foundingYear !== null) unterTeile.push(`gegründet ${company.foundingYear}`)
+  if (company.fiscalYear !== null) unterTeile.push(`Geschäftsjahr ${company.fiscalYear}`)
+
+  // Hauptzahl: die Umsatzzeile mit ihrem eigenen, nach dem Nenner benannten
+  // Label (Banken weisen Geschäftsertrag aus) — genau das Feld, das oben
+  // aufgebaut wurde. Fehlt der Umsatz (Platzhalterfirma), gibt es keine
+  // Hauptzahl; der Hinweis dazu steht bereits in `notes`.
+  const umsatzFeld = fields.find(
+    (f) => f.label === 'Jahresumsatz (Nettoumsatz)' || f.label.startsWith('Geschäftsertrag'),
+  )
+
+  // Anteilsbalken: dieselbe Zahl wie die Zeile darunter, einmal als Länge.
+  // Rang und Anteil stehen zusammen in einem Satz — beide beziehen sich auf
+  // dieselbe Grundgesamtheit (alle recherchierten Gesellschaften mit Wert),
+  // getrennte Zeilen liessen das auseinanderfallen.
+  const anteilTeile: string[] = []
+  if (context.rank !== null) {
+    anteilTeile.push(`Rang ${context.rank} von ${context.rankTotal} nach ${metricLabel(context.metric)}`)
+  }
+  const anteilWert = feldWert('Anteil am Gesamtumsatz')
+  if (anteilWert) {
+    anteilTeile.push(`${anteilWert} des Gesamtumsatzes aller kotierten Gesellschaften`)
+  }
+  const anteil =
+    anteilTeile.length > 0
+      ? {
+          // Der Balken zeigt den Umsatzanteil; ohne umgerechneten Umsatz bleibt
+          // er leer (Breite 0), die Zeile darunter trägt dann allein den Rang.
+          fraction:
+            company.revenueChf !== null && context.revenueTotal > 0
+              ? company.revenueChf / context.revenueTotal
+              : 0,
+          text: anteilTeile.join(' · '),
+          ton: 'firmen' as const,
+        }
+      : undefined
+
+  // Raster: die übrigen Kennzahlen, je Zelle Label und Wert. Reihenfolge wie
+  // im Entwurf (Reingewinn, Mitarbeitende), danach die abgeleiteten Grössen.
+  const raster: PanelField[] = []
+  for (const label of [
+    'Reingewinn (auf die Aktionäre entfallend)',
+    'Mitarbeitende',
+    'Marge auf Nettoumsatz',
+    'Marge auf Geschäftsertrag',
+    'Umsatz je Mitarbeitenden',
+  ]) {
+    const wert = feldWert(label)
+    if (wert !== undefined) raster.push({ label, value: wert })
+  }
+
   return {
     title: company.name,
     fields,
     notes,
     links,
+    layout: {
+      kennung: company.sixSymbol ?? undefined,
+      unterzeile: unterTeile.length > 0 ? unterTeile.join(' · ') : undefined,
+      haupt: umsatzFeld,
+      anteil,
+      raster,
+      branche: {
+        color: litTopFaceColor(
+          NOGA_GROUPS[company.nogaGroupIndex]?.color ?? NOGA_GROUPS[0]!.color,
+        ),
+        label: nogaGroupLabel(company.nogaGroupIndex),
+        text: company.coreProducts ?? undefined,
+      },
+      fussKennung: company.uid ?? undefined,
+    },
   }
 }
 
@@ -424,7 +545,188 @@ function panelBox(): HTMLElement {
   return el
 }
 
+/** Das Panel des Redesigns (Handoff 1b, Punkt 5): Kopf, Hauptzahl,
+ *  Anteilsbalken, Raster, Branche, Fuss — statt einer flachen Liste
+ *  gleichgewichtiger `Label: Wert`-Zeilen.
+ *
+ *  Die Inhalte sind unverändert dieselben (siehe `PanelContent.layout`); was
+ *  sich ändert, ist ihre Gewichtung: der Umsatz gross, sein Anteil als Länge,
+ *  der Rest als Raster. Der Anteilsbalken ist die einzige echte Neuerung — und
+ *  auch er zeigt keine neue Zahl, sondern dieselbe, die die Zeile darunter
+ *  nennt (`CompanyContext` liefert Rang, Nenner und Gesamtsumme schon länger).
+ *
+ *  Die Vorbehalte (`notes`) und die Fussnote landen unverändert unten in der
+ *  leisesten Stufe der Fläche — sie wechseln nur den Platz, nicht den Ton. */
+function renderLayout(box: HTMLElement, content: PanelContent, layout: PanelLayout): void {
+  const kopf = document.createElement('div')
+  kopf.className = 'panel-kopf'
+  const titelzeile = document.createElement('div')
+  titelzeile.className = 'panel-titelzeile'
+  const h3 = document.createElement('h3')
+  h3.textContent = content.title
+  titelzeile.appendChild(h3)
+  if (layout.kennung) {
+    const kennung = document.createElement('span')
+    kennung.className = 'panel-kennung'
+    kennung.textContent = layout.kennung
+    titelzeile.appendChild(kennung)
+  }
+  kopf.appendChild(titelzeile)
+  if (layout.unterzeile) {
+    const unter = document.createElement('p')
+    unter.className = 'panel-unterzeile'
+    unter.textContent = layout.unterzeile
+    kopf.appendChild(unter)
+  }
+  box.appendChild(kopf)
+
+  const koerper = document.createElement('div')
+  koerper.className = 'panel-koerper'
+
+  if (layout.haupt) {
+    const zeile = document.createElement('div')
+    zeile.className = 'panel-hauptzeile'
+    const label = document.createElement('span')
+    label.className = 'panel-hauptlabel'
+    label.textContent = layout.haupt.label
+    const wert = document.createElement('span')
+    wert.className = 'panel-hauptwert'
+    wert.textContent = layout.haupt.value
+    zeile.append(label, wert)
+    koerper.appendChild(zeile)
+  }
+
+  if (layout.anteil) {
+    const spur = document.createElement('div')
+    spur.className = 'panel-spur'
+    const balken = document.createElement('div')
+    balken.className =
+      layout.anteil.ton === 'arbeit' ? 'panel-anteil panel-anteil-arbeit' : 'panel-anteil'
+    // Auf 0…100 % geklemmt: ein Anteil über 1 kann bei einer negativen
+    // Gesamtsumme entstehen (Kennzahl Gewinn, Saldo nahe null) — ein Balken,
+    // der aus seiner Spur läuft, behauptete dann mehr als 100 Prozent.
+    const prozent = Math.min(100, Math.max(0, layout.anteil.fraction * 100))
+    balken.style.width = `${prozent}%`
+    spur.appendChild(balken)
+    const zeile = document.createElement('p')
+    zeile.className = 'panel-anteilzeile'
+    zeile.textContent = layout.anteil.text
+    koerper.append(spur, zeile)
+  }
+
+  if (layout.raster && layout.raster.length > 0) {
+    const raster = document.createElement('div')
+    raster.className = 'panel-raster'
+    for (const feld of layout.raster) {
+      const zelle = document.createElement('div')
+      const label = document.createElement('span')
+      label.className = 'panel-feldlabel'
+      label.textContent = feld.label
+      const wert = document.createElement('span')
+      wert.className = 'panel-feldwert'
+      wert.textContent = feld.value
+      zelle.append(label, wert)
+      raster.appendChild(zelle)
+    }
+    koerper.appendChild(raster)
+  }
+
+  if (layout.branche) {
+    const abschnitt = document.createElement('div')
+    abschnitt.className = 'panel-abschnitt'
+    const zeile = document.createElement('div')
+    zeile.className = 'panel-branche'
+    const punkt = document.createElement('span')
+    punkt.className = 'leiste-punkt'
+    const [r, g, b] = layout.branche.color
+    punkt.style.background = `rgb(${r}, ${g}, ${b})`
+    zeile.append(punkt, document.createTextNode(layout.branche.label))
+    abschnitt.appendChild(zeile)
+    if (layout.branche.text) {
+      const text = document.createElement('p')
+      text.className = 'panel-fliess'
+      text.textContent = layout.branche.text
+      abschnitt.appendChild(text)
+    }
+    koerper.appendChild(abschnitt)
+  }
+
+  // Die Branchenverteilung (`list`) hat im Firmenpanel keinen Platz im
+  // Entwurf, kommt dort aber auch nicht vor — sie gehört zum Gemeindepanel,
+  // das weiterhin die flache Liste rendert. Trotzdem hier behandelt, damit ein
+  // künftiger Aufrufer mit `layout` UND `list` nicht lautlos eine Liste
+  // verliert.
+  if (content.list) {
+    const caption = document.createElement('p')
+    caption.className = 'panel-feldlabel'
+    caption.textContent = content.list.caption
+    const list = document.createElement('ul')
+    list.className = 'panel-liste'
+    for (const item of content.list.items) {
+      const li = document.createElement('li')
+      li.textContent = item
+      list.appendChild(li)
+    }
+    koerper.append(caption, list)
+  }
+
+  for (const note of content.notes) {
+    const p = document.createElement('p')
+    p.className = 'panel-fussnote'
+    p.textContent = note
+    koerper.appendChild(p)
+  }
+  if (content.footnote) {
+    const p = document.createElement('p')
+    p.className = 'panel-fussnote'
+    p.textContent = content.footnote
+    koerper.appendChild(p)
+  }
+  box.appendChild(koerper)
+
+  // Fuss: der erste Link links, die Kennung rechts. Weitere Links (die
+  // Produktquelle) reihen sich daneben ein — sie sind dieselbe Art Verweis und
+  // brauchen keine zweite Zeile.
+  const links = content.links ?? []
+  if (links.length > 0 || layout.fussKennung) {
+    const fuss = document.createElement('div')
+    fuss.className = 'panel-fuss'
+    const linkGruppe = document.createElement('span')
+    for (const link of links) {
+      const a = document.createElement('a')
+      a.href = link.href
+      a.textContent = link.label
+      a.target = '_blank'
+      a.rel = 'noopener noreferrer'
+      linkGruppe.appendChild(a)
+    }
+    fuss.appendChild(linkGruppe)
+    if (layout.fussKennung) {
+      const kennung = document.createElement('span')
+      kennung.className = 'panel-uid'
+      kennung.textContent = layout.fussKennung
+      fuss.appendChild(kennung)
+    }
+    box.appendChild(fuss)
+  }
+
+  // Der Schliessen-Knopf bleibt: das Panel hat sonst keinen Weg zu, und ein
+  // Klick auf die Karte öffnet nur das nächste.
+  const close = document.createElement('button')
+  close.type = 'button'
+  close.className = 'panel-aktion'
+  close.style.margin = '0 16px 12px'
+  close.textContent = 'Schliessen'
+  close.addEventListener('click', hidePanel)
+  box.appendChild(close)
+}
+
 function renderContent(box: HTMLElement, content: PanelContent): void {
+  if (content.layout) {
+    renderLayout(box, content, content.layout)
+    return
+  }
+
   const heading = document.createElement('h3')
   heading.textContent = content.title
   box.appendChild(heading)

@@ -401,6 +401,12 @@ a:focus-visible, button:focus-visible, input:focus-visible, li:focus-visible {
   display: flex; align-items: baseline; justify-content: space-between; gap: .5rem;
   padding: 11px 16px; border-top: 1px solid var(--linie);
 }
+/* Zwei Links im Fuss (Geschäftsbericht und Produktquelle) liefen als Inline-
+   Elemente ineinander — bei 264 px Fussbreite bricht der zweite mitten im Wort
+   um und liest sich als Fortsetzung des ersten. Jeder Link steht deshalb auf
+   seiner eigenen Zeile. */
+.panel-fuss a { display: block; }
+.panel-fuss a + a { margin-top: 4px; }
 .panel-fuss a, .panel-aktion {
   border: none; background: transparent; padding: 0;
   font-family: var(--mono); font-size: .65625rem; letter-spacing: .16em;

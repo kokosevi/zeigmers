@@ -523,3 +523,121 @@ describe('companyContent — Rang, Marge, Kennzahlen aus abgeleiteten Werten', (
     expect(labels(content)).not.toContain('SIX-Symbol')
   })
 })
+
+// Redesign (17. August 2026, Handoff 1b, Punkt 5): das Firmenpanel bekommt eine
+// Hierarchie — Kopf mit Kennung, eine grosse Hauptzahl, ein Anteilsbalken, ein
+// Raster, Branche und Kerngeschäft, ein Fuss. `layout` ist dabei ein ZUSATZ zu
+// `fields`, kein Ersatz: die Tests oben prüfen weiterhin jeden Wert und jeden
+// Vorbehalt an `fields`/`notes`, diese hier nur, dass jeder dieser Werte im
+// Layout auch einen Platz hat. Sonst könnte ein Wert lautlos aus der
+// Oberfläche verschwinden, während die Tests oben ihn weiter in `fields`
+// finden und grün bleiben.
+describe('companyContent — Anordnung des Panels (Redesign 2026-08-17)', () => {
+  it('setzt das SIX-Symbol als Kennung in den Kopf', () => {
+    const content = companyContent(company({ sixSymbol: 'NESN' }), ctx())
+    expect(content.layout?.kennung).toBe('NESN')
+  })
+
+  it('fasst Sitz, Gründungsjahr und Geschäftsjahr zur Unterzeile zusammen', () => {
+    const content = companyContent(
+      company({ city: 'Vevey', foundingYear: 1866, fiscalYear: 2025 }),
+      ctx(),
+    )
+    expect(content.layout?.unterzeile).toBe('Vevey · gegründet 1866 · Geschäftsjahr 2025')
+  })
+
+  it('lässt in der Unterzeile weg, was fehlt, statt eine Lücke zu setzen', () => {
+    const content = companyContent(
+      company({ city: 'Zug', foundingYear: null, fiscalYear: 2025 }),
+      ctx(),
+    )
+    expect(content.layout?.unterzeile).toBe('Zug · Geschäftsjahr 2025')
+  })
+
+  it('macht die Umsatzzeile zur Hauptzahl, mit ihrem eigenen Nenner-Label', () => {
+    const content = companyContent(company({ revenue: 89_490_000_000 }), ctx())
+    expect(content.layout?.haupt?.label).toBe('Jahresumsatz (Nettoumsatz)')
+    expect(content.layout?.haupt?.value).toContain('89.49 Mrd.')
+  })
+
+  it('nennt bei einer Bank den Geschäftsertrag als Hauptzahl, nicht Nettoumsatz', () => {
+    const content = companyContent(company({ revenueType: 'operating_income' }), ctx())
+    expect(content.layout?.haupt?.label).toContain('Geschäftsertrag')
+  })
+
+  it('lässt die Hauptzahl weg, wo kein Umsatz vorliegt', () => {
+    // Der Hinweis «Umsatz nicht öffentlich verfügbar.» steht weiterhin in
+    // `notes` — geprüft von den Tests oben.
+    const content = companyContent(company({ placeholder: true, revenue: null }), ctx())
+    expect(content.layout?.haupt).toBeUndefined()
+  })
+
+  it('trägt Rang und Anteil gemeinsam in der Zeile unter dem Balken', () => {
+    const content = companyContent(
+      company({ revenue: 100_000_000, revenueChf: 100_000_000 }),
+      ctx({ rank: 1, rankTotal: 187, revenueTotal: 1_000_000_000 }),
+    )
+    expect(content.layout?.anteil?.text).toContain('Rang 1 von 187 nach Jahresumsatz')
+    expect(content.layout?.anteil?.text).toContain('des Gesamtumsatzes aller kotierten Gesellschaften')
+  })
+
+  it('gibt dem Balken den Anteil als Bruch, nicht als Text', () => {
+    const content = companyContent(
+      company({ revenue: 100_000_000, revenueChf: 100_000_000 }),
+      ctx({ revenueTotal: 1_000_000_000 }),
+    )
+    expect(content.layout?.anteil?.fraction).toBeCloseTo(0.1)
+    expect(content.layout?.anteil?.ton).toBe('firmen')
+  })
+
+  it('setzt den Balken auf null, wo kein umgerechneter Umsatz vorliegt', () => {
+    // Der Rang steht dann trotzdem in der Zeile — nur die Länge fehlt, weil es
+    // keinen Anteil zu zeigen gibt.
+    const content = companyContent(company({ revenueChf: null }), ctx({ rank: 5 }))
+    expect(content.layout?.anteil?.fraction).toBe(0)
+    expect(content.layout?.anteil?.text).toContain('Rang 5')
+  })
+
+  it('legt Reingewinn und Mitarbeitende ins Raster', () => {
+    const content = companyContent(company({ profit: 9_030_000_000, employees: 271_000 }), ctx())
+    const labels = content.layout?.raster?.map((f) => f.label) ?? []
+    expect(labels).toContain('Reingewinn (auf die Aktionäre entfallend)')
+    expect(labels).toContain('Mitarbeitende')
+  })
+
+  it('nimmt jeden abgeleiteten Wert ins Raster, den fields kennt', () => {
+    // Marge und Umsatz je Mitarbeitenden sind die zwei gerechneten Grössen —
+    // ohne diesen Test verschwänden sie beim Umbau lautlos aus der Ansicht.
+    const content = companyContent(
+      company({ revenue: 1000, revenueChf: 1000, profit: 250, employees: 10 }),
+      ctx(),
+    )
+    const labels = content.layout?.raster?.map((f) => f.label) ?? []
+    expect(labels).toContain('Marge auf Nettoumsatz')
+    expect(labels).toContain('Umsatz je Mitarbeitenden')
+  })
+
+  it('nennt Branche und Kerngeschäft mit der Farbe der Deckfläche', () => {
+    const content = companyContent(
+      company({ nogaGroupIndex: 1, coreProducts: 'Nahrungsmittel und Getränke.' }),
+      ctx(),
+    )
+    expect(content.layout?.branche?.label).toBe('Industrie und Energie')
+    expect(content.layout?.branche?.text).toBe('Nahrungsmittel und Getränke.')
+    // `litTopFaceColor`, wie jeder Branchentupfer der Leiste — dieselbe
+    // beleuchtete Deckfläche, die die Säule zeigt.
+    expect(content.layout?.branche?.color).toHaveLength(3)
+  })
+
+  it('setzt die UID in den Fuss', () => {
+    const content = companyContent(company({ uid: 'CHE-105.909.036' }), ctx())
+    expect(content.layout?.fussKennung).toBe('CHE-105.909.036')
+  })
+
+  it('lässt das Gemeindepanel bei der flachen Liste', () => {
+    // `aggregateCellContent` (Ansicht «Beschäftigte») hat keine Anordnung —
+    // `renderContent` rendert dort unverändert die Liste von vorher.
+    const content = aggregateCellContent(aggregateLevel({ level: 'kanton' }), 0)
+    expect(content.layout).toBeUndefined()
+  })
+})
